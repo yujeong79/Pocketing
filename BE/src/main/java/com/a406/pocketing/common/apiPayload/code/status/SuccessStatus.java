@@ -16,10 +16,10 @@ public enum SuccessStatus implements BaseCode {
 	// 일반적인 응답
 	_OK(HttpStatus.OK, "COMMON200", "성공입니다."),
 
-	// 멤버 관련 응답
-	SIGNUP_SUCCESS(HttpStatus.OK, "MEMBER1000", "회원가입 성공"),
-	LOGIN_SUCCESS(HttpStatus.OK, "MEMBER1001", "로그인 성공"),
-	USERINFO_SUCCESS(HttpStatus.OK, "MEMBER1002", "멤버 정보 조회 성공");
+	// 사용자 관련 응답
+	SIGNUP_SUCCESS(HttpStatus.OK, "USER2000", "회원가입 성공입니다."),
+	LOGIN_SUCCESS(HttpStatus.OK, "USER2001", "로그인 성공입니다."),
+	USERINFO_SUCCESS(HttpStatus.OK, "USER2002", "사용자 정보 조회 성공입니다.");
 
 	// 위에처럼 더 만들어서 쓰세요~!
 
