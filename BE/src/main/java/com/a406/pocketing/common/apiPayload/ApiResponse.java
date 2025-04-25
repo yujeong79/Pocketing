@@ -1,10 +1,10 @@
-package com.a406.pocketing.global.apiPayload;
+package com.a406.pocketing.common.apiPayload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.a406.pocketing.global.apiPayload.code.BaseCode;
-import com.a406.pocketing.global.apiPayload.code.status.SuccessStatus;
+import com.a406.pocketing.common.apiPayload.code.BaseCode;
+import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

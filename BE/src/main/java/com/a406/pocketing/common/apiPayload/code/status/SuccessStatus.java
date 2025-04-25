@@ -1,9 +1,9 @@
-package com.a406.pocketing.global.apiPayload.code.status;
+package com.a406.pocketing.common.apiPayload.code.status;
 
 import org.springframework.http.HttpStatus;
 
-import com.a406.pocketing.global.apiPayload.code.BaseCode;
-import com.a406.pocketing.global.apiPayload.code.ReasonDTO;
+import com.a406.pocketing.common.apiPayload.code.BaseCode;
+import com.a406.pocketing.common.apiPayload.code.ReasonDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +28,8 @@ public enum SuccessStatus implements BaseCode {
 	private final String message;
 
 	@Override
-	public ReasonDTO getReason() {
-		return ReasonDTO.builder()
+	public ReasonDto getReason() {
+		return ReasonDto.builder()
 			.message(message)
 			.code(code)
 			.isSuccess(true)
@@ -37,8 +37,8 @@ public enum SuccessStatus implements BaseCode {
 	}
 
 	@Override
-	public ReasonDTO getReasonHttpStatus() {
-		return ReasonDTO.builder()
+	public ReasonDto getReasonHttpStatus() {
+		return ReasonDto.builder()
 			.message(message)
 			.code(code)
 			.isSuccess(true)

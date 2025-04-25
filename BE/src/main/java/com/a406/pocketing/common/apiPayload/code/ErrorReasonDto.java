@@ -1,4 +1,4 @@
-package com.a406.pocketing.global.apiPayload.code;
+package com.a406.pocketing.common.apiPayload.code;
 
 import org.springframework.http.HttpStatus;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 
-public class ErrorReasonDTO {
+public class ErrorReasonDto {
 	private HttpStatus httpStatus;
 
 	private final boolean isSuccess;
