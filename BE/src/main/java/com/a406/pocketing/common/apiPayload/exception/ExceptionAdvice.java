@@ -1,4 +1,4 @@
-package com.a406.pocketing.global.apiPayload.exception;
+package com.a406.pocketing.common.apiPayload.exception;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,9 +16,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.a406.pocketing.global.apiPayload.ApiResponse;
-import com.a406.pocketing.global.apiPayload.code.ErrorReasonDTO;
-import com.a406.pocketing.global.apiPayload.code.status.ErrorStatus;
+import com.a406.pocketing.common.apiPayload.ApiResponse;
+import com.a406.pocketing.common.apiPayload.code.ErrorReasonDto;
+import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -65,11 +65,11 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(value = GeneralException.class)
 	public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest request) {
-		ErrorReasonDTO errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
+		ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
 		return handleExceptionInternal(generalException, errorReasonHttpStatus, null, request);
 	}
 
-	private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDTO reason,
+	private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDto reason,
 		HttpHeaders headers, HttpServletRequest request) {
 
 		ApiResponse<Object> body = ApiResponse.onFailure(reason.getCode(), reason.getMessage(), null);

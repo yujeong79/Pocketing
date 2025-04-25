@@ -1,9 +1,9 @@
-package com.a406.pocketing.global.apiPayload.code.status;
+package com.a406.pocketing.common.apiPayload.code.status;
 
 import org.springframework.http.HttpStatus;
 
-import com.a406.pocketing.global.apiPayload.code.BaseErrorCode;
-import com.a406.pocketing.global.apiPayload.code.ErrorReasonDTO;
+import com.a406.pocketing.common.apiPayload.code.BaseErrorCode;
+import com.a406.pocketing.common.apiPayload.code.ErrorReasonDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,8 +33,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	private final String message;
 
 	@Override
-	public ErrorReasonDTO getReason() {
-		return ErrorReasonDTO.builder()
+	public ErrorReasonDto getReason() {
+		return ErrorReasonDto.builder()
 			.message(message)
 			.code(code)
 			.isSuccess(false)
@@ -42,8 +42,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	}
 
 	@Override
-	public ErrorReasonDTO getReasonHttpStatus() {
-		return ErrorReasonDTO.builder()
+	public ErrorReasonDto getReasonHttpStatus() {
+		return ErrorReasonDto.builder()
 			.message(message)
 			.code(code)
 			.isSuccess(false)
