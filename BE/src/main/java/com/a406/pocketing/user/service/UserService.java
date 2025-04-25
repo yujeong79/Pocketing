@@ -1,9 +1,9 @@
 package com.a406.pocketing.user.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.a406.pocketing.user.dto.UserResponseDto;
 
-@Service
-@Slf4j
-public class UserService {
+public interface UserService {
+
+    UserResponseDto findById(Long userId);
+
 }
