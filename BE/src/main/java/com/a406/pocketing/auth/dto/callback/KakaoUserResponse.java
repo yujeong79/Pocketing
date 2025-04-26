@@ -1,4 +1,4 @@
-package com.a406.pocketing.auth.dto;
+package com.a406.pocketing.auth.dto.callback;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
