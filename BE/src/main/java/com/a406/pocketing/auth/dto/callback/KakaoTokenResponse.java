@@ -1,4 +1,4 @@
-package com.a406.pocketing.auth.dto;
+package com.a406.pocketing.auth.dto.callback;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
