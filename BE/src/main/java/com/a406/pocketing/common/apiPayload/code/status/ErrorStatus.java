@@ -21,6 +21,9 @@ public enum ErrorStatus implements BaseErrorCode {
 	PAGE_INVALID(HttpStatus.BAD_REQUEST, "COMMON4002", "페이지 번호는 0 이상이어야 합니다."),
 	SIZE_INVALID(HttpStatus.BAD_REQUEST, "COMMON4003", "페이지 크기는 1 이상 100 이하이어야 합니다."),
 
+	// 회원 관련 에러
+	USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
+
 	// 그룹(Group) 관련 에러
 	GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP4001", "존재하지 않는 그룹입니다."),
 	GROUP_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "GROUP4002", "그룹명은 필수입니다."),
