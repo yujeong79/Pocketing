@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
-@Table(name = "exchange_card")
+@Table(name = "exchange_card",
+    indexes = {
+        @Index(name = "idx_exchange_card_user_is_owned_status", columnList = "user_id, is_owned, status"),
+        @Index(name = "idx_exchange_card_album_member_is_owned_status", columnList = "album_id, member_id, is_owned, status")
+    })
 @Slf4j
 @Getter
 @Builder
@@ -38,4 +42,7 @@ public class ExchangeCard {
 
     @Column(name = "exchange_image_url", columnDefinition = "TEXT")
     private String exchangeImageUrl;
+
+    @Column(name = "status", nullable = false)
+    private String status = "ACTIVE";
 }
