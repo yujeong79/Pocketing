@@ -1,7 +1,5 @@
-import { MapPageContainer } from './styles';
-
 const MapPage = () => {
-  return <MapPageContainer>MapPage</MapPageContainer>;
+  return <div>지도 페이지</div>;
 };
 
 export default MapPage;

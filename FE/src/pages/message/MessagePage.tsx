@@ -1,7 +1,5 @@
-import { MessagePageContainer } from './styles';
-
 const MessagePage = () => {
-  return <MessagePageContainer>MapPage</MessagePageContainer>;
+  return <div>메시지 페이지</div>;
 };
 
 export default MessagePage;
