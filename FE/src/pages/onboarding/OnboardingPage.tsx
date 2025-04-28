@@ -1,8 +1,5 @@
-import React from 'react';
-import { OnboardingPageContainer } from './styles';
-
 const OnboardingPage = () => {
-  return <OnboardingPageContainer>OnboardingPage</OnboardingPageContainer>;
+  return <div>온보딩 페이지</div>;
 };
 
 export default OnboardingPage;

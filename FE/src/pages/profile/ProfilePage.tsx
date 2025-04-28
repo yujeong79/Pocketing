@@ -1,7 +1,5 @@
-import React from 'react';
-import { ProfilePageContainer } from './styled';
 const ProfilePage = () => {
-  return <ProfilePageContainer>ProfilePage</ProfilePageContainer>;
+  return <div>프로필 페이지</div>;
 };
 
 export default ProfilePage;

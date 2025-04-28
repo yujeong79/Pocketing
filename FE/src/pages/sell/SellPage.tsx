@@ -1,8 +1,5 @@
-import React from 'react';
-import { SellPageContainer } from './styles';
-
 const SellPage = () => {
-  return <SellPageContainer>SellPage</SellPageContainer>;
+  return <div>판매 페이지</div>;
 };
 
 export default SellPage;
