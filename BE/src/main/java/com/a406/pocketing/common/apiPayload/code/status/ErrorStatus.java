@@ -38,46 +38,23 @@ public enum ErrorStatus implements BaseErrorCode {
 
 	// 포토카드(PhotoCard) 관련 에러
 	PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND, "PHOTO4001", "존재하지 않는 포토카드입니다."),
-	PHOTOCARD_MEMBER_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "PHOTO4002", "멤버명은 필수입니다."),
-	PHOTOCARD_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PHOTO4004", "존재하지 않는 멤버입니다."),
+	PHOTOCARD_REQUIRED(HttpStatus.BAD_REQUEST, "PHOTO4002", "포토카드는 필수입니다."),
+	CARD_ID_REQUIRED(HttpStatus.BAD_REQUEST, "PHOTO4003", "포토카드 ID는 필수입니다."),
 
 	// 시세(Price) 조회 관련 에러
-	PRICE_GROUP_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "PRICE4001", "그룹명은 필수입니다."),
-	PRICE_MEMBER_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "PRICE4002", "멤버명은 필수입니다."),
-	PRICE_ALBUM_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "PRICE4003", "앨범명은 필수입니다."),
-	PRICE_CARD_ID_REQUIRED(HttpStatus.BAD_REQUEST, "PRICE4004", "카드 ID는 필수입니다."),
-
-	PRICE_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4005", "존재하지 않는 그룹입니다."),
-	PRICE_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4006", "존재하지 않는 멤버입니다."),
-	PRICE_ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4007", "존재하지 않는 앨범입니다."),
-	PRICE_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4008", "존재하지 않는 포토카드입니다."),
-	PRICE_NO_MATCHING_POST(HttpStatus.NOT_FOUND, "PRICE4009", "조건에 맞는 판매글이 존재하지 않습니다."),
+	PRICE_NO_MATCHING_POST(HttpStatus.NOT_FOUND, "PRICE4001", "조건에 맞는 판매글이 존재하지 않습니다."),
 
 	// 판매글(Post) 등록/ 조회 관련 에러
-	POST_CARD_ID_REQUIRED(HttpStatus.BAD_REQUEST, "POST4001", "카드 ID는 필수입니다."),
-	POST_IMAGE_REQUIRED(HttpStatus.BAD_REQUEST, "POST4002", "실물 이미지 URL은 필수입니다."),
-	POST_PRICE_REQUIRED(HttpStatus.BAD_REQUEST, "POST4003", "가격은 필수입니다."),
-	POST_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4004", "존재하지 않는 포토카드입니다."),
-
-	POST_GROUP_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "POST4005", "그룹명은 필수입니다."),
-	POST_MEMBER_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "POST4006", "멤버명은 필수입니다."),
-	POST_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4007", "존재하지 않는 그룹입니다."),
-	POST_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4008", "존재하지 않는 멤버입니다."),
-	POST_ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4009", "존재하지 않는 앨범입니다."),
-
-	POST_POST_ID_REQUIRED(HttpStatus.BAD_REQUEST, "POST4005", "판매글 ID는 필수입니다."),
-	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4006", "존재하지 않는 판매글입니다."),
-
+	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "존재하지 않는 판매글입니다."),
+	POST_ID_REQUIRED(HttpStatus.BAD_REQUEST, "POST4002", "판매글 ID는 필수입니다."),
+	IMAGE_URL_REQUIRED(HttpStatus.BAD_REQUEST, "POST4003", "실물 이미지 URL은 필수입니다."),
+	PRICE_REQUIRED(HttpStatus.BAD_REQUEST, "POST4004", "가격은 필수입니다."),
 	POST_REGISTER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5001", "판매글 등록에 실패했습니다."),
 	POST_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5002", "판매글 목록 조회 중 서버 오류가 발생했습니다."),
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
 
 	// 판매자(Seller) 리스트 조회 관련 에러
-	SELLER_CARD_ID_REQUIRED(HttpStatus.BAD_REQUEST, "SELLER4001", "카드 ID는 필수입니다."),
-	SELLER_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "SELLER4002", "존재하지 않는 포토카드입니다."),
 	SELLER_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SELLER5001", "판매자 리스트 조회 중 서버 오류가 발생했습니다."),
-
-
 
 	// 현장 교환 관련 에러
 	EXCHANGE_ALBUM_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXCHANGE4001", "존재하지 않는 앨범입니다."),
