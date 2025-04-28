@@ -23,13 +23,11 @@ public enum SuccessStatus implements BaseCode {
 
 	// 그룹(Group) 관련 성공
 	GROUP_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2001", "그룹 목록 조회 성공"),
-	GROUP_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "GROUP2002", "그룹 상세 조회 성공"),
-	GROUP_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2003", "관심 그룹 목록 조회 성공"),
+	GROUP_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2002", "관심 그룹 목록 조회 성공"),
 
 	// 멤버(Member) 관련 성공
 	MEMBER_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2001", "멤버 목록 조회 성공"),
-	MEMBER_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2002", "멤버 상세 조회 성공"),
-	MEMBER_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2003", "관심 멤버 목록 조회 성공"),
+	MEMBER_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2002", "관심 멤버 목록 조회 성공"),
 
 	// 앨범(Album) 관련 성공
 	ALBUM_LIST_FETCH_SUCCESS(HttpStatus.OK, "ALBUM2001", "앨범 목록 조회 성공"),
