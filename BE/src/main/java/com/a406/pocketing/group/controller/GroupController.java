@@ -7,7 +7,6 @@ import com.a406.pocketing.group.dto.GroupLikeResponseDto;
 import com.a406.pocketing.group.dto.GroupResponseDto;
 import com.a406.pocketing.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,20 @@ public class GroupController {
      * 그룹 전체 조회
      */
     @GetMapping
-    public ResponseEntity<?> getAllGroups(@RequestParam(required = false) String search) {
+    public ApiResponse<List<GroupResponseDto>> getAllGroups(@RequestParam(required = false) String search) {
         Long userId = getCurrentUserId();
         List<GroupResponseDto> groups = groupService.getAllGroups(userId, search);
-        return ResponseEntity.ok(ApiResponse.of(SuccessStatus.GROUP_LIST_FETCH_SUCCESS, groups));
+        return ApiResponse.of(SuccessStatus.GROUP_LIST_FETCH_SUCCESS, groups);
     }
 
     /**
      * 관심 그룹 조회
      */
     @GetMapping("/like")
-    public ResponseEntity<?> getLikedGroups() {
+    public ApiResponse<GroupLikeResponseDto> getLikedGroups() {
         Long userId = getCurrentUserId();
         GroupLikeResponseDto likedGroups = groupService.getLikedGroups(userId);
-        return ResponseEntity.ok(ApiResponse.of(SuccessStatus.GROUP_LIKE_LIST_FETCH_SUCCESS, likedGroups));
+        return ApiResponse.of(SuccessStatus.GROUP_LIKE_LIST_FETCH_SUCCESS, likedGroups);
     }
 
     /**
