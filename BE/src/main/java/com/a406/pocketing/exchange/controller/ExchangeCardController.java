@@ -26,7 +26,7 @@ public class ExchangeCardController {
             @RequestBody ExchangeCardRequestDto requestDto
             ) {
         Long userId = userDetails.getId();
-        ExchangeCardResponseDto responseDto = exchangeCardService.registerExgit changeCard(userId, requestDto);
+        ExchangeCardResponseDto responseDto = exchangeCardService.registerExchangeCard(userId, requestDto);
 
         return ApiResponse.onSuccess(responseDto);
     }
