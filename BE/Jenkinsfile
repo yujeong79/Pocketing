@@ -10,6 +10,7 @@ pipeline {
         stage('Copy Config') {
             steps{
                 sh '''
+                mkdir -p BE/src/main/resources/
                 cp /secret/backend/application.yml BE/src/main/resources/
                 cp /secret/backend/application-prod.yml BE/src/main/resources/
                 '''
