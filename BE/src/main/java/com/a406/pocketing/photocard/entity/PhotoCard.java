@@ -30,4 +30,13 @@ public class PhotoCard {
 
     @Column(nullable = false)
     private String cardImageUrl;
+
+    @Column(nullable = false)
+    private Integer avgPrice;
+
+    @Column(nullable = false)
+    private Integer minPrice;
+
+    @Column(nullable = false)
+    private Integer maxPrice;
 }
