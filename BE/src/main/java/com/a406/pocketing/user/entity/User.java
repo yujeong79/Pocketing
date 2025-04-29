@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "users") // PostgreSQL에서 user는 예약어
 public class User {
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
