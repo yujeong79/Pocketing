@@ -21,6 +21,31 @@ public enum SuccessStatus implements BaseCode {
 	LOGIN_SUCCESS(HttpStatus.OK, "USER2001", "로그인 성공입니다."),
 	USERINFO_SUCCESS(HttpStatus.OK, "USER2002", "사용자 정보 조회 성공입니다."),
 
+	// 그룹(Group) 관련 성공
+	GROUP_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2001", "그룹 목록 조회 성공"),
+	GROUP_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2002", "관심 그룹 목록 조회 성공"),
+
+	// 멤버(Member) 관련 성공
+	MEMBER_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2001", "멤버 목록 조회 성공"),
+	MEMBER_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2002", "관심 멤버 목록 조회 성공"),
+
+	// 앨범(Album) 관련 성공
+	ALBUM_LIST_FETCH_SUCCESS(HttpStatus.OK, "ALBUM2001", "앨범 목록 조회 성공"),
+
+	// 포토카드(PhotoCard) 관련 성공
+	PHOTOCARD_LIST_FETCH_SUCCESS(HttpStatus.OK, "PHOTO2001", "포토카드 목록 조회 성공"),
+
+	// 시세(Price) 조회 관련 성공
+	PRICE_FETCH_SUCCESS(HttpStatus.OK, "PRICE2001", "시세 조회 성공"),
+
+	// 판매글(Post) 관련 성공
+	POST_REGISTER_SUCCESS(HttpStatus.CREATED, "POST2001", "판매글 등록 성공"),
+	POST_LIST_FETCH_SUCCESS(HttpStatus.OK, "POST2002", "판매글 목록 조회 성공"),
+	POST_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "POST2003", "판매글 상세 조회 성공"),
+
+	// 판매자(Seller) 리스트 관련 성공
+	SELLER_LIST_FETCH_SUCCESS(HttpStatus.OK, "SELLER2001", "판매자 리스트 조회 성공"),
+
 	// 현장 교환 관련 응답
 	EXCHANGE_CARD_REGISTER_SUCCESS(HttpStatus.OK, "EXCHANGE2001", "희망카드/보유카드가 등록되었습니다."),
 	EXCHANGE_LOCATION_SAVE_SUCCESS(HttpStatus.OK, "EXCHANGE2002","사용자 위치가 성공적으로 저장되었습니다."),
