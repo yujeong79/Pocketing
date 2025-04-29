@@ -46,9 +46,6 @@ public class AuthController {
     public ApiResponse<?> twitterCallback(@RequestParam("code") String authorizationCode) {
         String accessToken = twitterOAuthService.getAccessToken(authorizationCode);
         OAuthUserResponseDto oAuthUserResponseDto = twitterOAuthService.getUserInfo(accessToken);
-
-        log.info("Twitter Provider Id: " + oAuthUserResponseDto.getProviderId());
-
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
 
         return ApiResponse.onSuccess(loginResponseDto);
