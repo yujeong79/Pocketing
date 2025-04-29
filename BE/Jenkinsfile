@@ -29,10 +29,10 @@ pipeline {
             steps {
                 dir('BE') {
                     sh '''
+                    docker stop backend-app || true
+                    docker rm backend-app || true
                     docker build -t backend-app .
-                    docker save backend-app | ssh ubuntu@k12a406.p.ssafy.io "docker load"
-                    ssh ubuntu@k12a406.p.ssafy.io "docker stop backend-app || true && docker rm backend-app || true"
-                    ssh ubuntu@k12a406.p.ssafy.io "docker run -d --name backend-app -p 8081:8080 backend-app"
+                    docker run -d --name backend-app -p 8081:8080 backend-app
                     '''
                 }
             }
