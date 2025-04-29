@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import scale from '@/utils/scale';
 
 const fadeIn = keyframes`
   from {
@@ -19,6 +20,6 @@ export const SplashPageContainer = styled.div`
 
 export const Logo = styled.img`
   animation: ${fadeIn} 1s ease;
-  width: 64px;
-  height: 88px;
+  width: ${scale(64)}px;
+  height: ${scale(88)}px;
 `;

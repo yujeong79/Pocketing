@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import scale from '@/utils/scale';
 
 export const SignInPageContainer = styled.div`
   display: flex;
@@ -6,24 +7,24 @@ export const SignInPageContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  gap: 160px;
+  gap: ${scale(160)}px;
 `;
 
 export const LogoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: ${scale(10)}px;
 `;
 
 export const LogoImage = styled.img`
-  width: 64px;
-  height: 88px;
+  width: ${scale(64)}px;
+  height: ${scale(88)}px;
 `;
 
 export const LogoText = styled.img`
-  width: 136px;
-  height: 32px;
+  width: ${scale(136)}px;
+  height: ${scale(32)}px;
 `;
 
 export const LoginButtonContainer = styled.div`
@@ -31,17 +32,17 @@ export const LoginButtonContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: ${scale(8)}px;
 `;
 
 export const KakaoLoginButton = styled.img`
   cursor: pointer;
-  width: 266px;
-  height: 40px;
+  width: ${scale(266)}px;
+  height: ${scale(40)}px;
 `;
 
 export const XLoginButton = styled.img`
   cursor: pointer;
-  width: 266px;
-  height: 40px;
+  width: ${scale(266)}px;
+  height: ${scale(40)}px;
 `;
