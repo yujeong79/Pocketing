@@ -3,13 +3,22 @@ import { createBrowserRouter } from 'react-router-dom';
 import MainPage from '../pages/main/MainPage';
 import MapPage from '../pages/map/MapPage';
 import MessagePage from '../pages/message/MessagePage';
-import OnboardingPage from '../pages/onboarding/OnboardingPage';
 import ProfilePage from '../pages/profile/ProfilePage';
 import SellPage from '../pages/sell/SellPage';
+import SplashScreen from '@/pages/onboarding/SplashPage';
+import SignInPage from '@/pages/onboarding/SignInPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <SplashScreen />,
+  },
+  {
+    path: '/signin',
+    element: <SignInPage />,
+  },
+  {
+    path: '/main',
     element: <MainPage />,
   },
   {
@@ -19,10 +28,6 @@ const router = createBrowserRouter([
   {
     path: '/message',
     element: <MessagePage />,
-  },
-  {
-    path: '/onboarding',
-    element: <OnboardingPage />,
   },
   {
     path: '/profile',
