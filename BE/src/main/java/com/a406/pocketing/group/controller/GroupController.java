@@ -3,7 +3,6 @@ package com.a406.pocketing.group.controller;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.group.dto.GroupLikeResponseDto;
 import com.a406.pocketing.group.dto.GroupResponseDto;
 import com.a406.pocketing.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +22,9 @@ public class GroupController {
      * 그룹 전체 조회
      */
     @GetMapping
-    public ApiResponse<List<GroupResponseDto>> getAllGroups(@RequestParam(required = false) String search) {
+    public ApiResponse<List<GroupResponseDto>> getAllGroups() {
         Long userId = getCurrentUserId();
-        List<GroupResponseDto> groups = groupService.getAllGroups(userId, search);
+        List<GroupResponseDto> groups = groupService.getAllGroups(userId);
         return ApiResponse.of(SuccessStatus.GROUP_LIST_FETCH_SUCCESS, groups);
     }
 
@@ -33,9 +32,9 @@ public class GroupController {
      * 관심 그룹 조회
      */
     @GetMapping("/like")
-    public ApiResponse<GroupLikeResponseDto> getLikedGroups() {
+    public ApiResponse< List<GroupResponseDto>> getLikedGroups() {
         Long userId = getCurrentUserId();
-        GroupLikeResponseDto likedGroups = groupService.getLikedGroups(userId);
+        List<GroupResponseDto> likedGroups = groupService.getLikedGroups(userId);
         return ApiResponse.of(SuccessStatus.GROUP_LIKE_LIST_FETCH_SUCCESS, likedGroups);
     }
 

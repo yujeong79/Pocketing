@@ -1,11 +1,16 @@
 package com.a406.pocketing.group.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "groups")
+@Slf4j
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
