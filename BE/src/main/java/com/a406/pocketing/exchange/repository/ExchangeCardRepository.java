@@ -13,9 +13,10 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
 
     // 2. 기존 카드 정보 수정 (albumId, memberId, description, exchangeImageUrl 업데이트)
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE ExchangeCard e SET e.albumId = :albumId, e.memberId = :memberId, e.description = :description, e.exchangeImageUrl = :exchangeImageUrl WHERE e.exchangeCardId = :exchangeCardId")
+    @Query("UPDATE ExchangeCard e SET e.groupId = :groupId, e.albumId = :albumId, e.memberId = :memberId, e.description = :description, e.exchangeImageUrl = :exchangeImageUrl WHERE e.exchangeCardId = :exchangeCardId")
     int updateCardInfo(
             @Param("exchangeCardId") Long exchangeCardId,
+            @Param("groupId") Long groupId,
             @Param("albumId") Long albumId,
             @Param("memberId") Long memberId,
             @Param("description") String description,

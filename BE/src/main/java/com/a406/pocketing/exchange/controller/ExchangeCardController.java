@@ -3,6 +3,7 @@ package com.a406.pocketing.exchange.controller;
 import com.a406.pocketing.auth.jwt.JwtProvider;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
+import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
 import com.a406.pocketing.exchange.dto.ExchangeCardRequestDto;
 import com.a406.pocketing.exchange.dto.ExchangeCardResponseDto;
 import com.a406.pocketing.exchange.service.ExchangeCardService;
@@ -20,6 +21,12 @@ public class ExchangeCardController {
     private final ExchangeCardService exchangeCardService;
     private final JwtProvider jwtProvider;
 
+    /**
+     * 현장 교환 카드 등록 API
+     * @param userDetails
+     * @param requestDto
+     * @return
+     */
     @PostMapping("card/register")
     public ApiResponse<?> registerExchangeCard(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -28,6 +35,6 @@ public class ExchangeCardController {
         Long userId = userDetails.getId();
         ExchangeCardResponseDto responseDto = exchangeCardService.registerExchangeCard(userId, requestDto);
 
-        return ApiResponse.onSuccess(responseDto);
+        return ApiResponse.of(SuccessStatus.EXCHANGE_CARD_REGISTER_SUCCESS, responseDto);
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExchangeCardRequestDto {
     private Boolean isOwned;
+    private Long groupId;
     private Long albumId;
     private Long memberId;
     private String description;
