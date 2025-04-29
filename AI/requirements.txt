@@ -1,0 +1,21 @@
+# API 및 주요 라이브러리
+openai>=1.0.0
+langchain>=0.0.267
+langchain-openai>=0.0.1
+
+# 웹 프레임워크
+fastapi>=0.103.1
+uvicorn>=0.23.2
+websockets>=11.0.3
+
+# 유틸리티
+pydantic>=2.4.2
+python-dotenv>=1.0.0
+loguru>=0.7.0
+numpy>=1.24.0
+
+# 데이터베이스
+redis>=4.6.0
+pymongo==4.6.3
+chromadb>=0.4.13
+httpx>=0.24.1
