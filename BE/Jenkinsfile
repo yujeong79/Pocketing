@@ -18,14 +18,14 @@ pipeline {
         }
         stage('Build') {
             steps {
-                dir('backend') {
+                dir('BE') {
                     sh './gradlew clean build'
                 }
             }
         }
         stage('Docker Build & Deploy') {
             steps {
-                dir('backend') {
+                dir('BE') {
                     sh '''
                     docker build -t backend-app .
                     docker save backend-app | ssh ubuntu@k12a406.p.ssafy.io "docker load"
