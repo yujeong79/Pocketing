@@ -3,7 +3,7 @@ import { FontStyles } from '@/constants/fonts';
 import { colors } from '@/styles/theme';
 
 export const MainPageContainer = styled.div`
-  ${FontStyles.displayXlarge}
+  ${FontStyles.displayLarge}
   color: ${colors.primary};
   display: flex;
   flex-direction: column;
