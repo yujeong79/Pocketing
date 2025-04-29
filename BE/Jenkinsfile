@@ -9,7 +9,10 @@ pipeline {
         }
         stage('Copy Config') {
             steps{
-                sh 'cp /home/ubuntu/secret/backend/application.yml BE/src/main/resources/'
+                sh '''
+                cp /home/ubuntu/secret/backend/application.yml BE/src/main/resources/
+                cp /home/ubuntu/secret/backend/application-prod.yml BE/src/main/resources/
+                '''
             }
         }
         stage('Build') {
