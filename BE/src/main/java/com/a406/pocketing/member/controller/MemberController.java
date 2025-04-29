@@ -23,7 +23,8 @@ public class MemberController {
      */
     @GetMapping
     public ApiResponse<List<MemberResponseDto>> getMembers(@RequestParam(required = false) Long groupId) {
-        List<MemberResponseDto> members = memberService.getMembersByGroupId(groupId);
+        Long userId = getCurrentUserId();
+        List<MemberResponseDto> members = memberService.getMembersByGroupId(userId, groupId);
         return ApiResponse.of(SuccessStatus.MEMBER_LIST_FETCH_SUCCESS, members);
     }
 
