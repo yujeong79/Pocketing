@@ -2,7 +2,6 @@ package com.a406.pocketing.group.service;
 
 import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
-import com.a406.pocketing.group.dto.GroupLikeResponseDto;
 import com.a406.pocketing.group.dto.GroupResponseDto;
 import com.a406.pocketing.group.entity.Group;
 import com.a406.pocketing.group.entity.UserLikedGroup;
@@ -22,12 +21,10 @@ public class GroupServiceImpl implements GroupService {
     private final UserLikedGroupRepository userLikedGroupRepository;
 
     /**
-     * 그룹 전체 조회
-     * @param userId 사용자 ID
-     * @return 그룹 리스트 (관심 그룹 여부 포함)
+     * 그룹 전체 조회 (관심 여부 포함)
      */
     @Override
-    public List<GroupResponseDto> getAllGroups(Long userId, String searchKeyword) {
+    public List<GroupResponseDto> getAllGroups(Long userId) {
         // 전체 그룹 조회
         List<Group> groups = groupRepository.findAll();
 
@@ -53,11 +50,9 @@ public class GroupServiceImpl implements GroupService {
 
     /**
      * 관심 그룹 리스트 조회
-     * @param userId 사용자 ID
-     * @return 관심 그룹 리스트
      */
     @Override
-    public GroupLikeResponseDto getLikedGroups(Long userId) {
+    public List<GroupResponseDto> getLikedGroups(Long userId) {
         // 사용자가 관심 등록한 그룹 조회
         List<UserLikedGroup> likedGroups = userLikedGroupRepository.findByUserId(userId);
 
@@ -74,18 +69,15 @@ public class GroupServiceImpl implements GroupService {
         // 관심 그룹 ID들로 그룹 정보 한 번에 조회
         List<Group> groups = groupRepository.findAllById(likedGroupIds);
 
-        // 그룹 목록을 DTO로 변환
-        List<GroupLikeResponseDto.GroupSimpleDto> groupDtos = groups.stream()
-                .map(group -> GroupLikeResponseDto.GroupSimpleDto.builder()
+        // 그룹 목록을 DTO로 변환하면서 isInterest = true 고정
+        return groups.stream()
+                .map(group -> GroupResponseDto.builder()
                         .groupId(group.getGroupId())
                         .groupNameKo(group.getNameKo())
                         .groupNameEn(group.getNameEn())
                         .groupImageUrl(group.getGroupImageUrl())
+                        .isInterest(true)   // 무조건 true
                         .build())
-                .toList();
-
-        return GroupLikeResponseDto.builder()
-                .groups(groupDtos)
-                .build();
+                .collect(Collectors.toList());
     }
 }
