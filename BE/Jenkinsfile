@@ -5,7 +5,6 @@ pipeline {
         skipDefaultCheckout(false)
     }
 
-
     environment {
         BRANCH_NAME = "${env.GIT_BRANCH ?: env.CHANGE_TARGET ?: ''}"
     }
@@ -17,7 +16,6 @@ pipeline {
                     if (!BRANCH_NAME.endsWith('develop-BE')) {
                         echo "⛔ 브랜치 '${BRANCH_NAME}'은 develop-BE가 아니므로 빌드를 중단합니다."
                         currentBuild.result = 'SUCCESS'
-                        // build 중단
                         error("STOP: Not develop-BE")
                     } else {
                         echo "✅ 브랜치 '${BRANCH_NAME}'에서 빌드를 계속합니다."
@@ -26,9 +24,8 @@ pipeline {
             }
         }
 
-    stages {
         stage('Copy Config') {
-            steps{
+            steps {
                 sh '''
                 mkdir -p BE/src/main/resources/
                 cp /secret/application.yml BE/src/main/resources/
@@ -36,6 +33,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Build') {
             steps {
                 dir('BE') {
@@ -46,6 +44,7 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Build & Deploy') {
             steps {
                 dir('BE') {
