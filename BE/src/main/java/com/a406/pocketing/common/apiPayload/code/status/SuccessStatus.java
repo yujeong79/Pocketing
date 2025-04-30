@@ -47,6 +47,9 @@ public enum SuccessStatus implements BaseCode {
 	// 판매자(Seller) 리스트 관련 성공
 	SELLER_LIST_FETCH_SUCCESS(HttpStatus.OK, "SELLER2001", "판매자 리스트 조회 성공"),
 
+	//AI-매칭 관련성공
+	AI_RESOLVE_SUCCESS(HttpStatus.OK, "MATCHING2001", "AI 데이터 매핑 성공"),
+
 	// 현장 교환 관련 응답
 	EXCHANGE_CARD_REGISTER_SUCCESS(HttpStatus.OK, "EXCHANGE2001", "희망카드/보유카드가 등록되었습니다."),
 	EXCHANGE_LOCATION_SAVE_SUCCESS(HttpStatus.OK, "EXCHANGE2002","사용자 위치가 성공적으로 저장되었습니다."),
