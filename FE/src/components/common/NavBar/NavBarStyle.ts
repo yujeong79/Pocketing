@@ -19,7 +19,7 @@ export const NavBarContainer = styled.nav`
   background-color: white;
 `;
 
-export const NavItemWrapper = styled.div<{ isActive: boolean }>`
+export const NavItemWrapper = styled.div<{ $isActive: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,7 +27,7 @@ export const NavItemWrapper = styled.div<{ isActive: boolean }>`
   cursor: pointer;
 `;
 
-export const IconWrapper = styled.div<{ isActive: boolean }>`
+export const IconWrapper = styled.div<{ $isActive: boolean }>`
   width: ${scale(20)}px;
   height: ${scale(20)}px;
   margin-bottom: ${scale(4)}px;
@@ -46,10 +46,10 @@ export const IconWrapper = styled.div<{ isActive: boolean }>`
   }
 `;
 
-export const NavText = styled.span<{ isActive: boolean }>`
+export const NavText = styled.span<{ $isActive: boolean }>`
   font-weight: 700;
   font-size: ${scale(10)}px;
-  color: ${({ isActive }) => (isActive ? theme.colors.primary : theme.colors.primary100)};
+  color: ${({ $isActive }) => ($isActive ? theme.colors.primary : theme.colors.primary100)};
 
   transition: color 0.3s ease;
 `;

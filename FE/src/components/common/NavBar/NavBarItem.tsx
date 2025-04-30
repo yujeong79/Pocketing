@@ -20,17 +20,17 @@ export default function NavBarItem({
 }: NavBarItemProps) {
   return (
     <NavLink
-    to={to}
-    style={{ textDecoration: 'none' }}
-    // 접근성 속성 : 스크린 리더 사용자에게 현재 페이지 정보를 제공
+      to={to}
+      style={{ textDecoration: 'none' }}
+      // 접근성 속성 : 스크린 리더 사용자에게 현재 페이지 정보를 제공
       aria-label={`${alt} 메뉴로 이동`}
-      alt-current={isActive ? 'page' : undefined}
+      aria-current={isActive ? 'page' : undefined}
     >
-      <NavItemWrapper isActive={isActive} onClick={onClick}>
-        <IconWrapper isActive={isActive}>
+      <NavItemWrapper $isActive={isActive} onClick={onClick}>
+        <IconWrapper $isActive={isActive}>
           <img src={isActive ? activeIcon : inactiveIcon} alt={alt} width={20} height={20} />
         </IconWrapper>
-        <NavText isActive={isActive}>{alt}</NavText>
+        <NavText $isActive={isActive}>{alt}</NavText>
       </NavItemWrapper>
     </NavLink>
   );
