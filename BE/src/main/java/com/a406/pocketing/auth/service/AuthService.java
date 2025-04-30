@@ -7,6 +7,7 @@ import com.a406.pocketing.auth.dto.SignupRequestDto;
 public interface AuthService {
 
     LoginResponseDto authenticateOAuthUser(OAuthUserResponseDto oauthUserDto);
+    boolean checkNickname(String nickname);
     LoginResponseDto signup(SignupRequestDto signupRequestDto);
 
 }

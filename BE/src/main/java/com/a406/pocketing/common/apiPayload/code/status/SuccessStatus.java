@@ -21,6 +21,7 @@ public enum SuccessStatus implements BaseCode {
 	LOGIN_SUCCESS(HttpStatus.OK, "USER2001", "로그인 성공입니다."),
 	USERINFO_SUCCESS(HttpStatus.OK, "USER2002", "사용자 정보 조회 성공입니다."),
 	USER_LIKE_INFO_REGISTER_SUCCESS(HttpStatus.CREATED, "USER2003", "사용자 관심 그룹 및 멤버 등록 성공입니다."),
+	CHECK_NICKNAME_SUCCESS(HttpStatus.OK, "USER2004", "중복되지 않은 닉네임입니다."),
 
 	// 그룹(Group) 관련 성공
 	GROUP_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2001", "그룹 목록 조회 성공"),

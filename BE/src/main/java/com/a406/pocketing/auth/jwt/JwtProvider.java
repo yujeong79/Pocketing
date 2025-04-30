@@ -5,10 +5,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
@@ -21,7 +23,7 @@ public class JwtProvider {
         String accessToken = Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + jwtProperties.getExpiration() * 1000))
+                .setExpiration(new Date(now.getTime() + jwtProperties.getExpiration() * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .compact();
 
@@ -33,6 +35,7 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
+            log.error(e.getMessage());
             return false;
         }
     }

@@ -23,6 +23,7 @@ import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final UserLikedMemberRepository userLikedMemberRepository;
 
     @Override
+    @Transactional
     public LoginResponseDto signup(SignupRequestDto signupRequestDto) {
         // 회원가입
         User user = User.builder()

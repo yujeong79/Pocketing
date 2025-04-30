@@ -5,14 +5,20 @@ import com.a406.pocketing.auth.dto.LoginResponseDto;
 import com.a406.pocketing.auth.dto.SignupRequestDto;
 import com.a406.pocketing.auth.jwt.JwtProvider;
 import com.a406.pocketing.auth.jwt.JwtTokenDto;
+import com.a406.pocketing.common.apiPayload.exception.GeneralException;
+import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import com.a406.pocketing.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NICKNAME_DUPLICATE;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -33,6 +39,17 @@ public class AuthServiceImpl implements AuthService {
         } else {
             return LoginResponseDto.ofNewUser(oauthUserDto.getOauthProvider(), oauthUserDto.getProviderId());
         }
+    }
+
+    @Override
+    public boolean checkNickname(String nickname) {
+        Optional<User> userOpt = userRepository.findByNickname(nickname);
+
+        if(userOpt.isPresent()) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
