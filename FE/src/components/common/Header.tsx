@@ -1,5 +1,5 @@
 import { BackIcon, LogoText, Logo2d, ModifyIcon } from '@/assets/assets';
-import * as S from './Header.ts';
+import * as S from './HeaderStyle.ts';
 
 interface HeaderProps {
   type: 'artist' | 'main' | 'detail' | 'post' | 'chat' | 'exchange' | 'profile' | 'sell';
