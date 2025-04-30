@@ -2,6 +2,9 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import NicknamePage from '@/pages/onboarding/NicknamePage';
 import ProfileImagePage from '@/pages/onboarding/ProfileImagePage';
+import MyGroupPage from '@/pages/onboarding/MyGroupPage';
+import MyMemberPage from '@/pages/onboarding/MyMemberPage';
+import CompletePage from '@/pages/onboarding/CompletePage';
 
 import MainPage from '../pages/main/MainPage';
 import MapPage from '../pages/map/MapPage';
@@ -18,11 +21,11 @@ const router = createBrowserRouter([
     element: <SplashScreen />,
   },
   {
-    path: '/signin',
+    path: 'signin',
     element: <SignInPage />,
   },
   {
-    path: '/signup',
+    path: 'signup',
     children: [
       {
         path: 'nickname',
@@ -31,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: 'profileimage',
         element: <ProfileImagePage />,
+      },
+      {
+        path: 'complete',
+        element: <CompletePage />,
       },
     ],
   },
@@ -60,6 +67,34 @@ const router = createBrowserRouter([
         element: <SellPage />,
       },
     ],
+  },
+  {
+    path: 'group',
+    element: <MyGroupPage />,
+  },
+  {
+    path: 'member/:groupId',
+    element: <MyMemberPage />,
+  },
+  {
+    path: 'main',
+    element: <MainPage />,
+  },
+  {
+    path: 'map',
+    element: <MapPage />,
+  },
+  {
+    path: 'message',
+    element: <MessagePage />,
+  },
+  {
+    path: 'profile',
+    element: <ProfilePage />,
+  },
+  {
+    path: 'sell',
+    element: <SellPage />,
   },
 ]);
 
