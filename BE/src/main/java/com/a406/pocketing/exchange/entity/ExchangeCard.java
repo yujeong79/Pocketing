@@ -1,5 +1,9 @@
 package com.a406.pocketing.exchange.entity;
 
+import com.a406.pocketing.album.entity.Album;
+import com.a406.pocketing.group.entity.Group;
+import com.a406.pocketing.member.entity.Member;
+import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,17 +29,21 @@ public class ExchangeCard {
     @Column(name = "exchange_card_id")
     private Long exchangeCardId;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "group_id", nullable = false)
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private Group group;
 
-    @Column(name = "member_id", nullable = false)
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    @Column(name = "album_id", nullable = false)
-    private Long albumId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id", nullable = false)
+    private Album album;
 
     @Column(name = "is_owned", nullable = false)
     private Boolean isOwned;
@@ -48,4 +56,16 @@ public class ExchangeCard {
 
     @Column(name = "status", nullable = false)
     private String status = "ACTIVE";
+
+
+    // ExchangeCard.java
+    public void updateCardInfo(Group group, Album album, Member member, String description, String exchangeImageUrl) {
+        this.group = group;
+        this.album = album;
+        this.member = member;
+        this.description = description;
+        this.exchangeImageUrl = exchangeImageUrl;
+    }
+
 }
+
