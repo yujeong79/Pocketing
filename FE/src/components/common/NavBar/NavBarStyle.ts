@@ -38,10 +38,18 @@ export const IconWrapper = styled.div<{ isActive: boolean }>`
   img {
     width: 100%;
     height: 100%;
+  }
+
+  transition: transform 0.2s ease-in-out;
+  &:hover {
+    transform: translateY(-${scale(2)}px);
+  }
 `;
 
 export const NavText = styled.span<{ isActive: boolean }>`
   font-weight: 700;
   font-size: ${scale(10)}px;
   color: ${({ isActive }) => (isActive ? theme.colors.primary : theme.colors.primary100)};
+
+  transition: color 0.3s ease;
 `;
