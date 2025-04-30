@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { NavItemWrapper, IconWrapper, NavText } from './NavBarStyle';
 
 interface NavBarItemProps {
@@ -19,13 +19,19 @@ export default function NavBarItem({
   onClick,
 }: NavBarItemProps) {
   return (
-    <Link to={to} style={{ textDecoration: 'none' }}>
+    <NavLink
+    to={to}
+    style={{ textDecoration: 'none' }}
+    // 접근성 속성 : 스크린 리더 사용자에게 현재 페이지 정보를 제공
+      aria-label={`${alt} 메뉴로 이동`}
+      alt-current={isActive ? 'page' : undefined}
+    >
       <NavItemWrapper isActive={isActive} onClick={onClick}>
         <IconWrapper isActive={isActive}>
           <img src={isActive ? activeIcon : inactiveIcon} alt={alt} width={20} height={20} />
         </IconWrapper>
         <NavText isActive={isActive}>{alt}</NavText>
       </NavItemWrapper>
-    </Link>
+    </NavLink>
   );
 }
