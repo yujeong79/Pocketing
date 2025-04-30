@@ -7,6 +7,7 @@ import ProfilePage from '../pages/profile/ProfilePage';
 import SellPage from '../pages/sell/SellPage';
 import SplashScreen from '@/pages/onboarding/SplashPage';
 import SignInPage from '@/pages/onboarding/SignInPage';
+import Layout from '@/components/layout/Layout';
 
 const router = createBrowserRouter([
   {
@@ -18,24 +19,30 @@ const router = createBrowserRouter([
     element: <SignInPage />,
   },
   {
-    path: '/main',
-    element: <MainPage />,
-  },
-  {
-    path: '/map',
-    element: <MapPage />,
-  },
-  {
-    path: '/message',
-    element: <MessagePage />,
-  },
-  {
-    path: '/profile',
-    element: <ProfilePage />,
-  },
-  {
-    path: '/sell',
-    element: <SellPage />,
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        path: 'main',
+        element: <MainPage />,
+      },
+      {
+        path: 'map',
+        element: <MapPage />,
+      },
+      {
+        path: 'message',
+        element: <MessagePage />,
+      },
+      {
+        path: 'profile',
+        element: <ProfilePage />,
+      },
+      {
+        path: 'sell',
+        element: <SellPage />,
+      },
+    ],
   },
 ]);
 
