@@ -29,6 +29,12 @@ import CameraIcon from '@/assets/icons/camera.svg';
 import SearchIcon from '@/assets/icons/search.svg';
 import CompleteIcon from '@/assets/icons/complete.svg';
 
+// main
+import PlusIcon from '@/assets/icons/plus.svg';
+import FilterIcon from '@/assets/icons/filter-active.svg';
+import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
+import RefreshIcon from '@/assets/icons/refresh.svg';
+
 export {
   //Header
   Logo2d,
@@ -57,4 +63,9 @@ export {
   CameraIcon,
   SearchIcon,
   CompleteIcon,
+  //main
+  PlusIcon,
+  FilterIcon,
+  InactiveFilterIcon,
+  RefreshIcon,
 };
