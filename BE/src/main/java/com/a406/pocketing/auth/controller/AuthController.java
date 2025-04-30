@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NICKNAME_DUPLICATE;
+import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHECK_NICKNAME_SUCCESS;
 import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.SIGNUP_SUCCESS;
 
 @Slf4j
@@ -49,6 +51,14 @@ public class AuthController {
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
 
         return ApiResponse.onSuccess(loginResponseDto);
+    }
+
+    @GetMapping("/check/nickname")
+    public ApiResponse<?> checkNickname(@RequestParam("nickname") String nickname) {
+        if(!authService.checkNickname(nickname)) {
+            return ApiResponse.onFailure(USER_NICKNAME_DUPLICATE.getCode(), USER_NICKNAME_DUPLICATE.getMessage(), null);
+        }
+        return ApiResponse.of(CHECK_NICKNAME_SUCCESS, null);
     }
 
     /**
