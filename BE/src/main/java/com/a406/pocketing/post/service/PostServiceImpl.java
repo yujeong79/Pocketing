@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -24,34 +27,42 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public PostRegisterResponseDto registerPost(Long userId, PostRegisterRequestDto requestDto) {
+    public List<PostRegisterResponseDto> registerPost(Long userId,  List<PostRegisterRequestDto> requestDtos) {
 
-        if (requestDto.getCardId() == null) {
-            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
-        }
-        if (requestDto.getPostImageUrl() == null || requestDto.getPostImageUrl().isEmpty()) {
-            throw new GeneralException(ErrorStatus.IMAGE_URL_REQUIRED);
-        }
-        if (requestDto.getPrice() == null) {
-            throw new GeneralException(ErrorStatus.PRICE_REQUIRED);
+        if (requestDtos == null || requestDtos.isEmpty()) {
+            throw new GeneralException(ErrorStatus.POST_ID_REQUIRED);
         }
 
         User sellerUser = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        PhotoCard photoCard = photoCardRepository.findById(requestDto.getCardId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND));
+        List<PostRegisterResponseDto> responseList = new ArrayList<>();
 
-        Post post = Post.builder()
-                .seller(sellerUser)
-                .photoCard(photoCard)
-                .price(requestDto.getPrice())
-                .postImageUrl(requestDto.getPostImageUrl())
-                .build();
+        for (PostRegisterRequestDto requestDto : requestDtos){
+            if (requestDto.getCardId() == null) {
+                throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+            }
+            if (requestDto.getPostImageUrl() == null || requestDto.getPostImageUrl().isEmpty()) {
+                throw new GeneralException(ErrorStatus.IMAGE_URL_REQUIRED);
+            }
+            if (requestDto.getPrice() == null) {
+                throw new GeneralException(ErrorStatus.PRICE_REQUIRED);
+            }
 
-        Post savedPost = postRepository.save(post);
+            PhotoCard photoCard = photoCardRepository.findById(requestDto.getCardId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND));
 
-        return new PostRegisterResponseDto(savedPost.getPostId());
+            Post post = Post.builder()
+                    .seller(sellerUser)
+                    .photoCard(photoCard)
+                    .price(requestDto.getPrice())
+                    .postImageUrl(requestDto.getPostImageUrl())
+                    .build();
+
+            Post savedPost = postRepository.save(post);
+            responseList.add(new PostRegisterResponseDto(savedPost.getPostId()));
+        }
+        return responseList;
     }
 }
 

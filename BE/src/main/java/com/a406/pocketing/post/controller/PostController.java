@@ -13,17 +13,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/market/posts")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping
-    public ApiResponse<PostRegisterResponseDto> registerPost(@RequestBody PostRegisterRequestDto requestDto) {
+    public ApiResponse<List<PostRegisterResponseDto>> registerPost(@RequestBody List<PostRegisterRequestDto> requestDtos) {
         Long userId = getCurrentUserId();
-        return ApiResponse.of(SuccessStatus.POST_REGISTER_SUCCESS, postService.registerPost(userId, requestDto));
+        return ApiResponse.of(SuccessStatus.POST_REGISTER_SUCCESS, postService.registerPost(userId, requestDtos));
     }
 
     private Long getCurrentUserId() {
