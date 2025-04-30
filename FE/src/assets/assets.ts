@@ -26,6 +26,9 @@ import XLoginButton from '@/assets/icons/x-login.svg';
 import ErrorIcon from '@/assets/icons/error.svg';
 import SuccessIcon from '@/assets/icons/success.svg';
 import CameraIcon from '@/assets/icons/camera.svg';
+import SearchIcon from '@/assets/icons/search.svg';
+import CompleteIcon from '@/assets/icons/complete.svg';
+
 export {
   //Header
   Logo2d,
@@ -52,4 +55,6 @@ export {
   ErrorIcon,
   SuccessIcon,
   CameraIcon,
+  SearchIcon,
+  CompleteIcon,
 };
