@@ -29,22 +29,12 @@ public class MemberController {
     }
 
     /**
-     * 관심 멤버 조회
-     */
-    @GetMapping("/like")
-    public ApiResponse<List<MemberResponseDto>> getLikedMembers(@RequestParam(required = false) Long groupId) {
-        Long userId = getCurrentUserId();
-        List<MemberResponseDto> members = memberService.getLikedMembersByGroupId(userId, groupId);
-        return ApiResponse.of(SuccessStatus.MEMBER_LIKE_LIST_FETCH_SUCCESS, members);
-    }
-
-    /**
      * 현재 로그인한 사용자의 userId 가져오기
      */
     private Long getCurrentUserId() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userDetails.getId();
+        return userDetails.getUserId();
     }
 }

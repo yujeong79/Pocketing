@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Entity
 @Getter
@@ -13,9 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "users") // PostgreSQL에서 user는 예약어
 public class User {
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     private String oauthProvider;
     private String providerId;
@@ -25,5 +27,11 @@ public class User {
     private String address;
     private String bank;
     private String account;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserLikedGroup> likedGroups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserLikedMember> likedMembers = new ArrayList<>();
 
 }

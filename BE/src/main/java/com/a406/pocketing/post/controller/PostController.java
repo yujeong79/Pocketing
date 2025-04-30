@@ -30,7 +30,7 @@ public class PostController {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userDetails.getId();
+        return userDetails.getUserId();
     }
 }
 

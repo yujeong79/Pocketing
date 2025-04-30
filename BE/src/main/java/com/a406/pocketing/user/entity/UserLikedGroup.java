@@ -1,15 +1,16 @@
-package com.a406.pocketing.group.entity;
+package com.a406.pocketing.user.entity;
 
+import com.a406.pocketing.group.entity.Group;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Slf4j
 @Table(
         name = "user_liked_group",
         uniqueConstraints = {
@@ -21,9 +22,11 @@ public class UserLikedGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long likedGroupId;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private Long groupId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "group_id")
+    private Group group;
 }

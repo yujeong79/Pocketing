@@ -6,6 +6,4 @@ import java.util.List;
 
 public interface MemberService {
     List<MemberResponseDto> getMembersByGroupId(Long userId, Long groupId);
-
-    List<MemberResponseDto> getLikedMembersByGroupId(Long userId, Long groupId);
 }

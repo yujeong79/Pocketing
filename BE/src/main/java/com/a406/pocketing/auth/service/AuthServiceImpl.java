@@ -7,6 +7,7 @@ import com.a406.pocketing.auth.jwt.JwtProvider;
 import com.a406.pocketing.auth.jwt.JwtTokenDto;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
+import com.a406.pocketing.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private final UserService userService;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
@@ -24,8 +26,10 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> userOpt = userRepository.findByOauthProviderAndProviderId(oauthUserDto.getOauthProvider(), oauthUserDto.getProviderId());
 
         if (userOpt.isPresent()) {
-            JwtTokenDto jwtTokenDto = jwtProvider.generateToken(userOpt.get().getId());
-            return LoginResponseDto.ofExistingUser(userOpt.get(), jwtTokenDto);
+            LoginResponseDto loginResponseDto = LoginResponseDto.ofExistingUser(userOpt.get()); // 유저 ResponseDto
+            JwtTokenDto jwtTokenDto = jwtProvider.generateToken(userOpt.get().getUserId()); // 토큰 발급
+            loginResponseDto.setAccessToken(jwtTokenDto.getAccessToken()); // ResponseDto에 토큰 set
+            return loginResponseDto;
         } else {
             return LoginResponseDto.ofNewUser(oauthUserDto.getOauthProvider(), oauthUserDto.getProviderId());
         }
@@ -33,17 +37,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto signup(SignupRequestDto signupRequestDto) {
-        User user = User.builder()
-                .oauthProvider(signupRequestDto.getOauthProvider())
-                .providerId(signupRequestDto.getProviderId())
-                .nickname(signupRequestDto.getNickname())
-                .profileImageUrl(signupRequestDto.getProfileImageUrl())
-                .build();
-
-        userRepository.save(user);
-
-        JwtTokenDto jwtTokenDto = jwtProvider.generateToken(user.getId());
-        return LoginResponseDto.ofExistingUser(user, jwtTokenDto);
+        LoginResponseDto loginResponseDto = userService.signup(signupRequestDto); // 유저 ResponseDto
+        JwtTokenDto jwtTokenDto = jwtProvider.generateToken(loginResponseDto.getUserId()); // 토큰 발급
+        loginResponseDto.setAccessToken(jwtTokenDto.getAccessToken()); // ResponseDto에 토큰 set
+        return loginResponseDto;
     }
 
 }
