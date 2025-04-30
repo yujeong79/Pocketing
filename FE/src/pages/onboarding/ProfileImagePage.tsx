@@ -27,6 +27,8 @@ const ProfileImagePage = () => {
         <S.ImageContainer>
           <S.ImageLabel>
             <S.ImageInput type="file" accept="image/*" onChange={handleImageUpload} />
+
+            {/* 이미지 크기 조절이 가능하게 구현 */}
             <S.Image>
               {selectedImage ? (
                 <S.UploadedImage src={selectedImage} alt="프로필 이미지" />
@@ -37,7 +39,7 @@ const ProfileImagePage = () => {
           </S.ImageLabel>
         </S.ImageContainer>
       </S.ItemContainer>
-      <Button text="다음" onClick={() => navigate('/signup/profileimage')} />
+      <Button text="다음" onClick={() => navigate('/group')} />
     </S.PageContainer>
   );
 };
