@@ -12,12 +12,12 @@ import java.util.List;
 @Getter
 public class CustomUserDetails implements UserDetails {
 
-    private final Long id;
+    private final Long userId;
     private final String nickname;
     private final String profileImageUrl;
 
     public CustomUserDetails(UserResponseDto user) {
-        this.id = user.getId();
+        this.userId = user.getUserId();
         this.nickname = user.getNickname();
         this.profileImageUrl = user.getProfileImageUrl();
     }

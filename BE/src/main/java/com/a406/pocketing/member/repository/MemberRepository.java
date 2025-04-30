@@ -4,11 +4,12 @@ import com.a406.pocketing.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    boolean existsByGroupId(Long groupId);
 
+    Optional<Member> findByMemberId(Long memberId);
+    boolean existsByGroupId(Long groupId);
     List<Member> findByGroupId(Long groupId);
 
-    List<Member> findByGroupIdAndMemberIdIn(Long groupId, List<Long> memberIds);
 }

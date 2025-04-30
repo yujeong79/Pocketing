@@ -29,22 +29,12 @@ public class GroupController {
     }
 
     /**
-     * 관심 그룹 조회
-     */
-    @GetMapping("/like")
-    public ApiResponse< List<GroupResponseDto>> getLikedGroups() {
-        Long userId = getCurrentUserId();
-        List<GroupResponseDto> likedGroups = groupService.getLikedGroups(userId);
-        return ApiResponse.of(SuccessStatus.GROUP_LIKE_LIST_FETCH_SUCCESS, likedGroups);
-    }
-
-    /**
      * 현재 로그인한 사용자의 userId 가져오기
      */
     private Long getCurrentUserId() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userDetails.getId();
+        return userDetails.getUserId();
     }
 }

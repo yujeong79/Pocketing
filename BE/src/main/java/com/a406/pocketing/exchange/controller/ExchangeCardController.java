@@ -32,7 +32,7 @@ public class ExchangeCardController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody ExchangeCardRequestDto requestDto
             ) {
-        Long userId = userDetails.getId();
+        Long userId = userDetails.getUserId();
         ExchangeCardResponseDto responseDto = exchangeCardService.registerExchangeCard(userId, requestDto);
 
         return ApiResponse.of(SuccessStatus.EXCHANGE_CARD_REGISTER_SUCCESS, responseDto);

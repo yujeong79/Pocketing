@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UserResponseDto {
-    private Long id;
+    private Long userId;
     private String nickname;
     private String profileImageUrl;
 
     public static UserResponseDto of(User user) {
         return UserResponseDto.builder()
-                .id(user.getId())
+                .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
