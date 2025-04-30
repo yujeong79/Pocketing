@@ -1,7 +1,12 @@
-import * as S from './style';
+import Header from '@/components/common/Header.tsx';
 
 const MainPage = () => {
-  return <S.MainPageContainer>메인 페이지</S.MainPageContainer>;
+  return (
+    <>
+      <Header type="detail" />
+      메인 페이지
+    </>
+  );
 };
 
 export default MainPage;
