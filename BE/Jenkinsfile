@@ -5,25 +5,7 @@ pipeline {
         skipDefaultCheckout(false)
     }
 
-    environment {
-        BRANCH_NAME = "${env.GIT_BRANCH ?: env.CHANGE_TARGET ?: ''}"
-    }
-
     stages {
-        stage('Validate Branch') {
-            steps {
-                script {
-                    if (!BRANCH_NAME.endsWith('develop-BE')) {
-                        echo "⛔ 브랜치 '${BRANCH_NAME}'은 develop-BE가 아니므로 빌드를 중단합니다."
-                        currentBuild.result = 'SUCCESS'
-                        error("STOP: Not develop-BE")
-                    } else {
-                        echo "✅ 브랜치 '${BRANCH_NAME}'에서 빌드를 계속합니다."
-                    }
-                }
-            }
-        }
-
         stage('Copy Config') {
             steps {
                 sh '''
