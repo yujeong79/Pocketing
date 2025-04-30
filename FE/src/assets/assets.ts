@@ -26,6 +26,13 @@ import XLoginButton from '@/assets/icons/x-login.svg';
 import ErrorIcon from '@/assets/icons/error.svg';
 import SuccessIcon from '@/assets/icons/success.svg';
 import CameraIcon from '@/assets/icons/camera.svg';
+
+// main
+import PlusIcon from '@/assets/icons/plus.svg';
+import FilterIcon from '@/assets/icons/filter-active.svg';
+import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
+import RefreshIcon from '@/assets/icons/refresh.svg';
+
 export {
   //Header
   Logo2d,
@@ -52,4 +59,9 @@ export {
   ErrorIcon,
   SuccessIcon,
   CameraIcon,
+  //main
+  PlusIcon,
+  FilterIcon,
+  InactiveFilterIcon,
+  RefreshIcon,
 };
