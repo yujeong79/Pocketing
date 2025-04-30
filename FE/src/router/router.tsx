@@ -1,5 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+import NicknamePage from '@/pages/onboarding/NicknamePage';
+import ProfileImagePage from '@/pages/onboarding/ProfileImagePage';
+
 import MainPage from '../pages/main/MainPage';
 import MapPage from '../pages/map/MapPage';
 import MessagePage from '../pages/message/MessagePage';
@@ -18,6 +21,20 @@ const router = createBrowserRouter([
     path: '/signin',
     element: <SignInPage />,
   },
+  {
+    path: '/signup',
+    children: [
+      {
+        path: 'nickname',
+        element: <NicknamePage />,
+      },
+      {
+        path: 'profileimage',
+        element: <ProfileImagePage />,
+      },
+    ],
+  },
+
   {
     path: '/',
     element: <Layout />,

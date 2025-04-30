@@ -22,6 +22,10 @@ import TextLogo from '@/assets/icons/pocketing-text-large.svg';
 import KakaoLoginButton from '@/assets/icons/kakao-login.svg';
 import XLoginButton from '@/assets/icons/x-login.svg';
 
+// onboarding
+import ErrorIcon from '@/assets/icons/error.svg';
+import SuccessIcon from '@/assets/icons/success.svg';
+import CameraIcon from '@/assets/icons/camera.svg';
 export {
   //Header
   Logo2d,
@@ -44,4 +48,8 @@ export {
   TextLogo,
   KakaoLoginButton,
   XLoginButton,
+  // onboarding
+  ErrorIcon,
+  SuccessIcon,
+  CameraIcon,
 };
