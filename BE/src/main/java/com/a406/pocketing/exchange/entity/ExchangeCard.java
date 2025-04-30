@@ -56,4 +56,16 @@ public class ExchangeCard {
 
     @Column(name = "status", nullable = false)
     private String status = "ACTIVE";
+
+
+    // ExchangeCard.java
+    public void updateCardInfo(Group group, Album album, Member member, String description, String exchangeImageUrl) {
+        this.group = group;
+        this.album = album;
+        this.member = member;
+        this.description = description;
+        this.exchangeImageUrl = exchangeImageUrl;
+    }
+
 }
+
