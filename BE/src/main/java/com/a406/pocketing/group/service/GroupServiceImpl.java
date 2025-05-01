@@ -31,9 +31,9 @@ public class GroupServiceImpl implements GroupService {
         List<Group> groups = groupRepository.findAll();
 
         // 좋아요 누른 그룹 ID를 Set으로 변환
-        List<Long> likedGroupIds = user.getLikedGroups().stream()
+        Set<Long> likedGroupIds = user.getLikedGroups().stream()
                 .map(userLikedGroup -> userLikedGroup.getGroup().getGroupId())
-                .toList();
+                .collect(Collectors.toSet());
 
         // 그룹 목록을 DTO로 변환하면서 isInterest 추가
         return groups.stream()

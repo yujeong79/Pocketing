@@ -2,6 +2,8 @@ package com.a406.pocketing.member.repository;
 
 import com.a406.pocketing.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +11,21 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByMemberId(Long memberId);
-    boolean existsByGroupId(Long groupId);
-    List<Member> findByGroupId(Long groupId);
+    boolean existsByGroupGroupId(Long groupId);
 
-    Optional<Member> findByGroupIdAndName(Long groupId, String name);
+    @Query("""
+    SELECT m FROM Member m
+    JOIN FETCH m.group g
+    WHERE m.name = :memberName AND (g.nameKo = :groupName OR g.nameEn = :groupName)
+""")
+    Optional<Member> findByGroupNameAndMemberName(@Param("groupName") String groupName, @Param("memberName") String memberName);
+
+    @Query("""
+    SELECT m FROM Member m
+    JOIN FETCH m.group
+    WHERE m.group.groupId = :groupId
+""")
+    List<Member> findWithGroupByGroupId(@Param("groupId") Long groupId);
+
+
 }
