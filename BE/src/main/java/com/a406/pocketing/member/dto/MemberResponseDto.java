@@ -11,4 +11,6 @@ public class MemberResponseDto {
     private Long memberId;
     private String name;
     private boolean isInterest;
+    private String groupNameKo;
+    private String groupNameEn;
 }

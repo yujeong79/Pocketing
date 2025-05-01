@@ -11,7 +11,7 @@ public interface UserLikedMemberRepository extends JpaRepository<UserLikedMember
     @Query("""
         SELECT ulm FROM UserLikedMember ulm
         JOIN ulm.member m
-        WHERE ulm.user = :user AND m.groupId = :groupId
+        WHERE ulm.user = :user AND m.group.groupId = :groupId
     """)
     List<UserLikedMember> findByUserAndMemberGroup(User user, Long groupId);
 }

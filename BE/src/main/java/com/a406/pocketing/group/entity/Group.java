@@ -1,10 +1,14 @@
 package com.a406.pocketing.group.entity;
 
+import com.a406.pocketing.album.entity.Album;
+import com.a406.pocketing.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,4 +28,10 @@ public class Group {
 
     @Column(nullable = false)
     private String groupImageUrl;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<Member> members;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<Album> albums;
 }

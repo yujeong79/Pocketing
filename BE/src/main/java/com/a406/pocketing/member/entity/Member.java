@@ -1,5 +1,6 @@
 package com.a406.pocketing.member.entity;
 
+import com.a406.pocketing.group.entity.Group;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,8 +25,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false)
-    private Long groupId;  // FK처럼 사용 (group 테이블의 group_id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", insertable = false, updatable = false)
+    private Group group;
 
     @Column(nullable = false, length = 50)
     private String name;

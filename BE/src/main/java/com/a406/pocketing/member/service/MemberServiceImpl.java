@@ -34,31 +34,27 @@ public class MemberServiceImpl implements MemberService {
             throw new GeneralException(ErrorStatus.GROUP_NAME_REQUIRED);
         }
 
-        boolean groupExists = memberRepository.existsByGroupId(groupId);
+        boolean groupExists = memberRepository.existsByGroupGroupId(groupId);
         if (!groupExists) {
             throw new GeneralException(ErrorStatus.GROUP_NOT_FOUND);
         }
 
-        // 그룹에 속한 모든 멤버 조회
-        List<Member> members = memberRepository.findByGroupId(groupId);
+        List<Member> members = memberRepository.findWithGroupByGroupId(groupId);
 
-        if (members.isEmpty()) {
-            throw new GeneralException(ErrorStatus.MEMBER_NOT_FOUND);
-        }
-
-        // 유저가 좋아요한 멤버들 ID 조회
         List<Long> likedMemberIds = user.getLikedMembers().stream()
                 .map(userLikedMember -> userLikedMember.getMember().getMemberId())
                 .toList();
 
-        // 멤버 정보 + 좋아요 여부 매핑
         return members.stream()
                 .map(m -> new MemberResponseDto(
                         m.getMemberId(),
                         m.getName(),
-                        likedMemberIds.contains(m.getMemberId())  // 좋아요 여부
+                        likedMemberIds.contains(m.getMemberId()),
+                        m.getGroup().getNameKo(),
+                        m.getGroup().getNameEn()
                 ))
                 .collect(Collectors.toList());
+
     }
 
 }

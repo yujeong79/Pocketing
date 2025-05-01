@@ -18,15 +18,16 @@ public class MatchingServiceImpl implements MatchingService {
     private final MemberRepository memberRepository;
 
     public AiResolveResponseDto resolve(String groupName, String memberName) {
-        // 그룹 매칭
-        Group group = groupRepository.findByNameEn(groupName)
-                .or(() -> groupRepository.findByNameKo(groupName))
-                .orElseThrow(() -> new GeneralException(ErrorStatus.GROUP_NOT_FOUND));
-
-        // 멤버 매칭 (groupId 내에서)
-        Member member = memberRepository.findByGroupIdAndName(group.getGroupId(), memberName)
+        Member member = memberRepository.findByGroupNameAndMemberName(groupName, memberName)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+        Group group = member.getGroup();
 
-        return new AiResolveResponseDto(group.getGroupId(), group.getNameKo(), member.getMemberId(), member.getName());
+        return new AiResolveResponseDto(
+                group.getGroupId(),
+                group.getNameKo(),
+                member.getMemberId(),
+                member.getName()
+        );
     }
+
 }
