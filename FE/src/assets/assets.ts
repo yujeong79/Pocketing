@@ -34,6 +34,7 @@ import PlusIcon from '@/assets/icons/plus.svg';
 import FilterIcon from '@/assets/icons/filter-active.svg';
 import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
+import CloseIcon from '@/assets/icons/close.svg';
 
 export {
   //Header
@@ -68,4 +69,5 @@ export {
   FilterIcon,
   InactiveFilterIcon,
   RefreshIcon,
+  CloseIcon,
 };
