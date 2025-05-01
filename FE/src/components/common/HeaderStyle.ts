@@ -3,7 +3,7 @@ import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
 import scale from '@/utils/scale';
 
-export const HeaderContainer = styled.header`
+export const HeaderContainer = styled.header<{ $hasBorder: boolean }>`
   background-color: white;
   z-index: 100;
   padding: ${scale(18)}px ${scale(16)}px;
@@ -12,7 +12,7 @@ export const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
   position: relative;
-  border-bottom: 1px solid ${colors.gray100};
+  border-bottom: ${({ $hasBorder }) => ($hasBorder ? `1px solid ${colors.gray100}` : 'none')};
 `;
 
 export const LeftSection = styled.div`
