@@ -7,6 +7,10 @@ import Button from '@/components/common/Button';
 import { artistList } from '@/mocks/artist';
 import MemberItem from './components/MemberItem';
 
+// TODO:렌더링이 느린 감이 있음. 최적화 필요
+// 아이콘이 커서 클릭시 늘어나는 느낌이 있음. 조정 필요
+// 멤버를 선택했을 시 그룹에 효과를 넣어야함
+
 const MyMemberPage = () => {
   const navigate = useNavigate();
   const { groupId } = useParams();
@@ -40,7 +44,7 @@ const MyMemberPage = () => {
           ))}
         </S.MemberListContainer>
       </S.ItemContainer>
-      <Button text="다음" onClick={() => navigate('/signup/complete')} />
+      <Button text="다음" onClick={() => navigate('/group')} />
     </S.PageContainer>
   );
 };
