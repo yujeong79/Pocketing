@@ -5,9 +5,10 @@ interface HeaderProps {
   type: 'artist' | 'main' | 'detail' | 'post' | 'chat' | 'exchange' | 'profile' | 'sell';
   onBack?: () => void;
   title?: string;
+  hasBorder?: boolean;
 }
 
-export default function Header({ type, onBack, title }: HeaderProps) {
+export default function Header({ type, onBack, title, hasBorder = true }: HeaderProps) {
   const renderLeftContent = () => {
     switch (type) {
       case 'artist':
@@ -16,6 +17,11 @@ export default function Header({ type, onBack, title }: HeaderProps) {
       case 'chat':
       case 'exchange':
       case 'profile':
+        return (
+          <S.LeftSection>
+            <img src={LogoText} alt="포켓팅 로고" />
+          </S.LeftSection>
+        );
       case 'sell':
         return (
           <S.LeftSection>
@@ -58,18 +64,13 @@ export default function Header({ type, onBack, title }: HeaderProps) {
           </S.RightSection>
         );
       case 'profile':
-        return (
-          <S.RightSection>
-            <img src={ModifyIcon} alt="수정" />
-          </S.RightSection>
-        );
       default:
         return null;
     }
   };
 
   return (
-    <S.HeaderContainer>
+    <S.HeaderContainer $hasBorder={hasBorder}>
       {renderLeftContent()}
       {renderRightContent()}
     </S.HeaderContainer>
