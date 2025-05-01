@@ -1,10 +1,19 @@
 package com.a406.pocketing.photocard.entity;
 
+import com.a406.pocketing.album.entity.Album;
+import com.a406.pocketing.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import org.hibernate.type.SqlTypes;
+
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -18,15 +27,18 @@ import lombok.extern.slf4j.Slf4j;
         }
 )
 public class PhotoCard {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardId;
 
-    @Column(nullable = false)
-    private Long albumId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id", nullable = false)
+    private Album album;
 
-    @Column(nullable = false)
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(nullable = false)
     private String cardImageUrl;
@@ -39,4 +51,10 @@ public class PhotoCard {
 
     @Column(nullable = false)
     private Integer maxPrice;
+
+    @ElementCollection
+    @CollectionTable(name = "photo_card_tags", joinColumns = @JoinColumn(name = "card_id"))
+    @Column(name = "tag")
+    private List<String> tags;
+
 }
