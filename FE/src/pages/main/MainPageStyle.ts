@@ -5,19 +5,23 @@ import scale from '@/utils/scale';
 
 export const MainContainer = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  padding-bottom: ${scale(72)}px;
 `;
 
 export const SelectedMemberText = styled.div`
   ${FontStyles.headingSmall};
-  margin-top: ${scale(12)}px;
-  padding-left: ${scale(16)}px;
-  width: 100%;
   text-align: left;
+  display: flex;
+  align-items: center;
 
   span {
     color: ${colors.primary};
   }
+`;
+
+export const FilterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${scale(12)}px ${scale(16)}px 0;
 `;
