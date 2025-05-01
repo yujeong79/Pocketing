@@ -35,6 +35,14 @@ import FilterIcon from '@/assets/icons/filter-active.svg';
 import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
 import CloseIcon from '@/assets/icons/close.svg';
+import VerifyIcon from '@/assets/icons/verify.svg';
+import BracketIcon from '@/assets/icons/bracket.svg';
+
+// mocks
+import Winter1 from '@/assets/icons/winter1.svg';
+import Winter2 from '@/assets/icons/winter2.svg';
+import Winter3 from '@/assets/icons/winter3.svg';
+import Winter4 from '@/assets/icons/winter4.svg';
 
 export {
   //Header
@@ -70,4 +78,11 @@ export {
   InactiveFilterIcon,
   RefreshIcon,
   CloseIcon,
+  VerifyIcon,
+  BracketIcon,
+  // mocks
+  Winter1,
+  Winter2,
+  Winter3,
+  Winter4,
 };
