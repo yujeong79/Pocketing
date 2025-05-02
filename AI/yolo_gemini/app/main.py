@@ -3,6 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import detect
+from app.common.custom_exception import CustomException
+from app.common.exception_handler import custom_exception_handler
 
 app = FastAPI()
 
@@ -16,6 +18,8 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello YOLO-Gemini!"}
+# YOLO 저장
+app.include_router(detect.router)
+
+# 예외 핸들러 등록
+app.add_exception_handler(CustomException, custom_exception_handler)
