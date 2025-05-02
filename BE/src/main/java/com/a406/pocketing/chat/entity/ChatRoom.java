@@ -1,11 +1,14 @@
 package com.a406.pocketing.chat.entity;
 
+import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.CHAT_ROOM_UNAUTHORIZED_USER;
 
 @Entity
 @Getter
@@ -56,4 +59,9 @@ public class ChatRoom {
         this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
     }
 
+    public User getReceiver(User sender) {
+        if(user1.getUserId().equals(sender.getUserId())) { return user2; }
+        if(user2.getUserId().equals(sender.getUserId())) { return user1; }
+        throw new BadRequestHandler(CHAT_ROOM_UNAUTHORIZED_USER);
+    }
 }

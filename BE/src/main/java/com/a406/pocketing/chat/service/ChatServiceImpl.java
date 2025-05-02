@@ -1,12 +1,13 @@
 package com.a406.pocketing.chat.service;
 
-import com.a406.pocketing.chat.dto.ChatMessageDto;
+import com.a406.pocketing.chat.dto.ChatMessageRequestDto;
+import com.a406.pocketing.chat.dto.ChatMessageResponseDto;
 import com.a406.pocketing.chat.dto.ChatRoomRequestDto;
 import com.a406.pocketing.chat.dto.ChatRoomResponseDto;
 import com.a406.pocketing.chat.entity.ChatMessage;
 import com.a406.pocketing.chat.entity.ChatRoom;
+import com.a406.pocketing.chat.repository.ChatMessageRepository;
 import com.a406.pocketing.chat.repository.ChatRoomRepository;
-import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
@@ -17,8 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.POST_NOT_FOUND;
-import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +27,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Override
     public ChatRoomResponseDto createOrGetRoom(ChatRoomRequestDto chatRoomRequestDto) {
@@ -60,9 +61,20 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void saveMessage(ChatMessageDto chatMessageDto) {
+    public ChatMessageResponseDto saveMessage(ChatMessageRequestDto chatMessageRequestDto, Long senderId) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(chatMessageRequestDto.getRoomId()).orElseThrow(() -> new BadRequestHandler(CHAT_ROOM_NOT_FOUND));
+        User sender = userRepository.findByUserId(senderId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+        User receiver = chatRoom.getReceiver(sender);
+
         ChatMessage chatMessage = ChatMessage.builder()
+                .chatRoom(chatRoom)
+                .sender(sender)
+                .messageContent(chatMessageRequestDto.getMessageContent())
                 .build();
+
+        chatMessageRepository.save(chatMessage);
+
+        return ChatMessageResponseDto.of(chatMessage, sender, receiver);
     }
 
 }

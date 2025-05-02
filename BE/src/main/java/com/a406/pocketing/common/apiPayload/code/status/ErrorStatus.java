@@ -76,6 +76,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXCHANGE_ACCEPT_REQUEST_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXCHANGE5002", "서버 오류로 요청을 수락하지 못했습니다."),
 	EXCHANGE_REJECT_REQUEST_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXCHANGE5003", "서버 오류로 요청을 거절하지 못했습니다."),
 
+	// 채팅 관련 에러
+	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4001", "존재하지 않는 채팅방입니다."),
+	CHAT_ROOM_UNAUTHORIZED_USER(HttpStatus.BAD_REQUEST, "CHAT4002", "이 채팅방의 참여자가 아닌 사용자입니다."),
+
 	// 샘플 에러
 	SAMPLE_ERROR(HttpStatus.BAD_REQUEST, "SAMPLE4001", "샘플 에러 입니다. 이런식으로 작성하면 됩니다.");
 

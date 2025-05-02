@@ -1,0 +1,30 @@
+package com.a406.pocketing.chat.dto;
+
+import com.a406.pocketing.chat.entity.ChatMessage;
+import com.a406.pocketing.user.entity.User;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Builder
+public class ChatMessageResponseDto {
+    private Long messageId;
+    private Long roomId;
+    private Long senderId;
+    private Long receiverId;
+    private String messageContent;
+    private LocalDateTime createdAt;
+
+    public static ChatMessageResponseDto of(ChatMessage chatMessage, User sender, User receiver) {
+        return ChatMessageResponseDto.builder()
+                .messageId(chatMessage.getMessageId())
+                .roomId(chatMessage.getChatRoom().getRoomId())
+                .senderId(sender.getUserId())
+                .receiverId(receiver.getUserId())
+                .messageContent(chatMessage.getMessageContent())
+                .createdAt(chatMessage.getCreatedAt())
+                .build();
+    }
+}

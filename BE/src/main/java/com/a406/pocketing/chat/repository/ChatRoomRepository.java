@@ -17,4 +17,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             AND c.user2 = :user2
     """)
     Optional<ChatRoom> findChatRoomByExactMatch(Long exchangeId, Post post, User user1, User user2);
+    Optional<ChatRoom> findByRoomId(Long roomId);
 }
