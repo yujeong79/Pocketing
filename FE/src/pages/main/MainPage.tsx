@@ -1,9 +1,9 @@
 import Header from '@/components/common/Header.tsx';
-import GroupImageList from './components/GroupImage/GroupImageList';
-import MemberChipList from './components/MemberChip/MemberChipList';
-import PhotoCardList from './components/PhotoCard/PhotoCardList';
-import AlbumChip from './components/AlbumChip/AlbumChip';
-import AlbumModal from './components/AlbumModal/AlbumModal';
+import GroupImageList from '@/pages/main/components/GroupImage/GroupImageList';
+import MemberChipList from '@/pages/main/components/MemberChip/MemberChipList';
+import PhotoCardList from '@/pages/main/components/PhotoCardList';
+import AlbumChip from '@/pages/main/components/Album/AlbumChip';
+import AlbumModal from '@/pages/main/components/Album/AlbumModal';
 import { artistList } from '@/mocks/artist';
 import { photocardListMock } from '@/mocks/photocard-list';
 import { useState, useMemo } from 'react';

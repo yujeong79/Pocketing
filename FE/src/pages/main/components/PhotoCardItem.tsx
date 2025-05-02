@@ -3,7 +3,7 @@ import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
 import scale from '@/utils/scale';
 import { useState } from 'react';
-import SellerListModal from '../SellerList/SellerListModal';
+import SellerListModal from '@/pages/main/components/SellerList/SellerListModal';
 
 interface PhotoCardItemProps {
   cardId: number;
