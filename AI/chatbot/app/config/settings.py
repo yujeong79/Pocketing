@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
+    CACHE_SECRET_KEY: str = "poketingjjangjjanghahahahaha"
 
     LLM_MODEL: str
     LLM_TEMPERATURE: float
