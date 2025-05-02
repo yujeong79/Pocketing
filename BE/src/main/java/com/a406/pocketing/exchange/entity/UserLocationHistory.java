@@ -39,7 +39,7 @@ public class UserLocationHistory {
     private double longitude;
 
     @Column(columnDefinition = "GEOGRAPHY(Point, 4326", nullable = false)
-    private Point locaiton;
+    private Point location;
 
     @Column(nullable = false)
     private int range;
