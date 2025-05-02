@@ -28,18 +28,14 @@ export const BackButton = styled.button`
 `;
 
 export const MainGuideText = styled.div`
-  ${FontStyles.headingMedium}
+  ${FontStyles.headingMedium};
   color: ${colors.white};
   margin-top: ${scale(88)}px;
   text-align: center;
 
-  p {
+  span {
     color: ${colors.primary};
     display: inline;
-  }
-
-  span {
-    display: block;
   }
 `;
 
@@ -73,5 +69,40 @@ export const DetailGuideText = styled.p`
 
   span {
     display: block;
+    margin-bottom: ${scale(4)}px;
+  }
+`;
+
+export const CheckIcon = styled.img`
+  width: ${scale(12)}px;
+  height: ${scale(12)}px;
+  margin-right: ${scale(4)}px;
+  vertical-align: middle;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: ${scale(16)}px;
+  margin-top: ${scale(76)}px;
+`;
+
+export const ActionButton = styled.button<{ variant: 'album' | 'camera' }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${scale(126)}px;
+  height: ${scale(44)}px;
+  border: none;
+  border-radius: ${scale(10)}px;
+
+  background-color: ${({ variant }) => (variant === 'album' ? colors.primary50 : colors.primary)};
+  color: ${({ variant }) => (variant === 'album' ? colors.primary : colors.white)};
+
+  ${FontStyles.headingSmall};
+
+  img {
+    width: ${scale(22)}px;
+    height: ${scale(19)}px;
+    margin-right: ${scale(8)}px;
   }
 `;
