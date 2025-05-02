@@ -1,58 +1,32 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import SlideUpModal from '@/components/common/SlideUpModal';
+import Header from '@/components/common/Header';
+import * as S from './ProfileStyle';
+import { RightArrowIcon, DefaultProfileImage } from '@/assets/assets';
+import { myInfo } from '@/mocks/myInfo';
 
 const ProfilePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)}>모달 열기</button>
-
-      <SlideUpModal header="모달 제목" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2>모달 내용</h2>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-        <p>여기에 원하는 내용을 넣으세요</p>
-      </SlideUpModal>
+      <Header type="profile" hasBorder={false} />
+      <S.PageContainer>
+        <S.ProfileContainer>
+          <S.ProfileImage src={myInfo.profileImageUrl ?? DefaultProfileImage} alt="프로필 이미지" />
+          <S.ProfileInfoContainer>
+            <S.NameContainer>
+              <S.Name>{myInfo.nickname}</S.Name>
+              <S.NameAdd>님</S.NameAdd>
+            </S.NameContainer>
+            <S.ProfileEditButton
+              src={RightArrowIcon}
+              alt="프로필 수정"
+              onClick={() => navigate('/profileDetail')}
+            />
+          </S.ProfileInfoContainer>
+        </S.ProfileContainer>
+      </S.PageContainer>
     </>
   );
 };

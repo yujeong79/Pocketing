@@ -9,11 +9,13 @@ import CompletePage from '@/pages/onboarding/CompletePage';
 import MainPage from '../pages/main/MainPage';
 import MapPage from '../pages/map/MapPage';
 import MessagePage from '../pages/message/MessagePage';
-import ProfilePage from '../pages/profile/ProfilePage';
 import SellPage from '../pages/sell/SellPage';
 import SplashScreen from '@/pages/onboarding/SplashPage';
 import SignInPage from '@/pages/onboarding/SignInPage';
 import Layout from '@/components/layout/Layout';
+
+import ProfilePage from '../pages/profile/ProfilePage';
+import ProfileDetailPage from '../pages/profile/ProfileDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -67,6 +69,10 @@ const router = createBrowserRouter([
         element: <SellPage />,
       },
     ],
+  },
+  {
+    path: 'profileDetail',
+    element: <ProfileDetailPage />,
   },
   {
     path: 'group',

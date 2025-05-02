@@ -48,6 +48,12 @@ import CheckIcon from '@/assets/icons/check.svg';
 import AlbumIcon from '@/assets/icons/album.svg';
 import CameraIcon2 from '@/assets/icons/camera-2.svg';
 
+// profile
+import DefaultProfileImage from '@/assets/images/default-profile.png';
+import RightArrowIcon from '@/assets/icons/right-arrow.svg';
+import AddressIcon from '@/assets/icons/address.svg';
+import AccountIcon from '@/assets/icons/account.svg';
+
 // mocks
 import Winter1 from '@/assets/icons/winter1.svg';
 import Winter2 from '@/assets/icons/winter2.svg';
@@ -99,6 +105,11 @@ export {
   CheckIcon,
   AlbumIcon,
   CameraIcon2,
+  // profile
+  DefaultProfileImage,
+  RightArrowIcon,
+  AddressIcon,
+  AccountIcon,
   // mocks
   Winter1,
   Winter2,

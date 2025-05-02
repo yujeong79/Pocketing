@@ -78,11 +78,9 @@ export const ImageLogo = styled.img`
   height: ${scale(24)}px;
 `;
 
-export const ModifyButton = styled(ActionButton)`
-  svg {
-    width: ${scale(24)}px;
-    height: ${scale(24)}px;
-  }
+export const ModifyButton = styled.img`
+  width: ${scale(20)}px;
+  height: ${scale(20)}px;
 `;
 
 export const LeaveButton = styled(ActionButton)`
