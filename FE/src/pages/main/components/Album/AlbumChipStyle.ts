@@ -1,25 +1,8 @@
 import styled from 'styled-components';
 import { colors } from '@/styles/theme';
 import scale from '@/utils/scale';
-import { FilterIcon, InactiveFilterIcon } from '@/assets/assets';
 
-interface AlbumChipProps {
-  isSelected?: boolean;
-  onClick?: () => void;
-}
-
-const AlbumChip = ({ isSelected = false, onClick }: AlbumChipProps) => {
-  return (
-    <StyledAlbumChip $isSelected={isSelected} onClick={onClick}>
-      <ChipText $isSelected={isSelected}>앨범</ChipText>
-      <IconWrapper>
-        <img src={isSelected ? FilterIcon : InactiveFilterIcon} alt="필터" />
-      </IconWrapper>
-    </StyledAlbumChip>
-  );
-};
-
-const StyledAlbumChip = styled.button<{ $isSelected: boolean }>`
+export const StyledAlbumChip = styled.button<{ $isSelected: boolean }>`
   height: ${scale(18)}px;
   padding: 0 ${scale(8)}px;
   border-radius: ${scale(4)}px;
@@ -34,13 +17,13 @@ const StyledAlbumChip = styled.button<{ $isSelected: boolean }>`
   transition: all 0.2s ease;
 `;
 
-const ChipText = styled.span<{ $isSelected: boolean }>`
+export const ChipText = styled.span<{ $isSelected: boolean }>`
   font-size: ${scale(12)}px;
   font-weight: 500;
   color: ${({ $isSelected }) => ($isSelected ? 'white' : colors.gray800)};
 `;
 
-const IconWrapper = styled.div`
+export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
 
@@ -49,5 +32,3 @@ const IconWrapper = styled.div`
     height: ${scale(12)}px;
   }
 `;
-
-export default AlbumChip;

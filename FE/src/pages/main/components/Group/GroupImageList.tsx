@@ -7,10 +7,30 @@ interface GroupImageListProps {
   groups: Artist[];
   selectedId: number | null;
   onSelectGroup: (id: number | null) => void;
+  selectedAllGroup: number | null;
+  onSelectAllGroup: (id: number | null) => void;
 }
 
-const GroupImageList = ({ groups, selectedId, onSelectGroup }: GroupImageListProps) => {
+const GroupImageList = ({
+  groups,
+  selectedId,
+  onSelectGroup,
+  selectedAllGroup,
+  onSelectAllGroup,
+}: GroupImageListProps) => {
   const navigate = useNavigate();
+
+  const handleAllGroupClick = () => {
+    if (selectedAllGroup) {
+      onSelectAllGroup(null);
+    } else {
+      navigate('/group/select');
+    }
+  };
+
+  const selectedGroup = selectedAllGroup
+    ? groups.find((group) => group.groupId === selectedAllGroup)
+    : null;
 
   return (
     <StyledGroupImageWrapper>
@@ -18,7 +38,9 @@ const GroupImageList = ({ groups, selectedId, onSelectGroup }: GroupImageListPro
         <GroupImage
           type="all"
           isSelected={selectedId === null}
-          onClick={() => onSelectGroup(null)}
+          onClick={handleAllGroupClick}
+          selectedAllGroup={selectedAllGroup}
+          groupImageUrl={selectedGroup?.image}
         />
         {groups.map((group) => (
           <GroupImage
@@ -26,10 +48,13 @@ const GroupImageList = ({ groups, selectedId, onSelectGroup }: GroupImageListPro
             type="interest"
             groupImageUrl={group.image}
             isSelected={selectedId === group.groupId}
-            onClick={() => onSelectGroup(group.groupId)}
+            onClick={() => {
+              onSelectGroup(group.groupId);
+              onSelectAllGroup(null);
+            }}
           />
         ))}
-        <GroupImage type="add" onClick={() => navigate('/group/add')} />
+        <GroupImage type="add" onClick={() => navigate('/group')} />
       </StyledGroupImageList>
     </StyledGroupImageWrapper>
   );

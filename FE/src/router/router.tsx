@@ -5,6 +5,7 @@ import ProfileImagePage from '@/pages/onboarding/ProfileImagePage';
 import MyGroupPage from '@/pages/onboarding/MyGroupPage';
 import MyMemberPage from '@/pages/onboarding/MyMemberPage';
 import CompletePage from '@/pages/onboarding/CompletePage';
+import GroupSelectPage from '@/pages/main/components/Group/GroupSelectPage';
 
 import MainPage from '../pages/main/MainPage';
 import MapPage from '../pages/map/MapPage';
@@ -44,7 +45,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
   {
     path: '/',
     element: <Layout />,
@@ -84,28 +84,12 @@ const router = createBrowserRouter([
     element: <MyGroupPage />,
   },
   {
+    path: 'group/select',
+    element: <GroupSelectPage onGroupSelect={() => {}} selectedAllGroup={null} />,
+  },
+  {
     path: 'member/:groupId',
     element: <MyMemberPage />,
-  },
-  {
-    path: 'main',
-    element: <MainPage />,
-  },
-  {
-    path: 'map',
-    element: <MapPage />,
-  },
-  {
-    path: 'message',
-    element: <MessagePage />,
-  },
-  {
-    path: 'profile',
-    element: <ProfilePage />,
-  },
-  {
-    path: 'sell',
-    element: <SellPage />,
   },
 ]);
 

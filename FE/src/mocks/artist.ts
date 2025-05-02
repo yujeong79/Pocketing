@@ -29,7 +29,7 @@ export const artistList: Artist[] = [
     groupId: 5,
     name: '빅뱅',
     image: 'https://pocketing-bucket.s3.ap-northeast-2.amazonaws.com/BIGBANG_logo.jpg',
-    members: ['태양', '탑', '대성', '승리', '지드래곤'],
+    members: ['태양', '대성', '지드래곤'],
   },
   {
     groupId: 6,
