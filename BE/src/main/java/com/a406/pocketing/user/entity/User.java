@@ -11,9 +11,17 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // Builder
-@Table(name = "users") // PostgreSQL에서 user는 예약어
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"oauth_provider", "provider_id"})
+        },
+        indexes = {
+                @Index(columnList = "provider_id, oauth_provider")
+        }
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

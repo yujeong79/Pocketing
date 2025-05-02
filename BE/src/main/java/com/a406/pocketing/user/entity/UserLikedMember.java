@@ -14,11 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @Table(
         name = "user_liked_member",
         indexes = {
-                @Index(name = "idx_user_liked_member_user_id", columnList = "user_id"),
-                @Index(name = "idx_user_liked_member_member_id", columnList = "member_id")
+                @Index(columnList = "user_id, member_id")
         },
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_user_liked_member_user_id_member_id", columnNames = {"user_id", "member_id"})
+                @UniqueConstraint(columnNames = {"user_id", "member_id"})
         }
 )
 public class UserLikedMember {
@@ -27,10 +26,14 @@ public class UserLikedMember {
     private Long likedMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE"
+    ))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(
+            foreignKeyDefinition = "FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE"
+    ))
     private Member member;
 }

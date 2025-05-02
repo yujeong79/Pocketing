@@ -63,8 +63,10 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_NOTIFICATION_LIST_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2009", "알림 목록 조회 성공"),
 	EXCHANGE_DUPLICATE_CHECK_SUCCESS(HttpStatus.OK, "EXCHANGE2010", "중복 요청 여부 확인 성공"),
 	EXCHANGE_REQUEST_LIMIT_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2011", "요청 가능 수량 조회 성공"),
-	EXCHANGE_NOTIFICATION_READ_SUCCESS(HttpStatus.OK, "EXCHANGE2012", "알림 읽음 처리 성공");
+	EXCHANGE_NOTIFICATION_READ_SUCCESS(HttpStatus.OK, "EXCHANGE2012", "알림 읽음 처리 성공"),
 
+	// 채팅 관련 응답
+	CHAT_ROOM_FETCH_SUCCESS(HttpStatus.OK, "CHAT2001", "채팅방 조회 성공입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
