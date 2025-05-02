@@ -14,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @Table(
         name = "user_liked_group",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"userId", "groupId"})
+                @UniqueConstraint(columnNames = {"user_id", "group_id"})
+        },
+        indexes = {
+                @Index(columnList = "user_id, group_id")
         }
 )
 public class UserLikedGroup {
@@ -23,10 +26,14 @@ public class UserLikedGroup {
     private Long likedGroupId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE"
+    ))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", foreignKey = @ForeignKey(
+            foreignKeyDefinition = "FOREIGN KEY (group_id) REFERENCES groups(group_id) ON DELETE CASCADE"
+    ))
     private Group group;
 }
