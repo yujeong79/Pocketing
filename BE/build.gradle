@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-spatial:6.2.7.Final' // GeEOGRAPHY
     implementation 'org.locationtech.jts:jts-core:1.18.2' // Point 타입
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     compileOnly 'org.projectlombok:lombok'

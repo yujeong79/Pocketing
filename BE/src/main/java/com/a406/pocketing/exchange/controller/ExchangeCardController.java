@@ -25,7 +25,7 @@ public class ExchangeCardController {
      * 현장 교환 카드 등록 API
      * @param userDetails
      * @param requestDto
-     * @return
+     * @return 성공 메시지, responseDto
      */
     @PostMapping("card/register")
     public ApiResponse<?> registerExchangeCard(

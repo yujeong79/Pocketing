@@ -1,5 +1,6 @@
 package com.a406.pocketing.exchange.entity;
 
+import com.a406.pocketing.exchange.dto.ExchangeLocationRequestDto;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,7 @@ public class UserLocation {
     @Column(nullable = false)
     private Double longitude;
 
-    @Column(columnDefinition = "GEOGRAPHY(Point, 4326)")
+    @Column(columnDefinition = "GEOGRAPHY(Point, 4326)", nullable = false)
     private Point location;
 
     @Column(nullable = false)
@@ -51,4 +52,14 @@ public class UserLocation {
 
     @Column(name = "location_name")
     private String locationName;
+
+    public void updateLocation(ExchangeLocationRequestDto requestDto, Point point, LocalDateTime now){
+        this.latitude = requestDto.getLatitude();
+        this.longitude = requestDto.getLongitude();
+        this.range = requestDto.getRange();
+        this.isAutoDetected = requestDto.getIsAutoDetected();
+        this.locationName = requestDto.getLocationName();
+        this.location = point;
+        this.updatedAt = now;
+    }
 }
