@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FontStyles } from '@/constants/fonts';
 import { colors } from '@/styles/theme';
-import scale from '@/utils/scale';
+import scale, { scaleLetterSpacing } from '@/utils/scale';
 
 export const Container = styled.div`
   padding: ${scale(16)}px ${scale(16)}px 0;
@@ -66,8 +66,11 @@ export const ButtonColumn = styled.div`
 `;
 
 export const BaseButton = styled.button`
-  ${FontStyles.bodyMedium};
-  font-weight: 600;
+  font-family: 'Pretendard-SemiBold';
+  font-size: ${scale(16)}px;
+  line-height: ${scale(24)}px;
+  letter-spacing: ${scaleLetterSpacing(16, -4)}px;
+
   width: ${scale(124)}px;
   background-color: white;
   border-radius: ${scale(10)}px;
@@ -104,14 +107,17 @@ export const SmallButton = styled(BaseButton)`
 `;
 
 export const Banner = styled.div`
+  display: flex;
+  align-items: center;
   width: calc(100% + ${scale(32)}px);
-  height: ${scale(64)}px;
-  margin: ${scale(24)}px -${scale(16)}px 0;
+  gap: ${scale(24)}px;
+  margin: ${scale(16)}px -${scale(16)}px 0;
+  padding: ${scale(8)}px ${scale(16)}px;
   background-color: ${colors.primary50};
   display: flex;
   align-items: center;
-  gap: ${scale(24)}px;
-  padding: ${scale(8)}px ${scale(24)}px;
+  justify-content: center;
+  height: ${scale(56)}px;
 `;
 
 export const BannerIcon = styled.img`
