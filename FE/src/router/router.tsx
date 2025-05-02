@@ -22,6 +22,7 @@ import MapPage from '@/pages/map/MapPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
 import ProfileEditPage from '@/pages/profile/ProfileEditPage';
+import GuidePage from '@/pages/sell/GuidePage';
 import MySaleListPage from '@/pages/profile/MySaleListPage';
 import MyCompleteListPage from '@/pages/profile/MyCompleteListPage';
 
@@ -81,6 +82,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: 'guide', element: <GuidePage /> },
   {
     path: 'profileDetail',
     element: <ProfileDetailPage />,

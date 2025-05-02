@@ -1,6 +1,7 @@
 import Header from '@/components/common/Header';
 import { PhotocardIcon, PencilIcon, SpeakerIcon, WalletIcon, SiteIcon } from '@/assets/assets';
 import * as S from './SellPageStyle';
+import { useNavigate } from 'react-router-dom';
 
 const SellPage = () => {
   const nickname = '닉네임'; // 실제로는 사용자 정보에서 가져올 예정
@@ -18,6 +19,7 @@ const SellPage = () => {
     console.log('내 판매글 버튼 클릭');
   };
 
+  const navigate = useNavigate();
   return (
     <>
       <Header type="main" />
@@ -35,7 +37,7 @@ const SellPage = () => {
         <S.BackgroundSection>
           <S.ButtonContainer>
             <S.RegisterButton onClick={handleRegisterClick}>
-              <img src={PencilIcon} alt="판매등록" />
+              <img src={PencilIcon} alt="판매등록" onClick={() => navigate('/guide')} />
               판매등록
             </S.RegisterButton>
             <S.ButtonColumn>
