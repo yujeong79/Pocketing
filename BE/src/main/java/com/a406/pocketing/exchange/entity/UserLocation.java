@@ -41,9 +41,6 @@ public class UserLocation {
     @Column(columnDefinition = "GEOGRAPHY(Point, 4326)", nullable = false)
     private Point location;
 
-    @Column(nullable = false)
-    private Integer range;
-
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
@@ -56,7 +53,6 @@ public class UserLocation {
     public void updateLocation(ExchangeLocationRequestDto requestDto, Point point, LocalDateTime now){
         this.latitude = requestDto.getLatitude();
         this.longitude = requestDto.getLongitude();
-        this.range = requestDto.getRange();
         this.isAutoDetected = requestDto.getIsAutoDetected();
         this.locationName = requestDto.getLocationName();
         this.location = point;

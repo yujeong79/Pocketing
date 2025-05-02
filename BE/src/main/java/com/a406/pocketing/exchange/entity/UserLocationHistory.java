@@ -44,9 +44,6 @@ public class UserLocationHistory {
     @Column(columnDefinition = "GEOGRAPHY(Point, 4326)", nullable = false)
     private Point location;
 
-    @Column(nullable = false)
-    private int range;
-
     @Column(name = "recorded_at", nullable = false)
     private LocalDateTime recordedAt;
 

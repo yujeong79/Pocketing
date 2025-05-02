@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 public class ExchangeLocationResponseDto {
     private Double latitude;
     private Double longitude;
-    private Integer range;
 }

@@ -47,7 +47,6 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
     public ExchangeLocationResponseDto registerLocation(Long userId, ExchangeLocationRequestDto requestDto) {
         Double latitude = requestDto.getLatitude();
         Double longitude = requestDto.getLongitude();
-        Integer range = requestDto.getRange();
         Boolean isAutoDetected = requestDto.getIsAutoDetected();
         String locationName = requestDto.getLocationName();
 
@@ -69,7 +68,6 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
                     .latitude(latitude)
                     .longitude(longitude)
                     .location(point)
-                    .range(range)
                     .isAutoDetected(isAutoDetected)
                     .locationName(locationName)
                     .updatedAt(now)
@@ -87,7 +85,6 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
                 .latitude(latitude)
                 .longitude(longitude)
                 .location(point)
-                .range(range)
                 .isAutoDetected(isAutoDetected)
                 .locationName(locationName)
                 .recordedAt(now)
@@ -104,7 +101,6 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
         return ExchangeLocationResponseDto.builder()
                 .latitude(latitude)
                 .longitude(longitude)
-                .range(range)
                 .build();
     }
 }

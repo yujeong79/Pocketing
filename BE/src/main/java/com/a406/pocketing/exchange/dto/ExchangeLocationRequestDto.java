@@ -17,11 +17,6 @@ public class ExchangeLocationRequestDto {
     @NotNull(message = "경도는 필수입니다.")
     private Double longitude;
 
-    @NotNull(message = "위치 범위는 필수입니다.")
-    @Min(value = 100)
-    @Max(value = 500)
-    private Integer range;
-
     @NotNull(message = "isAutoDetected 값은 필수입니다.")
     private Boolean isAutoDetected;
 
