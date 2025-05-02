@@ -1,16 +1,22 @@
+import { useNavigate } from 'react-router-dom';
+
 import * as S from './MySaleListStyle';
 import { MySaleIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { mySale } from '@/mocks/myInfo';
 import Divider from './Divider';
 
 const MySaleList = () => {
+  const navigate = useNavigate();
   const filteredList = mySale.filter((item) => item.sale).slice(0, 2);
 
   return (
     <S.MySaleListContainer>
       <S.MySaleTitleContainer>
-        <S.MySaleTitleIcon src={MySaleIcon} alt="판매 목록" />
-        <S.MySaleTitle>내 판매 목록</S.MySaleTitle>
+        <S.MySaleTitleLeftContainer>
+          <S.MySaleTitleIcon src={MySaleIcon} alt="판매 목록" />
+          <S.MySaleTitle>내 판매 목록</S.MySaleTitle>
+        </S.MySaleTitleLeftContainer>
+        <S.MySaleDetailButton onClick={() => navigate('/mySaleList')}>더보기</S.MySaleDetailButton>
       </S.MySaleTitleContainer>
       {filteredList.map((mySale, index) =>
         mySale.sale ? (
