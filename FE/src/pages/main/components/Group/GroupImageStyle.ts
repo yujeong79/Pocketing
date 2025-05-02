@@ -20,6 +20,7 @@ export const StyledGroupImage = styled.button<StyledGroupImageProps>`
   align-items: center;
   justify-content: center;
   transition: border-color 0.2s ease;
+  padding: 0;
 
   img {
     width: ${scale(14)}px;
@@ -40,7 +41,8 @@ export const StyledGroupImage = styled.button<StyledGroupImageProps>`
     border-style: dashed;
   }
 
-  &[data-type='interest'] img {
+  &[data-type='interest'] img,
+  &[data-type='all'] img {
     width: 100%;
     height: 100%;
     object-fit: cover;
