@@ -1,5 +1,5 @@
 import Header from '@/components/common/Header.tsx';
-import GroupImageList from '@/pages/main/components/GroupImage/GroupImageList';
+import GroupImageList from '@/pages/main/components/Group/GroupImageList';
 import MemberChipList from '@/pages/main/components/MemberChip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
@@ -8,29 +8,42 @@ import { artistList } from '@/mocks/artist';
 import { photocardListMock } from '@/mocks/photocard-list';
 import { useState, useMemo } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
+import { useLocation } from 'react-router-dom';
 
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const location = useLocation();
+
+  // location.state에서 선택된 그룹 정보를 가져옴
+  useMemo(() => {
+    if (location.state?.selectedAllGroup) {
+      setSelectedAllGroup(location.state.selectedAllGroup);
+    }
+  }, [location.state]);
 
   const currentMembers = useMemo(() => {
-    if (selectedGroupId === null) {
+    if (selectedGroupId === null && selectedAllGroup === null) {
       return [];
     }
-    const selectedGroup = artistList.find((group) => group.groupId === selectedGroupId);
+    const groupId = selectedGroupId || selectedAllGroup;
+    const selectedGroup = artistList.find((group) => group.groupId === groupId);
     return selectedGroup ? selectedGroup.members : [];
-  }, [selectedGroupId]);
+  }, [selectedGroupId, selectedAllGroup]);
 
   const selectedGroup = useMemo(() => {
-    return artistList.find((group) => group.groupId === selectedGroupId);
-  }, [selectedGroupId]);
+    const groupId = selectedGroupId || selectedAllGroup;
+    return artistList.find((group) => group.groupId === groupId);
+  }, [selectedGroupId, selectedAllGroup]);
 
   const albums = useMemo(() => {
     const { content } = photocardListMock.result;
     const filteredContent = content.filter((card) => {
-      if (!selectedGroupId) return true;
+      const groupId = selectedGroupId || selectedAllGroup;
+      if (!groupId) return true;
       if (selectedMember) {
         return card.memberName === selectedMember;
       }
@@ -38,7 +51,7 @@ const MainPage = () => {
     });
 
     return [...new Set(filteredContent.map((card) => card.albumTitle))];
-  }, [selectedGroupId, selectedMember, selectedGroup]);
+  }, [selectedGroupId, selectedAllGroup, selectedMember, selectedGroup]);
 
   const handleAlbumSelect = (albumTitle: string | null) => {
     setSelectedAlbum(albumTitle);
@@ -56,9 +69,12 @@ const MainPage = () => {
             setSelectedGroupId(id);
             setSelectedMember(null);
             setSelectedAlbum(null);
+            setSelectedAllGroup(null);
           }}
+          selectedAllGroup={selectedAllGroup}
+          onSelectAllGroup={setSelectedAllGroup}
         />
-        {selectedGroupId && (
+        {(selectedGroupId || selectedAllGroup) && (
           <MemberChipList
             members={currentMembers}
             selectedMember={selectedMember}
@@ -85,7 +101,7 @@ const MainPage = () => {
           />
         </FilterContainer>
         <PhotoCardList
-          selectedGroupId={selectedGroupId}
+          selectedGroupId={selectedGroupId || selectedAllGroup}
           selectedMember={selectedMember}
           selectedAlbum={selectedAlbum}
         />
