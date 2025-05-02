@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.EXCHANGE_INVALID_LOCATION;
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
 
 @Slf4j
@@ -47,6 +48,13 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
     public ExchangeLocationResponseDto registerLocation(Long userId, ExchangeLocationRequestDto requestDto) {
         Double latitude = requestDto.getLatitude();
         Double longitude = requestDto.getLongitude();
+
+        if(latitude == null || longitude == null ||
+                latitude < -90 || latitude > 90 ||
+                longitude < -180 || longitude > 180){
+            throw new GeneralException(EXCHANGE_INVALID_LOCATION);
+        }
+
         Boolean isAutoDetected = requestDto.getIsAutoDetected();
         String locationName = requestDto.getLocationName();
 
@@ -74,10 +82,6 @@ public class ExchangeLocationServiceImpl implements ExchangeLocationService {
                     .build();
             userLocationRepository.save(location);
         }
-
-
-
-        // 최신 위치 저장
 
         // 이력 저장
         UserLocationHistory history = UserLocationHistory.builder()
