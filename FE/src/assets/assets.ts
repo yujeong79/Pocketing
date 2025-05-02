@@ -36,6 +36,12 @@ import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
 import CloseIcon from '@/assets/icons/close.svg';
 
+// profile
+import DefaultProfileImage from '@/assets/images/default-profile.png';
+import RightArrowIcon from '@/assets/icons/right-arrow.svg';
+import AddressIcon from '@/assets/icons/address.svg';
+import AccountIcon from '@/assets/icons/account.svg';
+
 export {
   //Header
   Logo2d,
@@ -70,4 +76,9 @@ export {
   InactiveFilterIcon,
   RefreshIcon,
   CloseIcon,
+  // profile
+  DefaultProfileImage,
+  RightArrowIcon,
+  AddressIcon,
+  AccountIcon,
 };

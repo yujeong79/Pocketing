@@ -2,7 +2,16 @@ import { BackIcon, LogoText, Logo2d, ModifyIcon } from '@/assets/assets';
 import * as S from './HeaderStyle.ts';
 
 interface HeaderProps {
-  type: 'artist' | 'main' | 'detail' | 'post' | 'chat' | 'exchange' | 'profile' | 'sell';
+  type:
+    | 'artist'
+    | 'main'
+    | 'detail'
+    | 'post'
+    | 'chat'
+    | 'exchange'
+    | 'profile'
+    | 'sell'
+    | 'profileDetail';
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
@@ -20,6 +29,14 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
         return (
           <S.LeftSection>
             <img src={LogoText} alt="포켓팅 로고" />
+          </S.LeftSection>
+        );
+      case 'profileDetail':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={onBack}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
           </S.LeftSection>
         );
       case 'sell':
@@ -64,6 +81,13 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
           </S.RightSection>
         );
       case 'profile':
+        return <S.RightSection></S.RightSection>;
+      case 'profileDetail':
+        return (
+          <S.RightSection>
+            <S.ModifyButton src={ModifyIcon} alt="수정" />
+          </S.RightSection>
+        );
       default:
         return null;
     }
