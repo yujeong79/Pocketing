@@ -22,6 +22,7 @@ import MapPage from '@/pages/map/MapPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
 import ProfileEditPage from '@/pages/profile/ProfileEditPage';
+import GuidePage from '@/pages/sell/GuidePage';
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: 'guide', element: <GuidePage /> },
   {
     path: 'profileDetail',
     element: <ProfileDetailPage />,
