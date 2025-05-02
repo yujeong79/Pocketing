@@ -1,7 +1,7 @@
 import Header from '@/components/common/Header.tsx';
 import GroupImageList from '@/pages/main/components/Group/GroupImageList';
-import MemberChipList from '@/pages/main/components/MemberChip/MemberChipList';
-import PhotoCardList from '@/pages/main/components/PhotoCardList';
+import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
+import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
 import { artistList } from '@/mocks/artist';

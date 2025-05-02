@@ -1,5 +1,6 @@
 import { VerifyIcon, BracketIcon } from '@/assets/assets';
 import * as S from './SellerListStyle';
+import { useNavigate } from 'react-router-dom';
 
 interface SellerListItemProps {
   postId: number;
@@ -16,8 +17,10 @@ const SellerListItem = ({
   price,
   postImageUrl,
 }: SellerListItemProps) => {
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    console.log(`${postId}번 거래 상세글로 이동`);
+    navigate(`/detail/${postId}`);
   };
 
   return (

@@ -21,7 +21,6 @@ export const SelectedMemberText = styled.div`
 
 export const FilterContainer = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: ${scale(12)}px ${scale(16)}px 0;
 `;
