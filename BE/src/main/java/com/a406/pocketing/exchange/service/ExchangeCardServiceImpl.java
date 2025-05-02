@@ -40,7 +40,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
      * 현장 교환 카드 등록 API
      * @param userId
      * @param requestDto
-     * @return
+     * @return responseDto
      */
     @Override
     @Transactional

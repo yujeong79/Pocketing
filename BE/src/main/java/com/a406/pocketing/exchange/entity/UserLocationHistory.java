@@ -1,5 +1,7 @@
 package com.a406.pocketing.exchange.entity;
 
+import com.a406.pocketing.exchange.dto.ExchangeLocationRequestDto;
+import com.a406.pocketing.exchange.dto.ExchangeLocationResponseDto;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Point;
 
 import java.awt.*;
 import java.time.LocalDateTime;
@@ -38,8 +41,8 @@ public class UserLocationHistory {
     @Column(nullable = false)
     private double longitude;
 
-    @Column(columnDefinition = "GEOGRAPHY(Point, 4326", nullable = false)
-    private Point locaiton;
+    @Column(columnDefinition = "GEOGRAPHY(Point, 4326)", nullable = false)
+    private Point location;
 
     @Column(nullable = false)
     private int range;
