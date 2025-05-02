@@ -47,6 +47,8 @@ import PhotocardIcon from '@/assets/icons/photocard.svg';
 import CheckIcon from '@/assets/icons/check.svg';
 import AlbumIcon from '@/assets/icons/album.svg';
 import CameraIcon2 from '@/assets/icons/camera-2.svg';
+import BackIcon2 from '@/assets/icons/back-white.svg';
+import SampleImage from '@/assets/icons/sample.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -108,6 +110,8 @@ export {
   CheckIcon,
   AlbumIcon,
   CameraIcon2,
+  BackIcon2,
+  SampleImage,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
