@@ -1,0 +1,56 @@
+import { Winter1, Winter2, Winter3, Winter4 } from '@/assets/assets';
+
+export const photocardListMock = {
+  isSuccess: true,
+  code: 'POST2002',
+  message: '판매글 목록 조회 성공',
+  result: {
+    content: [
+      {
+        postId: 1,
+        cardId: 101,
+        groupNameKo: '에스파',
+        groupNameEn: 'aespa',
+        groupImageUrl: 'https://cdn.pocketing.co.kr/images/aespa_logo.jpg',
+        memberName: '윈터',
+        albumTitle: 'MY WORLD MY WORLD MY WORLD MY WORLD MY WORLD',
+        postImageUrl: Winter1,
+        avgPrice: 15000,
+      },
+      {
+        postId: 2,
+        cardId: 102,
+        groupNameKo: '에스파',
+        groupNameEn: 'aespa',
+        groupImageUrl: 'https://cdn.pocketing.co.kr/images/aespa_logo.jpg',
+        memberName: '윈터',
+        albumTitle: 'Drama',
+        postImageUrl: Winter2,
+        avgPrice: 18000,
+      },
+      {
+        postId: 3,
+        cardId: 103,
+        groupNameKo: '에스파',
+        groupNameEn: 'aespa',
+        groupImageUrl: 'https://cdn.pocketing.co.kr/images/aespa_logo.jpg',
+        memberName: '윈터',
+        albumTitle: 'Girls',
+        postImageUrl: Winter3,
+        avgPrice: 16500,
+      },
+      {
+        postId: 4,
+        cardId: 104,
+        groupNameKo: '에스파',
+        groupNameEn: 'aespa',
+        groupImageUrl: 'https://cdn.pocketing.co.kr/images/aespa_logo.jpg',
+        memberName: '윈터',
+        albumTitle: 'Savage',
+        postImageUrl: Winter4,
+        avgPrice: 17500,
+      },
+    ],
+    hasNext: false,
+  },
+};

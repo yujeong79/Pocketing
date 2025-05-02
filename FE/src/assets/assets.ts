@@ -35,12 +35,30 @@ import FilterIcon from '@/assets/icons/filter-active.svg';
 import InactiveFilterIcon from '@/assets/icons/filter-inactive.svg';
 import RefreshIcon from '@/assets/icons/refresh.svg';
 import CloseIcon from '@/assets/icons/close.svg';
+import VerifyIcon from '@/assets/icons/verify.svg';
+import BracketIcon from '@/assets/icons/bracket.svg';
+
+// sell
+import WalletIcon from '@/assets/icons/wallet.svg';
+import PencilIcon from '@/assets/icons/pencil.svg';
+import SpeakerIcon from '@/assets/icons/speaker.svg';
+import SiteIcon from '@/assets/icons/site.svg';
+import PhotocardIcon from '@/assets/icons/photocard.svg';
+import CheckIcon from '@/assets/icons/check.svg';
+import AlbumIcon from '@/assets/icons/album.svg';
+import CameraIcon2 from '@/assets/icons/camera-2.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
 import RightArrowIcon from '@/assets/icons/right-arrow.svg';
 import AddressIcon from '@/assets/icons/address.svg';
 import AccountIcon from '@/assets/icons/account.svg';
+
+// mocks
+import Winter1 from '@/assets/icons/winter1.svg';
+import Winter2 from '@/assets/icons/winter2.svg';
+import Winter3 from '@/assets/icons/winter3.svg';
+import Winter4 from '@/assets/icons/winter4.svg';
 
 export {
   //Header
@@ -76,9 +94,25 @@ export {
   InactiveFilterIcon,
   RefreshIcon,
   CloseIcon,
+  VerifyIcon,
+  BracketIcon,
+  //sell
+  WalletIcon,
+  PencilIcon,
+  SpeakerIcon,
+  SiteIcon,
+  PhotocardIcon,
+  CheckIcon,
+  AlbumIcon,
+  CameraIcon2,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
   AddressIcon,
   AccountIcon,
+  // mocks
+  Winter1,
+  Winter2,
+  Winter3,
+  Winter4,
 };
