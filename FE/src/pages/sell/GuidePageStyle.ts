@@ -70,4 +70,8 @@ export const DetailGuideText = styled.p`
   color: ${colors.white};
   text-align: left;
   margin-top: ${scale(12)}px;
+
+  span {
+    display: block;
+  }
 `;

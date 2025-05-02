@@ -21,6 +21,11 @@ const GuidePage = () => {
         <span>최대 6장</span>까지 정확하게 인식돼요.
       </S.GuideText>
       <S.SampleImage src={SampleImage} alt="샘플 이미지" />
+      <S.DetailGuideText>
+        <span>장식 없이 원본 그대로</span>
+        <span>빛 번짐이 없는 상태에서</span>
+        <span>포카끼리 겹치지 않게</span>
+      </S.DetailGuideText>
     </S.GuideBackground>
   );
 };
