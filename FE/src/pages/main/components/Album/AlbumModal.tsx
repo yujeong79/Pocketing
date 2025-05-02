@@ -1,8 +1,5 @@
-import styled from 'styled-components';
-import { colors } from '@/styles/theme';
-import { FontStyles } from '@/constants/fonts';
-import scale from '@/utils/scale';
 import SlideUpModal from '@/components/common/SlideUpModal';
+import { AlbumList, AlbumItem } from './AlbumModalStyle';
 
 interface AlbumModalProps {
   isOpen: boolean;
@@ -30,25 +27,5 @@ const AlbumModal = ({ isOpen, onClose, onSelectAlbum, albums, selectedAlbum }: A
     </SlideUpModal>
   );
 };
-
-const AlbumList = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const AlbumItem = styled.div<{ $isSelected?: boolean }>`
-  ${FontStyles.bodyMedium};
-  color: ${({ $isSelected }) => ($isSelected ? colors.primary : colors.gray800)};
-  padding: ${scale(8)}px 0;
-  cursor: pointer;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${colors.gray100};
-  }
-`;
 
 export default AlbumModal;
