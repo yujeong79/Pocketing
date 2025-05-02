@@ -53,6 +53,9 @@ import DefaultProfileImage from '@/assets/images/default-profile.png';
 import RightArrowIcon from '@/assets/icons/right-arrow.svg';
 import AddressIcon from '@/assets/icons/address.svg';
 import AccountIcon from '@/assets/icons/account.svg';
+import MySaleIcon from '@/assets/icons/list.svg';
+import MySaleCompleteIcon from '@/assets/icons/list-check.svg';
+import CallIcon from '@/assets/icons/call.svg';
 
 // mocks
 import Winter1 from '@/assets/icons/winter1.svg';
@@ -110,6 +113,9 @@ export {
   RightArrowIcon,
   AddressIcon,
   AccountIcon,
+  MySaleIcon,
+  MySaleCompleteIcon,
+  CallIcon,
   // mocks
   Winter1,
   Winter2,
