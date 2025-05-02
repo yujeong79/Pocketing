@@ -23,6 +23,7 @@ import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
 import ProfileEditPage from '@/pages/profile/ProfileEditPage';
 import MySaleListPage from '@/pages/profile/MySaleListPage';
+import MyCompleteListPage from '@/pages/profile/MyCompleteListPage';
 
 const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
   {
     path: 'mySaleList',
     element: <MySaleListPage />,
+  },
+  {
+    path: 'myCompleteList',
+    element: <MyCompleteListPage />,
   },
   {
     path: 'group',

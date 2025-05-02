@@ -1,19 +1,26 @@
 import styled from 'styled-components';
-import { colors } from '@/styles/theme';
+
 import scale from '@/utils/scale';
+import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
+
+export const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const ContentContainer = styled.div`
+  padding: ${scale(16)}px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: ${scale(8)}px;
+`;
 
 export const RightArrowButton = styled.img`
   width: ${scale(6)}px;
   height: ${scale(12)}px;
-`;
-
-export const MyCompleteListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  gap: ${scale(12)}px;
 `;
 
 export const MyCompleteTitleContainer = styled.div`

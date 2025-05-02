@@ -1,19 +1,19 @@
-import * as S from './MySaleListStyle';
+import * as S from './MyCompleteListStyle';
 import Header from '@/components/common/Header';
 import { mySale } from '@/mocks/myInfo';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import Divider from './components/Divider';
 
-const MySaleListPage = () => {
-  const filteredList = mySale.filter((item) => item.sale);
+const MyCompleteListPage = () => {
+  const filteredList = mySale.filter((item) => !item.sale);
   return (
     <S.PageContainer>
-      <Header type="mySaleList" title="내 판매 목록" hasBorder={true} />
+      <Header type="mySaleList" title="판매 완료 목록" hasBorder={true} />
       <S.ContentContainer>
         {filteredList.map((mySale, index) => (
-          <S.MySaleItemContainer key={index}>
-            <S.MySaleItemDate>{mySale.date}</S.MySaleItemDate>
-            <S.MySaleItemInfoContainer>
+          <S.MyCompleteItemContainer key={index}>
+            <S.MyCompleteItemDate>{mySale.date}</S.MyCompleteItemDate>
+            <S.MyCompleteItemInfoContainer>
               <S.InfoAndButtonContainer>
                 <S.InfoContainer>
                   <S.CardImage src={mySale.image ?? DefaultProfileImage} alt="카드 이미지" />
@@ -52,20 +52,20 @@ const MySaleListPage = () => {
                 </S.InfoContainer>
                 <S.RightArrowButton src={RightArrowIcon} alt="판매 상세 페이지 이동" />
               </S.InfoAndButtonContainer>
-            </S.MySaleItemInfoContainer>
-            <S.MySaleItemPriceContainer>
-              <S.MySalePriceTitle>판매가</S.MySalePriceTitle>
-              <S.MySaleItemPriceText>
-                <S.MySaleItemPrice>{mySale.price}</S.MySaleItemPrice>
-                <S.MySaleItemPriceWon>원</S.MySaleItemPriceWon>
-              </S.MySaleItemPriceText>
+            </S.MyCompleteItemInfoContainer>
+            <S.MyCompleteItemPriceContainer>
+              <S.MyCompletePriceTitle>판매가</S.MyCompletePriceTitle>
+              <S.MyCompleteItemPriceText>
+                <S.MyCompleteItemPrice>{mySale.price}</S.MyCompleteItemPrice>
+                <S.MyCompleteItemPriceWon>원</S.MyCompleteItemPriceWon>
+              </S.MyCompleteItemPriceText>
               {index !== filteredList.length - 1 && <Divider />}
-            </S.MySaleItemPriceContainer>
-          </S.MySaleItemContainer>
+            </S.MyCompleteItemPriceContainer>
+          </S.MyCompleteItemContainer>
         ))}
       </S.ContentContainer>
     </S.PageContainer>
   );
 };
 
-export default MySaleListPage;
+export default MyCompleteListPage;
