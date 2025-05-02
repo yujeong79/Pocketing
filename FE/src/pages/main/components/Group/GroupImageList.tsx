@@ -28,6 +28,10 @@ const GroupImageList = ({
     }
   };
 
+  const selectedGroup = selectedAllGroup
+    ? groups.find((group) => group.groupId === selectedAllGroup)
+    : null;
+
   return (
     <StyledGroupImageWrapper>
       <StyledGroupImageList>
@@ -36,6 +40,7 @@ const GroupImageList = ({
           isSelected={selectedId === null}
           onClick={handleAllGroupClick}
           selectedAllGroup={selectedAllGroup}
+          groupImageUrl={selectedGroup?.image}
         />
         {groups.map((group) => (
           <GroupImage

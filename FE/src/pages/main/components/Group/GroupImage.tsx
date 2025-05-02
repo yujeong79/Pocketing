@@ -1,6 +1,5 @@
-import { PlusIcon } from '@/assets/assets';
-import { StyledGroupImage } from './GroupImageStyle';
-import { artistList } from '@/mocks/artist';
+import { PlusIcon, RefreshIcon } from '@/assets/assets';
+import { StyledGroupImage, RefreshIconWrapper, ImageContainer } from './GroupImageStyle';
 
 interface GroupImageProps {
   type: 'interest' | 'all' | 'add';
@@ -17,19 +16,29 @@ const GroupImage = ({
   isSelected = false,
   selectedAllGroup,
 }: GroupImageProps) => {
-  const selectedGroup = selectedAllGroup
-    ? artistList.find((group) => group.groupId === selectedAllGroup)
-    : null;
-
   return (
     <StyledGroupImage onClick={onClick} data-type={type} $isSelected={isSelected}>
-      {type === 'interest' && groupImageUrl && <img src={groupImageUrl} alt="그룹 이미지" />}
-      {type === 'all' &&
-        (selectedGroup ? (
-          <img src={selectedGroup.image} alt="선택된 그룹 이미지" />
-        ) : (
-          <span>전체</span>
-        ))}
+      {type === 'interest' && groupImageUrl && (
+        <ImageContainer>
+          <img src={groupImageUrl} alt="그룹 이미지" />
+        </ImageContainer>
+      )}
+      {type === 'all' && (
+        <>
+          {selectedAllGroup ? (
+            <>
+              <ImageContainer>
+                <img src={groupImageUrl} alt="선택된 그룹 이미지" />
+              </ImageContainer>
+              <RefreshIconWrapper>
+                <img src={RefreshIcon} alt="새로고침" />
+              </RefreshIconWrapper>
+            </>
+          ) : (
+            <span>전체</span>
+          )}
+        </>
+      )}
       {type === 'add' && <img src={PlusIcon} alt="추가" />}
     </StyledGroupImage>
   );

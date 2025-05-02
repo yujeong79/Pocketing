@@ -12,7 +12,6 @@ export const StyledGroupImage = styled.button<StyledGroupImageProps>`
   border-radius: ${scale(44)}px;
   border: ${scale(1.1)}px solid
     ${({ $isSelected }) => ($isSelected ? colors.primary : colors.gray400)};
-  overflow: hidden;
   cursor: pointer;
   background: none;
   margin: ${scale(8)}px 0;
@@ -21,6 +20,7 @@ export const StyledGroupImage = styled.button<StyledGroupImageProps>`
   justify-content: center;
   transition: border-color 0.2s ease;
   padding: 0;
+  position: relative;
 
   img {
     width: ${scale(14)}px;
@@ -49,6 +49,19 @@ export const StyledGroupImage = styled.button<StyledGroupImageProps>`
   }
 `;
 
+export const ImageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
 export const StyledGroupImageWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
@@ -68,4 +81,24 @@ export const StyledGroupImageList = styled.div`
   white-space: nowrap;
   width: fit-content;
   min-width: 100%;
+`;
+
+export const RefreshIconWrapper = styled.div`
+  position: absolute;
+  right: -${scale(2)}px;
+  bottom: -${scale(2)}px;
+  width: ${scale(16)}px;
+  height: ${scale(16)}px;
+  background-color: ${colors.white};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 ${scale(2)}px ${scale(4)}px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+
+  img {
+    width: ${scale(12)}px;
+    height: ${scale(12)}px;
+  }
 `;
