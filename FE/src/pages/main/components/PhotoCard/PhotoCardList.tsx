@@ -1,8 +1,7 @@
-import styled from 'styled-components';
 import PhotoCardItem from './PhotoCardItem';
-import scale from '@/utils/scale';
 import { photocardListMock } from '@/mocks/photocard-list';
 import { artistList } from '@/mocks/artist';
+import { ListContainer, ListWrapper } from './PhotoCardStyle';
 
 interface PhotoCardListProps {
   selectedGroupId: number | null;
@@ -40,7 +39,7 @@ const PhotoCardList = ({ selectedGroupId, selectedMember, selectedAlbum }: Photo
   });
 
   return (
-    <Container>
+    <ListContainer>
       <ListWrapper>
         {filteredContent.map((card) => (
           <PhotoCardItem
@@ -52,21 +51,8 @@ const PhotoCardList = ({ selectedGroupId, selectedMember, selectedAlbum }: Photo
           />
         ))}
       </ListWrapper>
-    </Container>
+    </ListContainer>
   );
 };
-
-const Container = styled.div`
-  width: 100%;
-  padding: ${scale(8)}px;
-  overflow-y: auto;
-`;
-
-const ListWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, ${scale(110)}px);
-  gap: ${scale(12)}px ${scale(32)}px;
-  justify-content: center;
-`;
 
 export default PhotoCardList;
