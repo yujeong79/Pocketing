@@ -1,23 +1,27 @@
 import { createBrowserRouter } from 'react-router-dom';
-
+//onboarding
+import SplashScreen from '@/pages/onboarding/SplashPage';
+import SignInPage from '@/pages/onboarding/SignInPage';
 import NicknamePage from '@/pages/onboarding/NicknamePage';
 import ProfileImagePage from '@/pages/onboarding/ProfileImagePage';
 import MyGroupPage from '@/pages/onboarding/MyGroupPage';
 import MyMemberPage from '@/pages/onboarding/MyMemberPage';
 import CompletePage from '@/pages/onboarding/CompletePage';
 import GroupSelectPage from '@/pages/main/components/Group/GroupSelectPage';
-
-import MainPage from '../pages/main/MainPage';
-import MapPage from '../pages/map/MapPage';
-import MessagePage from '../pages/message/MessagePage';
-import SellPage from '../pages/sell/SellPage';
-import SplashScreen from '@/pages/onboarding/SplashPage';
-import SignInPage from '@/pages/onboarding/SignInPage';
+//main
 import Layout from '@/components/layout/Layout';
-
-import ProfilePage from '../pages/profile/ProfilePage';
-import ProfileDetailPage from '../pages/profile/ProfileDetailPage';
-import ProfileEditPage from '../pages/profile/ProfileEditPage';
+import MainPage from '@/pages/main/MainPage';
+import DetailPage from '@/pages/main/DetailPage';
+//sell
+import SellPage from '@/pages/sell/SellPage';
+//message
+import MessagePage from '@/pages/message/MessagePage';
+//map
+import MapPage from '@/pages/map/MapPage';
+//profile
+import ProfilePage from '@/pages/profile/ProfilePage';
+import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
+import ProfileEditPage from '@/pages/profile/ProfileEditPage';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: 'main',
         element: <MainPage />,
+      },
+      {
+        path: 'detail/:postId',
+        element: <DetailPage />,
       },
       {
         path: 'map',
