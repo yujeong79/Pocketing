@@ -25,7 +25,6 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
   const renderLeftContent = () => {
     switch (type) {
       case 'artist':
-      case 'detail':
       case 'post':
       case 'chat':
       case 'exchange':
@@ -35,6 +34,7 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
             <img src={LogoText} alt="포켓팅 로고" />
           </S.LeftSection>
         );
+      case 'detail':
       case 'profileDetail':
         return (
           <S.LeftSection>
