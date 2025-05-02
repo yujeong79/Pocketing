@@ -1,5 +1,6 @@
 import { BackIcon, LogoText, Logo2d, ModifyIcon } from '@/assets/assets';
 import * as S from './HeaderStyle.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   type:
@@ -11,13 +12,16 @@ interface HeaderProps {
     | 'exchange'
     | 'profile'
     | 'sell'
-    | 'profileDetail';
+    | 'profileDetail'
+    | 'profileEdit';
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
 }
 
 export default function Header({ type, onBack, title, hasBorder = true }: HeaderProps) {
+  const navigate = useNavigate();
+
   const renderLeftContent = () => {
     switch (type) {
       case 'artist':
@@ -34,7 +38,15 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
       case 'profileDetail':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={onBack}>
+            <S.BackButton onClick={() => navigate(-1)}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
+          </S.LeftSection>
+        );
+      case 'profileEdit':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate(-1)}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
           </S.LeftSection>
@@ -85,9 +97,11 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
       case 'profileDetail':
         return (
           <S.RightSection>
-            <S.ModifyButton src={ModifyIcon} alt="수정" />
+            <S.ModifyButton src={ModifyIcon} alt="수정" onClick={() => navigate('/profileEdit')} />
           </S.RightSection>
         );
+      case 'profileEdit':
+        return <S.RightSection></S.RightSection>;
       default:
         return null;
     }

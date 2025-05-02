@@ -8,7 +8,6 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
 `;
 
 export const ContentsContainer = styled.div`
@@ -16,7 +15,6 @@ export const ContentsContainer = styled.div`
   flex-direction: column;
   flex: 1;
   padding: ${scale(24)}px ${scale(16)}px;
-  width: 100%;
 
   overflow-y: auto;
   -ms-overflow-style: none;

@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 import Header from '@/components/common/Header';
 import * as S from './ProfileDetailStyle';
 import { myInfo } from '@/mocks/myInfo';
@@ -7,11 +5,9 @@ import { AddressIcon, AccountIcon } from '@/assets/assets';
 import { DefaultProfileImage } from '@/assets/assets.ts';
 
 const ProfileDetailPage = () => {
-  const navigate = useNavigate();
-
   return (
     <S.PageContainer>
-      <Header type="profileDetail" hasBorder={true} onBack={() => navigate(-1)} />
+      <Header type="profileDetail" hasBorder={true} />
       <S.ContentsContainer>
         <S.ProfileInfoContainer>
           <S.ProfileImageContainer>

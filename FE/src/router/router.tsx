@@ -16,6 +16,7 @@ import Layout from '@/components/layout/Layout';
 
 import ProfilePage from '../pages/profile/ProfilePage';
 import ProfileDetailPage from '../pages/profile/ProfileDetailPage';
+import ProfileEditPage from '../pages/profile/ProfileEditPage';
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
   {
     path: 'profileDetail',
     element: <ProfileDetailPage />,
+  },
+  {
+    path: 'profileEdit',
+    element: <ProfileEditPage />,
   },
   {
     path: 'group',
