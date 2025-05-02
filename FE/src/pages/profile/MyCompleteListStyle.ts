@@ -1,66 +1,73 @@
 import styled from 'styled-components';
-import { colors } from '@/styles/theme';
+
 import scale from '@/utils/scale';
+import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
+
+export const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+export const ContentContainer = styled.div`
+  padding: ${scale(16)}px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: ${scale(8)}px;
+`;
 
 export const RightArrowButton = styled.img`
   width: ${scale(6)}px;
   height: ${scale(12)}px;
 `;
 
-export const MySaleListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  gap: ${scale(12)}px;
-`;
-
-export const MySaleTitleContainer = styled.div`
+export const MyCompleteTitleContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 `;
 
-export const MySaleTitleLeftContainer = styled.div`
+export const MyCompleteTitleLeftContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: ${scale(4)}px;
 `;
 
-export const MySaleTitleIcon = styled.img`
+export const MyCompleteTitleIcon = styled.img`
   width: ${scale(24)}px;
   height: ${scale(24)}px;
 `;
 
-export const MySaleTitle = styled.div`
+export const MyCompleteTitle = styled.div`
   ${FontStyles.headingSmall};
   color: ${colors.primary};
 `;
 
-export const MySaleDetailButton = styled.div`
+export const MyCompleteDetailButton = styled.div`
   ${FontStyles.captionSmall};
   color: ${colors.primary};
   font-weight: bold;
 `;
 
-export const MySaleItemContainer = styled.div`
+export const MyCompleteItemContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
   width: 100%;
 `;
 
-export const MySaleItemDate = styled.div`
+export const MyCompleteItemDate = styled.div`
   ${FontStyles.captionSmall};
   color: ${colors.gray500};
   padding-bottom: ${scale(8)}px;
   text-align: left;
 `;
 
-export const MySaleItemInfoContainer = styled.div`
+export const MyCompleteItemInfoContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,31 +183,31 @@ export const Tag = styled.div`
   color: ${colors.gray800};
 `;
 
-export const MySaleItemPriceContainer = styled.div`
+export const MyCompleteItemPriceContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
   gap: ${scale(4)}px;
 `;
 
-export const MySalePriceTitle = styled.div`
+export const MyCompletePriceTitle = styled.div`
   ${FontStyles.captionSmall};
   color: ${colors.gray800};
   text-align: right;
 `;
 
-export const MySaleItemPriceText = styled.div`
+export const MyCompleteItemPriceText = styled.div`
   display: flex;
   gap: ${scale(4)}px;
   justify-content: flex-end;
 `;
 
-export const MySaleItemPrice = styled.div`
+export const MyCompleteItemPrice = styled.div`
   ${FontStyles.bodySmall};
   color: ${colors.gray800};
 `;
 
-export const MySaleItemPriceWon = styled.div`
+export const MyCompleteItemPriceWon = styled.div`
   ${FontStyles.bodySmall};
   color: ${colors.gray800};
 `;
