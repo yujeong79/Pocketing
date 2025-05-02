@@ -19,7 +19,7 @@ app.add_middleware(
 
 
 # YOLO 저장
-app.include_router(detect.router)
+app.include_router(detect.router, prefix="/api")
 
 # 예외 핸들러 등록
 app.add_exception_handler(CustomException, custom_exception_handler)

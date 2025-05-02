@@ -1,3 +1,5 @@
+# app/common/exception_handler.py
+
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from app.common.custom_exception import CustomException
