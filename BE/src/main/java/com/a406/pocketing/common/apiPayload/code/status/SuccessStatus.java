@@ -66,7 +66,11 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_NOTIFICATION_READ_SUCCESS(HttpStatus.OK, "EXCHANGE2012", "알림 읽음 처리 성공"),
 
 	// 채팅 관련 응답
-	CHAT_ROOM_FETCH_SUCCESS(HttpStatus.OK, "CHAT2001", "채팅방 조회 성공입니다.");
+	CHAT_ROOM_FETCH_SUCCESS(HttpStatus.OK, "CHAT2001", "채팅방 조회 성공입니다."),
+	CHAT_ROOM_ENTER_SUCCESS(HttpStatus.OK, "CHAT2002", "채팅방 입장 성공입니다."),
+
+	// 샘플 응답
+	SAMPLE_SUCCESS(HttpStatus.OK, "SAMPLE2001", "샘플 성공 입니다. 이런식으로 작성하면 됩니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;

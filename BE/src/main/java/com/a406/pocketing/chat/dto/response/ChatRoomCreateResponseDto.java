@@ -1,4 +1,4 @@
-package com.a406.pocketing.chat.dto;
+package com.a406.pocketing.chat.dto.response;
 
 import com.a406.pocketing.chat.entity.ChatRoom;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatRoomResponseDto {
+public class ChatRoomCreateResponseDto {
     private Long roomId;
 
-    public static ChatRoomResponseDto of(ChatRoom chatRoom) {
-        return ChatRoomResponseDto.builder()
+    public static ChatRoomCreateResponseDto from(ChatRoom chatRoom) {
+        return ChatRoomCreateResponseDto.builder()
                 .roomId(chatRoom.getRoomId())
                 .build();
     }
