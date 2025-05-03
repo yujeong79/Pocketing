@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Table(
+        name = "chat_message",
+        indexes = {
+                @Index(columnList = "room_id")
+        }
+)
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +33,7 @@ public class ChatMessage {
             foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE"
     ))
     private User sender;
+
     private String messageContent;
     private LocalDateTime createdAt;
 }

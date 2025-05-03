@@ -53,6 +53,11 @@ public class AuthController {
         return ApiResponse.onSuccess(loginResponseDto);
     }
 
+    /**
+     * 닉네임 중복 확인
+     * @param nickname
+     * @return
+     */
     @GetMapping("/check/nickname")
     public ApiResponse<?> checkNickname(@RequestParam("nickname") String nickname) {
         if(!authService.checkNickname(nickname)) {
