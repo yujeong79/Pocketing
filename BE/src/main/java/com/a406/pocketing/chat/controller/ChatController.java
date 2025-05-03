@@ -72,6 +72,20 @@ public class ChatController {
     @GetMapping("/room/post")
     public ApiResponse<?> getAllPostChatRoom(@AuthenticationPrincipal CustomUserDetails loginUser) {
         List<ChatRoomListItemResponseDto> chatRoomList = chatService.getAllPostChatRoom(loginUser.getUserId());
+
+        return ApiResponse.of(CHAT_ROOM_FETCH_SUCCESS, chatRoomList);
+    }
+
+    /**
+     * 로그인 사용자의 교환하기 채팅방 전체 조회
+     * @param loginUser
+     * @return
+     */
+    @GetMapping("/room/exchange")
+    public ApiResponse<?> getAllExchangeChatRoom(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        List<ChatRoomListItemResponseDto> chatRoomList = chatService.getAllExchangeChatRoom(loginUser.getUserId());
+
+        return ApiResponse.of(CHAT_ROOM_FETCH_SUCCESS, chatRoomList);
     }
 
 }
