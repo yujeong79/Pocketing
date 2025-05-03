@@ -1,4 +1,4 @@
-package com.a406.pocketing.chat.dto;
+package com.a406.pocketing.chat.dto.response;
 
 import com.a406.pocketing.chat.entity.ChatMessage;
 import com.a406.pocketing.user.entity.User;
@@ -23,6 +23,16 @@ public class ChatMessageResponseDto {
                 .roomId(chatMessage.getChatRoom().getRoomId())
                 .senderId(sender.getUserId())
                 .receiverId(receiver.getUserId())
+                .messageContent(chatMessage.getMessageContent())
+                .createdAt(chatMessage.getCreatedAt())
+                .build();
+    }
+
+    public static ChatMessageResponseDto from(ChatMessage chatMessage) {
+        return ChatMessageResponseDto.builder()
+                .messageId(chatMessage.getMessageId())
+                .roomId(chatMessage.getChatRoom().getRoomId())
+                .senderId(chatMessage.getSender().getUserId())
                 .messageContent(chatMessage.getMessageContent())
                 .createdAt(chatMessage.getCreatedAt())
                 .build();

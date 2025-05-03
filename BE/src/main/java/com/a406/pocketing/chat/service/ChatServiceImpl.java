@@ -1,6 +1,10 @@
 package com.a406.pocketing.chat.service;
 
-import com.a406.pocketing.chat.dto.*;
+import com.a406.pocketing.auth.principal.CustomUserDetails;
+import com.a406.pocketing.chat.dto.request.ChatMessageRequestDto;
+import com.a406.pocketing.chat.dto.request.ChatRoomRequestDto;
+import com.a406.pocketing.chat.dto.response.*;
+import com.a406.pocketing.chat.dto.response.LinkedPostResponseDto.PhotocardResponseDto;
 import com.a406.pocketing.chat.entity.ChatMessage;
 import com.a406.pocketing.chat.entity.ChatRoom;
 import com.a406.pocketing.chat.entity.MessageStatus;
@@ -8,14 +12,16 @@ import com.a406.pocketing.chat.repository.ChatMessageRepository;
 import com.a406.pocketing.chat.repository.ChatRoomRepository;
 import com.a406.pocketing.chat.repository.MessageStatusRepository;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
+import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +43,8 @@ public class ChatServiceImpl implements ChatService {
      * @return
      */
     @Override
-    public ChatRoomResponseDto createOrGetRoom(ChatRoomRequestDto chatRoomRequestDto) {
-        // TODO: ExchangeRequest 엔티티 로직 수정
+    public ChatRoomCreateResponseDto createOrGetRoom(ChatRoomRequestDto chatRoomRequestDto) {
+        // TODO: ExchangeRequest Entity 완성 시 수정 필요
         User user1 = userRepository.findByUserId(chatRoomRequestDto.getUser1Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
         User user2 = userRepository.findByUserId(chatRoomRequestDto.getUser2Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
         Post post = postRepository.findByPostId(chatRoomRequestDto.getPostId()).orElseThrow(() -> new BadRequestHandler(POST_NOT_FOUND));
@@ -51,20 +57,14 @@ public class ChatServiceImpl implements ChatService {
             );
 
         if(chatroomOpt.isPresent()) { // 채팅방이 있으면 반환
-            return ChatRoomResponseDto.of(chatroomOpt.get());
+            return ChatRoomCreateResponseDto.from(chatroomOpt.get());
         }
 
         // 채팅방이 없으면 새로 생성해서 반환
-        ChatRoom chatRoom = ChatRoom.builder()
-                .user1(user1)
-                .user2(user2)
-                .post(post)
-                .exchangeId(chatRoomRequestDto.getExchangeId())
-                .build();
-
+        ChatRoom chatRoom = ChatRoomRequestDto.toEntity(user1, user2, post, chatRoomRequestDto.getExchangeId());
         chatRoomRepository.save(chatRoom);
 
-        return ChatRoomResponseDto.of(chatRoom);
+        return ChatRoomCreateResponseDto.from(chatRoom);
     }
 
     /**
@@ -79,11 +79,7 @@ public class ChatServiceImpl implements ChatService {
         User sender = userRepository.findByUserId(senderId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
         User receiver = chatRoom.getReceiver(sender.getUserId());
 
-        ChatMessage chatMessage = ChatMessage.builder()
-                .chatRoom(chatRoom)
-                .sender(sender)
-                .messageContent(chatMessageRequestDto.getMessageContent())
-                .build();
+        ChatMessage chatMessage = ChatMessageRequestDto.toEntity(chatRoom, sender, chatMessageRequestDto);
 
         chatMessageRepository.save(chatMessage);
         saveMessageStatus(chatMessage, receiver);
@@ -92,7 +88,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
-     * 내부 로직용
+     * private(내부 로직용)
      * 메시지를 DB에 저장 시 메시지의 MessageStatus(읽음 상태)를 저장하기 위한 서비스
      * @param chatMessage
      * @param receiver
@@ -138,7 +134,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
-     * 내부 로직용
+     * private(내부 로직용)
      * 채팅방 조회 로직과 별개로 ResponseDto로 변환하는 로직을 따로 수행하기 위한 서비스
      * @param chatRoom
      * @param userId
@@ -151,7 +147,8 @@ public class ChatServiceImpl implements ChatService {
         ChatMessage lastChatMessage = chatMessageRepository.findLastMessageByRoomId(chatRoom.getRoomId()).orElse(defaultMessage); // 채팅방의 가장 최근 메시지 조회
         Integer unreadMessageCount = messageStatusRepository.countUnreadMessagesByRoomId(userId, chatRoom.getRoomId()); // 사용자의 안읽은 메시지 조회
 
-        if(chatRoom.getPost() != null) { // 거래하기 채팅방인 경우
+        if(chatRoom.getPost() != null) {
+            // 거래하기 채팅방인 경우
             return ChatRoomListItemResponseDto.of(
                     chatRoom,
                     receiver,
@@ -163,7 +160,7 @@ public class ChatServiceImpl implements ChatService {
             );
         }
 
-        // TODO: ExchageRequest 엔티티 나오면 수정!
+        // TODO: ExchangeRequest Entity 완성 시 수정 필요
         // 교환하기 채팅방인 경우
         return ChatRoomListItemResponseDto.of(
                 chatRoom,
@@ -174,6 +171,64 @@ public class ChatServiceImpl implements ChatService {
                 lastChatMessage,
                 unreadMessageCount
         );
+    }
+
+    /**
+     * 채팅방 입장을 위한 서비스
+     * @param userId
+     * @param roomId
+     * @param pageable
+     * @return
+     */
+    @Override
+    public ChatRoomEnterResponseDto enterChatRoom(Long userId, Long roomId, Pageable pageable) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId).orElseThrow(() -> new BadRequestHandler(CHAT_ROOM_NOT_FOUND));
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+
+        LinkedPostResponseDto linkedPost = extractLinkedPost(chatRoom);
+        LinkedExchangeResponseDto linkedExchange = extractLinkedExchange(chatRoom);
+        MessagePageResponseDto messagePage = fetchMessages(chatRoom, pageable, userId);
+
+        return ChatRoomEnterResponseDto.of(linkedPost, linkedExchange, messagePage);
+    }
+
+    /**
+     * private(내부 로직용)
+     * 채팅방과 연관된 거래하기 글을 가져오기 위한 서비스
+     * @param chatRoom
+     * @return
+     */
+    private LinkedPostResponseDto extractLinkedPost(ChatRoom chatRoom) {
+        return Optional.ofNullable(chatRoom.getPost())
+                .map(post -> {
+                    PhotocardResponseDto photocardDto = PhotocardResponseDto.from(post.getPhotoCard());
+                    return LinkedPostResponseDto.of(post, photocardDto);
+                })
+                .orElse(null);
+    }
+
+    /**
+     * private(내부 로직용)
+     * 채팅방과 연관된 교환요청을 가져오기 위한 서비스
+     * @param chatRoom
+     * @return
+     */
+    private LinkedExchangeResponseDto extractLinkedExchange(ChatRoom chatRoom) {
+        // TODO: ExchangeRequest Entity 완성 시 수정 필요
+        return null;
+    }
+
+    /**
+     * private(내부 로직용)
+     * 채팅방의 페이지네이션된 메시지들을 가져오기 위한 서비스
+     * @param chatRoom
+     * @return
+     */
+    private MessagePageResponseDto fetchMessages(ChatRoom chatRoom, Pageable pageable, Long userId) {
+        Page<ChatMessage> messagePage = chatMessageRepository.findByChatRoom(chatRoom, pageable); // 페이지네이션된 메시지들 가져오기
+        messageStatusRepository.markAsRead(chatRoom.getRoomId(), userId); // 메시지 읽음 처리 상태 변경
+
+        return MessagePageResponseDto.from(messagePage);
     }
 
 }

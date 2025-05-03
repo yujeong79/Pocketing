@@ -1,4 +1,4 @@
-package com.a406.pocketing.chat.dto;
+package com.a406.pocketing.chat.dto.response;
 
 import com.a406.pocketing.chat.entity.ChatMessage;
 import com.a406.pocketing.chat.entity.ChatRoom;

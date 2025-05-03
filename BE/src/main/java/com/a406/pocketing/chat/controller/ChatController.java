@@ -1,26 +1,31 @@
 package com.a406.pocketing.chat.controller;
 
 import com.a406.pocketing.auth.principal.CustomUserDetails;
-import com.a406.pocketing.chat.dto.*;
+import com.a406.pocketing.chat.dto.request.ChatMessageRequestDto;
+import com.a406.pocketing.chat.dto.request.ChatRoomRequestDto;
+import com.a406.pocketing.chat.dto.response.ChatMessageResponseDto;
+import com.a406.pocketing.chat.dto.response.ChatRoomCreateResponseDto;
+import com.a406.pocketing.chat.dto.response.ChatRoomEnterResponseDto;
+import com.a406.pocketing.chat.dto.response.ChatRoomListItemResponseDto;
 import com.a406.pocketing.chat.service.ChatService;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
+import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_ENTER_SUCCESS;
 import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_FETCH_SUCCESS;
 
 @Controller
@@ -38,8 +43,8 @@ public class ChatController {
      */
     @PostMapping("/room")
     public ApiResponse<?> createOrGetRoom(@RequestBody ChatRoomRequestDto chatRoomrequestDto) {
-        ChatRoomResponseDto chatRoomResponseDto = chatService.createOrGetRoom(chatRoomrequestDto);
-        return ApiResponse.of(CHAT_ROOM_FETCH_SUCCESS, chatRoomResponseDto);
+        ChatRoomCreateResponseDto chatRoomCreateResponseDto = chatService.createOrGetRoom(chatRoomrequestDto);
+        return ApiResponse.of(CHAT_ROOM_FETCH_SUCCESS, chatRoomCreateResponseDto);
     }
 
     /**
@@ -86,6 +91,26 @@ public class ChatController {
         List<ChatRoomListItemResponseDto> chatRoomList = chatService.getAllExchangeChatRoom(loginUser.getUserId());
 
         return ApiResponse.of(CHAT_ROOM_FETCH_SUCCESS, chatRoomList);
+    }
+
+    /**
+     * 로그인 사용자가 채팅방의 입장
+     * @param loginUser
+     * @param roomId
+     * @param page
+     * @param size
+     * @return
+     */
+    @PostMapping("/room/{roomId}/enter")
+    public ApiResponse<?> enterChatRoom(
+            @AuthenticationPrincipal CustomUserDetails loginUser,
+            @PathVariable Long roomId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        ChatRoomEnterResponseDto chatRoomEnterResponseDto = chatService.enterChatRoom(loginUser.getUserId(), roomId, pageable);
+        return ApiResponse.of(CHAT_ROOM_ENTER_SUCCESS, chatRoomEnterResponseDto);
     }
 
 }
