@@ -64,6 +64,9 @@ import Winter1 from '@/assets/icons/winter1.svg';
 import Winter2 from '@/assets/icons/winter2.svg';
 import Winter3 from '@/assets/icons/winter3.svg';
 import Winter4 from '@/assets/icons/winter4.svg';
+import Wonyoung1 from '@/assets/icons/wonyoung1.svg';
+import Wonyoung2 from '@/assets/icons/wonyoung2.svg';
+import Wonyoung3 from '@/assets/icons/wonyoung3.svg';
 
 export {
   //Header
@@ -125,4 +128,7 @@ export {
   Winter2,
   Winter3,
   Winter4,
+  Wonyoung1,
+  Wonyoung2,
+  Wonyoung3,
 };
