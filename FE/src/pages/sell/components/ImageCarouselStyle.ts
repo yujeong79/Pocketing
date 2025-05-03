@@ -1,12 +1,15 @@
 import styled from 'styled-components';
 import scale from '@/utils/scale';
+import { colors } from '@/styles/theme';
 
 export const Container = styled.div`
   position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
+  margin-top: ${scale(12)}px;
 `;
 
 export const SlideWindow = styled.div`
@@ -30,7 +33,7 @@ export const CarouselImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: ${scale(8)}px;
 `;
 
 export const EmptySlot = styled.div<{ size: 'large' | 'small' }>`
@@ -38,6 +41,22 @@ export const EmptySlot = styled.div<{ size: 'large' | 'small' }>`
   margin: 0 10px;
   width: ${(p) => (p.size === 'large' ? `${scale(168)}px` : `${scale(149)}px`)};
   height: ${(p) => (p.size === 'large' ? `${scale(260)}px` : `${scale(230)}px`)};
+`;
+
+export const DotContainer = styled.div`
+  display: flex;
+  gap: ${scale(4)}px;
+  margin-top: ${scale(8)}px;
+`;
+
+export const Dot = styled.div<{ $isActive: boolean }>`
+  flex-shrink: 0;
+  width: ${(p) => (p.$isActive ? `${scale(20)}px` : `${scale(10)}px`)};
+  height: ${scale(10)}px;
+  border-radius: ${(p) => (p.$isActive ? '40%' : '50%')};
+  background-color: ${(p) => (p.$isActive ? colors.gray200 : colors.white)};
+  border: ${(p) => (p.$isActive ? 'none' : `${scale(1)}px solid ${colors.gray200}`)};
+  transition: all 0.3s ease;
 `;
 
 export const ArrowButton = styled.button<{ direction: 'left' | 'right' }>`

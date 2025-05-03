@@ -52,6 +52,11 @@ const ImageCarousel: React.FC = () => {
           <S.EmptySlot size="small" />
         )}
       </S.SlideWindow>
+      <S.DotContainer>
+        {images.map((_, idx) => (
+          <S.Dot key={idx} $isActive={idx === selectedIndex} />
+        ))}
+      </S.DotContainer>
 
       <S.ArrowButton
         direction="right"
