@@ -21,7 +21,9 @@ import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.CHAT_
                 @UniqueConstraint(columnNames = {"user1_id", "user2_id", "post_id", "exchange_id"})
         },
         indexes = {
-                @Index(columnList = "exchange_id, post_id, user1_id, user2_id")
+                @Index(columnList = "exchange_id, post_id, user1_id, user2_id"),
+                @Index(columnList = "user1_id"),
+                @Index(columnList = "user2_id")
         }
 )
 public class ChatRoom {
@@ -59,9 +61,9 @@ public class ChatRoom {
         this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
     }
 
-    public User getReceiver(User sender) {
-        if(user1.getUserId().equals(sender.getUserId())) { return user2; }
-        if(user2.getUserId().equals(sender.getUserId())) { return user1; }
+    public User getReceiver(Long senderId) {
+        if(user1.getUserId().equals(senderId)) { return user2; }
+        if(user2.getUserId().equals(senderId)) { return user1; }
         throw new BadRequestHandler(CHAT_ROOM_UNAUTHORIZED_USER);
     }
 }
