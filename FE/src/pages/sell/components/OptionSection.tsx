@@ -1,5 +1,5 @@
 // OptionSection.tsx
-import React, { useState, ChangeEvent, useMemo, forwardRef, useImperativeHandle } from 'react';
+import { useState, ChangeEvent, useMemo, forwardRef, useImperativeHandle } from 'react';
 import * as S from './OptionSectionStyle';
 import { IncreaseIcon, DecreaseIcon, AverageIcon } from '@/assets/assets';
 import PhotocardSettingModal from './PhotocardSettingModal';

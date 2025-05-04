@@ -9,6 +9,7 @@ interface PhotocardSettingData {
   member: string;
   album: string;
   version: string;
+  price: string;
 }
 
 const PostPage = () => {
@@ -22,7 +23,8 @@ const PostPage = () => {
     if (!settings) return;
 
     const isAllComplete = settings.every(
-      (setting) => setting.group && setting.member && setting.album && setting.version
+      (setting) =>
+        setting.group && setting.member && setting.album && setting.version && setting.price
     );
 
     if (!isAllComplete) {
