@@ -6,11 +6,14 @@ import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
 import com.a406.pocketing.post.dto.PostRegisterRequestDto;
 import com.a406.pocketing.post.dto.PostRegisterResponseDto;
+import com.a406.pocketing.post.dto.PostResponseDto;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +66,15 @@ public class PostServiceImpl implements PostService {
             responseList.add(new PostRegisterResponseDto(savedPost.getPostId()));
         }
         return responseList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getPosts(Long memberId, Long albumId, Pageable pageable) {
+        if (memberId == null) {
+            throw new GeneralException(ErrorStatus.MEMBER_ID_REQUIRED);
+        }
+        return postRepository.findFilteredPosts(memberId, albumId, pageable);
     }
 }
 
