@@ -7,10 +7,6 @@ const SellPage = () => {
   const nickname = '닉네임'; // 실제로는 사용자 정보에서 가져올 예정
   const count = 3; // 실제로는 API에서 가져올 예정
 
-  const handleRegisterClick = () => {
-    console.log('판매등록 버튼 클릭');
-  };
-
   const handleGuideClick = () => {
     console.log('이용방법 버튼 클릭');
   };
@@ -36,8 +32,8 @@ const SellPage = () => {
 
         <S.BackgroundSection>
           <S.ButtonContainer>
-            <S.RegisterButton onClick={handleRegisterClick}>
-              <img src={PencilIcon} alt="판매등록" onClick={() => navigate('/guide')} />
+            <S.RegisterButton onClick={() => navigate('/guide')}>
+              <img src={PencilIcon} alt="판매등록" />
               판매등록
             </S.RegisterButton>
             <S.ButtonColumn>

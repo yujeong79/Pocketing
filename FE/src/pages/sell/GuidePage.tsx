@@ -40,6 +40,7 @@ const GuidePage = () => {
           촬영 하기
         </S.ActionButton>
       </S.ButtonContainer>
+      <button onClick={() => navigate('/post')}>임시 버튼</button>
     </S.GuideBackground>
   );
 };

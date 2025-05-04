@@ -49,6 +49,9 @@ import AlbumIcon from '@/assets/icons/album.svg';
 import CameraIcon2 from '@/assets/icons/camera-2.svg';
 import BackIcon2 from '@/assets/icons/back-white.svg';
 import SampleImage from '@/assets/icons/sample.svg';
+import IncreaseIcon from '@/assets/icons/increase.svg';
+import DecreaseIcon from '@/assets/icons/decrease.svg';
+import AverageIcon from '@/assets/icons/average.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -64,6 +67,9 @@ import Winter1 from '@/assets/icons/winter1.svg';
 import Winter2 from '@/assets/icons/winter2.svg';
 import Winter3 from '@/assets/icons/winter3.svg';
 import Winter4 from '@/assets/icons/winter4.svg';
+import Wonyoung1 from '@/assets/icons/wonyoung1.svg';
+import Wonyoung2 from '@/assets/icons/wonyoung2.svg';
+import Wonyoung3 from '@/assets/icons/wonyoung3.svg';
 
 export {
   //Header
@@ -112,6 +118,9 @@ export {
   CameraIcon2,
   BackIcon2,
   SampleImage,
+  IncreaseIcon,
+  DecreaseIcon,
+  AverageIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
@@ -125,4 +134,7 @@ export {
   Winter2,
   Winter3,
   Winter4,
+  Wonyoung1,
+  Wonyoung2,
+  Wonyoung3,
 };

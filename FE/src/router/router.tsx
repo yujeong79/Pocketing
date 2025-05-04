@@ -25,6 +25,7 @@ import ProfileEditPage from '@/pages/profile/ProfileEditPage';
 import GuidePage from '@/pages/sell/GuidePage';
 import MySaleListPage from '@/pages/profile/MySaleListPage';
 import MyCompleteListPage from '@/pages/profile/MyCompleteListPage';
+import PostPage from '@/pages/sell/PostPage';
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
     ],
   },
   { path: 'guide', element: <GuidePage /> },
+  {
+    path: 'post',
+    element: <PostPage />,
+  },
   {
     path: 'profileDetail',
     element: <ProfileDetailPage />,
