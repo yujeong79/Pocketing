@@ -2,10 +2,25 @@
 import React, { useState, ChangeEvent } from 'react';
 import * as S from './OptionSectionStyle';
 import { IncreaseIcon, DecreaseIcon, AverageIcon } from '@/assets/assets';
+import PhotocardSettingModal from './PhotocardSettingModal';
+
+interface PhotocardSettingData {
+  group: string;
+  member: string;
+  album: string;
+  version: string;
+}
 
 const OptionSection: React.FC = () => {
   const [price, setPrice] = useState<string>('');
   const [showMarketPrice, setShowMarketPrice] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPhotocard, setSelectedPhotocard] = useState<PhotocardSettingData>({
+    group: '',
+    member: '',
+    album: '',
+    version: '',
+  });
 
   const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     // 숫자만 남기기
@@ -27,31 +42,50 @@ const OptionSection: React.FC = () => {
     setShowMarketPrice(!showMarketPrice);
   };
 
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handlePhotocardConfirm = (data: PhotocardSettingData) => {
+    setSelectedPhotocard(data);
+    setIsModalOpen(false);
+  };
+
   return (
     <S.Container>
       <S.OptionRow>
         <S.Label>아티스트</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected clickable>
-            아이브
+          <S.Chip selected={!!selectedPhotocard.group} clickable onClick={handleModalOpen}>
+            {selectedPhotocard.group || '선택'}
           </S.Chip>
-          <S.Chip selected clickable>
-            장원영
-          </S.Chip>
+          {selectedPhotocard.member && (
+            <S.Chip selected clickable>
+              {selectedPhotocard.member}
+            </S.Chip>
+          )}
         </S.ChipsWrapper>
       </S.OptionRow>
 
       <S.OptionRow>
         <S.Label>앨범</S.Label>
         <S.ChipsWrapper>
-          <S.Chip clickable>선택</S.Chip>
+          <S.Chip selected={!!selectedPhotocard.album} clickable onClick={handleModalOpen}>
+            {selectedPhotocard.album || '선택'}
+          </S.Chip>
         </S.ChipsWrapper>
       </S.OptionRow>
 
       <S.OptionRow>
         <S.Label>버전</S.Label>
         <S.ChipsWrapper>
-          <S.Chip clickable>선택</S.Chip>
+          <S.Chip selected={!!selectedPhotocard.version} clickable onClick={handleModalOpen}>
+            {selectedPhotocard.version || '선택'}
+          </S.Chip>
         </S.ChipsWrapper>
       </S.OptionRow>
 
@@ -97,6 +131,12 @@ const OptionSection: React.FC = () => {
           </S.MarketPriceContainer>
         </S.PriceSection>
       </S.OptionRow>
+
+      <PhotocardSettingModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onConfirm={handlePhotocardConfirm}
+      />
     </S.Container>
   );
 };

@@ -10,6 +10,7 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: ${scale(12)}px;
+  overflow: hidden;
 `;
 
 export const SlideWindow = styled.div`
