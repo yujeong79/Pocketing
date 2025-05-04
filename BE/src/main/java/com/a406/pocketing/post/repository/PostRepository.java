@@ -1,6 +1,7 @@
 package com.a406.pocketing.post.repository;
 
 import com.a406.pocketing.post.dto.PostResponseDto;
+import com.a406.pocketing.post.dto.SellerSimpleDto;
 import com.a406.pocketing.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<PostResponseDto> findFilteredPosts(@Param("memberId") Long memberId,
                                             @Param("albumId") Long albumId,
                                             Pageable pageable);
+
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.SellerSimpleDto(
+        p.postId,
+        u.nickname,
+        u.isVerified,
+        p.price,
+        p.status,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        m.name,
+        a.title,
+        p.postImageUrl
+    )
+    FROM Post p
+    JOIN p.seller u
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN pc.album a
+    JOIN m.group g
+    WHERE pc.cardId = :cardId
+    ORDER BY p.price ASC
+""")
+    Page<SellerSimpleDto> findSellersByCardId(@Param("cardId") Long cardId, Pageable pageable);
 
 }
 
