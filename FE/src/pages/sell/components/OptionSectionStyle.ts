@@ -77,7 +77,7 @@ export const PriceInputWrapper = styled.div`
 
 export const PriceInput = styled.input`
   width: ${scale(90)}px;
-  height: ${scale(32)}px;
+  height: ${scale(24)}px;
   padding: ${scale(12)}px ${scale(16)}px;
   border: 1px solid ${colors.gray200};
   border-radius: ${scale(8)}px;
