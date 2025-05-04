@@ -1,5 +1,6 @@
 package com.a406.pocketing.post.repository;
 
+import com.a406.pocketing.post.dto.PostDetailResponseDto;
 import com.a406.pocketing.post.dto.PostResponseDto;
 import com.a406.pocketing.post.dto.SellerSimpleDto;
 import com.a406.pocketing.post.entity.Post;
@@ -66,6 +67,37 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     ORDER BY p.price ASC
 """)
     Page<SellerSimpleDto> findSellersByCardId(@Param("cardId") Long cardId, Pageable pageable);
+
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.PostDetailResponseDto(
+        p.postId,
+        p.postImageUrl,
+        p.price,
+        p.createAt,
+        p.status,
+        pc.cardId,
+        pc.cardImageUrl,
+        m.name,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        a.title,
+        u.nickname,
+        u.isVerified,
+        u.profileImageUrl,
+        CASE WHEN u.userId = :currentUserId THEN true ELSE false END
+    )
+    FROM Post p
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN pc.album a
+    JOIN m.group g
+    JOIN p.seller u
+    WHERE p.postId = :postId
+""")
+    Optional<PostDetailResponseDto> findPostDetailById(@Param("postId") Long postId, @Param("currentUserId") Long currentUserId);
+
 
 }
 

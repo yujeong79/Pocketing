@@ -3,10 +3,7 @@ package com.a406.pocketing.post.controller;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.post.dto.PostRegisterRequestDto;
-import com.a406.pocketing.post.dto.PostRegisterResponseDto;
-import com.a406.pocketing.post.dto.PostResponseDto;
-import com.a406.pocketing.post.dto.SellerListResponseDto;
+import com.a406.pocketing.post.dto.*;
 import com.a406.pocketing.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,6 +44,12 @@ public class PostController {
                 postService.getSellersByCardId(cardId, pageable));
     }
 
+    @GetMapping("/{postId}")
+    public ApiResponse<PostDetailResponseDto> getPostDetail(@PathVariable Long postId) {
+        Long currentUserId = getCurrentUserId();
+        return ApiResponse.of(SuccessStatus.POST_DETAIL_FETCH_SUCCESS,
+                postService.getPostDetail(postId, currentUserId));
+    }
 
     private Long getCurrentUserId() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()

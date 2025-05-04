@@ -95,5 +95,16 @@ public class PostServiceImpl implements PostService {
         return new SellerListResponseDto(avgPrice, sellers);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PostDetailResponseDto getPostDetail(Long postId, Long currentUserId) {
+        if (postId == null) {
+            throw new GeneralException(ErrorStatus.POST_ID_REQUIRED);
+        }
+
+        return postRepository.findPostDetailById(postId, currentUserId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+    }
+
 }
 
