@@ -1,9 +1,6 @@
 package com.a406.pocketing.post.service;
 
-import com.a406.pocketing.post.dto.PostRegisterRequestDto;
-import com.a406.pocketing.post.dto.PostRegisterResponseDto;
-import com.a406.pocketing.post.dto.PostResponseDto;
-import com.a406.pocketing.post.dto.SellerListResponseDto;
+import com.a406.pocketing.post.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +13,6 @@ public interface PostService {
 
     SellerListResponseDto getSellersByCardId(Long cardId, Pageable pageable);
 
+    PostDetailResponseDto getPostDetail(Long postId, Long currentUserId);
 }
 
