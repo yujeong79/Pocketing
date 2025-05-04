@@ -180,6 +180,12 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
           fontStyle="headingMedium"
           onClick={() => onConfirm(selectedData)}
           text="등록하기"
+          disabled={
+            !selectedData.group ||
+            !selectedData.member ||
+            !selectedData.album ||
+            !selectedData.version
+          }
         />
       </S.ButtonWrapper>
     </SlideUpModal>
