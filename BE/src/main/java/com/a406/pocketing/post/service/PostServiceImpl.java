@@ -4,9 +4,7 @@ import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
-import com.a406.pocketing.post.dto.PostRegisterRequestDto;
-import com.a406.pocketing.post.dto.PostRegisterResponseDto;
-import com.a406.pocketing.post.dto.PostResponseDto;
+import com.a406.pocketing.post.dto.*;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
 import com.a406.pocketing.user.entity.User;
@@ -76,5 +74,26 @@ public class PostServiceImpl implements PostService {
         }
         return postRepository.findFilteredPosts(memberId, albumId, pageable);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SellerListResponseDto getSellersByCardId(Long cardId, Pageable pageable) {
+        if (cardId == null) {
+            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+        }
+
+        Page<SellerSimpleDto> sellers = postRepository.findSellersByCardId(cardId, pageable);
+
+        if (sellers.isEmpty()) {
+            throw new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND);
+        }
+
+        int avgPrice = sellers.stream()
+                .mapToInt(SellerSimpleDto::getPrice)
+                .sum() / sellers.getContent().size();
+
+        return new SellerListResponseDto(avgPrice, sellers);
+    }
+
 }
 

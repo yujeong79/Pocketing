@@ -6,6 +6,7 @@ import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
 import com.a406.pocketing.post.dto.PostRegisterRequestDto;
 import com.a406.pocketing.post.dto.PostRegisterResponseDto;
 import com.a406.pocketing.post.dto.PostResponseDto;
+import com.a406.pocketing.post.dto.SellerListResponseDto;
 import com.a406.pocketing.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,14 @@ public class PostController {
             @PageableDefault(size = 10, page = 0) Pageable pageable
     ) {
         return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postService.getPosts(memberId, albumId, pageable));
+    }
+
+    @GetMapping("/sellers")
+    public ApiResponse<SellerListResponseDto> getSellersByCardId(
+            @RequestParam Long cardId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ApiResponse.of(SuccessStatus.SELLER_LIST_FETCH_SUCCESS,
+                postService.getSellersByCardId(cardId, pageable));
     }
 
 
