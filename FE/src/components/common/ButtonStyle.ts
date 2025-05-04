@@ -6,16 +6,17 @@ import scale from '@/utils/scale';
 interface ButtonContainerProps {
   height?: number;
   fontStyle?: keyof typeof FontStyles; // FontStyles에서 타입을 가져옵니다.
+  disabled?: boolean;
 }
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   width: ${scale(266)}px;
   height: ${(props) =>
     props.height
       ? `${scale(props.height)}px`
       : `${scale(48)}px`}; /* height prop에 따라 동적으로 설정 */
-  background-color: ${theme.colors.primary};
+  background-color: ${(props) => (props.disabled ? theme.colors.primary100 : theme.colors.primary)};
   border-radius: ${scale(10)}px;
   border: none;
 

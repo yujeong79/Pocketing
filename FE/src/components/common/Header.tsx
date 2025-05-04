@@ -18,9 +18,10 @@ interface HeaderProps {
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
+  onRegister?: () => void;
 }
 
-export default function Header({ type, onBack, title, hasBorder = true }: HeaderProps) {
+export default function Header({ type, onBack, title, hasBorder = true, onRegister }: HeaderProps) {
   const navigate = useNavigate();
 
   const renderLeftContent = () => {
@@ -93,7 +94,7 @@ export default function Header({ type, onBack, title, hasBorder = true }: Header
       case 'post':
         return (
           <S.RightSection>
-            <S.RegisterButton>등록하기</S.RegisterButton>
+            <S.RegisterButton onClick={onRegister}>등록하기</S.RegisterButton>
           </S.RightSection>
         );
       case 'chat':
