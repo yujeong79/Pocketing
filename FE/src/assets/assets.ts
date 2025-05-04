@@ -52,6 +52,7 @@ import SampleImage from '@/assets/icons/sample.svg';
 import IncreaseIcon from '@/assets/icons/increase.svg';
 import DecreaseIcon from '@/assets/icons/decrease.svg';
 import AverageIcon from '@/assets/icons/average.svg';
+import CautionIcon from '@/assets/icons/caution.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -121,6 +122,7 @@ export {
   IncreaseIcon,
   DecreaseIcon,
   AverageIcon,
+  CautionIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
