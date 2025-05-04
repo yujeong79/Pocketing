@@ -13,7 +13,9 @@ import Layout from '@/components/layout/Layout';
 import MainPage from '@/pages/main/MainPage';
 import DetailPage from '@/pages/main/DetailPage';
 //sell
+import PostPage from '@/pages/sell/PostPage';
 import SellPage from '@/pages/sell/SellPage';
+import GuidePage from '@/pages/sell/GuidePage';
 //message
 import MessagePage from '@/pages/message/MessagePage';
 //map
@@ -22,10 +24,10 @@ import MapPage from '@/pages/map/MapPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
 import ProfileEditPage from '@/pages/profile/ProfileEditPage';
-import GuidePage from '@/pages/sell/GuidePage';
 import MySaleListPage from '@/pages/profile/MySaleListPage';
 import MyCompleteListPage from '@/pages/profile/MyCompleteListPage';
-import PostPage from '@/pages/sell/PostPage';
+import MyGroupEditPage from '@/pages/profile/MyGroupEditPage';
+import MyMemberEditPage from '@/pages/profile/MyMemberEditPage';
 
 const router = createBrowserRouter([
   {
@@ -83,7 +85,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: 'guide', element: <GuidePage /> },
+  {
+    path: 'guide',
+    element: <GuidePage />,
+  },
   {
     path: 'post',
     element: <PostPage />,
@@ -95,6 +100,14 @@ const router = createBrowserRouter([
   {
     path: 'profileEdit',
     element: <ProfileEditPage />,
+  },
+  {
+    path: 'myGroupEdit',
+    element: <MyGroupEditPage />,
+  },
+  {
+    path: 'myMemberEdit/:groupId',
+    element: <MyMemberEditPage />,
   },
   {
     path: 'mySaleList',
