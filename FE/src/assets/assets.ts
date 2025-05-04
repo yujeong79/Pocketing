@@ -49,6 +49,9 @@ import AlbumIcon from '@/assets/icons/album.svg';
 import CameraIcon2 from '@/assets/icons/camera-2.svg';
 import BackIcon2 from '@/assets/icons/back-white.svg';
 import SampleImage from '@/assets/icons/sample.svg';
+import IncreaseIcon from '@/assets/icons/increase.svg';
+import DecreaseIcon from '@/assets/icons/decrease.svg';
+import AverageIcon from '@/assets/icons/average.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -115,6 +118,9 @@ export {
   CameraIcon2,
   BackIcon2,
   SampleImage,
+  IncreaseIcon,
+  DecreaseIcon,
+  AverageIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
