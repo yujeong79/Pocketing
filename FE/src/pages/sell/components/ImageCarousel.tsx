@@ -4,16 +4,33 @@ import * as S from './ImageCarouselStyle';
 
 const images = [Wonyoung1, Wonyoung2, Wonyoung3];
 
-const ImageCarousel: React.FC = () => {
+interface ImageCarouselProps {
+  onImageChange?: (index: number) => void;
+  optionCompleteStatus: boolean[];
+}
+
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ onImageChange, optionCompleteStatus }) => {
   const [selectedIndex, setSelectedIndex] = useState(1);
 
   const handlePrevClick = useCallback(() => {
-    if (selectedIndex > 0) setSelectedIndex((i) => i - 1);
-  }, [selectedIndex]);
+    if (selectedIndex > 0) {
+      setSelectedIndex((i) => {
+        const newIndex = i - 1;
+        onImageChange?.(newIndex);
+        return newIndex;
+      });
+    }
+  }, [selectedIndex, onImageChange]);
 
   const handleNextClick = useCallback(() => {
-    if (selectedIndex < images.length - 1) setSelectedIndex((i) => i + 1);
-  }, [selectedIndex]);
+    if (selectedIndex < images.length - 1) {
+      setSelectedIndex((i) => {
+        const newIndex = i + 1;
+        onImageChange?.(newIndex);
+        return newIndex;
+      });
+    }
+  }, [selectedIndex, onImageChange]);
 
   const isFirstSlide = selectedIndex === 0;
   const isLastSlide = selectedIndex === images.length - 1;
@@ -54,7 +71,11 @@ const ImageCarousel: React.FC = () => {
       </S.SlideWindow>
       <S.DotContainer>
         {images.map((_, idx) => (
-          <S.Dot key={idx} $isActive={idx === selectedIndex} />
+          <S.Dot
+            key={idx}
+            $isActive={idx === selectedIndex}
+            $isComplete={optionCompleteStatus[idx]}
+          />
         ))}
       </S.DotContainer>
 

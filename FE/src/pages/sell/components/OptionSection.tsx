@@ -1,41 +1,72 @@
 // OptionSection.tsx
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useMemo, forwardRef, useImperativeHandle } from 'react';
 import * as S from './OptionSectionStyle';
 import { IncreaseIcon, DecreaseIcon, AverageIcon } from '@/assets/assets';
 import PhotocardSettingModal from './PhotocardSettingModal';
+import ImageCarousel from './ImageCarousel';
 
 interface PhotocardSettingData {
   group: string;
   member: string;
   album: string;
   version: string;
+  price: string;
 }
 
-const OptionSection: React.FC = () => {
-  const [price, setPrice] = useState<string>('');
+interface OptionSectionHandle {
+  photocardSettings: PhotocardSettingData[];
+}
+
+const OptionSection = forwardRef<OptionSectionHandle>((_, ref) => {
   const [showMarketPrice, setShowMarketPrice] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPhotocard, setSelectedPhotocard] = useState<PhotocardSettingData>({
-    group: '',
-    member: '',
-    album: '',
-    version: '',
-  });
+  const [currentImageIndex, setCurrentImageIndex] = useState(1);
+  const [photocardSettings, setPhotocardSettings] = useState<PhotocardSettingData[]>([
+    { group: '', member: '', album: '', version: '', price: '' },
+    { group: '', member: '', album: '', version: '', price: '' },
+    { group: '', member: '', album: '', version: '', price: '' },
+  ]);
+
+  useImperativeHandle(ref, () => ({
+    photocardSettings,
+  }));
 
   const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // 숫자만 남기기
     const raw = e.target.value.replace(/[^0-9]/g, '');
-    setPrice(raw);
+    setPhotocardSettings((prev) => {
+      const newSettings = [...prev];
+      newSettings[currentImageIndex] = {
+        ...newSettings[currentImageIndex],
+        price: raw,
+      };
+      return newSettings;
+    });
   };
 
   const handlePriceBlur = () => {
-    if (price) {
-      setPrice(Number(price).toLocaleString());
+    const currentPrice = photocardSettings[currentImageIndex].price;
+    if (currentPrice) {
+      setPhotocardSettings((prev) => {
+        const newSettings = [...prev];
+        newSettings[currentImageIndex] = {
+          ...newSettings[currentImageIndex],
+          price: Number(currentPrice).toLocaleString(),
+        };
+        return newSettings;
+      });
     }
   };
 
   const handlePriceFocus = () => {
-    setPrice(price.replace(/,/g, ''));
+    const currentPrice = photocardSettings[currentImageIndex].price;
+    setPhotocardSettings((prev) => {
+      const newSettings = [...prev];
+      newSettings[currentImageIndex] = {
+        ...newSettings[currentImageIndex],
+        price: currentPrice.replace(/,/g, ''),
+      };
+      return newSettings;
+    });
   };
 
   const handleMarketPriceClick = () => {
@@ -50,22 +81,48 @@ const OptionSection: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handlePhotocardConfirm = (data: PhotocardSettingData) => {
-    setSelectedPhotocard(data);
+  const handlePhotocardConfirm = (data: Omit<PhotocardSettingData, 'price'>) => {
+    setPhotocardSettings((prev) => {
+      const newSettings = [...prev];
+      newSettings[currentImageIndex] = {
+        ...data,
+        price: newSettings[currentImageIndex].price,
+      };
+      return newSettings;
+    });
     setIsModalOpen(false);
   };
 
+  const handleImageChange = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
+  const currentPhotocard = photocardSettings[currentImageIndex];
+
+  const optionCompleteStatus = useMemo(() => {
+    return photocardSettings.map((settings) =>
+      Boolean(
+        settings.group && settings.member && settings.album && settings.version && settings.price
+      )
+    );
+  }, [photocardSettings]);
+
   return (
     <S.Container>
+      <ImageCarousel
+        onImageChange={handleImageChange}
+        optionCompleteStatus={optionCompleteStatus}
+      />
+
       <S.OptionRow>
         <S.Label>아티스트</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected={!!selectedPhotocard.group} clickable onClick={handleModalOpen}>
-            {selectedPhotocard.group || '선택'}
+          <S.Chip selected={!!currentPhotocard.group} clickable onClick={handleModalOpen}>
+            {currentPhotocard.group || '선택'}
           </S.Chip>
-          {selectedPhotocard.member && (
+          {currentPhotocard.member && (
             <S.Chip selected clickable>
-              {selectedPhotocard.member}
+              {currentPhotocard.member}
             </S.Chip>
           )}
         </S.ChipsWrapper>
@@ -74,8 +131,8 @@ const OptionSection: React.FC = () => {
       <S.OptionRow>
         <S.Label>앨범</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected={!!selectedPhotocard.album} clickable onClick={handleModalOpen}>
-            {selectedPhotocard.album || '선택'}
+          <S.Chip selected={!!currentPhotocard.album} clickable onClick={handleModalOpen}>
+            {currentPhotocard.album || '선택'}
           </S.Chip>
         </S.ChipsWrapper>
       </S.OptionRow>
@@ -83,8 +140,8 @@ const OptionSection: React.FC = () => {
       <S.OptionRow>
         <S.Label>버전</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected={!!selectedPhotocard.version} clickable onClick={handleModalOpen}>
-            {selectedPhotocard.version || '선택'}
+          <S.Chip selected={!!currentPhotocard.version} clickable onClick={handleModalOpen}>
+            {currentPhotocard.version || '선택'}
           </S.Chip>
         </S.ChipsWrapper>
       </S.OptionRow>
@@ -98,7 +155,7 @@ const OptionSection: React.FC = () => {
               inputMode="numeric"
               pattern="[0-9]*"
               placeholder="0"
-              value={price}
+              value={currentPhotocard.price}
               onChange={handlePriceChange}
               onBlur={handlePriceBlur}
               onFocus={handlePriceFocus}
@@ -139,6 +196,8 @@ const OptionSection: React.FC = () => {
       />
     </S.Container>
   );
-};
+});
+
+OptionSection.displayName = 'OptionSection';
 
 export default OptionSection;
