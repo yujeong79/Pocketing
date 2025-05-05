@@ -2,14 +2,17 @@ package com.a406.pocketing.auth.principal;
 
 import com.a406.pocketing.user.dto.UserResponseDto;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
+@ToString
 public class CustomUserDetails implements UserDetails {
 
     private final Long userId;
@@ -28,5 +31,5 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override public String getPassword() { return null; }
-    @Override public String getUsername() { return null; }
+    @Override public String getUsername() { return String.valueOf(userId); }
 }

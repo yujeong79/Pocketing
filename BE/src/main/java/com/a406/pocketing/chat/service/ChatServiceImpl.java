@@ -12,6 +12,7 @@ import com.a406.pocketing.chat.repository.ChatMessageRepository;
 import com.a406.pocketing.chat.repository.ChatRoomRepository;
 import com.a406.pocketing.chat.repository.MessageStatusRepository;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
+import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
@@ -67,7 +68,7 @@ public class ChatServiceImpl implements ChatService {
 
         // 채팅방이 없으면 새로 생성해서 반환
         ChatRoom chatRoom = ChatRoomRequestDto.toEntity(user1, user2, post, chatRoomRequestDto.getExchangeId());
-//        chatRoomRepository.save(chatRoom);
+        chatRoomRepository.save(chatRoom);
 
         return ChatRoomCreateResponseDto.from(chatRoom);
     }

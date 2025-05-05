@@ -36,4 +36,9 @@ public class ChatMessage {
 
     private String messageContent;
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
+    }
 }

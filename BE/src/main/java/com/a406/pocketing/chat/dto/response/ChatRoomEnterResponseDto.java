@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ChatRoomEnterResponseDto {
-    private LinkedPostResponseDto likedPost;
-    private LinkedExchangeResponseDto likedExchange;
+    private LinkedPostResponseDto linkedPost;
+    private LinkedExchangeResponseDto linkedExchange;
     private MessagePageResponseDto messagePage;
 
     public static ChatRoomEnterResponseDto of(
@@ -18,8 +18,8 @@ public class ChatRoomEnterResponseDto {
             MessagePageResponseDto messagePage
     ) {
         return ChatRoomEnterResponseDto.builder()
-                .likedPost(linkedPost)
-                .likedExchange(linkedExchange)
+                .linkedPost(linkedPost)
+                .linkedExchange(linkedExchange)
                 .messagePage(messagePage)
                 .build();
     }
