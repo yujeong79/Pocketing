@@ -54,6 +54,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	POST_REGISTER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5001", "판매글 등록에 실패했습니다."),
 	POST_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5002", "판매글 목록 조회 중 서버 오류가 발생했습니다."),
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
+	POST_EDIT_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4007", "본인의 판매글만 수정할 수 있습니다."),
+	POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4008", "본인의 판매글만 삭제할 수 있습니다."),
+
+
 
 	// 판매자(Seller) 리스트 조회 관련 에러
 	SELLER_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SELLER5001", "판매자 리스트 조회 중 서버 오류가 발생했습니다."),

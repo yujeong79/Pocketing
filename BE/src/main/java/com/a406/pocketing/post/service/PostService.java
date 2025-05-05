@@ -14,5 +14,10 @@ public interface PostService {
     SellerListResponseDto getSellersByCardId(Long cardId, Pageable pageable);
 
     PostDetailResponseDto getPostDetail(Long postId, Long currentUserId);
+
+    void updatePost(Long postId, Long userId, PostUpdateRequestDto requestDto);
+
+    void deletePost(Long postId, Long userId);
+
 }
 

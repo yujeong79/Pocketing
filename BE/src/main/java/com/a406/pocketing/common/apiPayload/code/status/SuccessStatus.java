@@ -44,6 +44,8 @@ public enum SuccessStatus implements BaseCode {
 	POST_REGISTER_SUCCESS(HttpStatus.CREATED, "POST2001", "판매글 등록 성공"),
 	POST_LIST_FETCH_SUCCESS(HttpStatus.OK, "POST2002", "판매글 목록 조회 성공"),
 	POST_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "POST2003", "판매글 상세 조회 성공"),
+	POST_UPDATE_SUCCESS(HttpStatus.OK,"POST2004", "판매글 수정 성공"),
+	POST_DELETE_SUCCESS(HttpStatus.OK, "POST2005", "판매글 삭제 성공"),
 
 	// 판매자(Seller) 리스트 관련 성공
 	SELLER_LIST_FETCH_SUCCESS(HttpStatus.OK, "SELLER2001", "판매자 리스트 조회 성공"),

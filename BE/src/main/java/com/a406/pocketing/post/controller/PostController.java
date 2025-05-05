@@ -54,6 +54,20 @@ public class PostController {
                 postService.getPostDetail(postId, currentUserId));
     }
 
+    @PutMapping("/{postId}")
+    public ApiResponse<Void> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequestDto requestDto) {
+        Long currentUserId = getCurrentUserId();
+        postService.updatePost(postId, currentUserId, requestDto);
+        return ApiResponse.of(SuccessStatus.POST_UPDATE_SUCCESS, null);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ApiResponse<Void> deletePost(@PathVariable Long postId) {
+        Long currentUserId = getCurrentUserId();
+        postService.deletePost(postId, currentUserId);
+        return ApiResponse.of(SuccessStatus.POST_DELETE_SUCCESS, null);
+    }
+
     private Long getCurrentUserId() {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
