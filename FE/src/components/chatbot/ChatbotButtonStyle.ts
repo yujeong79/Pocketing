@@ -12,7 +12,7 @@ export const Button = styled.button`
   background: transparent;
   padding: 0;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 100;
   transition: all 0.3s ease-in-out;
   border-radius: 50%;
   display: flex;
