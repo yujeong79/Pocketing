@@ -1,0 +1,131 @@
+import styled from 'styled-components';
+import scale from '@/utils/scale';
+import { colors } from '@/styles/theme';
+import { FontStyles } from '@/constants/fonts';
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(223, 223, 223, 0.47);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+export const ModalContainer = styled.div`
+  width: 100%;
+  height: 85vh;
+  background-color: white;
+  border-radius: ${scale(20)}px ${scale(20)}px 0 0;
+  padding: ${scale(20)}px;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const Header = styled.div`
+  display: flex;
+  gap: ${scale(12)}px;
+  margin-bottom: ${scale(20)}px;
+  align-items: center;
+  margin-top: ${scale(2)}px;
+`;
+
+export const Title = styled.h1`
+  font-family: 'Baloo 2', cursive;
+  font-weight: 900;
+  line-height: ${scale(22)}px;
+  letter-spacing: -0.1rem;
+  font-size: ${scale(22)}px;
+  color: ${colors.primary};
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: ${scale(20)}px;
+  right: ${scale(20)}px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: ${scale(4)}px;
+`;
+
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: calc(85vh - ${scale(120)}px);
+`;
+
+export const ChatContainer = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: ${scale(16)}px;
+  margin-bottom: ${scale(8)}px;
+  padding-right: ${scale(8)}px;
+
+  &::-webkit-scrollbar {
+    width: ${scale(4)}px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${colors.gray200};
+    border-radius: ${scale(2)}px;
+  }
+`;
+
+export const MessageWrapper = styled.div<{ isUser: boolean }>`
+  display: flex;
+  justify-content: ${({ isUser }) => (isUser ? 'flex-end' : 'flex-start')};
+  align-items: flex-start;
+  gap: ${scale(4)}px;
+`;
+
+export const BotIcon = styled.img`
+  width: ${scale(32)}px;
+  height: ${scale(32)}px;
+`;
+
+export const Message = styled.div<{ isUser: boolean }>`
+  ${FontStyles.captionMedium};
+  background-color: ${({ isUser }) => (isUser ? colors.primary200 : colors.primary50)};
+  padding: ${scale(8)}px;
+  border-radius: ${scale(5)}px;
+  max-width: 70%;
+  text-align: ${({ isUser }) => (isUser ? 'right' : 'left')};
+`;
+
+export const InputForm = styled.form`
+  position: relative;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: ${scale(12)}px;
+  border: 1px solid ${colors.primary50};
+  border-radius: ${scale(5)}px;
+  background-color: ${colors.primary50};
+  color: ${colors.gray800};
+
+  &::placeholder {
+    color: ${colors.gray400};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary100};
+  }
+`;
