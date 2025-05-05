@@ -4,13 +4,14 @@ import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
-import com.a406.pocketing.post.dto.PostRegisterRequestDto;
-import com.a406.pocketing.post.dto.PostRegisterResponseDto;
+import com.a406.pocketing.post.dto.*;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,5 +66,46 @@ public class PostServiceImpl implements PostService {
         }
         return responseList;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getPosts(Long memberId, Long albumId, Pageable pageable) {
+        if (memberId == null) {
+            throw new GeneralException(ErrorStatus.MEMBER_ID_REQUIRED);
+        }
+        return postRepository.findFilteredPosts(memberId, albumId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SellerListResponseDto getSellersByCardId(Long cardId, Pageable pageable) {
+        if (cardId == null) {
+            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+        }
+
+        Page<SellerSimpleDto> sellers = postRepository.findSellersByCardId(cardId, pageable);
+
+        if (sellers.isEmpty()) {
+            throw new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND);
+        }
+
+        int avgPrice = sellers.stream()
+                .mapToInt(SellerSimpleDto::getPrice)
+                .sum() / sellers.getContent().size();
+
+        return new SellerListResponseDto(avgPrice, sellers);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostDetailResponseDto getPostDetail(Long postId, Long currentUserId) {
+        if (postId == null) {
+            throw new GeneralException(ErrorStatus.POST_ID_REQUIRED);
+        }
+
+        return postRepository.findPostDetailById(postId, currentUserId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+    }
+
 }
 

@@ -11,8 +11,8 @@ public class NearbyExchangeCardResponseDto {
     private Long userId;
     private String nickname;
     private Double distance;
+    private String matchType;
     private CardDto card;
-    private Boolean isRequested;
 
     @Getter
     @Builder
@@ -25,5 +25,23 @@ public class NearbyExchangeCardResponseDto {
         private String member;
         private String content;
         private String imageUrl;
+    }
+
+    public static NearbyExchangeCardResponseDto fromNativeResult(Object[] row) {
+        return NearbyExchangeCardResponseDto.builder()
+                .userId(((Number) row[1]).longValue())
+                .nickname((String) row[5])
+                .distance(((Number) row[9]).doubleValue())
+                .matchType((String) row[10])
+                .card(CardDto.builder()
+                        .cardId(((Number) row[0]).longValue())
+                        .isOwned((Boolean) row[2])
+                        .content((String) row[3])
+                        .imageUrl((String) row[4])
+                        .group((String) row[6])
+                        .album((String) row[7])
+                        .member((String) row[8])
+                        .build())
+                .build();
     }
 }

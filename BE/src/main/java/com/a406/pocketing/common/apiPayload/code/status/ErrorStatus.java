@@ -32,6 +32,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 멤버(Member) 관련 에러
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4001", "존재하지 않는 멤버입니다."),
 	MEMBER_NAME_REQUIRED(HttpStatus.BAD_REQUEST, "MEMBER4002", "멤버명은 필수입니다."),
+	MEMBER_ID_REQUIRED(HttpStatus.BAD_REQUEST, "MEMBER4003", "멤버 ID는 필수입니다."),
 
 	// 앨범(Album) 관련 에러
 	ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALBUM4001", "존재하지 않는 앨범입니다."),
