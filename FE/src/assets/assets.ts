@@ -58,6 +58,7 @@ import SampleImage from '@/assets/icons/sample.svg';
 import IncreaseIcon from '@/assets/icons/increase.svg';
 import DecreaseIcon from '@/assets/icons/decrease.svg';
 import AverageIcon from '@/assets/icons/average.svg';
+import CautionIcon from '@/assets/icons/caution.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -76,7 +77,7 @@ import Winter4 from '@/assets/icons/winter4.svg';
 import Wonyoung1 from '@/assets/icons/wonyoung1.svg';
 import Wonyoung2 from '@/assets/icons/wonyoung2.svg';
 import Wonyoung3 from '@/assets/icons/wonyoung3.svg';
-
+import Wonyoung4 from '@/assets/icons/wonyoung4.svg';
 export {
   //Header
   Logo2d,
@@ -132,6 +133,7 @@ export {
   IncreaseIcon,
   DecreaseIcon,
   AverageIcon,
+  CautionIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
@@ -148,4 +150,5 @@ export {
   Wonyoung1,
   Wonyoung2,
   Wonyoung3,
+  Wonyoung4,
 };

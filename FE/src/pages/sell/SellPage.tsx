@@ -12,7 +12,7 @@ const SellPage = () => {
   };
 
   const handleMyPostsClick = () => {
-    console.log('내 판매글 버튼 클릭');
+    navigate('/mySaleList');
   };
 
   const navigate = useNavigate();

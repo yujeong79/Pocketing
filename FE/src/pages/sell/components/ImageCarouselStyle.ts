@@ -10,6 +10,7 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: ${scale(12)}px;
+  overflow: hidden;
 `;
 
 export const SlideWindow = styled.div`
@@ -49,13 +50,20 @@ export const DotContainer = styled.div`
   margin-top: ${scale(8)}px;
 `;
 
-export const Dot = styled.div<{ $isActive: boolean }>`
+export const Dot = styled.div<{ $isActive: boolean; $isComplete?: boolean }>`
   flex-shrink: 0;
   width: ${(p) => (p.$isActive ? `${scale(20)}px` : `${scale(10)}px`)};
   height: ${scale(10)}px;
   border-radius: ${(p) => (p.$isActive ? '40%' : '50%')};
-  background-color: ${(p) => (p.$isActive ? colors.gray200 : colors.white)};
-  border: ${(p) => (p.$isActive ? 'none' : `${scale(1)}px solid ${colors.gray200}`)};
+  background-color: ${(p) => {
+    if (p.$isActive && p.$isComplete) return colors.primary;
+    if (p.$isActive) return colors.gray200;
+    return colors.white;
+  }};
+  border: ${(p) => {
+    if (p.$isActive) return 'none';
+    return `${scale(1)}px solid ${p.$isComplete ? colors.primary : colors.gray200}`;
+  }};
   transition: all 0.3s ease;
 `;
 
