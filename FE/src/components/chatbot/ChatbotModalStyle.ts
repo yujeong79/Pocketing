@@ -17,12 +17,14 @@ export const Overlay = styled.div`
 `;
 
 export const ModalContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 85vh;
   background-color: white;
   border-radius: ${scale(20)}px ${scale(20)}px 0 0;
   padding: ${scale(20)}px;
-  position: relative;
   animation: slideUp 0.3s ease-out;
 
   @keyframes slideUp {
@@ -76,6 +78,7 @@ export const ChatContainer = styled.div`
   gap: ${scale(16)}px;
   margin-bottom: ${scale(8)}px;
   padding-right: ${scale(8)}px;
+  padding-bottom: ${scale(20)}px;
 
   &::-webkit-scrollbar {
     width: ${scale(4)}px;
@@ -109,12 +112,16 @@ export const Message = styled.div<{ isUser: boolean }>`
 `;
 
 export const InputForm = styled.form`
-  position: relative;
+  position: absolute;
+  bottom: ${scale(20)}px;
+  left: ${scale(20)}px;
+  right: ${scale(20)}px;
+  display: flex;
 `;
 
 export const Input = styled.input`
   width: 100%;
-  padding: ${scale(12)}px;
+  padding: ${scale(8)}px;
   border: 1px solid ${colors.primary50};
   border-radius: ${scale(5)}px;
   background-color: ${colors.primary50};
