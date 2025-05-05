@@ -50,8 +50,14 @@ public class Post {
     private String postImageUrl;
 
     @Column(nullable = false)
-    private LocalDateTime createAt = LocalDateTime.now();
+    private LocalDateTime createAt;
 
     @Column(nullable = false)
-    private String status = "AVAILABLE";
+    private String status;
+
+    @PrePersist
+    public void prePersist() {
+        this.createAt = this.createAt == null ? LocalDateTime.now() : this.createAt;
+    }
+
 }
