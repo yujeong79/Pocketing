@@ -12,12 +12,14 @@ import com.a406.pocketing.chat.repository.ChatMessageRepository;
 import com.a406.pocketing.chat.repository.ChatRoomRepository;
 import com.a406.pocketing.chat.repository.MessageStatusRepository;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
+import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
@@ -57,7 +60,10 @@ public class ChatServiceImpl implements ChatService {
             );
 
         if(chatroomOpt.isPresent()) { // 채팅방이 있으면 반환
+            log.info("chatroom already exist");
             return ChatRoomCreateResponseDto.from(chatroomOpt.get());
+        } else {
+            log.info("chatRoomOpt is null");
         }
 
         // 채팅방이 없으면 새로 생성해서 반환

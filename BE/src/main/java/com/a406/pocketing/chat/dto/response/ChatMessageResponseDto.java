@@ -4,11 +4,13 @@ import com.a406.pocketing.chat.entity.ChatMessage;
 import com.a406.pocketing.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@ToString
 public class ChatMessageResponseDto {
     private Long messageId;
     private Long roomId;

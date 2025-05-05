@@ -11,6 +11,7 @@ import com.a406.pocketing.chat.service.ChatService;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +29,8 @@ import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_
 import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_ENTER_SUCCESS;
 import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_FETCH_SUCCESS;
 
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
 public class ChatController {

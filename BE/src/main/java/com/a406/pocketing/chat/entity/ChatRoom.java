@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.CHAT_ROOM_UNAUTHORIZED_USER;
 
 @Entity
+@ToString
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
