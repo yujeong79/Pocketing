@@ -37,6 +37,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 앨범(Album) 관련 에러
 	ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALBUM4001", "존재하지 않는 앨범입니다."),
 	ALBUM_TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "ALBUM4002", "앨범명은 필수입니다."),
+	ALBUM_ID_REQUIRED(HttpStatus.BAD_REQUEST, "ALBUM4003", "앨범 ID는 필수입니다."),
 
 	// 포토카드(PhotoCard) 관련 에러
 	PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND, "PHOTO4001", "존재하지 않는 포토카드입니다."),
