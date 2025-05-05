@@ -38,6 +38,12 @@ import CloseIcon from '@/assets/icons/close.svg';
 import VerifyIcon from '@/assets/icons/verify.svg';
 import BracketIcon from '@/assets/icons/bracket.svg';
 
+// map
+import AlarmFalseIcon from '@/assets/icons/alarm-false.svg';
+import AlarmTrueIcon from '@/assets/icons/alarm-true.svg';
+import ReturnIcon from '@/assets/icons/return.svg';
+import RefreshIcon2 from '@/assets/icons/refresh-2.svg';
+
 // sell
 import WalletIcon from '@/assets/icons/wallet.svg';
 import PencilIcon from '@/assets/icons/pencil.svg';
@@ -107,6 +113,11 @@ export {
   CloseIcon,
   VerifyIcon,
   BracketIcon,
+  // map
+  AlarmFalseIcon,
+  AlarmTrueIcon,
+  ReturnIcon,
+  RefreshIcon2,
   //sell
   WalletIcon,
   PencilIcon,
