@@ -58,6 +58,7 @@ public class PostServiceImpl implements PostService {
                     .photoCard(photoCard)
                     .price(requestDto.getPrice())
                     .postImageUrl(requestDto.getPostImageUrl())
+                    .status("AVAILABLE")
                     .build();
 
             Post savedPost = postRepository.save(post);
