@@ -107,5 +107,33 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
     }
 
+    @Override
+    @Transactional
+    public void updatePost(Long postId, Long userId, PostUpdateRequestDto dto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        if (!post.getSeller().getUserId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.POST_EDIT_FORBIDDEN);
+        }
+
+        post.update(dto.getPrice(), dto.getStatus());
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        if (!post.getSeller().getUserId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.POST_DELETE_FORBIDDEN);
+        }
+
+        postRepository.delete(post);
+    }
+
+
+
 }
 
