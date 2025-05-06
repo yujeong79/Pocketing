@@ -1,6 +1,6 @@
 package com.a406.pocketing.auth.principal;
 
-import com.a406.pocketing.user.dto.UserResponseDto;
+import com.a406.pocketing.user.dto.response.UserResponseDto;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @ToString

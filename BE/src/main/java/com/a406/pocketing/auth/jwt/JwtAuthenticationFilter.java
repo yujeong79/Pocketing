@@ -1,7 +1,7 @@
 package com.a406.pocketing.auth.jwt;
 
 import com.a406.pocketing.auth.principal.CustomUserDetails;
-import com.a406.pocketing.user.dto.UserResponseDto;
+import com.a406.pocketing.user.dto.response.UserResponseDto;
 import com.a406.pocketing.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

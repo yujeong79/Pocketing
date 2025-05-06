@@ -1,6 +1,6 @@
 package com.a406.pocketing.auth.dto;
 
-import com.a406.pocketing.user.dto.UserLikedInfoRequestDto;
+import com.a406.pocketing.user.dto.request.UserLikedInfoRequestDto;
 import lombok.Getter;
 import lombok.Setter;
 

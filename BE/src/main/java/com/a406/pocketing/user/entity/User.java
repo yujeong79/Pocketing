@@ -1,5 +1,6 @@
 package com.a406.pocketing.user.entity;
 
+import com.a406.pocketing.user.dto.request.MyPageRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -41,5 +42,13 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserLikedMember> likedMembers = new ArrayList<>();
+
+    public void updateUser(MyPageRequestDto myPageRequestDto) {
+        if (myPageRequestDto.getNickname() != null) this.nickname = myPageRequestDto.getNickname();
+        if (myPageRequestDto.getProfileImageUrl() != null) this.profileImageUrl = myPageRequestDto.getProfileImageUrl();
+        if (myPageRequestDto.getAddress() != null) this.address = myPageRequestDto.getAddress();
+        if (myPageRequestDto.getBank() != null) this.bank = myPageRequestDto.getBank();
+        if (myPageRequestDto.getAccount() != null) this.account = myPageRequestDto.getAccount();
+    }
 
 }
