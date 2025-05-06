@@ -1,5 +1,8 @@
 package com.a406.pocketing.chat.dto.response;
 
+import com.a406.pocketing.exchange.entity.ExchangeCard;
+import com.a406.pocketing.exchange.entity.ExchangeRequest;
+import com.a406.pocketing.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,12 +14,30 @@ public class LinkedExchangeResponseDto {
     private ExchangeCardResponseDto requester;
     private ExchangeCardResponseDto responder;
 
+    public static LinkedExchangeResponseDto of(ExchangeRequest exchangeRequest, ExchangeCardResponseDto requesterDto, ExchangeCardResponseDto responderDto) {
+        return LinkedExchangeResponseDto.builder()
+                .exchangeRequestId(exchangeRequest.getExchangeRequestId())
+                .requester(requesterDto)
+                .responder(responderDto)
+                .build();
+    }
+
     @Getter @Builder
-    private static class ExchangeCardResponseDto {
+    public static class ExchangeCardResponseDto {
         private Long userId;
         private String groupName;
         private String memberName;
         private String albumName;
         private String exchangeImageUrl;
+
+        public static ExchangeCardResponseDto of(User user, ExchangeCard exchangeCard) {
+            return ExchangeCardResponseDto.builder()
+                    .userId(user.getUserId())
+                    .groupName(exchangeCard.getGroup().getNameKo())
+                    .memberName(exchangeCard.getMember().getName())
+                    .albumName(exchangeCard.getAlbum().getTitle())
+                    .exchangeImageUrl(exchangeCard.getExchangeImageUrl())
+                    .build();
+        }
     }
 }

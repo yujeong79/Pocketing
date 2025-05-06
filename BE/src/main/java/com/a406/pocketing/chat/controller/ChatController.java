@@ -3,15 +3,13 @@ package com.a406.pocketing.chat.controller;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.chat.dto.request.ChatMessageRequestDto;
 import com.a406.pocketing.chat.dto.request.ChatRoomRequestDto;
-import com.a406.pocketing.chat.dto.response.ChatMessageResponseDto;
-import com.a406.pocketing.chat.dto.response.ChatRoomCreateResponseDto;
-import com.a406.pocketing.chat.dto.response.ChatRoomEnterResponseDto;
-import com.a406.pocketing.chat.dto.response.ChatRoomListItemResponseDto;
+import com.a406.pocketing.chat.dto.response.*;
 import com.a406.pocketing.chat.service.ChatService;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,8 +23,7 @@ import java.security.Principal;
 import java.util.List;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
-import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_ENTER_SUCCESS;
-import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHAT_ROOM_FETCH_SUCCESS;
+import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.*;
 
 @Slf4j
 @RestController
@@ -78,7 +75,8 @@ public class ChatController {
     @GetMapping("/unread/count")
     public ApiResponse<?> getUnreadMessagesCount(@AuthenticationPrincipal CustomUserDetails loginUser) {
         Integer unreadMessageCount = chatService.getUnreadMessageCount(loginUser.getUserId());
-        return ApiResponse.onSuccess(unreadMessageCount);
+
+        return ApiResponse.of(CHAT_UNREAD_MESSAGE_COUNT_SUCCESS, unreadMessageCount);
     }
 
     /**
@@ -123,6 +121,26 @@ public class ChatController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         ChatRoomEnterResponseDto chatRoomEnterResponseDto = chatService.enterChatRoom(loginUser.getUserId(), roomId, pageable);
         return ApiResponse.of(CHAT_ROOM_ENTER_SUCCESS, chatRoomEnterResponseDto);
+    }
+
+    /**
+     * 채팅방 과거 메시지 조회
+     * @param loginUser
+     * @param roomId
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/room/{roomId}/messages")
+    public ApiResponse<?> getChatMessages(
+            @AuthenticationPrincipal CustomUserDetails loginUser,
+            @PathVariable Long roomId,
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        MessagePageResponseDto messagePage = chatService.getChatMessages(loginUser.getUserId(), roomId, pageable);
+        return ApiResponse.of(CHAT_MESSAGE_FETCH_SUCCESS, messagePage);
     }
 
 }
