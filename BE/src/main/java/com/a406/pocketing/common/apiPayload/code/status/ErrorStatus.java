@@ -24,6 +24,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 회원 관련 에러
 	USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
 	USER_NICKNAME_DUPLICATE(HttpStatus.BAD_REQUEST, "USER4002", "중복된 닉네임입니다."),
+	USER_LIKE_GROUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4003", "사용자의 관심 그룹으로 등록되지 않은 그룹입니다."),
+	USER_LIKE_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4004", "사용자의 관심 멤버로 등록되지 않은 멤버입니다."),
 
 	// 그룹(Group) 관련 에러
 	GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP4001", "존재하지 않는 그룹입니다."),
