@@ -72,40 +72,57 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void registerLikedGroup(Long userId, List<LikedGroupDto> likedGroupList) {
+        // 1. 로그인한 사용자의 엔티티 조회
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
 
+        // 2. 사용자의 현재 관심 그룹 ID 리스트
+        List<Long> existingGroupIds = user.getLikedGroups().stream()
+                .map(userLikedGroup -> userLikedGroup.getGroup().getGroupId())
+                .toList();
+
+        // 3. 관심 그룹으로 등록되지 않은 그룹만 필터링
         List<UserLikedGroup> toSave = new ArrayList<>();
         for(LikedGroupDto likedGroup : likedGroupList) {
-            Group group = groupRepository.findByGroupId(likedGroup.getGroupId()).orElseThrow(() -> new BadRequestHandler(GROUP_NOT_FOUND));
+            if(!existingGroupIds.contains(likedGroup.getGroupId())) {
+                Group group = groupRepository.findByGroupId(likedGroup.getGroupId()).orElseThrow(() -> new BadRequestHandler(GROUP_NOT_FOUND));
+                UserLikedGroup entity = UserLikedGroup.builder()
+                        .user(user)
+                        .group(group)
+                        .build();
 
-            UserLikedGroup entity = UserLikedGroup.builder()
-                    .user(user)
-                    .group(group)
-                    .build();
-
-            toSave.add(entity);
+                toSave.add(entity);
+            }
 
             registerLikedMember(user, likedGroup.getLikedMemberList());
         }
 
+        // 4. 필터링된 그룹만 저장
         userLikedGroupRepository.saveAll(toSave);
     }
 
     @Override
     @Transactional
     public void registerLikedMember(User user, List<Long> likedMemberList) {
+        // 1. 사용자의 현재 관심 멤버 ID 리스트
+        List<Long> existingMemberIds = user.getLikedMembers().stream()
+                .map(userLikedMember -> userLikedMember.getMember().getMemberId())
+                .toList();
+
+        // 2. 관심 멤버로 등록되지 않는 멤버만 필터링
         List<UserLikedMember> toSave = new ArrayList<>();
         for(Long likedMemberId : likedMemberList) {
-            Member member = memberRepository.findByMemberId(likedMemberId).orElseThrow(() -> new BadRequestHandler(MEMBER_NOT_FOUND));
+            if(!existingMemberIds.contains(likedMemberId)) {
+                Member member = memberRepository.findByMemberId(likedMemberId).orElseThrow(() -> new BadRequestHandler(MEMBER_NOT_FOUND));
+                UserLikedMember entity = UserLikedMember.builder()
+                        .user(user)
+                        .member(member)
+                        .build();
 
-            UserLikedMember entity = UserLikedMember.builder()
-                    .user(user)
-                    .member(member)
-                    .build();
-
-            toSave.add(entity);
+                toSave.add(entity);
+            }
         }
 
+        // 3. 필터링된 멤버만 저장
         userLikedMemberRepository.saveAll(toSave);
     }
 
