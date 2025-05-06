@@ -63,12 +63,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void registerLikedInfo(Long userId, UserLikedInfoRequestDto likedInfoRequestDto) {
         // 관심 그룹 등록, 그룹 등록 로직 내에서 관심 멤버 등록 수행
         registerLikedGroup(userId, likedInfoRequestDto.getLikedGroupList());
     }
 
     @Override
+    @Transactional
     public void registerLikedGroup(Long userId, List<LikedGroupDto> likedGroupList) {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
 
@@ -90,6 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void registerLikedMember(User user, List<Long> likedMemberList) {
         List<UserLikedMember> toSave = new ArrayList<>();
         for(Long likedMemberId : likedMemberList) {
@@ -135,6 +138,43 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserId(userId)
                 .map(UserResponseDto::of)
                 .orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void deleteLikedGroup(Long userId, Long groupId) {
+        // 1. 그룹 유효성 검사
+        Group group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new BadRequestHandler(GROUP_NOT_FOUND));
+
+        // 2. 관심 그룹 여부 확인
+        UserLikedGroup userLikedGroup = userLikedGroupRepository.findByUserUserIdAndGroup(userId, group)
+                .orElseThrow(() -> new BadRequestHandler(USER_LIKE_GROUP_NOT_FOUND));
+
+        // 3. 관심 멤버 일괄 삭제
+        userLikedMemberRepository.deleteByUserIdAndGroup(userId, group);
+
+        // 4. 관심 그룹 엔티티 조회 및 삭제
+        userLikedGroupRepository.delete(userLikedGroup);
+    }
+
+    @Override
+    @Transactional
+    public void deleteLikedMember(Long userId, Long memberId) {
+        // 1. 멤버 유효성 검사
+        Member member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new BadRequestHandler(MEMBER_NOT_FOUND));
+        
+        // 2. 관심 멤버 여부 확인 및 삭제
+        UserLikedMember userLikedMember = userLikedMemberRepository.findByUserUserIdAndMember(userId, member)
+                .orElseThrow(() -> new BadRequestHandler(USER_LIKE_MEMBER_NOT_FOUND));
+        userLikedMemberRepository.delete(userLikedMember);
+
+        // 3. 사용자가 해당 그룹의 다른 멤버도 관심 등록했는지 확인
+        Boolean hasOtherLikedMembers = userLikedMemberRepository.existsByUserUserIdAndMemberGroup(userId, member.getGroup());
+
+        // 4. 없으면 해당 group도 관심 그룹에서 삭제
+        if(!hasOtherLikedMembers) {
+            userLikedGroupRepository.deleteByUserUserIdAndGroup(userId, member.getGroup());
+        }
     }
 
 }

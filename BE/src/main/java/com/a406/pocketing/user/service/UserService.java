@@ -20,5 +20,6 @@ public interface UserService {
     List<UserLikedGroupResponseDto> getUserLikedGroup(Long userId);
     List<UserLikedMemberResponseDto> getUserLikedMemberByGroup(Long userId, Long groupId);
     UserResponseDto findById(Long userId);
-
+    void deleteLikedGroup(Long userId, Long groupId);
+    void deleteLikedMember(Long userId, Long memberId);
 }

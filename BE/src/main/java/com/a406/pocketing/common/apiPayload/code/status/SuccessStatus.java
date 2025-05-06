@@ -22,14 +22,16 @@ public enum SuccessStatus implements BaseCode {
 	USERINFO_SUCCESS(HttpStatus.OK, "USER2002", "사용자 정보 조회 성공입니다."),
 	USER_LIKE_INFO_REGISTER_SUCCESS(HttpStatus.CREATED, "USER2003", "사용자 관심 그룹 및 멤버 등록 성공입니다."),
 	CHECK_NICKNAME_SUCCESS(HttpStatus.OK, "USER2004", "중복되지 않은 닉네임입니다."),
+	USER_LIKE_GROUP_LIST_FETCH_SUCCESS(HttpStatus.OK, "USER2005", "관심 그룹 목록 조회 성공입니다."),
+	USER_LIKE_MEMBER_LIST_FETCH_SUCCESS(HttpStatus.OK, "USER2006", "관심 멤버 목록 조회 성공입니다."),
+	USER_LIKE_GROUP_DELETE_SUCCESS(HttpStatus.OK, "USER2007", "관심 그룹 삭제 성공입니다."),
+	USER_LIKE_MEMBER_DELETE_SUCCESS(HttpStatus.OK, "USER2008", "관심 멤버 삭제 성공입니다."),
 
 	// 그룹(Group) 관련 성공
 	GROUP_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2001", "그룹 목록 조회 성공"),
-	GROUP_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "GROUP2002", "관심 그룹 목록 조회 성공"),
 
 	// 멤버(Member) 관련 성공
 	MEMBER_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2001", "멤버 목록 조회 성공"),
-	MEMBER_LIKE_LIST_FETCH_SUCCESS(HttpStatus.OK, "MEMBER2002", "관심 멤버 목록 조회 성공"),
 
 	// 앨범(Album) 관련 성공
 	ALBUM_LIST_FETCH_SUCCESS(HttpStatus.OK, "ALBUM2001", "앨범 목록 조회 성공"),
