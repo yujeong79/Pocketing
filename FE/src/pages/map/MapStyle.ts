@@ -95,3 +95,42 @@ export const RangeButton = styled.div`
   ${FontStyles.captionSmall}
   color: ${colors.white};
 `;
+
+export const RangeModalText = styled.div`
+  ${FontStyles.bodySmall}
+  color: ${colors.black};
+  padding-top: ${scale(4)}px;
+`;
+
+export const RangeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${scale(24)}px;
+  padding-top: ${scale(36)}px;
+  padding-bottom: ${scale(24)}px;
+`;
+
+export const Range100 = styled.div<{ $selected?: boolean }>`
+  ${FontStyles.headingMedium}
+  color: ${colors.black};
+  ${({ $selected }) => $selected && `color: ${colors.primary};`}
+`;
+
+export const Range300 = styled.div<{ $selected?: boolean }>`
+  ${FontStyles.headingMedium}
+  color: ${colors.black};
+  ${({ $selected }) => $selected && `color: ${colors.primary};`}
+`;
+
+export const Range500 = styled.div<{ $selected?: boolean }>`
+  ${FontStyles.headingMedium}
+  color: ${colors.black};
+  ${({ $selected }) => $selected && `color: ${colors.primary};`}
+`;
+
+export const MyCardModalText = styled.div`
+  ${FontStyles.bodySmall}
+  color: ${colors.black};
+`;

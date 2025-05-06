@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-
 import * as S from './SlideUpModalStyle';
 import { CloseIcon } from '@/assets/assets';
+import Portal from './Portal';
 
 interface SlideUpModalProps {
   header: string;
@@ -27,15 +27,17 @@ const SlideUpModal = ({ header, isOpen, onClose, children }: SlideUpModalProps) 
   if (!isOpen && !isAnimating) return null;
 
   return (
-    <S.Overlay $isOpen={isOpen} onClick={onClose}>
-      <S.ModalContainer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
-        <S.ModalHeader>
-          <S.ModalTitle>{header}</S.ModalTitle>
-          <S.CloseButton src={CloseIcon} onClick={onClose} />
-        </S.ModalHeader>
-        <S.ModalContent>{children}</S.ModalContent>
-      </S.ModalContainer>
-    </S.Overlay>
+    <Portal>
+      <S.Overlay $isOpen={isOpen} onClick={onClose}>
+        <S.ModalContainer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
+          <S.ModalHeader>
+            <S.ModalTitle>{header}</S.ModalTitle>
+            <S.CloseButton src={CloseIcon} onClick={onClose} />
+          </S.ModalHeader>
+          <S.ModalContent>{children}</S.ModalContent>
+        </S.ModalContainer>
+      </S.Overlay>
+    </Portal>
   );
 };
 

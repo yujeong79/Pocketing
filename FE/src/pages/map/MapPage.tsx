@@ -6,9 +6,13 @@ import AlarmButton from './components/AlarmButton';
 import MyCard from './components/MyCard';
 import OthersCard from './components/OthersCard';
 import { ReturnIcon, RefreshIcon2 } from '@/assets/assets';
+import SlideUpModal from '@/components/common/SlideUpModal';
 
 const MapPage = () => {
   const [spinning, setSpinning] = useState(false);
+  const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
+  const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
+  const [range, setRange] = useState(100);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const handleRefreshClick = () => {
@@ -63,7 +67,7 @@ const MapPage = () => {
           <AlarmButton />
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
-          <MyCard />
+          <MyCard onClick={() => setIsMyCardModalOpen(true)} />
           <OthersCard />
         </S.ExchangeCardContainer>
       </S.PageItemContainer>
@@ -77,9 +81,38 @@ const MapPage = () => {
         </S.ButtonContainer>
       </S.ButtonsContainer>
 
-      <S.RangeButtonContainer>
+      <S.RangeButtonContainer onClick={() => setIsRangeModalOpen(true)}>
         <S.RangeButton>반경 설정</S.RangeButton>
       </S.RangeButtonContainer>
+
+      {/* 나의 포카 모달 */}
+      <SlideUpModal
+        header="나의 포카"
+        isOpen={isMyCardModalOpen}
+        onClose={() => setIsMyCardModalOpen(false)}
+      >
+        <S.MyCardModalText>교환하고 싶은 나의 포카를 촬영해주세요</S.MyCardModalText>
+      </SlideUpModal>
+
+      {/* 반경 설정 모달 */}
+      <SlideUpModal
+        header="반경 설정"
+        isOpen={isRangeModalOpen}
+        onClose={() => setIsRangeModalOpen(false)}
+      >
+        <S.RangeModalText>근처에서 포케터를 검색할 반경을 선택해주세요</S.RangeModalText>
+        <S.RangeContainer>
+          <S.Range100 $selected={range === 100} onClick={() => setRange(100)}>
+            100m
+          </S.Range100>
+          <S.Range300 $selected={range === 300} onClick={() => setRange(300)}>
+            300m
+          </S.Range300>
+          <S.Range500 $selected={range === 500} onClick={() => setRange(500)}>
+            500m
+          </S.Range500>
+        </S.RangeContainer>
+      </SlideUpModal>
     </S.MapContainer>
   );
 };
