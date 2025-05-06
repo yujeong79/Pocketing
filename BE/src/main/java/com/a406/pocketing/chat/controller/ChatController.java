@@ -20,7 +20,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
@@ -69,6 +68,17 @@ public class ChatController {
                 "/queue/messages",
                 chatMessageResponseDto
         );
+    }
+
+    /**
+     * 로그인 사용자가 안읽은 채팅방 메시지 전체 개수 조회
+     * @param loginUser
+     * @return
+     */
+    @GetMapping("/unread/count")
+    public ApiResponse<?> getUnreadMessagesCount(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        Integer unreadMessageCount = chatService.getUnreadMessageCount(loginUser.getUserId());
+        return ApiResponse.onSuccess(unreadMessageCount);
     }
 
     /**

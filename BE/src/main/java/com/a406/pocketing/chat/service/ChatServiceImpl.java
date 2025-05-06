@@ -199,6 +199,16 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
+     * 로그인 사용자가 안읽은 채팅방 메시지 전체 개수 조회
+     * @param userId
+     * @return
+     */
+    @Override
+    public Integer getUnreadMessageCount(Long userId) {
+        return messageStatusRepository. countUnreadMessagesByUserId(userId);
+    }
+
+    /**
      * private(내부 로직용)
      * 채팅방과 연관된 거래하기 글을 가져오기 위한 서비스
      * @param chatRoom
