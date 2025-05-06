@@ -43,18 +43,10 @@ public class PhotoCard {
     @Column(nullable = false)
     private String cardImageUrl;
 
-    @Column(nullable = false)
-    private Integer avgPrice;
-
-    @Column(nullable = false)
-    private Integer minPrice;
-
-    @Column(nullable = false)
-    private Integer maxPrice;
-
     @ElementCollection
     @CollectionTable(name = "photo_card_tags", joinColumns = @JoinColumn(name = "card_id"))
     @Column(name = "tag")
     private List<String> tags;
+
 
 }

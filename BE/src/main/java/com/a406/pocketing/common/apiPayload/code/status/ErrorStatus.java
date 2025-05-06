@@ -46,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
 	// 시세(Price) 조회 관련 에러
 	PRICE_NO_MATCHING_POST(HttpStatus.NOT_FOUND, "PRICE4001", "조건에 맞는 판매글이 존재하지 않습니다."),
+	STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4002", "해당 포토카드의 시세 통계 정보가 존재하지 않습니다."),
 
 	// 판매글(Post) 등록/ 조회 관련 에러
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "존재하지 않는 판매글입니다."),

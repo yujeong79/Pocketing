@@ -4,6 +4,7 @@ import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
+import com.a406.pocketing.photocard.service.PhotoCardService;
 import com.a406.pocketing.post.dto.*;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
@@ -25,6 +26,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PhotoCardRepository photoCardRepository;
     private final UserRepository userRepository;
+    private final PhotoCardService photoCardService;
 
     @Override
     @Transactional
@@ -63,6 +65,10 @@ public class PostServiceImpl implements PostService {
 
             Post savedPost = postRepository.save(post);
             responseList.add(new PostRegisterResponseDto(savedPost.getPostId()));
+
+            // 시세 갱신
+            photoCardService.updatePrice(requestDto.getCardId(), requestDto.getPrice());
+
         }
         return responseList;
     }
@@ -116,8 +122,12 @@ public class PostServiceImpl implements PostService {
         if (!post.getSeller().getUserId().equals(userId)) {
             throw new GeneralException(ErrorStatus.POST_EDIT_FORBIDDEN);
         }
-
+        int originalPrice = post.getPrice(); // 기존 가격
         post.update(dto.getPrice(), dto.getStatus());
+
+        Long cardId = post.getPhotoCard().getCardId();
+        photoCardService.decreasePrice(cardId, originalPrice); // 기존 가격 제거
+        photoCardService.updatePrice(cardId, dto.getPrice());  // 새로운 가격 추가
     }
 
     @Override
@@ -130,7 +140,11 @@ public class PostServiceImpl implements PostService {
             throw new GeneralException(ErrorStatus.POST_DELETE_FORBIDDEN);
         }
 
+        Long cardId = post.getPhotoCard().getCardId();
+        int price = post.getPrice();
+
         postRepository.delete(post);
+        photoCardService.decreasePrice(cardId, price);  // 삭제된 가격 제거
     }
 
 
