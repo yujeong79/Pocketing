@@ -1,6 +1,7 @@
 package com.a406.pocketing.chat.entity;
 
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
+import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
@@ -51,10 +52,12 @@ public class ChatRoom {
     ))
     private Post post;
 
-//    TODO: ExchangeRequest Entity 생기면 수정
-//    @OneToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "exchange_id")
-    private Long exchangeId;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exchange_id", foreignKey = @ForeignKey(
+            foreignKeyDefinition = "FOREIGN KEY (exchange_id) REFERENCES exchangeRequest(exchange_request_id) ON DELETE CASCADE"
+    ))
+    private ExchangeRequest exchangeRequest;
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -67,4 +70,5 @@ public class ChatRoom {
         if(user2.getUserId().equals(senderId)) { return user1; }
         throw new BadRequestHandler(CHAT_ROOM_UNAUTHORIZED_USER);
     }
+
 }
