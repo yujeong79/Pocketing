@@ -2,11 +2,11 @@ package com.a406.pocketing.user.controller;
 
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
-import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.user.dto.UserLikedGroupResponseDto;
-import com.a406.pocketing.user.dto.UserLikedInfoRequestDto;
-import com.a406.pocketing.user.dto.UserLikedMemberResponseDto;
-import com.a406.pocketing.user.entity.UserLikedGroup;
+import com.a406.pocketing.user.dto.request.MyPageRequestDto;
+import com.a406.pocketing.user.dto.response.MyPageResponseDto;
+import com.a406.pocketing.user.dto.response.UserLikedGroupResponseDto;
+import com.a406.pocketing.user.dto.request.UserLikedInfoRequestDto;
+import com.a406.pocketing.user.dto.response.UserLikedMemberResponseDto;
 import com.a406.pocketing.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,5 +84,21 @@ public class UserController {
         return ApiResponse.of(USER_LIKE_MEMBER_DELETE_SUCCESS, null);
     }
 
+    /**
+     * 마이페이지에 필요한 사용자 세부 정보 조회
+     * @param loginUser
+     * @return
+     */
+    @GetMapping("/mypage")
+    public ApiResponse<?> getMyPageInfo(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        MyPageResponseDto myPageResponseDto = userService.getMyPageInfo(loginUser.getUserId());
+        return ApiResponse.of(USER_INFO_SUCCESS, myPageResponseDto);
+    }
+
+    @PutMapping("/mypage")
+    public ApiResponse<?> updateMyPageInfo(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestBody MyPageRequestDto myPageRequestDto) {
+        userService.updateMyPageInfo(loginUser.getUserId(), myPageRequestDto);
+        return ApiResponse.of(USER_INFO_UPDATE_SUCCESS, null);
+    }
 
 }

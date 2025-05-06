@@ -9,11 +9,13 @@ import com.a406.pocketing.group.entity.Group;
 import com.a406.pocketing.group.repository.GroupRepository;
 import com.a406.pocketing.member.entity.Member;
 import com.a406.pocketing.member.repository.MemberRepository;
-import com.a406.pocketing.user.dto.UserLikedGroupResponseDto;
-import com.a406.pocketing.user.dto.UserLikedInfoRequestDto;
-import com.a406.pocketing.user.dto.UserLikedInfoRequestDto.LikedGroupDto;
-import com.a406.pocketing.user.dto.UserLikedMemberResponseDto;
-import com.a406.pocketing.user.dto.UserResponseDto;
+import com.a406.pocketing.user.dto.request.MyPageRequestDto;
+import com.a406.pocketing.user.dto.request.UserLikedInfoRequestDto;
+import com.a406.pocketing.user.dto.request.UserLikedInfoRequestDto.LikedGroupDto;
+import com.a406.pocketing.user.dto.response.MyPageResponseDto;
+import com.a406.pocketing.user.dto.response.UserLikedGroupResponseDto;
+import com.a406.pocketing.user.dto.response.UserLikedMemberResponseDto;
+import com.a406.pocketing.user.dto.response.UserResponseDto;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.entity.UserLikedGroup;
 import com.a406.pocketing.user.entity.UserLikedMember;
@@ -192,6 +194,19 @@ public class UserServiceImpl implements UserService {
         if(!hasOtherLikedMembers) {
             userLikedGroupRepository.deleteByUserUserIdAndGroup(userId, member.getGroup());
         }
+    }
+
+    @Override
+    public MyPageResponseDto getMyPageInfo(Long userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+        return MyPageResponseDto.from(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateMyPageInfo(Long userId, MyPageRequestDto myPageRequestDto) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+        user.updateUser(myPageRequestDto);
     }
 
 }

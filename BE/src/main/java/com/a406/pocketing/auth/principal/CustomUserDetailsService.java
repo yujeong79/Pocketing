@@ -1,7 +1,7 @@
 package com.a406.pocketing.auth.principal;
 
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
-import com.a406.pocketing.user.dto.UserResponseDto;
+import com.a406.pocketing.user.dto.response.UserResponseDto;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
