@@ -16,4 +16,5 @@ public interface ChatService {
     List<ChatRoomListItemResponseDto> getAllPostChatRoom(Long userId);
     List<ChatRoomListItemResponseDto> getAllExchangeChatRoom(Long userId);
     ChatRoomEnterResponseDto enterChatRoom(Long userId, Long roomId, Pageable pageable);
+    Integer getUnreadMessageCount(Long userId);
 }

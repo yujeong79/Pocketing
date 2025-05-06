@@ -15,6 +15,13 @@ public interface MessageStatusRepository extends JpaRepository<MessageStatus, Lo
     """)
     Integer countUnreadMessagesByRoomId(Long userId, Long roomId);
 
+    @Query("""
+        SELECT COUNT(ms) FROM MessageStatus ms
+        WHERE ms.receiverId = :userId
+            AND ms.readAt IS NULL
+    """)
+    Integer countUnreadMessagesByUserId(Long userId);
+
     @Modifying
     @Transactional
     @Query("""
