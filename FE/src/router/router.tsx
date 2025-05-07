@@ -21,6 +21,7 @@ import MessagePage from '@/pages/message/MessagePage';
 import ChatRoomPage from '@/pages/message/ChatRoomPage';
 //map
 import MapPage from '@/pages/map/MapPage';
+import AlarmPage from '@/pages/map/AlarmPage';
 //profile
 import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
@@ -102,6 +103,10 @@ const router = createBrowserRouter([
   {
     path: 'message/:roomId',
     element: <ChatRoomPage />,
+  },
+  {
+    path: 'alarm',
+    element: <AlarmPage />,
   },
   {
     path: 'guide',

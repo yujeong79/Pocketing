@@ -9,14 +9,21 @@ import { ReturnIcon, RefreshIcon2, Wonyoung1 } from '@/assets/assets';
 import SlideUpModal from '@/components/common/SlideUpModal';
 import Button from '@/components/common/Button';
 import { CameraIcon } from '@/assets/assets';
+import { useNavigate } from 'react-router-dom';
+import { colors } from '@/styles/theme';
 
 const MapPage = () => {
+  const navigate = useNavigate();
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
+  const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [range, setRange] = useState(100);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [modalStep, setModalStep] = useState(1);
+
+  const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const handleRefreshClick = () => {
@@ -40,12 +47,31 @@ const MapPage = () => {
 
   const handleCloseModal = () => {
     setIsMyCardModalOpen(false);
+    setIsOtherCardModalOpen(false);
     setModalStep(1);
   };
 
   useEffect(() => {
-    if (window.naver && mapRef.current) {
-      const location = new window.naver.maps.LatLng(37.52133, 126.9522);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.error('위치 정보를 가져오는데 실패했습니다:', error);
+          // 기본 위치 설정 (멀티캠퍼스)
+          setCurrentLocation({ lat: 37.501286, lng: 127.0396029 });
+        }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (window.naver && mapRef.current && currentLocation) {
+      const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
+
+      // 지도 생성
       const map = new window.naver.maps.Map(mapRef.current, {
         center: location,
         zoom: 17,
@@ -72,24 +98,47 @@ const MapPage = () => {
         mapTypeId: window.naver.maps.MapTypeId.NORMAL,
       });
 
-      new window.naver.maps.Marker({
+      // 마커 생성
+      const marker = new window.naver.maps.Marker({
         map,
         position: location,
+        icon: S.createMarkerIcon(),
         animation: window.naver.maps.Animation.DROP,
+        zIndex: 100,
+      });
+
+      // 기존 원형 영역이 있다면 제거
+      if (circleRef.current) {
+        circleRef.current.setMap(null);
+      }
+
+      // 새로운 원형 영역 생성
+      circleRef.current = new window.naver.maps.Circle({
+        map,
+        center: location,
+        radius: range,
+        fillColor: colors.primary,
+        fillOpacity: 0.1,
+        strokeColor: colors.primary,
+        strokeWeight: 2,
+        strokeOpacity: 0.5,
+        strokeStyle: 'solid',
+        clickable: false,
+        zIndex: 50,
       });
     }
-  }, []);
+  }, [currentLocation, range]);
 
   return (
     <S.MapContainer ref={mapRef}>
       <S.PageItemContainer>
         <S.MapHeaderContainer>
           <PlaceSearchInput />
-          <AlarmButton />
+          <AlarmButton onClick={() => navigate('/alarm')} />
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
           <MyCard onClick={() => setIsMyCardModalOpen(true)} />
-          <OthersCard />
+          <OthersCard onClick={() => setIsOtherCardModalOpen(true)} />
         </S.ExchangeCardContainer>
       </S.PageItemContainer>
 
@@ -183,6 +232,46 @@ const MapPage = () => {
             <Button text="등록하기" onClick={handleCloseModal} />
           </>
         )}
+      </SlideUpModal>
+
+      {/* 원하는 포카 모달 */}
+      <SlideUpModal
+        header="원하는 포카"
+        isOpen={isOtherCardModalOpen}
+        onClose={() => setIsOtherCardModalOpen(false)}
+      >
+        <S.OtherCardModalText>교환하고 싶은 포카를 선택해주세요</S.OtherCardModalText>
+        <S.MyCardInfoContainer>
+          <S.LeftInfoContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>그룹명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>멤버명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>앨범명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+          </S.LeftInfoContainer>
+          <S.RightInfoContainer>
+            <S.SearchContainer>
+              <S.SearchInput placeholder="검색" />
+            </S.SearchContainer>
+            <S.ResultContainer>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+            </S.ResultContainer>
+          </S.RightInfoContainer>
+        </S.MyCardInfoContainer>
+        <Button text="확인" onClick={handleCloseModal} />
       </SlideUpModal>
 
       {/* 반경 설정 모달 */}
