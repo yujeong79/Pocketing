@@ -23,7 +23,6 @@ pipeline {
                     chmod +x gradlew
                     ./gradlew clean --no-build-cache -x test
                     rm -rf ~./gradle/caches/
-                    ls build/libs
                     '''
                 }
             }
