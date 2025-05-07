@@ -35,7 +35,6 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
             <img src={LogoText} alt="포켓팅 로고" />
           </S.LeftSection>
         );
-      case 'chat':
       case 'detail':
       case 'profileDetail':
         return (
@@ -45,6 +44,7 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
             </S.BackButton>
           </S.LeftSection>
         );
+      case 'chat':
       case 'mySaleList':
         return (
           <S.LeftSection>
