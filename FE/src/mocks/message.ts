@@ -25,7 +25,7 @@ export const mockTradeChats = [
 
 export const mockExchangeChats = [
   {
-    roomId: 'room-1234',
+    roomId: 9,
     otherUser: {
       userId: 'b123',
       nickname: '맠프',
@@ -35,7 +35,7 @@ export const mockExchangeChats = [
     updatedAt: '2025-04-23T19:00:00',
   },
   {
-    roomId: 'room-1235',
+    roomId: 3,
     otherUser: {
       userId: 'b124',
       nickname: '정프',

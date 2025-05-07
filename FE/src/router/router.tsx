@@ -18,6 +18,7 @@ import SellPage from '@/pages/sell/SellPage';
 import GuidePage from '@/pages/sell/GuidePage';
 //message
 import MessagePage from '@/pages/message/MessagePage';
+import ChatRoomPage from '@/pages/message/ChatRoomPage';
 //map
 import MapPage from '@/pages/map/MapPage';
 //profile
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
   {
     path: 'post',
     element: <PostPage />,
+  },
+  {
+    path: 'message/:roomId',
+    element: <ChatRoomPage />,
   },
   {
     path: 'profileDetail',
