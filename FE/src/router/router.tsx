@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 //onboarding
 import SplashScreen from '@/pages/onboarding/SplashPage';
 import SignInPage from '@/pages/onboarding/SignInPage';
@@ -18,6 +18,7 @@ import SellPage from '@/pages/sell/SellPage';
 import GuidePage from '@/pages/sell/GuidePage';
 //message
 import MessagePage from '@/pages/message/MessagePage';
+import ChatRoomPage from '@/pages/message/ChatRoomPage';
 //map
 import MapPage from '@/pages/map/MapPage';
 import AlarmPage from '@/pages/map/AlarmPage';
@@ -74,7 +75,20 @@ const router = createBrowserRouter([
       },
       {
         path: 'message',
-        element: <MessagePage />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/message/trade" replace />,
+          },
+          {
+            path: 'trade',
+            element: <MessagePage type="trade" />,
+          },
+          {
+            path: 'exchange',
+            element: <MessagePage type="exchange" />,
+          },
+        ],
       },
       {
         path: 'profile',
@@ -85,6 +99,10 @@ const router = createBrowserRouter([
         element: <SellPage />,
       },
     ],
+  },
+  {
+    path: 'message/:roomId',
+    element: <ChatRoomPage />,
   },
   {
     path: 'alarm',

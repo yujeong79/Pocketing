@@ -49,7 +49,9 @@ export const BackButton = styled.button`
 `;
 
 export const Title = styled.span`
-  ${FontStyles.headingSmall}
+  ${FontStyles.bodyMedium};
+  font-weight: 600;
+  margin-left: -${scale(12)}px;
 `;
 
 export const ActionButton = styled.button`
@@ -84,6 +86,8 @@ export const ModifyButton = styled.img`
 `;
 
 export const LeaveButton = styled(ActionButton)`
+  ${FontStyles.bodySmall}
+  font-weight: 600;
   color: ${colors.danger};
 `;
 
