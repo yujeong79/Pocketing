@@ -61,6 +61,9 @@ import DecreaseIcon from '@/assets/icons/decrease.svg';
 import AverageIcon from '@/assets/icons/average.svg';
 import CautionIcon from '@/assets/icons/caution.svg';
 
+// message
+import SendIcon from '@/assets/icons/send.svg';
+
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
 import RightArrowIcon from '@/assets/icons/right-arrow.svg';
@@ -136,6 +139,8 @@ export {
   DecreaseIcon,
   AverageIcon,
   CautionIcon,
+  // message
+  SendIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,

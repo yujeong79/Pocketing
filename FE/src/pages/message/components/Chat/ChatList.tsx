@@ -1,5 +1,6 @@
-import ChatItem from '@/pages/message/components/ChatItem';
+import ChatItem from '@/pages/message/components/Chat/ChatItem';
 import * as S from './ChatListStyle';
+import { useNavigate } from 'react-router-dom';
 interface TradeChat {
   roomId: number;
   receiverId: number;
@@ -12,7 +13,7 @@ interface TradeChat {
 }
 
 interface ExchangeChat {
-  roomId: string;
+  roomId: number;
   otherUser: {
     userId: string;
     nickname: string;
@@ -30,6 +31,7 @@ interface ChatListProps {
 
 const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
   const chats = type === 'trade' ? tradeChats : exchangeChats;
+  const navigate = useNavigate();
 
   if (!chats?.length) {
     return (
@@ -39,10 +41,26 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
     );
   }
 
+  const handleClickChatItem = (roomId: number, nickname: string) => {
+    navigate(`/message/${roomId}`, { state: { nickname } });
+  };
+
   return (
     <S.Container>
       {chats.map((chat) => (
-        <ChatItem key={chat.roomId} type={type} chat={chat} />
+        <ChatItem
+          key={chat.roomId}
+          type={type}
+          chat={chat}
+          onClick={() =>
+            handleClickChatItem(
+              chat.roomId,
+              type === 'trade'
+                ? (chat as TradeChat).receiverNickname
+                : (chat as ExchangeChat).otherUser.nickname
+            )
+          }
+        />
       ))}
     </S.Container>
   );
