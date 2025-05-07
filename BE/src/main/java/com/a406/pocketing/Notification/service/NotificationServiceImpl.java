@@ -1,7 +1,14 @@
 package com.a406.pocketing.Notification.service;
 
+import com.a406.pocketing.Notification.dto.FcmTokenRequestDto;
 import com.a406.pocketing.Notification.dto.NotificationResponseDto;
+import com.a406.pocketing.Notification.entity.FcmToken;
+import com.a406.pocketing.Notification.entity.Notification;
+import com.a406.pocketing.Notification.repository.FcmTokenRepository;
 import com.a406.pocketing.Notification.repository.NotificationRepository;
+import com.a406.pocketing.common.apiPayload.exception.GeneralException;
+import com.a406.pocketing.user.entity.User;
+import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -9,13 +16,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
+
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
+    private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
+    private final FcmTokenRepository fcmTokenRepository;
 
     /**
      * 알림 목록 조회 API
@@ -40,5 +53,23 @@ public class NotificationServiceImpl implements NotificationService {
                                 .profileImageUrl(p.getProfileImageUrl())
                                 .build())
                         .build());
+    }
+
+    @Override
+    public void registerFcmToken(Long userId, FcmTokenRequestDto requestDto) {
+        String token = requestDto.getFcmToken();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+
+        Boolean exists = fcmTokenRepository.existsByUserAndToken(user, token);
+        if(!exists) {
+            FcmToken fcmToken = FcmToken.builder()
+                    .user(user)
+                    .token(token)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            fcmTokenRepository.save(fcmToken);
+        }
     }
 }

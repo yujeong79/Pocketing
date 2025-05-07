@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface FcmTokenRepository extends JpaRepository<FcmToken, Long> {
     List<FcmToken> findByUserAndIsActiveTrue(User user);
+    Boolean existsByUserAndToken(User user, String token);
 }

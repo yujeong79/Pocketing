@@ -1,5 +1,6 @@
 package com.a406.pocketing.Notification.entity;
 
+import com.a406.pocketing.Notification.enums.NotificationType;
 import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
@@ -39,6 +40,7 @@ public class Notification {
     @Column(name = "is_read", nullable = false)
     private Boolean isRead;
 
+    @Builder.Default
     @Column(name = "notification_type", nullable = false)
-    private String notificationType = "RECEIVED";
+    private String notificationType = NotificationType.RECEIVED.name();
 }

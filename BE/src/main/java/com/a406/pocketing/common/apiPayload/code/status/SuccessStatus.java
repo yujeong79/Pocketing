@@ -70,6 +70,9 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_REQUEST_LIMIT_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2011", "요청 가능 수량 조회 성공"),
 	EXCHANGE_NOTIFICATION_READ_SUCCESS(HttpStatus.OK, "EXCHANGE2012", "알림 읽음 처리 성공"),
 
+	// 알림 관련 응답
+	NOTIFICATION_TOKEN_REGISTER_SUCCESS(HttpStatus.OK, "NOTIFICATION2001", "FCM 토큰 등록 성공입니다."),
+
 	// 채팅 관련 응답
 	CHAT_ROOM_FETCH_SUCCESS(HttpStatus.OK, "CHAT2001", "채팅방 조회 성공입니다."),
 	CHAT_ROOM_ENTER_SUCCESS(HttpStatus.OK, "CHAT2002", "채팅방 입장 성공입니다."),
