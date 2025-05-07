@@ -12,7 +12,7 @@ interface TradeChat {
 }
 
 interface ExchangeChat {
-  roomId: string;
+  roomId: number;
   otherUser: {
     userId: string;
     nickname: string;
@@ -25,13 +25,14 @@ interface ExchangeChat {
 interface ChatListItemProps {
   type: 'trade' | 'exchange';
   chat: TradeChat | ExchangeChat;
+  onClick: () => void;
 }
 
-const ChatListItem = ({ type, chat }: ChatListItemProps) => {
+const ChatItem = ({ type, chat, onClick }: ChatListItemProps) => {
   if (type === 'trade') {
     const tradeChat = chat as TradeChat;
     return (
-      <S.Container>
+      <S.Container onClick={onClick}>
         <S.CardImage src={tradeChat.imageUrl} alt="카드 이미지" />
         <S.ContentWrapper>
           <S.UserName>{tradeChat.receiverNickname}</S.UserName>
@@ -48,7 +49,7 @@ const ChatListItem = ({ type, chat }: ChatListItemProps) => {
 
   const exchangeChat = chat as ExchangeChat;
   return (
-    <S.Container>
+    <S.Container onClick={onClick}>
       <S.DefaultProfileImage />
       <S.ContentWrapper>
         <S.UserName>{exchangeChat.otherUser.nickname}</S.UserName>
@@ -59,4 +60,4 @@ const ChatListItem = ({ type, chat }: ChatListItemProps) => {
   );
 };
 
-export default ChatListItem;
+export default ChatItem;
