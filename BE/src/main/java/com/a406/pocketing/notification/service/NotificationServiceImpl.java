@@ -1,11 +1,10 @@
-package com.a406.pocketing.Notification.service;
+package com.a406.pocketing.notification.service;
 
-import com.a406.pocketing.Notification.dto.FcmTokenRequestDto;
-import com.a406.pocketing.Notification.dto.NotificationResponseDto;
-import com.a406.pocketing.Notification.entity.FcmToken;
-import com.a406.pocketing.Notification.entity.Notification;
-import com.a406.pocketing.Notification.repository.FcmTokenRepository;
-import com.a406.pocketing.Notification.repository.NotificationRepository;
+import com.a406.pocketing.notification.dto.FcmTokenRequestDto;
+import com.a406.pocketing.notification.dto.NotificationResponseDto;
+import com.a406.pocketing.notification.entity.FcmToken;
+import com.a406.pocketing.notification.repository.FcmTokenRepository;
+import com.a406.pocketing.notification.repository.NotificationRepository;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;

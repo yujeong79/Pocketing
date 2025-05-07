@@ -1,6 +1,6 @@
-package com.a406.pocketing.Notification.entity;
+package com.a406.pocketing.notification.entity;
 
-import com.a406.pocketing.Notification.enums.NotificationType;
+import com.a406.pocketing.notification.enums.NotificationType;
 import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;

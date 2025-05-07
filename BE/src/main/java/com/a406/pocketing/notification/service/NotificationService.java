@@ -1,7 +1,7 @@
-package com.a406.pocketing.Notification.service;
+package com.a406.pocketing.notification.service;
 
-import com.a406.pocketing.Notification.dto.FcmTokenRequestDto;
-import com.a406.pocketing.Notification.dto.NotificationResponseDto;
+import com.a406.pocketing.notification.dto.FcmTokenRequestDto;
+import com.a406.pocketing.notification.dto.NotificationResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

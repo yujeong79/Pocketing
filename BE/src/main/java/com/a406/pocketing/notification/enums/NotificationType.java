@@ -1,4 +1,4 @@
-package com.a406.pocketing.Notification.enums;
+package com.a406.pocketing.notification.enums;
 
 public enum NotificationType {
     RECEIVED, // 내가 받은 교환 요청

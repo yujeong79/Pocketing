@@ -1,4 +1,4 @@
-package com.a406.pocketing.Notification.dto;
+package com.a406.pocketing.notification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

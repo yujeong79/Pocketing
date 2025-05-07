@@ -1,11 +1,11 @@
-package com.a406.pocketing.Notification.controller;
+package com.a406.pocketing.notification.controller;
 
-import com.a406.pocketing.Notification.dto.FcmTokenRequestDto;
+import com.a406.pocketing.notification.dto.FcmTokenRequestDto;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.Notification.dto.NotificationResponseDto;
-import com.a406.pocketing.Notification.service.NotificationService;
+import com.a406.pocketing.notification.dto.NotificationResponseDto;
+import com.a406.pocketing.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

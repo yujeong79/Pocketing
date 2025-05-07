@@ -1,6 +1,6 @@
-package com.a406.pocketing.Notification.repository;
+package com.a406.pocketing.notification.repository;
 
-import com.a406.pocketing.Notification.entity.FcmToken;
+import com.a406.pocketing.notification.entity.FcmToken;
 import com.a406.pocketing.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
