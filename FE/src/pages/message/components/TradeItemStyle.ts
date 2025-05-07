@@ -29,6 +29,12 @@ export const InfoSection = styled.div`
   justify-content: center;
 `;
 
+export const StateButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+`;
+
 export const StateButton = styled.div<{ isAvailable: boolean }>`
   ${FontStyles.captionMedium}
   width: 100%;
