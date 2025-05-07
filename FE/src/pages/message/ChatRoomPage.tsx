@@ -6,7 +6,7 @@ import MessageList from './components/ChatRoom/ChatRoomList';
 import MessageInput from './components/ChatRoom/ChatRoomInput';
 import * as S from './ChatRoomPageStyle';
 import { mockChat } from '@/mocks/chat';
-import useScrollToBottom from './hooks/useScrollToBottom';
+import useScrollToBottom from '../../hooks/useScrollToBottom';
 import { ChatRoom } from '../../types/chatRoom';
 
 /**

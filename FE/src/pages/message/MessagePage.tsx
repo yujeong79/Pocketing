@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ChatTabs from '@/pages/message/components/ChatTabs';
-import ChatList from '@/pages/message/components/ChatList';
+import ChatTabs from '@/pages/message/components/Chat/ChatTabs';
+import ChatList from '@/pages/message/components/Chat/ChatList';
 import { mockExchangeChats, mockTradeChats } from '@/mocks/message';
 import Header from '@/components/common/Header';
 
-const MessagePage = () => {
-  const [activeTab, setActiveTab] = useState<'trade' | 'exchange'>('trade');
+interface MessagePageProps {
+  type: 'trade' | 'exchange';
+}
+
+const MessagePage = ({ type }: MessagePageProps) => {
+  const navigate = useNavigate();
+
+  const handleTabChange = (type: 'trade' | 'exchange') => {
+    navigate(`/message/${type}`);
+  };
 
   return (
     <>
       <Header type="profile" hasBorder={false} />
       <Container>
-        <ChatTabs activeTab={activeTab} onTabChange={setActiveTab} />
-        <ChatList type={activeTab} tradeChats={mockTradeChats} exchangeChats={mockExchangeChats} />
+        <ChatTabs activeTab={type} onTabChange={handleTabChange} />
+        <ChatList type={type} tradeChats={mockTradeChats} exchangeChats={mockExchangeChats} />
       </Container>
     </>
   );
