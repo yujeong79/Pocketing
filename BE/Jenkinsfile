@@ -21,7 +21,8 @@ pipeline {
                 dir('BE') {
                     sh '''
                     chmod +x gradlew
-                    ./gradlew clean build -x test
+                    ./gradlew clean --no-build-cache -x test
+                    rm -rf ~./gradle/caches/
                     ls build/libs
                     '''
                 }
