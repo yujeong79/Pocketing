@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 VOLUME /tmp
 
 # 3. 복사할 jar 파일
-COPY build/libs/*.jar app.jar
+COPY build/libs/app.jar app.jar
 
 # 4. 실행 명령어
 ENTRYPOINT ["java","-jar","/app.jar"]
