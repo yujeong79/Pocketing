@@ -1,7 +1,7 @@
-package com.a406.pocketing.exchange.service;
+package com.a406.pocketing.Notification.service;
 
-import com.a406.pocketing.exchange.dto.NotificationResponseDto;
-import com.a406.pocketing.exchange.repository.NotificationRepository;
+import com.a406.pocketing.Notification.dto.NotificationResponseDto;
+import com.a406.pocketing.Notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

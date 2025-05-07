@@ -1,11 +1,10 @@
-package com.a406.pocketing.exchange.controller;
+package com.a406.pocketing.Notification.controller;
 
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.exchange.dto.NotificationResponseDto;
-import com.a406.pocketing.exchange.entity.Notification;
-import com.a406.pocketing.exchange.service.NotificationService;
+import com.a406.pocketing.Notification.dto.NotificationResponseDto;
+import com.a406.pocketing.Notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,8 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @Slf4j
 @RestController

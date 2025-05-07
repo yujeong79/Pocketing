@@ -1,4 +1,4 @@
-package com.a406.pocketing.exchange.entity;
+package com.a406.pocketing.Notification.entity;
 
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
