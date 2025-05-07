@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from openai import OpenAI
 from app.config.settings import settings
 
@@ -68,16 +68,26 @@ class EmbeddingService:
             return []
 
     def get_photocard_metadata_embedding(self,
+                                         card_id: str,
+                                         card_image_url: str,
+                                         member_id: str,
+                                         album_id: str,
+                                         group_id: str,
                                          member_name: str,
                                          group_name: str,
                                          album_name: str,
-                                         tags: List[str]) -> List[float]:
+                                         tag: List[str]) -> List[float]:
         try:
             metadata_parts = [
-                f"그룹: {group_name}",
-                f"멤버: {member_name}",
-                f"앨범: {album_name}",
-                f"태그: {', '.join(tags)}"
+                f"card_id: {card_id}",
+                f"card_image_url: {card_image_url}",
+                f"member_id: {member_id}",
+                f"album_id: {album_id}",
+                f"group_id: {group_id}",
+                f"member_name: {member_name}",
+                f"group_name: {group_name}",
+                f"album_name: {album_name}",
+                f"tag: {', '.join(tag)}"
             ]
 
             metadata = " ".join(metadata_parts)
@@ -90,16 +100,22 @@ class EmbeddingService:
             return []
 
     def get_bulk_photocard_metadata_embeddings(self,
-                                                photocards: List[dict]) -> List[List[float]]:
+                                               photocards: List[Dict[str, Any]]) -> List[List[float]]:
         try:
             metadatas = []
             for card in photocards:
                 metadata_parts = [
-                    f"그룹: {card['group_name']}",
-                    f"멤버: {card['member_name']}",
-                    f"앨범: {card['album_name']}",
-                    f"태그: {', '.join(card['tags'])}"
+                    f"card_id: {card['card_id']}",
+                    f"card_image_url: {card['card_image_url']}",
+                    f"member_id: {card['member_id']}",
+                    f"album_id: {card['album_id']}",
+                    f"group_id: {card['group_id']}",
+                    f"member_name: {card['member_name']}",
+                    f"group_name: {card['group_name']}",
+                    f"album_name: {card['album_name']}",
+                    f"tag: {', '.join('tag')}"
                 ]
+
                 metadata = " ".join(metadata_parts)
                 metadatas.append(metadata)
 
@@ -110,28 +126,43 @@ class EmbeddingService:
             return []
 
     def get_search_query_embedding(self,
-                                      query_text: str,
-                                      group_name: Optional[str] = None,
-                                      member_name: Optional[str] = None,
-                                      album_name: Optional[str] = None,
-                                      tags: Optional[List[str]] = None) -> List[float]:
+                                   query_text: str,
+                                   card_id: Optional[str] = None,
+                                   card_image_url: Optional[str] = None,
+                                   member_id: Optional[str] = None,
+                                   album_id: Optional[str] = None,
+                                   group_id: Optional[str] = None,
+                                   member_name: Optional[str] = None,
+                                   group_name: Optional[str] = None,
+                                   album_name: Optional[str] = None,
+                                   tag: Optional[List[str]] = None) -> List[float]:
         try:
             detailed_query_parts = [query_text]
 
-            if group_name:
-                detailed_query_parts.append(f"그룹: {group_name}")
+            if card_id:
+                detailed_query_parts.append(f"card_id: {card_id}")
+            if card_image_url:
+                detailed_query_parts.append(f"card_image_url: {card_image_url}")
+            if member_id:
+                detailed_query_parts.append(f"member_id: {member_id}")
+            if album_id:
+                detailed_query_parts.append(f"album_id: {album_id}")
+            if group_id:
+                detailed_query_parts.append(f"group_id: {group_id}")
             if member_name:
-                detailed_query_parts.append(f"멤버: {member_name}")
+                detailed_query_parts.append(f"member_name: {member_name}")
+            if group_name:
+                detailed_query_parts.append(f"group_name: {group_name}")
             if album_name:
-                detailed_query_parts.append(f"앨범: {album_name}")
-            if tags:
-                detailed_query_parts.append(f"태그: {', '.join(tags)}")
+                detailed_query_parts.append(f"album_name: {album_name}")
+            if tag:
+                detailed_query_parts.append(f"tag: {', '.join(tag)}")
 
             detailed_query = " ".join(detailed_query_parts)
-            logger.debug(f"llm 처리 후 임베딩된 검색 쿼리: {detailed_query}")
+            logger.debug(f"검색 쿼리 임베딩 생성: {detailed_query}")
 
             return self.get_text_embedding(detailed_query)
 
         except Exception as e:
-            logger.error(f"llm 처리 후 검색 쿼리 임베딩 생성 실패: {str(e)}")
+            logger.error(f"검색 쿼리 임베딩 생성 실패: {str(e)}")
             return []
