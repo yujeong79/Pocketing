@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService {
 
         // 2. 사용자의 현재 관심 그룹 ID 리스트
         List<Long> existingGroupIds = new ArrayList<>();
-
         if(user.getLikedGroups() != null) {
             existingGroupIds = user.getLikedGroups().stream()
                     .map(userLikedGroup -> userLikedGroup.getGroup().getGroupId())
