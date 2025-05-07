@@ -298,3 +298,31 @@ export const OtherCardModalText = styled.div`
   ${FontStyles.bodySmall}
   color: ${colors.black};
 `;
+
+// 마커 스타일
+export const createMarkerIcon = () => ({
+  content: `
+    <div style="
+      width: ${scale(24)}px;
+      height: ${scale(24)}px;
+      background-color: ${colors.primary};
+      border: 2px solid ${colors.white};
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+    ">
+      <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: ${scale(8)}px;
+        height: ${scale(8)}px;
+        background-color: ${colors.white};
+        border-radius: 50%;
+      "></div>
+    </div>
+  `,
+  size: new window.naver.maps.Size(scale(24), scale(24)),
+  anchor: new window.naver.maps.Point(scale(12), scale(12)),
+});
