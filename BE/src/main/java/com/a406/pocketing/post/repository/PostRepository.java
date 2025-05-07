@@ -101,5 +101,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByPhotoCard_CardId(Long cardId);
 
+    @Query("SELECT MIN(p.price) FROM Post p WHERE p.photoCard.cardId = :cardId")
+    Integer findMinPriceByPhotoCardId(@Param("cardId") Long cardId);
+
+    @Query("SELECT MAX(p.price) FROM Post p WHERE p.photoCard.cardId = :cardId")
+    Integer findMaxPriceByPhotoCardId(@Param("cardId") Long cardId);
+
 }
 
