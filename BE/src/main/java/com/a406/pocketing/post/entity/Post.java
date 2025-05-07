@@ -60,9 +60,8 @@ public class Post {
         this.createAt = this.createAt == null ? LocalDateTime.now() : this.createAt;
     }
 
-    public void update(Integer price, String status) {
+    public void update(Integer price) {
         this.price = price;
-        this.status = status;
     }
 
 }
