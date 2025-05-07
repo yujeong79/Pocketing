@@ -54,9 +54,18 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponseDto signup(SignupRequestDto signupRequestDto) {
+        // 1. 유저 엔티티 저장
         LoginResponseDto loginResponseDto = userService.signup(signupRequestDto); // 유저 ResponseDto
-        JwtTokenDto jwtTokenDto = jwtProvider.generateToken(loginResponseDto.getUserId()); // 토큰 발급
-        loginResponseDto.setAccessToken(jwtTokenDto.getAccessToken()); // ResponseDto에 토큰 set
+        
+        // 2. 관심 그룹 및 멤버 저장
+        userService.registerLikedInfo(loginResponseDto.getUserId(), signupRequestDto.getLikedInfo());
+
+        // 3. JWT 발급
+        JwtTokenDto jwtTokenDto = jwtProvider.generateToken(loginResponseDto.getUserId());
+
+        // 4. 응답 DTO에 JWT SET
+        loginResponseDto.setAccessToken(jwtTokenDto.getAccessToken());
+
         return loginResponseDto;
     }
 

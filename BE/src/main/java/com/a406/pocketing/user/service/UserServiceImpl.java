@@ -25,6 +25,7 @@ import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -58,9 +59,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        // 관심 그룹 및 멤버 등록
-        registerLikedInfo(user.getUserId(), signupRequestDto.getLikedInfo());
-
         return LoginResponseDto.ofExistingUser(user);
     }
 
@@ -78,9 +76,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
 
         // 2. 사용자의 현재 관심 그룹 ID 리스트
-        List<Long> existingGroupIds = user.getLikedGroups().stream()
-                .map(userLikedGroup -> userLikedGroup.getGroup().getGroupId())
-                .toList();
+        List<Long> existingGroupIds = new ArrayList<>();
+
+        if(user.getLikedGroups() != null) {
+            existingGroupIds = user.getLikedGroups().stream()
+                    .map(userLikedGroup -> userLikedGroup.getGroup().getGroupId())
+                    .toList();
+        }
 
         // 3. 관심 그룹으로 등록되지 않은 그룹만 필터링
         List<UserLikedGroup> toSave = new ArrayList<>();
@@ -106,9 +108,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerLikedMember(User user, List<Long> likedMemberList) {
         // 1. 사용자의 현재 관심 멤버 ID 리스트
-        List<Long> existingMemberIds = user.getLikedMembers().stream()
-                .map(userLikedMember -> userLikedMember.getMember().getMemberId())
-                .toList();
+        List<Long> existingMemberIds = new ArrayList<>();
+        if(user.getLikedMembers() != null) {
+            existingMemberIds = user.getLikedMembers().stream()
+                    .map(userLikedMember -> userLikedMember.getMember().getMemberId())
+                    .toList();
+        }
 
         // 2. 관심 멤버로 등록되지 않는 멤버만 필터링
         List<UserLikedMember> toSave = new ArrayList<>();
