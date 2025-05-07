@@ -13,14 +13,14 @@ import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.entity.PhotoCardStatistics;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
 import com.a406.pocketing.photocard.repository.PhotoCardStatisticsRepository;
-import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -36,10 +36,6 @@ public class PhotoCardServiceImpl implements PhotoCardService {
     private final MemberRepository memberRepository;
     private final PhotoCardStatisticsRepository photoCardStatisticsRepository;
     private final PostRepository postRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
 
     @Override
     public PhotoCardListResponse getPhotoCards(Long albumId, Long memberId) {
@@ -75,6 +71,11 @@ public class PhotoCardServiceImpl implements PhotoCardService {
         PhotoCardStatistics stats = photoCardStatisticsRepository.findById(cardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.STATISTICS_NOT_FOUND));
 
+        // null 체크 추가
+        if (stats.getMinPrice() == null || stats.getMaxPrice() == null) {
+            throw new GeneralException(ErrorStatus.STATISTICS_NOT_FOUND);
+        }
+
         return new PhotoCardPriceResponseDto(
                 stats.getMinPrice(),
                 stats.getMaxPrice(),
@@ -82,10 +83,14 @@ public class PhotoCardServiceImpl implements PhotoCardService {
         );
     }
 
-
-    //  등록 시: 판매글 가격 기준으로 통계 누적 갱신
+    // 등록 시 시세 누적
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
+    @Retryable(
+            value = OptimisticLockException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 100, multiplier = 2)
+    )
     public void updatePrice(Long cardId, int newPrice) {
         PhotoCard photoCard = photoCardRepository.findById(cardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND));
@@ -97,16 +102,19 @@ public class PhotoCardServiceImpl implements PhotoCardService {
                         .postCount(0)
                         .totalPrice(0L)
                         .avgPrice(0)
-                        .minPrice(newPrice)
-                        .maxPrice(newPrice)
+                        .minPrice(null)
+                        .maxPrice(null)
                         .lastUpdated(LocalDateTime.now())
                         .build());
 
         stats.setPostCount(stats.getPostCount() + 1);
         stats.setTotalPrice(stats.getTotalPrice() + newPrice);
         stats.setAvgPrice((int) (stats.getTotalPrice() / stats.getPostCount()));
-        stats.setMinPrice(Math.min(stats.getMinPrice(), newPrice));
-        stats.setMaxPrice(Math.max(stats.getMaxPrice(), newPrice));
+
+        // null이면 첫 값이므로 초기화
+        stats.setMinPrice(stats.getMinPrice() == null ? newPrice : Math.min(stats.getMinPrice(), newPrice));
+        stats.setMaxPrice(stats.getMaxPrice() == null ? newPrice : Math.max(stats.getMaxPrice(), newPrice));
+
         stats.setLastUpdated(LocalDateTime.now());
 
         photoCardStatisticsRepository.save(stats);
@@ -115,41 +123,42 @@ public class PhotoCardServiceImpl implements PhotoCardService {
                 cardId, newPrice, stats.getPostCount(), stats.getAvgPrice());
     }
 
-    // 삭제 시: 해당 가격을 통계에서 제거하고 재계산
+    // 삭제 시 시세 감소 반영
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
+    @Retryable(
+            value = OptimisticLockException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 100, multiplier = 2)
+    )
     public void decreasePrice(Long cardId, int deletedPrice) {
         PhotoCardStatistics stats = photoCardStatisticsRepository.findById(cardId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.STATISTICS_NOT_FOUND));
 
-        if (stats.getPostCount() <= 1) {
-            // 마지막 글 삭제 → 초기화
+        int newPostCount = stats.getPostCount() - 1;
+        long newTotalPrice = stats.getTotalPrice() - deletedPrice;
+
+        if (newPostCount <= 0) {
             stats.setPostCount(0);
             stats.setTotalPrice(0L);
             stats.setAvgPrice(0);
-            stats.setMinPrice(0);
-            stats.setMaxPrice(0);
+            stats.setMinPrice(null);
+            stats.setMaxPrice(null);
         } else {
-            stats.setPostCount(stats.getPostCount() - 1);
-            stats.setTotalPrice(stats.getTotalPrice() - deletedPrice);
-            stats.setAvgPrice((int) (stats.getTotalPrice() / stats.getPostCount()));
+            stats.setPostCount(newPostCount);
+            stats.setTotalPrice(newTotalPrice);
+            stats.setAvgPrice((int) (newTotalPrice / newPostCount));
 
-            entityManager.flush();
-
-            // ⚠️ min/max는 전체 post 조회로 재계산 (희소케이스라 비용 OK)
-            // ⬇⬇ 여기를 아래처럼 고치세요
-            List<Post> remainingPosts = postRepository.findAllByPhotoCard_CardId(cardId);
-
-            if (remainingPosts.isEmpty()) {
-                stats.setMinPrice(0);
-                stats.setMaxPrice(0);
-            } else if (remainingPosts.size() == 1) {
-                int onlyPrice = remainingPosts.get(0).getPrice();
-                stats.setMinPrice(onlyPrice);
-                stats.setMaxPrice(onlyPrice);
-            } else {
-                stats.setMinPrice(remainingPosts.stream().mapToInt(Post::getPrice).min().orElse(0));
-                stats.setMaxPrice(remainingPosts.stream().mapToInt(Post::getPrice).max().orElse(0));
+            // min/max 재계산
+            // 개선된 코드
+            if (deletedPrice == stats.getMinPrice()) {
+                // 삭제된 가격이 최소가격인 경우에만 새로운 최소값 조회
+                Integer newMinPrice = postRepository.findMinPriceByPhotoCardId(cardId);
+                stats.setMinPrice(newMinPrice != null ? newMinPrice : 0);
+            } else if (deletedPrice == stats.getMaxPrice()) {
+                // 삭제된 가격이 최대가격인 경우에만 새로운 최대값 조회
+                Integer newMaxPrice = postRepository.findMaxPriceByPhotoCardId(cardId);
+                stats.setMaxPrice(newMaxPrice != null ? newMaxPrice : 0);
             }
         }
 
@@ -159,6 +168,15 @@ public class PhotoCardServiceImpl implements PhotoCardService {
         log.info("[시세 감소 반영] cardId={}, priceRemoved={}, postCount={}",
                 cardId, deletedPrice, stats.getPostCount());
     }
+
+    // 삭제 시 최대 재시도 후 실패 시 호출되는 메서드
+    @Recover
+    public void recoverDecreasePrice(OptimisticLockException e, Long cardId, int deletedPrice) {
+        log.error("[시세 감소 반영 실패] 최대 재시도 초과: cardId={}, price={}, 오류={}",
+                cardId, deletedPrice, e.getMessage());
+        throw new GeneralException(ErrorStatus.CONCURRENT_UPDATE_FAILED);
+    }
+
 }
 
 
