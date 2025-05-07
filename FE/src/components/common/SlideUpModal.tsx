@@ -4,13 +4,20 @@ import { CloseIcon } from '@/assets/assets';
 import Portal from './Portal';
 
 interface SlideUpModalProps {
-  header: string;
+  header?: string;
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  isCloseButtonHidden?: boolean;
 }
 
-const SlideUpModal = ({ header, isOpen, onClose, children }: SlideUpModalProps) => {
+const SlideUpModal = ({
+  header,
+  isOpen,
+  onClose,
+  children,
+  isCloseButtonHidden,
+}: SlideUpModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -32,7 +39,7 @@ const SlideUpModal = ({ header, isOpen, onClose, children }: SlideUpModalProps) 
         <S.ModalContainer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
           <S.ModalHeader>
             <S.ModalTitle>{header}</S.ModalTitle>
-            <S.CloseButton src={CloseIcon} onClick={onClose} />
+            {!isCloseButtonHidden && <S.CloseButton src={CloseIcon} onClick={onClose} />}
           </S.ModalHeader>
           <S.ModalContent>{children}</S.ModalContent>
         </S.ModalContainer>
