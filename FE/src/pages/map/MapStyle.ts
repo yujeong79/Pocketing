@@ -291,3 +291,10 @@ export const MyCardResultContent = styled.div`
   ${FontStyles.captionMedium}
   color: ${colors.black};
 `;
+
+// 원하는 포카 모달
+export const OtherCardModalText = styled.div`
+  padding-top: ${scale(4)}px;
+  ${FontStyles.bodySmall}
+  color: ${colors.black};
+`;
