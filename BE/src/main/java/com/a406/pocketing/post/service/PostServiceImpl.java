@@ -123,11 +123,12 @@ public class PostServiceImpl implements PostService {
             throw new GeneralException(ErrorStatus.POST_EDIT_FORBIDDEN);
         }
         int originalPrice = post.getPrice(); // 기존 가격
-        post.update(dto.getPrice(), dto.getStatus());
 
         Long cardId = post.getPhotoCard().getCardId();
         photoCardService.decreasePrice(cardId, originalPrice); // 기존 가격 제거
         photoCardService.updatePrice(cardId, dto.getPrice());  // 새로운 가격 추가
+        post.update(dto.getPrice());
+
     }
 
     @Override
