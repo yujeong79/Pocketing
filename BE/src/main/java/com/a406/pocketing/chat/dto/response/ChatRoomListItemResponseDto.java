@@ -18,7 +18,7 @@ public class ChatRoomListItemResponseDto {
     private String lastMessageContent;
     private Integer unreadMessageCount;
 
-    public static ChatRoomListItemResponseDto of(ChatRoom chatRoom, User receiver, Long postId, Long exchangeId, String imageUrl,ChatMessage lastChatMessage, Integer unreadMessageCount) {
+    public static ChatRoomListItemResponseDto of(ChatRoom chatRoom, User receiver, Long postId, Long exchangeId, String imageUrl, ChatMessage lastChatMessage, Integer unreadMessageCount) {
         return ChatRoomListItemResponseDto.builder()
                 .roomId(chatRoom.getRoomId())
                 .receiverId(receiver.getUserId())

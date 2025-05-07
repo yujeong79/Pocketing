@@ -24,6 +24,8 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 회원 관련 에러
 	USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "사용자가 없습니다."),
 	USER_NICKNAME_DUPLICATE(HttpStatus.BAD_REQUEST, "USER4002", "중복된 닉네임입니다."),
+	USER_LIKE_GROUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4003", "사용자의 관심 그룹으로 등록되지 않은 그룹입니다."),
+	USER_LIKE_MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4004", "사용자의 관심 멤버로 등록되지 않은 멤버입니다."),
 
 	// 그룹(Group) 관련 에러
 	GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "GROUP4001", "존재하지 않는 그룹입니다."),
@@ -37,6 +39,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 앨범(Album) 관련 에러
 	ALBUM_NOT_FOUND(HttpStatus.NOT_FOUND, "ALBUM4001", "존재하지 않는 앨범입니다."),
 	ALBUM_TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "ALBUM4002", "앨범명은 필수입니다."),
+	ALBUM_ID_REQUIRED(HttpStatus.BAD_REQUEST, "ALBUM4003", "앨범 ID는 필수입니다."),
 
 	// 포토카드(PhotoCard) 관련 에러
 	PHOTOCARD_NOT_FOUND(HttpStatus.NOT_FOUND, "PHOTO4001", "존재하지 않는 포토카드입니다."),
@@ -45,6 +48,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
 	// 시세(Price) 조회 관련 에러
 	PRICE_NO_MATCHING_POST(HttpStatus.NOT_FOUND, "PRICE4001", "조건에 맞는 판매글이 존재하지 않습니다."),
+	STATISTICS_NOT_FOUND(HttpStatus.NOT_FOUND, "PRICE4002", "해당 포토카드의 시세 통계 정보가 존재하지 않습니다."),
+	CONCURRENT_UPDATE_FAILED(HttpStatus.CONFLICT, "PRICE4003","동시 업데이트 충돌이 발생했습니다. 다시 시도해 주세요."),
 
 	// 판매글(Post) 등록/ 조회 관련 에러
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4001", "존재하지 않는 판매글입니다."),
@@ -54,6 +59,10 @@ public enum ErrorStatus implements BaseErrorCode {
 	POST_REGISTER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5001", "판매글 등록에 실패했습니다."),
 	POST_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5002", "판매글 목록 조회 중 서버 오류가 발생했습니다."),
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
+	POST_EDIT_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4007", "본인의 판매글만 수정할 수 있습니다."),
+	POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4008", "본인의 판매글만 삭제할 수 있습니다."),
+
+
 
 	// 판매자(Seller) 리스트 조회 관련 에러
 	SELLER_LIST_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SELLER5001", "판매자 리스트 조회 중 서버 오류가 발생했습니다."),

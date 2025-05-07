@@ -2,11 +2,11 @@ package com.a406.pocketing.user.controller;
 
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
-import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.user.dto.UserLikedGroupResponseDto;
-import com.a406.pocketing.user.dto.UserLikedInfoRequestDto;
-import com.a406.pocketing.user.dto.UserLikedMemberResponseDto;
-import com.a406.pocketing.user.entity.UserLikedGroup;
+import com.a406.pocketing.user.dto.request.MyPageRequestDto;
+import com.a406.pocketing.user.dto.response.MyPageResponseDto;
+import com.a406.pocketing.user.dto.response.UserLikedGroupResponseDto;
+import com.a406.pocketing.user.dto.request.UserLikedInfoRequestDto;
+import com.a406.pocketing.user.dto.response.UserLikedMemberResponseDto;
 import com.a406.pocketing.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.USER_LIKE_INFO_REGISTER_SUCCESS;
+import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.*;
 
 @Slf4j
 @RestController
@@ -45,7 +45,7 @@ public class UserController {
     @GetMapping("/like/group")
     public ApiResponse<?> getLikedGroup(@AuthenticationPrincipal CustomUserDetails loginUser) {
         List<UserLikedGroupResponseDto> userLikedGroupList = userService.getUserLikedGroup(loginUser.getUserId());
-        return ApiResponse.of(SuccessStatus.GROUP_LIKE_LIST_FETCH_SUCCESS, userLikedGroupList);
+        return ApiResponse.of(USER_LIKE_GROUP_LIST_FETCH_SUCCESS, userLikedGroupList);
     }
 
     /**
@@ -57,8 +57,48 @@ public class UserController {
     @GetMapping("/like/member")
     public ApiResponse<?> getLikedMemberByGroup(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestParam("groupId") Long groupId) {
         List<UserLikedMemberResponseDto> userLikedMemberList = userService.getUserLikedMemberByGroup(loginUser.getUserId(), groupId);
-        return ApiResponse.of(SuccessStatus.MEMBER_LIKE_LIST_FETCH_SUCCESS, userLikedMemberList);
+        return ApiResponse.of(USER_LIKE_MEMBER_LIST_FETCH_SUCCESS, userLikedMemberList);
     }
 
+    /**
+     * 로그인한 사용자의 관심 그룹 목록에서 해당 그룹 삭제
+     * @param loginUser
+     * @param groupId
+     * @return
+     */
+    @DeleteMapping("/like/group")
+    public ApiResponse<?> deleteLikedGroup(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestParam("groupId") Long groupId) {
+        userService.deleteLikedGroup(loginUser.getUserId(), groupId);
+        return ApiResponse.of(USER_LIKE_GROUP_DELETE_SUCCESS, null);
+    }
+
+    /**
+     * 로그인한 사용자의 관심 멤버 목록에서 해당 멤버 삭제
+     * @param loginUser
+     * @param memberId
+     * @return
+     */
+    @DeleteMapping("/like/member")
+    public ApiResponse<?> deleteLikedMember(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestParam("memberId") Long memberId) {
+        userService.deleteLikedMember(loginUser.getUserId(), memberId);
+        return ApiResponse.of(USER_LIKE_MEMBER_DELETE_SUCCESS, null);
+    }
+
+    /**
+     * 마이페이지에 필요한 사용자 세부 정보 조회
+     * @param loginUser
+     * @return
+     */
+    @GetMapping("/mypage")
+    public ApiResponse<?> getMyPageInfo(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        MyPageResponseDto myPageResponseDto = userService.getMyPageInfo(loginUser.getUserId());
+        return ApiResponse.of(USER_INFO_SUCCESS, myPageResponseDto);
+    }
+
+    @PutMapping("/mypage")
+    public ApiResponse<?> updateMyPageInfo(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestBody MyPageRequestDto myPageRequestDto) {
+        userService.updateMyPageInfo(loginUser.getUserId(), myPageRequestDto);
+        return ApiResponse.of(USER_INFO_UPDATE_SUCCESS, null);
+    }
 
 }

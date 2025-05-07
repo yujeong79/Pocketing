@@ -1,4 +1,4 @@
-package com.a406.pocketing.user.dto;
+package com.a406.pocketing.user.dto.response;
 
 import com.a406.pocketing.user.entity.User;
 import lombok.Builder;
