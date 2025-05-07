@@ -1,16 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 import * as S from './MapStyle';
+import { colors } from '@/styles/theme';
+
+import { CameraIcon, ReturnIcon, RefreshIcon2, Wonyoung1 } from '@/assets/assets';
 import PlaceSearchInput from './components/PlaceSearchInput';
 import AlarmButton from './components/AlarmButton';
 import MyCard from './components/MyCard';
 import OthersCard from './components/OthersCard';
-import { ReturnIcon, RefreshIcon2, Wonyoung1 } from '@/assets/assets';
 import SlideUpModal from '@/components/common/SlideUpModal';
 import Button from '@/components/common/Button';
-import { CameraIcon } from '@/assets/assets';
-import { useNavigate } from 'react-router-dom';
-import { colors } from '@/styles/theme';
+import { exchangeList } from '@/mocks/exchange-list';
+import PocketCallButton from './components/PocketCallButton';
 
 const MapPage = () => {
   const navigate = useNavigate();
@@ -22,9 +25,17 @@ const MapPage = () => {
   const [range, setRange] = useState(100);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [modalStep, setModalStep] = useState(1);
+  const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
+  const [pocketCallCount, setPocketCallCount] = useState(0);
 
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  const filteredList = useMemo(
+    () => exchangeList.filter((user) => user.distance <= range),
+    [range]
+  );
+  const CountfilteredList = filteredList.length;
 
   const handleRefreshClick = () => {
     setSpinning(true);
@@ -49,6 +60,12 @@ const MapPage = () => {
     setIsMyCardModalOpen(false);
     setIsOtherCardModalOpen(false);
     setModalStep(1);
+  };
+
+  const handlePocketCall = () => {
+    if (pocketCallCount < 5) {
+      setPocketCallCount((prev) => prev + 1);
+    }
   };
 
   useEffect(() => {
@@ -125,6 +142,35 @@ const MapPage = () => {
         strokeStyle: 'solid',
         clickable: false,
         zIndex: 50,
+      });
+
+      const countMarker = new window.naver.maps.Marker({
+        map,
+        position: location,
+        icon: {
+          content: `
+            <div style="
+              background-color: ${colors.primary};
+              color: white;
+              padding: 4px 8px;
+              border-radius: 12px;
+              font-size: 12px;
+              font-weight: bold;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+              transform: translate(-50%, 20px);
+              white-space: nowrap;
+            ">
+              ${CountfilteredList}명
+            </div>
+          `,
+          size: new window.naver.maps.Size(0, 0),
+          anchor: new window.naver.maps.Point(0, 0),
+        },
+        zIndex: 99,
+      });
+
+      window.naver.maps.Event.addListener(countMarker, 'click', () => {
+        setIsExchangeListModalOpen(true);
       });
     }
   }, [currentLocation, range]);
@@ -272,6 +318,46 @@ const MapPage = () => {
           </S.RightInfoContainer>
         </S.MyCardInfoContainer>
         <Button text="확인" onClick={handleCloseModal} />
+      </SlideUpModal>
+
+      {/* 교환 목록 모달 */}
+      <SlideUpModal
+        header="거래중인 포케터"
+        isOpen={isExchangeListModalOpen}
+        onClose={() => setIsExchangeListModalOpen(false)}
+      >
+        <S.ExchangeModalSecondHeader>
+          <S.ExchangeModalSecondHeaderText>
+            근처에서 교환을 신청할 포케터를 {`\n`}선택해주세요
+          </S.ExchangeModalSecondHeaderText>
+          <S.ExchangeListRefreshButton
+            src={RefreshIcon2}
+            onClick={handleRefreshClick}
+            $spinning={spinning}
+          />
+        </S.ExchangeModalSecondHeader>
+        <S.ExchangeModalThirdHeader>
+          <S.ExchangeModalThirdHeaderLeft>
+            포켓콜은 3분마다 최대 5번 보낼 수 있어요
+          </S.ExchangeModalThirdHeaderLeft>
+          <S.ExchangeModalThirdHeaderRight $isMax={pocketCallCount === 5}>
+            {pocketCallCount} /5
+          </S.ExchangeModalThirdHeaderRight>
+        </S.ExchangeModalThirdHeader>
+        <S.ExchangeUserListContainer>
+          {filteredList.map((user, index) => (
+            <React.Fragment key={user.userId}>
+              <S.ExchangeUserList>
+                <S.ExchangeUserLeft>
+                  <S.ExchangeCardImage src={user.card.imageUrl} />
+                  <S.ExchangeUserName>{user.nickname}</S.ExchangeUserName>
+                </S.ExchangeUserLeft>
+                <PocketCallButton onClick={handlePocketCall} />
+              </S.ExchangeUserList>
+              {index !== filteredList.length - 1 && <S.Divider />}
+            </React.Fragment>
+          ))}
+        </S.ExchangeUserListContainer>
       </SlideUpModal>
 
       {/* 반경 설정 모달 */}
