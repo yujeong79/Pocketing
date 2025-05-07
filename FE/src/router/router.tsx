@@ -20,6 +20,7 @@ import GuidePage from '@/pages/sell/GuidePage';
 import MessagePage from '@/pages/message/MessagePage';
 //map
 import MapPage from '@/pages/map/MapPage';
+import AlarmPage from '@/pages/map/AlarmPage';
 //profile
 import ProfilePage from '@/pages/profile/ProfilePage';
 import ProfileDetailPage from '@/pages/profile/ProfileDetailPage';
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
         element: <SellPage />,
       },
     ],
+  },
+  {
+    path: 'alarm',
+    element: <AlarmPage />,
   },
   {
     path: 'guide',

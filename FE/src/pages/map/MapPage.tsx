@@ -9,8 +9,10 @@ import { ReturnIcon, RefreshIcon2, Wonyoung1 } from '@/assets/assets';
 import SlideUpModal from '@/components/common/SlideUpModal';
 import Button from '@/components/common/Button';
 import { CameraIcon } from '@/assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 const MapPage = () => {
+  const navigate = useNavigate();
   const [spinning, setSpinning] = useState(false);
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
@@ -87,7 +89,7 @@ const MapPage = () => {
       <S.PageItemContainer>
         <S.MapHeaderContainer>
           <PlaceSearchInput />
-          <AlarmButton />
+          <AlarmButton onClick={() => navigate('/alarm')} />
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
           <MyCard onClick={() => setIsMyCardModalOpen(true)} />

@@ -14,7 +14,8 @@ interface HeaderProps {
     | 'sell'
     | 'profileDetail'
     | 'profileEdit'
-    | 'mySaleList';
+    | 'mySaleList'
+    | 'alarm';
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
@@ -30,6 +31,15 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
       case 'post':
       case 'chat':
       case 'exchange':
+      case 'alarm':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate(-1)}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
+            {title && <S.Title>{title}</S.Title>}
+          </S.LeftSection>
+        );
       case 'profile':
         return (
           <S.LeftSection>
