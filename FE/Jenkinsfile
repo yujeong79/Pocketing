@@ -9,7 +9,7 @@ pipeline {
         stage('Copy Config') {
             steps {
                 sh '''
-                cp frontend/secret/.env FE/.env
+                cp /frontend/secret/.env FE/.env
                 '''
             }
         }
