@@ -54,7 +54,7 @@ public class ChatRoom {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exchange_id", foreignKey = @ForeignKey(
-            foreignKeyDefinition = "FOREIGN KEY (exchange_id) REFERENCES exchangeRequest(exchange_request_id) ON DELETE CASCADE"
+            foreignKeyDefinition = "FOREIGN KEY (exchange_id) REFERENCES exchange_ request(exchange_request_id) ON DELETE CASCADE"
     ))
     private ExchangeRequest exchangeRequest;
 
