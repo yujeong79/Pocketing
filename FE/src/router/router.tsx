@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 //onboarding
 import SplashScreen from '@/pages/onboarding/SplashPage';
 import SignInPage from '@/pages/onboarding/SignInPage';
@@ -74,7 +74,20 @@ const router = createBrowserRouter([
       },
       {
         path: 'message',
-        element: <MessagePage />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/message/trade" replace />,
+          },
+          {
+            path: 'trade',
+            element: <MessagePage type="trade" />,
+          },
+          {
+            path: 'exchange',
+            element: <MessagePage type="exchange" />,
+          },
+        ],
       },
       {
         path: 'profile',
@@ -87,16 +100,16 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: 'message/:roomId',
+    element: <ChatRoomPage />,
+  },
+  {
     path: 'guide',
     element: <GuidePage />,
   },
   {
     path: 'post',
     element: <PostPage />,
-  },
-  {
-    path: 'message/:roomId',
-    element: <ChatRoomPage />,
   },
   {
     path: 'profileDetail',
