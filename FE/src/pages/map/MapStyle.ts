@@ -23,7 +23,7 @@ export const PageItemContainer = styled.div`
   left: 0;
   width: 100%;
   z-index: 1;
-  padding: ${scale(28)}px ${scale(16)}px 0px;
+  padding: ${scale(28)}px ${scale(16)}px;
 `;
 
 export const MapHeaderContainer = styled.div`
@@ -326,3 +326,79 @@ export const createMarkerIcon = () => ({
   size: new window.naver.maps.Size(scale(24), scale(24)),
   anchor: new window.naver.maps.Point(scale(12), scale(12)),
 });
+
+// 교환 목록 모달
+export const ExchangeModalSecondHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: ${scale(4)}px;
+`;
+
+export const ExchangeModalSecondHeaderText = styled.div`
+  ${FontStyles.bodySmall}
+  color: ${colors.black};
+  white-space: pre-line;
+`;
+
+export const ExchangeListRefreshButton = styled.img<{ $spinning?: boolean }>`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+  cursor: pointer;
+  animation: ${({ $spinning }) => ($spinning ? rotate : 'none')} 0.3s linear;
+`;
+
+export const ExchangeModalThirdHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: ${scale(8)}px;
+`;
+
+export const ExchangeModalThirdHeaderLeft = styled.div`
+  ${FontStyles.captionSmall}
+  color: ${colors.gray600};
+`;
+
+export const ExchangeModalThirdHeaderRight = styled.div<{ $isMax?: boolean }>`
+  ${FontStyles.bodySmall}
+  color: ${({ $isMax }) => ($isMax ? colors.primary : colors.black)};
+`;
+
+export const ExchangeUserListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${scale(12)}px;
+  padding-top: ${scale(16)}px;
+`;
+
+export const ExchangeUserList = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+export const ExchangeUserLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${scale(24)}px;
+`;
+
+export const ExchangeCardImage = styled.img`
+  width: ${scale(48)}px;
+  height: ${scale(73)}px;
+  border-radius: ${scale(4)}px;
+`;
+
+export const ExchangeUserName = styled.div`
+  ${FontStyles.bodyMedium}
+  color: ${colors.black};
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: ${scale(1)}px;
+  background-color: ${colors.gray100};
+`;

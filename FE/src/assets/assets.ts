@@ -43,6 +43,7 @@ import AlarmFalseIcon from '@/assets/icons/alarm-false.svg';
 import AlarmTrueIcon from '@/assets/icons/alarm-true.svg';
 import ReturnIcon from '@/assets/icons/return.svg';
 import RefreshIcon2 from '@/assets/icons/refresh-2.svg';
+import PocketCallIcon from '@/assets/icons/send-call.svg';
 
 // sell
 import WalletIcon from '@/assets/icons/wallet.svg';
@@ -122,6 +123,7 @@ export {
   AlarmTrueIcon,
   ReturnIcon,
   RefreshIcon2,
+  PocketCallIcon,
   //sell
   WalletIcon,
   PencilIcon,
