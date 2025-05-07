@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-import ChatListItem from '@/pages/message/components/ChatList/ChatListItem';
-
+import ChatItem from '@/pages/message/components/ChatItem';
+import * as S from './ChatListStyle';
 interface TradeChat {
   roomId: number;
   receiverId: number;
@@ -34,36 +33,19 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
 
   if (!chats?.length) {
     return (
-      <EmptyContainer>
-        <EmptyText>채팅방이 없습니다.</EmptyText>
-      </EmptyContainer>
+      <S.EmptyContainer>
+        <S.EmptyText>채팅방이 없습니다.</S.EmptyText>
+      </S.EmptyContainer>
     );
   }
 
   return (
-    <Container>
+    <S.Container>
       {chats.map((chat) => (
-        <ChatListItem key={chat.roomId} type={type} chat={chat} />
+        <ChatItem key={chat.roomId} type={type} chat={chat} />
       ))}
-    </Container>
+    </S.Container>
   );
 };
-
-const Container = styled.div`
-  flex: 1;
-  overflow-y: auto;
-`;
-
-const EmptyContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-`;
-
-const EmptyText = styled.p`
-  color: #666;
-  font-size: 14px;
-`;
 
 export default ChatList;

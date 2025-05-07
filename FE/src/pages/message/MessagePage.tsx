@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import ChatTabs from '@/pages/message/components/ChatTabs/ChatTabs';
-import ChatList from '@/pages/message/components/ChatList/ChatList';
+import ChatTabs from '@/pages/message/components/ChatTabs';
+import ChatList from '@/pages/message/components/ChatList';
 import { mockExchangeChats, mockTradeChats } from '@/mocks/message';
 import Header from '@/components/common/Header';
 
