@@ -14,6 +14,7 @@ import SlideUpModal from '@/components/common/SlideUpModal';
 import Button from '@/components/common/Button';
 import { exchangeList } from '@/mocks/exchange-list';
 import PocketCallButton from './components/PocketCallButton';
+import Toast from './components/Toast';
 
 const MapPage = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ const MapPage = () => {
   const [modalStep, setModalStep] = useState(1);
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
   const [pocketCallCount, setPocketCallCount] = useState(0);
+  const [showMaxToast, setShowMaxToast] = useState(false);
+  const [showSendToast, setShowSendToast] = useState(false);
 
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -65,6 +68,9 @@ const MapPage = () => {
   const handlePocketCall = () => {
     if (pocketCallCount < 5) {
       setPocketCallCount((prev) => prev + 1);
+      setShowSendToast(true);
+    } else {
+      setShowMaxToast(true);
     }
   };
 
@@ -352,7 +358,7 @@ const MapPage = () => {
                   <S.ExchangeCardImage src={user.card.imageUrl} />
                   <S.ExchangeUserName>{user.nickname}</S.ExchangeUserName>
                 </S.ExchangeUserLeft>
-                <PocketCallButton onClick={handlePocketCall} />
+                <PocketCallButton onClick={handlePocketCall} disabled={pocketCallCount >= 5} />
               </S.ExchangeUserList>
               {index !== filteredList.length - 1 && <S.Divider />}
             </React.Fragment>
@@ -379,6 +385,21 @@ const MapPage = () => {
           </S.Range500>
         </S.RangeContainer>
       </SlideUpModal>
+
+      {showMaxToast && (
+        <Toast
+          type="warning"
+          message="포켓콜은 3분마다 최대 5개까지 보낼 수 있어요!"
+          onClose={() => setShowMaxToast(false)}
+        />
+      )}
+      {showSendToast && (
+        <Toast
+          type="success"
+          message="포켓콜을 보냈어요! 포케터의 수락을 기다리세요!"
+          onClose={() => setShowSendToast(false)}
+        />
+      )}
     </S.MapContainer>
   );
 };

@@ -4,12 +4,17 @@ import { PocketCallIcon } from '@/assets/assets';
 
 interface PocketCallButtonProps {
   onClick: () => void;
+  disabled?: boolean;
 }
 
-const PocketCallButton = ({ onClick }: PocketCallButtonProps) => {
+const PocketCallButton = ({ onClick, disabled = false }: PocketCallButtonProps) => {
   const [type, setType] = useState<'basic' | 'send'>('basic');
 
   const handleClick = () => {
+    if (disabled) {
+      onClick();
+      return;
+    }
     if (type === 'basic') {
       setType('send');
       onClick();
