@@ -14,6 +14,7 @@ const MapPage = () => {
   const [spinning, setSpinning] = useState(false);
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
+  const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [range, setRange] = useState(100);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [modalStep, setModalStep] = useState(1);
@@ -40,6 +41,7 @@ const MapPage = () => {
 
   const handleCloseModal = () => {
     setIsMyCardModalOpen(false);
+    setIsOtherCardModalOpen(false);
     setModalStep(1);
   };
 
@@ -89,7 +91,7 @@ const MapPage = () => {
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
           <MyCard onClick={() => setIsMyCardModalOpen(true)} />
-          <OthersCard />
+          <OthersCard onClick={() => setIsOtherCardModalOpen(true)} />
         </S.ExchangeCardContainer>
       </S.PageItemContainer>
 
@@ -183,6 +185,46 @@ const MapPage = () => {
             <Button text="등록하기" onClick={handleCloseModal} />
           </>
         )}
+      </SlideUpModal>
+
+      {/* 원하는 포카 모달 */}
+      <SlideUpModal
+        header="원하는 포카"
+        isOpen={isOtherCardModalOpen}
+        onClose={() => setIsOtherCardModalOpen(false)}
+      >
+        <S.OtherCardModalText>교환하고 싶은 포카를 선택해주세요</S.OtherCardModalText>
+        <S.MyCardInfoContainer>
+          <S.LeftInfoContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>그룹명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>멤버명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+            <S.SelectContainer>
+              <S.SelectHeader>앨범명</S.SelectHeader>
+              <S.SelectContent>선택</S.SelectContent>
+            </S.SelectContainer>
+          </S.LeftInfoContainer>
+          <S.RightInfoContainer>
+            <S.SearchContainer>
+              <S.SearchInput placeholder="검색" />
+            </S.SearchContainer>
+            <S.ResultContainer>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+              <S.ResultItem>검색 결과</S.ResultItem>
+            </S.ResultContainer>
+          </S.RightInfoContainer>
+        </S.MyCardInfoContainer>
+        <Button text="확인" onClick={handleCloseModal} />
       </SlideUpModal>
 
       {/* 반경 설정 모달 */}
