@@ -42,7 +42,12 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
   }
 
   const handleClickChatItem = (roomId: number, nickname: string) => {
-    navigate(`/message/${roomId}`, { state: { nickname } });
+    navigate(`/message/${roomId}`, {
+      state: {
+        nickname,
+        chatType: type === 'trade' ? 'TRADE' : 'EXCHANGE',
+      },
+    });
   };
 
   return (

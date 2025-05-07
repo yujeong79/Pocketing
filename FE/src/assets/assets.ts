@@ -82,6 +82,9 @@ import Wonyoung1 from '@/assets/icons/wonyoung1.svg';
 import Wonyoung2 from '@/assets/icons/wonyoung2.svg';
 import Wonyoung3 from '@/assets/icons/wonyoung3.svg';
 import Wonyoung4 from '@/assets/icons/wonyoung4.svg';
+import Woodz1 from '@/assets/icons/woodz1.svg';
+import Woodz2 from '@/assets/icons/woodz2.svg';
+
 export {
   //Header
   Logo2d,
@@ -158,4 +161,6 @@ export {
   Wonyoung2,
   Wonyoung3,
   Wonyoung4,
+  Woodz1,
+  Woodz2,
 };

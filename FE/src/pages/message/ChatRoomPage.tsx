@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import TradeItem from './components/TradeItem';
+import ExchangeItem from './components/ExchangeItem';
 import MessageList from './components/ChatRoom/ChatRoomList';
 import MessageInput from './components/ChatRoom/ChatRoomInput';
 import * as S from './ChatRoomPageStyle';
@@ -9,16 +10,19 @@ import { mockChat } from '@/mocks/chat';
 import useScrollToBottom from '../../hooks/useScrollToBottom';
 import { ChatRoom } from '../../types/chatRoom';
 
+type ChatType = 'TRADE' | 'EXCHANGE';
+
 /**
  * 채팅방 페이지 컴포넌트
  */
 const ChatRoomPage: React.FC = () => {
   const location = useLocation();
-  const { nickname } = (location.state as { nickname?: string }) || {};
+  const { nickname, chatType = 'TRADE' } =
+    (location.state as { nickname?: string; chatType?: ChatType }) || {};
 
   // 채팅방 상태
   const [messages, setMessages] = useState<ChatRoom[]>(mockChat.result.messagePage.messageList);
-  const myUserId = 1; // 임시로 내 userId 고정
+  const myUserId = 1; // 임시로 userId 고정
   const opponentNickname = nickname || '카리나사랑해';
   const opponentProfile = mockChat.result.linkedPost.photocard.cardImageUrl;
   const roomId = mockChat.result.messagePage.messageList[0]?.roomId || 8;
@@ -41,7 +45,7 @@ const ChatRoomPage: React.FC = () => {
     <>
       <Header type="chat" title={opponentNickname} />
       <S.Container>
-        <TradeItem />
+        {chatType === 'TRADE' ? <TradeItem /> : <ExchangeItem />}
         <MessageList
           messages={messages}
           myUserId={myUserId}
