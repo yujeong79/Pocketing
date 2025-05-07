@@ -22,6 +22,7 @@ pipeline {
                     sh '''
                     chmod +x gradlew
                     ./gradlew clean build -x test
+                    ls build/libs
                     '''
                 }
             }
