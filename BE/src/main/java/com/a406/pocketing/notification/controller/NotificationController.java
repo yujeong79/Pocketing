@@ -38,6 +38,12 @@ public class NotificationController {
         return ApiResponse.of(SuccessStatus.EXCHANGE_RECEIVED_REQUESTS_SUCCESS, page);
     }
 
+    /**
+     * fcm 토큰 등록
+     * @param userDetails
+     * @param requestDto
+     * @return
+     */
     @PostMapping("/fcm-token")
     public ApiResponse<?> registerFcmToken(
             @AuthenticationPrincipal CustomUserDetails userDetails,

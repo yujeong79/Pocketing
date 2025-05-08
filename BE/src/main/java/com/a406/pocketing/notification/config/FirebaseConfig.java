@@ -3,7 +3,9 @@ package com.a406.pocketing.notification.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -29,5 +31,11 @@ public class FirebaseConfig {
             e.printStackTrace();
             // 필요에 따라 초기화 실패 시 애플리케이션 시작을 중단하도록 예외를 던질 수 있음.
         }
+
+    }
+
+    @Bean
+    public FirebaseMessaging firebaseMessaging() {
+        return FirebaseMessaging.getInstance();
     }
 }

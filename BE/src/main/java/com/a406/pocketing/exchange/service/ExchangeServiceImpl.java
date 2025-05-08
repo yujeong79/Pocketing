@@ -6,6 +6,8 @@ import com.a406.pocketing.exchange.entity.ExchangeCard;
 import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.exchange.repository.ExchangeCardRepository;
 import com.a406.pocketing.exchange.repository.ExchangeRequestRepository;
+import com.a406.pocketing.notification.enums.NotificationType;
+import com.a406.pocketing.notification.repository.NotificationRepository;
 import com.a406.pocketing.notification.service.NotificationService;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
@@ -24,8 +26,10 @@ public class ExchangeServiceImpl implements ExchangeService{
     private final UserRepository userRepository;
     private final ExchangeRequestRepository exchangeRequestRepository;
     private final ExchangeCardRepository exchangeCardRepository;
+    private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
 
+    @Override
     @Transactional
     public void sendExchangeRequest(Long requesterId, ExchangeRequestDto requestDto) {
         User requester = userRepository.findById(requesterId)
@@ -53,5 +57,15 @@ public class ExchangeServiceImpl implements ExchangeService{
                 .status("PENDING")
                 .build();
         exchangeRequestRepository.save(request);
+
+        // fcm 전송
+        notificationService.sendFcmToUser(
+                responder.getUserId(),
+                "포켓콜 도착!",
+                requester.getNickname() + "님이 포켓콜을 보냈어요"
+        );
+        // notification 테이블에 저장
+        notificationService.createNotification(requester, responder, request, NotificationType.RECEIVED);
+
     }
 }
