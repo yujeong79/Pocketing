@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import * as S from './NicknameStyle';
 
-import { ErrorIcon, SuccessIcon } from '@/assets/assets';
+import { SuccessIcon } from '@/assets/assets';
 import { colors } from '@/styles/theme';
 
 import BackButton from './components/BackButton';
