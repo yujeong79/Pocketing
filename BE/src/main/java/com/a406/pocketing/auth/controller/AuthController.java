@@ -47,7 +47,7 @@ public class AuthController {
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
-                    "%s/kakao/callback?isRegistered=$s&oauthProvider=%s&providerId=%s",
+                    "%s/kakao/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
                     frontendUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
@@ -82,7 +82,7 @@ public class AuthController {
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
-                    "%s/twitter/callback?isRegistered=$s&oauthProvider=%s&providerId=%s",
+                    "%s/twitter/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
                     frontendUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
