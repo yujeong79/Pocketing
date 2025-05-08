@@ -15,6 +15,7 @@ const NicknamePage = () => {
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
   const [nickname, setNickname] = useState('');
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
