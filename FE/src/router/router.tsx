@@ -13,6 +13,7 @@ import MyMemberPage from '@/pages/onboarding/MyMemberPage';
 import CompletePage from '@/pages/onboarding/CompletePage';
 import KakaoCallbackPage from '@/pages/onboarding/KakaoCallbackPage';
 import GroupSelectPage from '@/pages/main/components/Group/GroupSelectPage';
+import TwitterCallbackPage from '@/pages/onboarding/TwitterCallbackPage';
 //main
 import Layout from '@/components/layout/Layout';
 import MainPage from '@/pages/main/MainPage';
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: 'kakao/callback',
     element: <KakaoCallbackPage />,
+  },
+  {
+    path: 'twitter/callback',
+    element: <TwitterCallbackPage />,
   },
   {
     path: 'signup',

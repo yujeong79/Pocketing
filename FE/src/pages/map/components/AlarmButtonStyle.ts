@@ -3,15 +3,11 @@ import styled from 'styled-components';
 import scale from '@/utils/scale';
 import { colors } from '@/styles/theme';
 
-interface AlarmButtonContainerProps {
-  $isAlarm: boolean;
-}
-
-export const AlarmButtonContainer = styled.div<AlarmButtonContainerProps>`
+export const AlarmButtonContainer = styled.div`
   width: ${scale(32)}px;
   height: ${scale(32)}px;
   border-radius: ${scale(5)}px;
-  background-color: ${({ $isAlarm }) => ($isAlarm ? colors.primary : colors.white)};
+  background-color: ${colors.primary};
 
   display: flex;
   align-items: center;

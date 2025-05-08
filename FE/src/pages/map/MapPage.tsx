@@ -130,6 +130,8 @@ const MapPage = () => {
         zIndex: 100,
       });
 
+      marker.setMap(map);
+
       // 기존 원형 영역이 있다면 제거
       if (circleRef.current) {
         circleRef.current.setMap(null);
