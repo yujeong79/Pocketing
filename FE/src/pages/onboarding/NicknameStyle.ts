@@ -75,6 +75,7 @@ export const Phrase = styled.div`
   ${FontStyles.captionSmall};
   color: ${colors.danger};
   text-align: left;
+  height: ${scale(12)}px;
 `;
 export const DuplicateCheckButtonContainer = styled.div`
   display: flex;
