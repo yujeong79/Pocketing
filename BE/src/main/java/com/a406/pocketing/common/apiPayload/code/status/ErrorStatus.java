@@ -90,6 +90,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 채팅 관련 에러
 	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4001", "존재하지 않는 채팅방입니다."),
 	CHAT_ROOM_UNAUTHORIZED_USER(HttpStatus.BAD_REQUEST, "CHAT4002", "이 채팅방의 참여자가 아닌 사용자입니다."),
+	CHAT_ROOM_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4003", "채팅방과 관련된 거래글이 존재하지 않습니다."),
 
 	// 샘플 에러
 	SAMPLE_ERROR(HttpStatus.BAD_REQUEST, "SAMPLE4001", "샘플 에러 입니다. 이런식으로 작성하면 됩니다.");

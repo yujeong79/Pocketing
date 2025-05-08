@@ -39,6 +39,12 @@ public class PostController {
         return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postService.getPosts(memberId, albumId, pageable));
     }
 
+    @PutMapping
+    public ApiResponse<?> updatePostStatus(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestBody PostUpdateStatusRequestDto postUpdateStatusRequestDto) {
+        postService.updatePostStatus(loginUser.getUserId(), postUpdateStatusRequestDto);
+        return ApiResponse.of(SuccessStatus.POST_UPDATE_STATUS_SUCCESS, null);
+    }
+
     @GetMapping("/sellers")
     public ApiResponse<SellerListResponseDto> getSellersByCardId(
             @RequestParam Long cardId,
