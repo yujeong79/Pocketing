@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npm install firebase @types/firebase --save
 RUN npm run build
 
 # Step 2: Nginx for React App (HTTPS)
