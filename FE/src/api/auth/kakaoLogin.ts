@@ -12,11 +12,5 @@ export const getKakaoLoginUrl = () => {
 // 카카오 로그인 처리
 export const kakaoLogin = async (code: string): Promise<OAuthResponse> => {
   const response = await axiosInstance.get(`/auth/kakao/callback?code=${code}`);
-
-  const { accessToken } = response.data.result;
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-  }
-
   return response.data;
 };
