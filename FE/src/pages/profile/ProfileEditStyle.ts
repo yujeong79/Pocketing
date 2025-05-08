@@ -1,5 +1,5 @@
+// ProfileEditStyle.ts
 import styled from 'styled-components';
-
 import scale from '@/utils/scale';
 import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
@@ -9,22 +9,17 @@ export const PageContainer = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
+  background: ${colors.gray100};
 `;
 
 export const ContentsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   flex: 1;
-  padding: ${scale(24)}px ${scale(16)}px ${scale(64)}px;
-
   overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  padding: ${scale(24)}px ${scale(16)}px ${scale(64)}px;
+  -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     display: none;
   }
-  -webkit-overflow-scrolling: touch;
 `;
 
 export const InfoContainer = styled.div`
@@ -35,26 +30,6 @@ export const InfoContainer = styled.div`
   padding-bottom: ${scale(52)}px;
 `;
 
-export const ProfileImageContainer = styled.input`
-  display: flex;
-  position: relative;
-`;
-
-export const ProfileImage = styled.img`
-  width: ${scale(125)}px;
-  height: ${scale(125)}px;
-  border-radius: 50%;
-  border: 1px solid ${colors.primary200};
-`;
-
-export const CameraIcon = styled.img`
-  width: ${scale(36)}px;
-  height: ${scale(36)}px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-`;
-
 export const ImageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -63,13 +38,13 @@ export const ImageContainer = styled.div`
 `;
 
 export const ImageLabel = styled.label`
-  cursor: pointer;
-  display: block;
+  position: relative;
   width: ${scale(125)}px;
   height: ${scale(125)}px;
   border-radius: 50%;
-
-  position: relative;
+  overflow: visible;
+  cursor: pointer;
+  border: 1px solid ${colors.primary200};
 `;
 
 export const ImageInput = styled.input`
@@ -77,78 +52,65 @@ export const ImageInput = styled.input`
 `;
 
 export const Image = styled.div`
-  cursor: pointer;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  border: 1px solid ${colors.primary200};
-
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
   overflow: hidden;
 `;
 
 export const UploadedImage = styled.img`
   width: 100%;
   height: 100%;
-  object-position: center;
+  object-fit: cover;
+`;
+
+export const CameraIcon = styled.img`
+  position: absolute;
+  bottom: ${scale(4)}px;
+  right: ${scale(4)}px;
+  width: ${scale(30)}px;
+  height: ${scale(30)}px;
+  background: white;
+  border-radius: 50%;
+  padding: ${scale(4)}px;
+  z-index: 10;
 `;
 
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${scale(24)}px;
-  width: 100%;
-`;
-
-export const NicknameContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const NicknameTitle = styled.p`
-  ${FontStyles.bodySmall};
-  color: ${colors.primary};
-  text-align: left;
+  gap: ${scale(16)}px;
+  width: 90%;
+  max-width: ${scale(300)}px;
+  margin: 0 auto;
 `;
 
 export const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: ${scale(32)}px;
-  padding: ${scale(4)}px 0;
-  border-bottom: ${scale(1)}px solid ${colors.primary};
+  margin-bottom: ${scale(16)}px;
+`;
+
+export const Label = styled.label`
+  ${FontStyles.bodySmall};
+  color: ${colors.primary};
+  margin-bottom: ${scale(4)}px;
 `;
 
 export const Input = styled.input`
   width: 100%;
-  border: none;
-  outline: none;
-  height: ${scale(20)}px;
-
+  padding: ${scale(8)}px ${scale(12)}px;
+  border: 1px solid ${colors.gray300};
+  border-radius: ${scale(4)}px;
   ${FontStyles.bodySmall};
   color: ${colors.gray800};
+  outline: none;
+  &:focus {
+    border-color: ${colors.primary};
+  }
 `;
 
-export const AddressContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const AddressTitle = styled.div`
-  ${FontStyles.bodySmall};
-  color: ${colors.primary};
-  text-align: left;
-`;
-
-export const AccountContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const AccountTitle = styled.div`
-  ${FontStyles.bodySmall};
-  color: ${colors.primary};
-  text-align: left;
+export const ButtonContainer = styled.div`
+  padding: ${scale(16)}px;
 `;
