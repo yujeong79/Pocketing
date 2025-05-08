@@ -1,26 +1,22 @@
-package com.a406.pocketing.exchange.controller;
+package com.a406.pocketing.notification.controller;
 
+import com.a406.pocketing.notification.dto.FcmTokenRequestDto;
 import com.a406.pocketing.auth.principal.CustomUserDetails;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
-import com.a406.pocketing.exchange.dto.NotificationResponseDto;
-import com.a406.pocketing.exchange.entity.Notification;
-import com.a406.pocketing.exchange.service.NotificationService;
+import com.a406.pocketing.notification.dto.NotificationResponseDto;
+import com.a406.pocketing.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/exchange/notification")
+@RequestMapping("/api/notification")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -40,5 +36,21 @@ public class NotificationController {
         log.info("알림 요청 userId: {}", userId);
         Page<NotificationResponseDto> page = notificationService.getAllNotifications(userId, pageable);
         return ApiResponse.of(SuccessStatus.EXCHANGE_RECEIVED_REQUESTS_SUCCESS, page);
+    }
+
+    /**
+     * fcm 토큰 등록
+     * @param userDetails
+     * @param requestDto
+     * @return
+     */
+    @PostMapping("/fcm-token")
+    public ApiResponse<?> registerFcmToken(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody FcmTokenRequestDto requestDto
+            ) {
+        Long userId = userDetails.getUserId();
+        notificationService.registerFcmToken(userId, requestDto);
+        return ApiResponse.of(SuccessStatus.NOTIFICATION_TOKEN_REGISTER_SUCCESS, null);
     }
 }

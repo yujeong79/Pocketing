@@ -1,4 +1,4 @@
-package com.a406.pocketing.exchange.dto;
+package com.a406.pocketing.notification.dto;
 
 public interface NotificationProjection {
     Long getNotificationId();

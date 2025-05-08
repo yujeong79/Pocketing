@@ -88,6 +88,7 @@ fabric.properties
 **/application-API-KEY.properties
 src/main/resources/*.yml
 docker-compose.local.yml
+firebase-service-account.json
 
 # 운영체제 관련 파일
 ## macOS

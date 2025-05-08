@@ -11,7 +11,6 @@ public class NearbyExchangeCardResponseDto {
     private Long userId;
     private String nickname;
     private Double distance;
-    private String matchType;
     private CardDto card;
 
     @Getter
@@ -32,7 +31,6 @@ public class NearbyExchangeCardResponseDto {
                 .userId(((Number) row[1]).longValue())
                 .nickname((String) row[5])
                 .distance(((Number) row[9]).doubleValue())
-                .matchType((String) row[10])
                 .card(CardDto.builder()
                         .cardId(((Number) row[0]).longValue())
                         .isOwned((Boolean) row[2])
