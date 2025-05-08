@@ -4,10 +4,12 @@ import * as S from './MyGroupStyle';
 import BackButton from '@/pages/onboarding/components/BackButton';
 import Button from '@/components/common/Button';
 import { SearchIcon } from '@/assets/assets';
-import { artistList } from '@/mocks/artist';
+import { useGroups } from '@/hooks/artist/query/useGroups';
+import { Group } from '@/types/group';
 
 const MyGroupPage = () => {
   const navigate = useNavigate();
+  const { data: groupsData } = useGroups();
 
   return (
     <S.PageContainer>
@@ -19,10 +21,10 @@ const MyGroupPage = () => {
           <S.SearchIcon src={SearchIcon} />
         </S.SearchContainer>
         <S.GroupListContainer>
-          {artistList.map((artist) => (
-            <S.GroupInfo key={artist.groupId} onClick={() => navigate(`/member/${artist.groupId}`)}>
-              <S.GroupImage src={artist.image} />
-              <S.GroupName>{artist.name}</S.GroupName>
+          {groupsData?.result?.map((group: Group) => (
+            <S.GroupInfo key={group.groupId} onClick={() => navigate(`/member/${group.groupId}`)}>
+              <S.GroupImage src={group.groupImageUrl} />
+              <S.GroupName>{group.groupNameKo}</S.GroupName>
             </S.GroupInfo>
           ))}
         </S.GroupListContainer>
