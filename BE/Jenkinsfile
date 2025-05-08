@@ -12,6 +12,7 @@ pipeline {
                 mkdir -p BE/src/main/resources/
                 cp /backend/secret/application.yml BE/src/main/resources/
                 cp /backend/secret/application-prod.yml BE/src/main/resources/
+                cp /backend/secret/firebase-service-account.json BE/src/main/resources/
                 '''
             }
         }
