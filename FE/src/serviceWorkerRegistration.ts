@@ -1,5 +1,5 @@
 // 서비스 워커 등록 함수
-export function register() {
+export function register(): void {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/firebase-messaging-sw.js')

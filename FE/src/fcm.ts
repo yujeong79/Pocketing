@@ -1,10 +1,11 @@
-import axiosInstance from "./api/axiosInstance";
+// import axiosInstance from "./api/axiosInstance";
+import axios from "axios";
 
-export const registerFcmToken = async (fcmToken) => {
+export const registerFcmToken = async (fcmToken: String): Promise<void> => {
   if (!fcmToken) return;
 
   try {
-    const response = await axiosInstance.post(
+    const response = await axios.post(
         "http://localhost:8080/api/notification/fcm-token",
     //   "/api/notification/fcm-token",
       { fcmToken }

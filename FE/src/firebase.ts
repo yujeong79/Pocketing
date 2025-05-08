@@ -17,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 // 🟡 FCM 토큰 요청 함수
-export const requestFcmToken = async () => {
+export const requestFcmToken = async (): Promise<String | null> => {
   try {
     const token = await getToken(messaging, {
       vapidKey: "BIULqTtkq1GzlTHMjOzncSv_GsJJE36fuyKGR0pCSDNQtLuk2fIiUxObTvw0uN9_AENBNAKhZ_DFrMVuNzZ5B_A", // 콘솔에서 발급받기
@@ -32,18 +32,16 @@ export const requestFcmToken = async () => {
 
 // 🟡 포그라운드 메시지 수신 핸들러
 onMessage(messaging, (payload) => {
-    console.log("메시지 수신(포그라운드):", payload);
-    const { title, body } = payload.notification || {};
-   
-    const notificationOptions = {
+  console.log("📩 포그라운드 알림 수신:", payload);
+  const { title, body } = payload.notification || {};
+
+  if (Notification.permission === "granted" && title) {
+    new Notification(title, {
       body,
-      icon: '/pocketing.svg'
-    };
-  
-    if (Notification.permission === "granted") {
-      new Notification(title, notificationOptions);
-    }
-  });
+      icon: "/pocketing.svg",
+    });
+  }
+});
   
   export default app;
   
