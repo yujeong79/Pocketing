@@ -122,13 +122,15 @@ const MapPage = () => {
       });
 
       // 마커 생성
-      const _marker = new window.naver.maps.Marker({
+      const marker = new window.naver.maps.Marker({
         map,
         position: location,
         icon: S.createMarkerIcon(),
         animation: window.naver.maps.Animation.DROP,
         zIndex: 100,
       });
+
+      marker.setMap(map);
 
       // 기존 원형 영역이 있다면 제거
       if (circleRef.current) {
