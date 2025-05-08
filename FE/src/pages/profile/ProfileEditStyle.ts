@@ -10,12 +10,13 @@ export const PageContainer = styled.div`
   height: 100%;
   width: 100%;
   background: ${colors.gray100};
+  padding-bottom: ${scale(24)}px;
 `;
 
 export const ContentsContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: ${scale(24)}px ${scale(16)}px ${scale(64)}px;
+  padding: ${scale(24)}px ${scale(16)}px;
   -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     display: none;
@@ -82,20 +83,21 @@ export const CameraIcon = styled.img`
 export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${scale(16)}px;
+  gap: ${scale(12)}px;
   width: 90%;
   max-width: ${scale(300)}px;
   margin: 0 auto;
 `;
 
 export const InputContainer = styled.div`
-  margin-bottom: ${scale(16)}px;
+  margin-bottom: ${scale(8)}px;
 `;
 
 export const Label = styled.label`
   ${FontStyles.bodySmall};
   color: ${colors.primary};
   margin-bottom: ${scale(4)}px;
+  display: flex;
 `;
 
 export const Input = styled.input`
