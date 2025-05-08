@@ -21,7 +21,7 @@ export const ItemContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
-  padding-top: ${scale(60)}px;
+  padding-top: ${scale(72)}px;
   display: flex;
   flex-direction: column;
   gap: ${scale(8)}px;

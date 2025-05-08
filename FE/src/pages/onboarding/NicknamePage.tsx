@@ -6,7 +6,6 @@ import * as S from './NicknameStyle';
 import { SuccessIcon, ErrorIcon } from '@/assets/assets';
 import { colors } from '@/styles/theme';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import BackButton from './components/BackButton';
 import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 import { checkNicknameDuplicate } from '@/api/signUp';
@@ -53,7 +52,6 @@ const NicknamePage = () => {
   return (
     <S.PageContainer>
       <S.ItemContainer>
-        <BackButton />
         <S.TitleContainer>
           <S.FirstTitle>환영합니다</S.FirstTitle>
           <S.SecondTitle>닉네임을 입력해주세요</S.SecondTitle>
