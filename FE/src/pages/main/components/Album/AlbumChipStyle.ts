@@ -15,6 +15,7 @@ export const StyledAlbumChip = styled.button<{ $isSelected: boolean }>`
   font-family: 'Pretendard';
   white-space: nowrap;
   transition: all 0.2s ease;
+  margin-left: auto;
 `;
 
 export const ChipText = styled.span<{ $isSelected: boolean }>`
