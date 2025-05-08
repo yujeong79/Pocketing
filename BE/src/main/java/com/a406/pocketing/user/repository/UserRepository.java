@@ -2,6 +2,7 @@ package com.a406.pocketing.user.repository;
 
 import com.a406.pocketing.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 

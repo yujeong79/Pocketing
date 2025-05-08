@@ -21,29 +21,25 @@ public class PhotoCardStatistics {
     @JoinColumn(name = "card_id")
     private PhotoCard photoCard;
 
+    @Column(nullable = false)
     private int postCount;
 
+    @Column(nullable = false)
     private long totalPrice;
 
+    @Column(nullable = false)
     private int avgPrice;
 
-    private int minPrice;
+    @Column(nullable = true)
+    private Integer minPrice;
 
-    private int maxPrice;
+    @Column(nullable = true)
+    private Integer maxPrice;
 
+    @Column(nullable = false)
     private LocalDateTime lastUpdated;
 
     @Version
     private Integer version;
 
-
-    // 시세 갱신 메서드
-    public void updateWithNewPrice(int newPrice) {
-        this.totalPrice += newPrice;
-        this.postCount += 1;
-        this.avgPrice = (int) (this.totalPrice / this.postCount);
-        this.minPrice = (this.postCount == 1) ? newPrice : Math.min(this.minPrice, newPrice);
-        this.maxPrice = (this.postCount == 1) ? newPrice : Math.max(this.maxPrice, newPrice);
-        this.lastUpdated = LocalDateTime.now();
-    }
 }
