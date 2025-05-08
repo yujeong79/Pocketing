@@ -87,6 +87,11 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXCHANGE_ACCEPT_REQUEST_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXCHANGE5002", "서버 오류로 요청을 수락하지 못했습니다."),
 	EXCHANGE_REJECT_REQUEST_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXCHANGE5003", "서버 오류로 요청을 거절하지 못했습니다."),
 
+	// 알림 관련 에러
+	NOTIFICATION_TOKEN_BAD_REQUEST(HttpStatus.BAD_REQUEST, "NOTIFICATION4001", "유효하지 않은 FCM 토큰입니다."),
+	NOTIFICATION_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4002", "FCM 토큰이 존재하지 않습니다."),
+	NOTIFICATION_TOKEN_REGISTER_SERVER_ERROR(HttpStatus.NOT_FOUND, "NOTIFICATION5001", "서버 오류로 FCM 토큰 등록 실패입니다."),
+
 	// 채팅 관련 에러
 	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4001", "존재하지 않는 채팅방입니다."),
 	CHAT_ROOM_UNAUTHORIZED_USER(HttpStatus.BAD_REQUEST, "CHAT4002", "이 채팅방의 참여자가 아닌 사용자입니다."),

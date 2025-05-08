@@ -1,7 +1,7 @@
-package com.a406.pocketing.exchange.repository;
+package com.a406.pocketing.notification.repository;
 
-import com.a406.pocketing.exchange.dto.NotificationProjection;
-import com.a406.pocketing.exchange.entity.Notification;
+import com.a406.pocketing.notification.dto.NotificationProjection;
+import com.a406.pocketing.notification.entity.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

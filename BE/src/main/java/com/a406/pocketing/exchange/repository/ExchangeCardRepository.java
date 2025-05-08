@@ -24,18 +24,7 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
             g.name_ko AS groupName,
             a.title AS albumTitle,
             m.name AS memberName,
-            ST_Distance(ul.location, :myLocation) AS distance,
-            CASE 
-                WHEN EXISTS (
-                    SELECT 1 FROM exchange_card sub 
-                    WHERE sub.user_id = u.user_id
-                    AND sub.is_owned = false
-                    AND sub.status = 'ACTIVE'
-                    AND sub.album_id = :myOwnedAlbumId
-                    AND sub.member_id = :myOwnedMemberId
-                ) THEN 'EXACT'
-                ELSE 'SUPPLEMENT'
-            END AS matchType
+            ST_Distance(ul.location, :myLocation) AS distance
         FROM exchange_card ec
         JOIN user_location ul ON ec.user_id = ul.user_id
         JOIN users u ON ec.user_id = u.user_id
@@ -48,19 +37,15 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
             AND ec.member_id = :myWantedMemberId
             AND ec.user_id != :myUserId
             AND ST_DWithin(ul.location, :myLocation, :range)
-        ORDER BY 
-            CASE
-                WHEN EXISTS (
-                    SELECT 1 FROM exchange_card sub 
-                    WHERE sub.user_id = u.user_id
+            AND EXISTS (
+                SELECT 1 FROM exchange_card sub 
+                WHERE sub.user_id = u.user_id
                     AND sub.is_owned = false
                     AND sub.status = 'ACTIVE'
                     AND sub.album_id = :myOwnedAlbumId
                     AND sub.member_id = :myOwnedMemberId
-                ) THEN 0
-                ELSE 1
-            END,
-            distance ASC
+                )
+        ORDER BY distance ASC
         LIMIT 100
     """, nativeQuery = true)
     List<Object[]> findNearbyExchangeCardsWithMatchType(
