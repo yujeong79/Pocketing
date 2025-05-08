@@ -1,14 +1,17 @@
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
 import * as S from './ProfileImageStyle';
-
 import BackButton from './components/BackButton';
 import Button from '@/components/common/Button';
 import { CameraIcon } from '@/assets/assets';
-import { useState } from 'react';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 const ProfileImagePage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +21,22 @@ const ProfileImagePage = () => {
       setSelectedImage(imageUrl);
     }
   };
+
+  const handleNext = () => {
+    const prev = queryClient.getQueryData<{ profileImage?: string }>([QUERY_KEYS.ONBOARDING]) || {};
+    queryClient.setQueryData([QUERY_KEYS.ONBOARDING], {
+      ...prev,
+      profileImage: selectedImage,
+    });
+    navigate('/group');
+  };
+
+  useEffect(() => {
+    const prev = queryClient.getQueryData<{ profileImage?: string }>([QUERY_KEYS.ONBOARDING]) || {};
+    if (prev.profileImage) {
+      setSelectedImage(prev.profileImage);
+    }
+  }, []);
 
   return (
     <S.PageContainer>
@@ -39,7 +58,7 @@ const ProfileImagePage = () => {
           </S.ImageLabel>
         </S.ImageContainer>
       </S.ItemContainer>
-      <Button text="다음" onClick={() => navigate('/group')} />
+      <Button text="다음" onClick={handleNext} disabled={!selectedImage} />
     </S.PageContainer>
   );
 };
