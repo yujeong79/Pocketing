@@ -2,9 +2,14 @@ import { useNavigate } from 'react-router-dom';
 
 import * as S from './SignInPageStyle';
 import { ThreeDLogo, TextLogo, KakaoLoginButton, XLoginButton } from '@/assets/assets';
+import { getKakaoLoginUrl } from '@/api/auth/kakaoLogin';
 
 const SignInPage = () => {
   const navigate = useNavigate();
+
+  const handleKakaoLoginClick = () => {
+    window.location.href = getKakaoLoginUrl();
+  };
 
   return (
     <S.SignInPageContainer>
@@ -14,7 +19,7 @@ const SignInPage = () => {
       </S.LogoContainer>
       <S.LoginButtonContainer>
         <S.KakaoLoginButton
-          onClick={() => navigate('/signup/nickname')}
+          onClick={handleKakaoLoginClick}
           src={KakaoLoginButton}
           alt="카카오 로그인 버튼"
         />
