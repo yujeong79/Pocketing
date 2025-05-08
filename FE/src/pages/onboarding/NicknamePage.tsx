@@ -70,9 +70,11 @@ const NicknamePage = () => {
             )}
           </S.InputBox>
           {nickname.length > 10 ? (
-            <S.Phrase>최대 10자까지 입력할 수 있습니다.</S.Phrase>
+            <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
+          ) : isNicknameChecked && !isDuplicate ? (
+            <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
           ) : (
-            <S.Phrase></S.Phrase>
+            <S.Phrase type="error"></S.Phrase>
           )}
         </S.InputContainer>
         <S.DuplicateCheckButtonContainer>
