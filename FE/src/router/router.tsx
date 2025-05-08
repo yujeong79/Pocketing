@@ -1,4 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+
+//auth
+import { RequireAuth } from '@/router/RequireAuth';
+
 //onboarding
 import SplashScreen from '@/pages/onboarding/SplashPage';
 import SignInPage from '@/pages/onboarding/SignInPage';
@@ -7,6 +11,7 @@ import ProfileImagePage from '@/pages/onboarding/ProfileImagePage';
 import MyGroupPage from '@/pages/onboarding/MyGroupPage';
 import MyMemberPage from '@/pages/onboarding/MyMemberPage';
 import CompletePage from '@/pages/onboarding/CompletePage';
+import KakaoCallbackPage from '@/pages/onboarding/KakaoCallbackPage';
 import GroupSelectPage from '@/pages/main/components/Group/GroupSelectPage';
 //main
 import Layout from '@/components/layout/Layout';
@@ -41,6 +46,10 @@ const router = createBrowserRouter([
     element: <SignInPage />,
   },
   {
+    path: 'kakao/callback',
+    element: <KakaoCallbackPage />,
+  },
+  {
     path: 'signup',
     children: [
       {
@@ -59,98 +68,104 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <Layout />,
+    element: <RequireAuth />,
     children: [
       {
-        path: 'main',
-        element: <MainPage />,
-      },
-      {
-        path: 'detail/:postId',
-        element: <DetailPage />,
-      },
-      {
-        path: 'map',
-        element: <MapPage />,
-      },
-      {
-        path: 'message',
+        path: '/',
+        element: <Layout />,
         children: [
           {
-            index: true,
-            element: <Navigate to="/message/trade" replace />,
+            path: 'main',
+            element: <MainPage />,
           },
           {
-            path: 'trade',
-            element: <MessagePage type="trade" />,
+            path: 'detail/:postId',
+            element: <DetailPage />,
           },
           {
-            path: 'exchange',
-            element: <MessagePage type="exchange" />,
+            path: 'map',
+            element: <MapPage />,
+          },
+          {
+            path: 'message',
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/message/trade" replace />,
+              },
+              {
+                path: 'trade',
+                element: <MessagePage type="trade" />,
+              },
+              {
+                path: 'exchange',
+                element: <MessagePage type="exchange" />,
+              },
+            ],
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
+          },
+          {
+            path: 'sell',
+            element: <SellPage />,
           },
         ],
       },
       {
-        path: 'profile',
-        element: <ProfilePage />,
+        path: 'message/:roomId',
+        element: <ChatRoomPage />,
       },
       {
-        path: 'sell',
-        element: <SellPage />,
+        path: 'alarm',
+        element: <AlarmPage />,
+      },
+      {
+        path: 'guide',
+        element: <GuidePage />,
+      },
+      {
+        path: 'post',
+        element: <PostPage />,
+      },
+      {
+        path: 'profileDetail',
+        element: <ProfileDetailPage />,
+      },
+      {
+        path: 'profileEdit',
+        element: <ProfileEditPage />,
+      },
+      {
+        path: 'myGroupEdit',
+        element: <MyGroupEditPage />,
+      },
+      {
+        path: 'myMemberEdit/:groupId',
+        element: <MyMemberEditPage />,
+      },
+      {
+        path: 'mySaleList',
+        element: <MySaleListPage />,
+      },
+      {
+        path: 'myCompleteList',
+        element: <MyCompleteListPage />,
+      },
+      {
+        path: 'group',
+        element: <MyGroupPage />,
+      },
+      {
+        path: 'group/select',
+        element: <GroupSelectPage onGroupSelect={() => {}} selectedAllGroup={null} />,
+      },
+      {
+        path: 'member/:groupId',
+        element: <MyMemberPage />,
       },
     ],
-  },
-  {
-    path: 'message/:roomId',
-    element: <ChatRoomPage />,
-  },
-  {
-    path: 'alarm',
-    element: <AlarmPage />,
-  },
-  {
-    path: 'guide',
-    element: <GuidePage />,
-  },
-  {
-    path: 'post',
-    element: <PostPage />,
-  },
-  {
-    path: 'profileDetail',
-    element: <ProfileDetailPage />,
-  },
-  {
-    path: 'profileEdit',
-    element: <ProfileEditPage />,
-  },
-  {
-    path: 'myGroupEdit',
-    element: <MyGroupEditPage />,
-  },
-  {
-    path: 'myMemberEdit/:groupId',
-    element: <MyMemberEditPage />,
-  },
-  {
-    path: 'mySaleList',
-    element: <MySaleListPage />,
-  },
-  {
-    path: 'myCompleteList',
-    element: <MyCompleteListPage />,
-  },
-  {
-    path: 'group',
-    element: <MyGroupPage />,
-  },
-  {
-    path: 'group/select',
-    element: <GroupSelectPage onGroupSelect={() => {}} selectedAllGroup={null} />,
-  },
-  {
-    path: 'member/:groupId',
-    element: <MyMemberPage />,
   },
 ]);
 
