@@ -16,7 +16,6 @@ import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.exchange.repository.ExchangeRequestRepository;
 import com.a406.pocketing.post.entity.Post;
 import com.a406.pocketing.post.repository.PostRepository;
-import com.a406.pocketing.user.dto.response.UserResponseDto;
 import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -53,8 +50,8 @@ public class ChatServiceImpl implements ChatService {
     public ChatRoomCreateResponseDto createOrGetRoom(ChatRoomRequestDto chatRoomRequestDto) {
         User user1 = userRepository.findByUserId(chatRoomRequestDto.getUser1Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
         User user2 = userRepository.findByUserId(chatRoomRequestDto.getUser2Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
-        Post post = postRepository.findByPostId(chatRoomRequestDto.getPostId()).orElseThrow(() -> new BadRequestHandler(POST_NOT_FOUND));
-        ExchangeRequest exchangeRequest = exchangeRequestRepository.findByExchangeRequestId(chatRoomRequestDto.getExchangeId()).orElseThrow(() -> new BadRequestHandler(EXCHANGE_REQUEST_NOT_FOUND));
+        Post post = postRepository.findByPostId(chatRoomRequestDto.getPostId()).orElse(null);
+        ExchangeRequest exchangeRequest = exchangeRequestRepository.findByExchangeRequestId(chatRoomRequestDto.getExchangeId()).orElse(null);
 
         Optional<ChatRoom> chatroomOpt = chatRoomRepository.findChatRoomByExactMatch(
                 exchangeRequest,
