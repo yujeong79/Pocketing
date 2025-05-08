@@ -1,5 +1,7 @@
 package com.a406.pocketing.post.service;
 
+import com.a406.pocketing.chat.entity.ChatRoom;
+import com.a406.pocketing.chat.repository.ChatRoomRepository;
 import com.a406.pocketing.common.apiPayload.code.status.ErrorStatus;
 import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.photocard.entity.PhotoCard;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class PostServiceImpl implements PostService {
     private final PhotoCardRepository photoCardRepository;
     private final UserRepository userRepository;
     private final PhotoCardService photoCardService;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     @Transactional
@@ -148,6 +152,30 @@ public class PostServiceImpl implements PostService {
         photoCardService.decreasePrice(cardId, price);  // 삭제된 가격 제거
     }
 
+    @Override
+    @Transactional
+    public void updatePostStatus(Long userId, PostUpdateStatusRequestDto postUpdateStatusRequestDto) {
+        // 1. 채팅방과 관련된 판매글 조회
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(postUpdateStatusRequestDto.getRoomId()).orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_ROOM_NOT_FOUND));
+        Post post = Optional.ofNullable(chatRoom.getPost()).orElseThrow(() -> new GeneralException(ErrorStatus.CHAT_ROOM_POST_NOT_FOUND));
+
+        // 2. 사용자가 판매글의 판매자가 맞는지 검증
+        if(!post.getSeller().getUserId().equals(userId)) {
+            throw new GeneralException(ErrorStatus.POST_EDIT_FORBIDDEN);
+        }
+
+        // 3. 채팅방의 상태를 변경
+        switch(postUpdateStatusRequestDto.getStatus()) {
+            case "AVAILABLE" -> {
+                post.updateStatus(null, "AVAILABLE");
+            }
+            case "COMPLETED" -> {
+                User buyer = chatRoom.getUser1().getUserId().equals(userId) ? chatRoom.getUser2() : chatRoom.getUser1();
+                post.updateStatus(buyer, "COMPLETED");
+            }
+        }
+
+    }
 
 
 }

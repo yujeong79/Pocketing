@@ -64,4 +64,9 @@ public class Post {
         this.price = price;
     }
 
+    public void updateStatus(User buyer, String status) {
+        this.buyer = buyer;
+        this.status = status;
+    }
+
 }
