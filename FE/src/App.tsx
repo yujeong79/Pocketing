@@ -9,9 +9,6 @@ import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { requestFcmToken } from '@/firebase';
 import { registerFcmToken } from '@/fcm';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
 
 const queryClient = new QueryClient();
 
