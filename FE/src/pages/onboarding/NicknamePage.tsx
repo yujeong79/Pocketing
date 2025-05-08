@@ -6,7 +6,6 @@ import * as S from './NicknameStyle';
 import { SuccessIcon, ErrorIcon } from '@/assets/assets';
 import { colors } from '@/styles/theme';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import BackButton from './components/BackButton';
 import Button from '@/components/common/Button';
 import { useNavigate } from 'react-router-dom';
 import { checkNicknameDuplicate } from '@/api/signUp';
@@ -53,7 +52,6 @@ const NicknamePage = () => {
   return (
     <S.PageContainer>
       <S.ItemContainer>
-        <BackButton />
         <S.TitleContainer>
           <S.FirstTitle>환영합니다</S.FirstTitle>
           <S.SecondTitle>닉네임을 입력해주세요</S.SecondTitle>
@@ -72,9 +70,11 @@ const NicknamePage = () => {
             )}
           </S.InputBox>
           {nickname.length > 10 ? (
-            <S.Phrase>최대 10자까지 입력할 수 있습니다.</S.Phrase>
+            <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
+          ) : isNicknameChecked && !isDuplicate ? (
+            <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
           ) : (
-            <S.Phrase></S.Phrase>
+            <S.Phrase type="error"></S.Phrase>
           )}
         </S.InputContainer>
         <S.DuplicateCheckButtonContainer>

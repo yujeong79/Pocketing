@@ -21,7 +21,7 @@ export const ItemContainer = styled.div`
 `;
 
 export const TitleContainer = styled.div`
-  padding-top: ${scale(60)}px;
+  padding-top: ${scale(72)}px;
   display: flex;
   flex-direction: column;
   gap: ${scale(8)}px;
@@ -71,9 +71,9 @@ export const CheckIcon = styled.img`
   height: ${scale(16)}px;
 `;
 
-export const Phrase = styled.div`
+export const Phrase = styled.div<{ type: 'error' | 'success' }>`
   ${FontStyles.captionSmall};
-  color: ${colors.danger};
+  color: ${({ type }) => (type === 'error' ? colors.danger : colors.success)};
   text-align: left;
   height: ${scale(12)}px;
 `;
