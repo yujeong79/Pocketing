@@ -46,13 +46,13 @@ public class ChatRoom {
     ))
     private User user2;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(
             foreignKeyDefinition = "FOREIGN KEY (post_id) REFERENCES post(post_id) ON DELETE CASCADE"
     ))
     private Post post;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exchange_id", foreignKey = @ForeignKey(
             foreignKeyDefinition = "FOREIGN KEY (exchange_id) REFERENCES exchange_ request(exchange_request_id) ON DELETE CASCADE"
     ))

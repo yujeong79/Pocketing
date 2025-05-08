@@ -23,9 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.*;
 
@@ -50,8 +50,8 @@ public class ChatServiceImpl implements ChatService {
     public ChatRoomCreateResponseDto createOrGetRoom(ChatRoomRequestDto chatRoomRequestDto) {
         User user1 = userRepository.findByUserId(chatRoomRequestDto.getUser1Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
         User user2 = userRepository.findByUserId(chatRoomRequestDto.getUser2Id()).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
-        Post post = postRepository.findByPostId(chatRoomRequestDto.getPostId()).orElseThrow(() -> new BadRequestHandler(POST_NOT_FOUND));
-        ExchangeRequest exchangeRequest = exchangeRequestRepository.findByExchangeRequestId(chatRoomRequestDto.getExchangeId()).orElseThrow(() -> new BadRequestHandler(EXCHANGE_REQUEST_NOT_FOUND));
+        Post post = postRepository.findByPostId(chatRoomRequestDto.getPostId()).orElse(null);
+        ExchangeRequest exchangeRequest = exchangeRequestRepository.findByExchangeRequestId(chatRoomRequestDto.getExchangeId()).orElse(null);
 
         Optional<ChatRoom> chatroomOpt = chatRoomRepository.findChatRoomByExactMatch(
                 exchangeRequest,
@@ -192,11 +192,28 @@ public class ChatServiceImpl implements ChatService {
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId).orElseThrow(() -> new BadRequestHandler(CHAT_ROOM_NOT_FOUND));
         validateChatRoomAccess(chatRoom, userId);
 
+        List<ChatRoomParticipantResponseDto> participants = getChatRoomParticipants(chatRoom, userId);
         LinkedPostResponseDto linkedPost = extractLinkedPost(chatRoom);
         LinkedExchangeResponseDto linkedExchange = extractLinkedExchange(chatRoom);
         MessagePageResponseDto messagePage = fetchMessages(chatRoom, pageable, userId);
 
-        return ChatRoomEnterResponseDto.of(linkedPost, linkedExchange, messagePage);
+        return ChatRoomEnterResponseDto.of(participants, linkedPost, linkedExchange, messagePage);
+    }
+
+    /**
+     * private(내부 로직용)
+     * 채팅방에 참여하는 사용자들을 리스트 형태로 반환하기 위한 서비스
+     * @param chatRoom
+     * @return
+     */
+    private List<ChatRoomParticipantResponseDto> getChatRoomParticipants(ChatRoom chatRoom, Long loginUserId) {
+        User loginUser = userRepository.findByUserId(loginUserId).orElseThrow(() -> new BadRequestHandler(USER_NOT_FOUND));
+        User otherUser = chatRoom.getReceiver(loginUserId);
+
+        return Stream.of(
+                        ChatRoomParticipantResponseDto.from(loginUser, true),
+                        ChatRoomParticipantResponseDto.from(otherUser, false)
+            ).toList();
     }
 
     /**

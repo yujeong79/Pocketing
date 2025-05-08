@@ -9,7 +9,12 @@ import com.a406.pocketing.auth.service.TwitterOAuthService;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NICKNAME_DUPLICATE;
 import static com.a406.pocketing.common.apiPayload.code.status.SuccessStatus.CHECK_NICKNAME_SUCCESS;
@@ -25,18 +30,42 @@ public class AuthController {
     private final TwitterOAuthService twitterOAuthService;
     private final AuthService authService;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     /**
      * 카카오로부터 인가 코드를 전달 받아 회원가입/로그인 로직 수행
      * @param authorizationCode
      * @return
      */
     @GetMapping("/kakao/callback")
-    public ApiResponse<?> kakaoCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode) {
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
 
-        return ApiResponse.onSuccess(loginResponseDto);
+        String redirectUrl;
+        if(!loginResponseDto.getIsRegistered()) {
+            redirectUrl = String.format(
+                    "%s/kakao/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
+                    frontendUrl,
+                    URLEncoder.encode("false", StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
+            );
+        } else {
+            redirectUrl = String.format(
+                    "%s/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    frontendUrl,
+                    URLEncoder.encode("true", StandardCharsets.UTF_8),
+                    URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
+            );
+        }
+
+        return new RedirectView(redirectUrl);
     }
 
     /**
@@ -45,12 +74,33 @@ public class AuthController {
      * @return
      */
     @GetMapping("/twitter/callback")
-    public ApiResponse<?> twitterCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode) {
         String accessToken = twitterOAuthService.getAccessToken(authorizationCode);
         OAuthUserResponseDto oAuthUserResponseDto = twitterOAuthService.getUserInfo(accessToken);
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
 
-        return ApiResponse.onSuccess(loginResponseDto);
+        String redirectUrl;
+        if(!loginResponseDto.getIsRegistered()) {
+            redirectUrl = String.format(
+                    "%s/twitter/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
+                    frontendUrl,
+                    URLEncoder.encode("false", StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
+            );
+        } else {
+            redirectUrl = String.format(
+                    "%s/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    frontendUrl,
+                    URLEncoder.encode("true", StandardCharsets.UTF_8),
+                    URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
+            );
+        }
+
+        return new RedirectView(redirectUrl);
     }
 
     /**
