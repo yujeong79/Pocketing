@@ -8,7 +8,7 @@ RUN npm run build
 
 # Step 2: Nginx for React App (HTTPS)
 FROM nginx:stable-alpine
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80 443
