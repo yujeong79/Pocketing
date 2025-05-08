@@ -76,14 +76,14 @@ public class AuthController {
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
-                    "/twitter/callback?isRegistered=$s&oauthProvider=%s&providerId=%s",
+                    "http://localhost:5173/twitter/callback?isRegistered=$s&oauthProvider=%s&providerId=%s",
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
             );
         } else {
             redirectUrl = String.format(
-                    "/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    "http://localhost:5173/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
