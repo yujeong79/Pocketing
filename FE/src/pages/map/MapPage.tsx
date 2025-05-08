@@ -122,7 +122,7 @@ const MapPage = () => {
       });
 
       // 마커 생성
-      const marker = new window.naver.maps.Marker({
+      const _marker = new window.naver.maps.Marker({
         map,
         position: location,
         icon: S.createMarkerIcon(),
