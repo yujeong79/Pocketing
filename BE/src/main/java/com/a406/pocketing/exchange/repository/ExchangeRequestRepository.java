@@ -9,4 +9,10 @@ import java.util.Optional;
 
 public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest, Long> {
     Optional<ExchangeRequest> findByExchangeRequestId(Long exchangeRequestId);
+
+    Boolean existsByRequesterAndResponderAndRequesterOwnedCardAndResponderOwnedCardAndStatus(
+            User requester, User responder,
+            ExchangeCard requesterCard, ExchangeCard responderCard,
+            String status
+    );
 }
