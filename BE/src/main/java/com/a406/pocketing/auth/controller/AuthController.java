@@ -62,7 +62,7 @@ public class AuthController {
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
 
         String redirectUrl = String.format(
-                "https://k12a406.p.ssafy.io/twitter/callback?oauthProvider=%s&providerId=$s",
+                "https://k12a406.p.ssafy.io/twitter/callback?oauthProvider=%s&providerId=%s",
                 URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                 URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
         );
