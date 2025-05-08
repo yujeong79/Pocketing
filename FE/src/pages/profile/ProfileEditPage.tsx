@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './ProfileEditStyle';
@@ -7,7 +7,7 @@ import { DefaultProfileImage, CameraIcon } from '@/assets/assets';
 import { myInfo } from '@/mocks/myInfo';
 import Button from '@/components/common/Button';
 
-const ProfileEditPage = () => {
+const ProfileEditPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -21,46 +21,54 @@ const ProfileEditPage = () => {
 
   return (
     <S.PageContainer>
-      <Header type="profileEdit" hasBorder={true} />
+      <Header type="profileEdit" hasBorder />
       <S.ContentsContainer>
         <S.InfoContainer>
           <S.ImageContainer>
-            <S.ImageLabel>
-              <S.ImageInput type="file" accept="image/*" onChange={handleImageUpload} />
-
-              {/* 이미지 크기 조절이 가능하게 구현 */}
+            <S.ImageLabel htmlFor="avatar-input">
+              <S.ImageInput
+                id="avatar-input"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
               <S.Image>
-                {selectedImage ? (
-                  <S.UploadedImage src={selectedImage} alt="프로필 이미지" />
-                ) : (
-                  <S.UploadedImage
-                    src={myInfo.profileImageUrl ?? DefaultProfileImage}
-                    alt="프로필 이미지"
-                  />
-                )}
+                <S.UploadedImage
+                  src={
+                    selectedImage ?? myInfo.profileImageUrl ?? DefaultProfileImage
+                  }
+                  alt="프로필 이미지"
+                />
               </S.Image>
               <S.CameraIcon src={CameraIcon} alt="camera" />
             </S.ImageLabel>
           </S.ImageContainer>
+
           <S.TextContainer>
-            <S.NicknameContainer>
-              <S.NicknameTitle>닉네임</S.NicknameTitle>
-              <S.InputContainer>
-                <S.Input placeholder={myInfo.nickname} />
-              </S.InputContainer>
-            </S.NicknameContainer>
-            <S.AddressContainer>
-              <S.AddressTitle>주소</S.AddressTitle>
-              <S.InputContainer>
-                <S.Input placeholder={myInfo.address} />
-              </S.InputContainer>
-            </S.AddressContainer>
-            <S.AccountContainer>
-              <S.AccountTitle>계좌</S.AccountTitle>
-              <S.InputContainer>
-                <S.Input placeholder={myInfo.account} />
-              </S.InputContainer>
-            </S.AccountContainer>
+            <S.InputContainer>
+              <S.Label htmlFor="nick">닉네임</S.Label>
+              <S.Input
+                id="nick"
+                placeholder="닉네임을 입력하세요"
+                defaultValue={myInfo.nickname}
+              />
+            </S.InputContainer>
+            <S.InputContainer>
+              <S.Label htmlFor="addr">주소</S.Label>
+              <S.Input
+                id="addr"
+                placeholder="주소를 입력하세요"
+                defaultValue={myInfo.address}
+              />
+            </S.InputContainer>
+            <S.InputContainer>
+              <S.Label htmlFor="acct">계좌</S.Label>
+              <S.Input
+                id="acct"
+                placeholder="계좌를 입력하세요"
+                defaultValue={myInfo.account}
+              />
+            </S.InputContainer>
           </S.TextContainer>
         </S.InfoContainer>
         <Button text="수정하기" onClick={() => navigate('/profileDetail')} />

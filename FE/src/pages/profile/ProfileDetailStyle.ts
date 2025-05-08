@@ -46,6 +46,7 @@ export const ProfileImage = styled.img`
   height: ${scale(125)}px;
   border-radius: 50%;
   border: 1px solid ${colors.primary200};
+  object-fit: cover;
 `;
 
 export const ProfileNickname = styled.div`
