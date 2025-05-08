@@ -40,14 +40,26 @@ public class AuthController {
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
 
-        String redirectUrl = String.format(
-                "https://k12a406.p.ssafy.io/twitter/callback?oauthProvider=%s&providerId=$s",
-                URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
-                URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
-        );
+        String redirectUrl;
+        if(!loginResponseDto.getIsRegistered()) {
+            redirectUrl = String.format(
+                    "/kakao/callback?isRegistered=$s&oauthProvider=%s&providerId=%s",
+                    URLEncoder.encode("false", StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
+            );
+        } else {
+            redirectUrl = String.format(
+                    "/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    URLEncoder.encode("true", StandardCharsets.UTF_8),
+                    URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
+            );
+        }
 
         return new RedirectView(redirectUrl);
-//        return ApiResponse.onSuccess(loginResponseDto);
     }
 
     /**
