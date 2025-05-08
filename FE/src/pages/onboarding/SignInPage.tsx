@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';
-
 import * as S from './SignInPageStyle';
 import { ThreeDLogo, TextLogo, KakaoLoginButton, XLoginButton } from '@/assets/assets';
 import { getKakaoLoginUrl } from '@/api/auth/kakaoLogin';
@@ -15,8 +13,6 @@ const TWITTER_AUTH_URL =
   '&code_challenge_method=plain';
 
 const SignInPage = () => {
-  const navigate = useNavigate();
-
   const handleKakaoLoginClick = () => {
     window.location.href = getKakaoLoginUrl();
   };
