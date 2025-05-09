@@ -20,7 +20,7 @@ pipeline {
                         echo "🚀 Running yolo_gemini FastAPI server"
                         sh """
                         docker run -d --name yolo_gemini-app \
-                        --env-file /yolo_gemini/secret/.env \
+                        -v /yolo_gemini/secret/.env:/app/.env \
                         -p 8000:8000 yolo_gemini-app
                         """
                     }
