@@ -48,5 +48,6 @@ public class PhotoCard {
     @Column(name = "tag")
     private List<String> tags;
 
-
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean hasEmbedding = false;
 }
