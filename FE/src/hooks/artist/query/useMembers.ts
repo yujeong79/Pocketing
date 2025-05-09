@@ -1,4 +1,4 @@
-import { getMembersAll } from '@/api/artist/member';
+import { fetchMembersAll } from '@/api/artist/member';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { MemberResponse } from '@/types/member';
 import { useQuery } from '@tanstack/react-query';
@@ -7,6 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 export const useMembersAll = (groupId: number) => {
   return useQuery<MemberResponse>({
     queryKey: [QUERY_KEYS.MEMBERS, groupId],
-    queryFn: () => getMembersAll(groupId),
+    queryFn: () => fetchMembersAll(groupId),
   });
 };

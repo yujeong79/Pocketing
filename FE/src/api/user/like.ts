@@ -2,19 +2,19 @@ import axiosInstance from '@/api/auth/axiosInstance';
 import { LikedGroupList, UserResponse } from '@/types/user';
 
 // 관심 그룹 전체 조회
-export const getLikedGroups = async (): Promise<UserResponse> => {
+export const fetchLikedGroups = async (): Promise<UserResponse> => {
   const response = await axiosInstance.get('/user/like/group');
   return response.data;
 };
 
 // 관심 그룹 내 관심 멤버 조회
-export const getLikedMembers = async (groupId: number): Promise<UserResponse> => {
+export const fetchtLikedMembers = async (groupId: number): Promise<UserResponse> => {
   const response = await axiosInstance.get(`/user/like/member?groupId=${groupId}`);
   return response.data;
 };
 
 // 관심 그룹 및 멤버 추가
-export const postLikedMembers = async (likedGroupList: LikedGroupList): Promise<UserResponse> => {
+export const createLikedMembers = async (likedGroupList: LikedGroupList): Promise<UserResponse> => {
   const response = await axiosInstance.post('/user/like/info', likedGroupList);
   return response.data;
 };
