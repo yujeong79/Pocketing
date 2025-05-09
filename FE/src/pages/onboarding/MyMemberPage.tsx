@@ -8,8 +8,8 @@ import MemberItem from './components/MemberItem';
 import { useMembersAll } from '@/hooks/artist/query/useMembers';
 import { useGroupsAll } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
-import { getSelectedMembers, updateGroupMembers } from '@/utils/storage';
 import { GroupResponse } from '@/types/group';
+import { useLikedMembersStore } from '@/store/likedMembers';
 // TODO:렌더링이 느린 감이 있음. 최적화 필요
 // 아이콘이 커서 클릭시 늘어나는 느낌이 있음. 조정 필요
 // 멤버를 선택했을 시 그룹에 효과를 넣어야함
@@ -22,8 +22,10 @@ const MyMemberPage = () => {
   };
   const { data: groupsData } = useGroupsAll() as { data: GroupResponse | undefined };
   const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
   const [updateKey, setUpdateKey] = useState(0);
+
+  const { getSelectedMembers, updateGroupMembers } = useLikedMembersStore();
+  const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (!groupId || !membersData?.result || !groupsData?.result) return;
@@ -36,17 +38,17 @@ const MyMemberPage = () => {
     );
     setMembers(groupMembers);
 
-    // 저장된 선택 정보 불러오기
+    // Zustand store에서 선택된 멤버 정보 불러오기
     const savedMembers = getSelectedMembers(Number(groupId));
     setSelectedMemberIds(savedMembers);
-  }, [groupId, membersData, groupsData]);
+  }, [groupId, membersData, groupsData, getSelectedMembers]);
 
   const handleMemberClick = useCallback((memberId: number) => {
     setSelectedMemberIds((prev) => {
       const newIds = prev.includes(memberId)
         ? prev.filter((id) => id !== memberId)
         : [...prev, memberId];
-      setUpdateKey((key) => key + 1); // 강제 리렌더링을 위한 키 업데이트
+      setUpdateKey((key) => key + 1);
       return newIds;
     });
   }, []);
@@ -55,7 +57,7 @@ const MyMemberPage = () => {
     if (!groupId) return;
     updateGroupMembers(Number(groupId), selectedMemberIds);
     navigate('/group');
-  }, [groupId, selectedMemberIds, navigate]);
+  }, [groupId, selectedMemberIds, navigate, updateGroupMembers]);
 
   return (
     <S.PageContainer>

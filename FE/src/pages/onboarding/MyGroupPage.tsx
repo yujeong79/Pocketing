@@ -8,12 +8,13 @@ import { SearchIcon } from '@/assets/assets';
 import { useGroupsAll } from '@/hooks/artist/query/useGroups';
 import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
-import { hasSelectedMembers } from '@/utils/storage';
+import { useLikedMembersStore } from '@/store/likedMembers';
 
 const MyGroupPage = () => {
   const navigate = useNavigate();
   const { data: groupsData } = useGroupsAll();
   const [searchTerm, setSearchTerm] = useState('');
+  const { hasSelectedMembers } = useLikedMembersStore();
 
   const { filteredGroups } = useGroupSearch({
     groups: groupsData?.result,
