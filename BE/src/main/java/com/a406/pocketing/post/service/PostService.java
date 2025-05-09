@@ -21,8 +21,8 @@ public interface PostService {
 
     void updatePostStatus(Long userId, PostUpdateStatusRequestDto postUpdateStatusRequestDto);
 
-    List<PostResponseDto> getMyAvailablePosts(Long userId);
+    List<PostListItemResponseDto> getMyAvailablePosts(Long userId);
 
-    List<PostResponseDto> getMyCompletedPosts(Long userId);
+    List<PostListItemResponseDto> getMyCompletedPosts(Long userId);
 }
 
