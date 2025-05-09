@@ -1,5 +1,5 @@
-import { AuthResponse } from '@/types/auth';
-import axiosInstance from './axiosInstance';
+import { OAuthResponse } from '@/types/oauth';
+import axiosInstance from '@/api/auth/axiosInstance';
 
 // 카카오 로그인 URL 생성 함수
 export const getKakaoLoginUrl = () => {
@@ -10,13 +10,7 @@ export const getKakaoLoginUrl = () => {
 };
 
 // 카카오 로그인 처리
-export const kakaoLogin = async (code: string): Promise<AuthResponse> => {
+export const kakaoLogin = async (code: string): Promise<OAuthResponse> => {
   const response = await axiosInstance.get(`/auth/kakao/callback?code=${code}`);
-
-  const { accessToken } = response.data.result;
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-  }
-
   return response.data;
 };

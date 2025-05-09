@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 const KakaoCallbackPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -19,13 +22,10 @@ const KakaoCallbackPage = () => {
       }
 
       localStorage.setItem('accessToken', accessToken);
-
-      window.history.replaceState(null, '', '/main');
       navigate('/main', { replace: true });
     } else {
       const oauthProvider = searchParams.get('oauthProvider');
       const providerId = searchParams.get('providerId');
-      console.log(providerId, oauthProvider);
 
       if (!oauthProvider || !providerId) {
         console.error('OAuth 정보가 없습니다.');
@@ -33,16 +33,15 @@ const KakaoCallbackPage = () => {
         return;
       }
 
-      window.history.replaceState(null, '', '/signup/nickname');
-      navigate('/signup/nickname', {
-        state: {
-          oauthProvider,
-          providerId,
-        },
-        replace: true,
+      // OAuth 정보를 React Query에 저장
+      queryClient.setQueryData([QUERY_KEYS.OAUTH], {
+        providerId,
+        oauthProvider,
       });
+
+      navigate('/signup/nickname', { replace: true });
     }
-  }, [navigate, location]);
+  }, [navigate, location, queryClient]);
 
   return (
     <div

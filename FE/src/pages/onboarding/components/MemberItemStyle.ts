@@ -9,19 +9,23 @@ export const MemberItem = styled.div`
   justify-items: center;
   gap: ${scale(8)}px;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 `;
 
 export const MemberItemText = styled.div<{ $isSelected: boolean }>`
   ${FontStyles.headingLarge};
   color: ${(props) => (props.$isSelected ? colors.primary : colors.primary200)};
   text-align: left;
+  transition: color 0.2s ease-in-out;
 
-  &:hover {
+  ${MemberItem}:hover & {
     color: ${colors.primary};
   }
 `;
 
 export const MemberItemIcon = styled.img`
-  width: ${scale(24)}px;
-  height: ${scale(32)}px;
+  width: ${scale(22)}px;
+  height: ${scale(28)}px;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 1;
 `;
