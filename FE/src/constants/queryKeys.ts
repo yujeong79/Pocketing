@@ -3,4 +3,7 @@ export const QUERY_KEYS = {
   MEMBERS: 'members',
   ONBOARDING: 'onboarding',
   OAUTH: 'oauth',
+  PHOTOCARDS: 'photocards',
+  LIKED_GROUPS: 'likedGroups',
+  LIKED_MEMBERS: 'likedMembers',
 } as const;
