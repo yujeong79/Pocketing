@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y \
 # Configure timezone (Set to Asia/Seoul, change if needed)
 RUN ln -fs /usr/share/zoneinfo/Asia/Seoul /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy app code
 COPY . .
