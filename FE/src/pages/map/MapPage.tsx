@@ -33,6 +33,7 @@ const MapPage = () => {
 
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const naverMapRef = useRef<any>(null);
 
   const filteredList = useMemo(
     () => exchangeList.filter((user) => user.distance <= range),
@@ -71,6 +72,13 @@ const MapPage = () => {
       setShowSendToast(true);
     } else {
       setShowMaxToast(true);
+    }
+  };
+
+  const handleReturnClick = () => {
+    if (naverMapRef.current && currentLocation) {
+      const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
+      naverMapRef.current.morph(location, 17);
     }
   };
 
@@ -120,6 +128,8 @@ const MapPage = () => {
         tileQuality: 'high',
         mapTypeId: window.naver.maps.MapTypeId.NORMAL,
       });
+
+      naverMapRef.current = map; // 지도 객체 저장
 
       // 마커 생성
       const marker = new window.naver.maps.Marker({
@@ -198,7 +208,7 @@ const MapPage = () => {
 
       <S.ButtonsContainer>
         <S.ButtonContainer>
-          <S.ReturnButton src={ReturnIcon} />
+          <S.ReturnButton src={ReturnIcon} onClick={handleReturnClick} />
         </S.ButtonContainer>
         <S.ButtonContainer onClick={handleRefreshClick}>
           <S.RefreshButton src={RefreshIcon2} $spinning={spinning} />
