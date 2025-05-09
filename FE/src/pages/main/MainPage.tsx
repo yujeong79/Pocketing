@@ -6,9 +6,11 @@ import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
 import { artistList } from '@/mocks/artist';
 import { photocardListMock } from '@/mocks/photocard-list';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation } from 'react-router-dom';
+import { useLikedGroups } from '@/hooks/user/query/useLike';
+import { UserLikedGroup } from '@/types/user';
 
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
@@ -18,21 +20,22 @@ const MainPage = () => {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const location = useLocation();
 
+  const { data: likedGroups } = useLikedGroups();
+
+  // 컴포넌트 마운트 시 첫 번째 관심그룹 선택
+  useEffect(() => {
+    if (likedGroups?.result && (likedGroups.result as UserLikedGroup[]).length > 0) {
+      const firstGroup = (likedGroups.result as UserLikedGroup[])[0];
+      setSelectedGroupId(firstGroup.groupId);
+    }
+  }, [likedGroups]);
+
   // location.state에서 선택된 그룹 정보를 가져옴
   useMemo(() => {
     if (location.state?.selectedAllGroup) {
       setSelectedAllGroup(location.state.selectedAllGroup);
     }
   }, [location.state]);
-
-  const currentMembers = useMemo(() => {
-    if (selectedGroupId === null && selectedAllGroup === null) {
-      return [];
-    }
-    const groupId = selectedGroupId || selectedAllGroup;
-    const selectedGroup = artistList.find((group) => group.groupId === groupId);
-    return selectedGroup ? selectedGroup.members : [];
-  }, [selectedGroupId, selectedAllGroup]);
 
   const selectedGroup = useMemo(() => {
     const groupId = selectedGroupId || selectedAllGroup;
@@ -63,25 +66,16 @@ const MainPage = () => {
       <Header type="main" />
       <MainContainer>
         <GroupImageList
-          groups={artistList}
           selectedId={selectedGroupId}
-          onSelectGroup={(id) => {
-            setSelectedGroupId(id);
-            setSelectedMember(null);
-            setSelectedAlbum(null);
-            setSelectedAllGroup(null);
-          }}
+          onSelectGroup={setSelectedGroupId}
           selectedAllGroup={selectedAllGroup}
           onSelectAllGroup={setSelectedAllGroup}
         />
         {(selectedGroupId || selectedAllGroup) && (
           <MemberChipList
-            members={currentMembers}
+            groupId={selectedGroupId || selectedAllGroup || 0}
             selectedMember={selectedMember}
-            onSelectMember={(member) => {
-              setSelectedMember(member);
-              setSelectedAlbum(null);
-            }}
+            onSelectMember={setSelectedMember}
           />
         )}
         <FilterContainer>
