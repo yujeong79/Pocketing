@@ -8,11 +8,8 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 100vh;
-  padding-top: ${scale(24)}px;
-  padding-left: ${scale(16)}px;
-  padding-right: ${scale(16)}px;
-  padding-bottom: ${scale(64)}px;
+  height: 100vh;
+  padding: ${scale(24)}px;
 `;
 
 export const ItemContainer = styled.div`
@@ -20,16 +17,30 @@ export const ItemContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: ${scale(160)}px;
-  gap: ${scale(32)}px;
+  flex: 1;
+  gap: ${scale(24)}px;
 `;
 
 export const CompleteIcon = styled.img`
-  width: ${scale(64)}px;
-  height: ${scale(64)}px;
+  width: ${scale(80)}px;
+  height: ${scale(80)}px;
 `;
 
-export const CompleteText = styled.div`
-  ${FontStyles.headingMedium};
+export const Title = styled.div`
+  ${FontStyles.headingLarge};
   color: ${colors.gray800};
+  text-align: center;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: ${scale(36)}px;
+`;
+
+export const Description = styled.div`
+  ${FontStyles.bodyMedium};
+  color: ${colors.gray600};
+  text-align: center;
+  line-height: 1.5;
 `;
