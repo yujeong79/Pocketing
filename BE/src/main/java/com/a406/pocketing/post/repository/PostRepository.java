@@ -107,5 +107,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT MAX(p.price) FROM Post p WHERE p.photoCard.cardId = :cardId")
     Integer findMaxPriceByPhotoCardId(@Param("cardId") Long cardId);
 
+    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'AVAILABLE'")
+    List<Post> findAvailablePostsByUserId(Long userId);
+
+    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'COMPLETED'")
+    List<Post> findCompletedPostsByUserId(Long userId);
+
 }
 

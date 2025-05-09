@@ -10,6 +10,7 @@ import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class GroupServiceImpl implements GroupService {
      * 그룹 전체 조회 (관심 여부 포함)
      */
     @Override
-    public List<GroupResponseDto> getAllGroups(Long userId) {
+    public List<GroupResponseDto> getAllGroupsWithUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         // 전체 그룹 조회
@@ -45,6 +46,13 @@ public class GroupServiceImpl implements GroupService {
                         .isInterest(likedGroupIds.contains(group.getGroupId()))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GroupResponseDto> getAllGroups() {
+        return groupRepository.findAll().stream()
+                .map(GroupResponseDto::from)
+                .toList();
     }
 
 }

@@ -39,12 +39,6 @@ public class PostController {
         return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postService.getPosts(memberId, albumId, pageable));
     }
 
-    @PutMapping
-    public ApiResponse<?> updatePostStatus(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestBody PostUpdateStatusRequestDto postUpdateStatusRequestDto) {
-        postService.updatePostStatus(loginUser.getUserId(), postUpdateStatusRequestDto);
-        return ApiResponse.of(SuccessStatus.POST_UPDATE_STATUS_SUCCESS, null);
-    }
-
     @GetMapping("/sellers")
     public ApiResponse<SellerListResponseDto> getSellersByCardId(
             @RequestParam Long cardId,
@@ -72,6 +66,24 @@ public class PostController {
         Long currentUserId = getCurrentUserId();
         postService.deletePost(postId, currentUserId);
         return ApiResponse.of(SuccessStatus.POST_DELETE_SUCCESS, null);
+    }
+
+    @PutMapping("/status")
+    public ApiResponse<?> updatePostStatus(@AuthenticationPrincipal CustomUserDetails loginUser, @RequestBody PostUpdateStatusRequestDto postUpdateStatusRequestDto) {
+        postService.updatePostStatus(loginUser.getUserId(), postUpdateStatusRequestDto);
+        return ApiResponse.of(SuccessStatus.POST_UPDATE_STATUS_SUCCESS, null);
+    }
+
+    @GetMapping("/available")
+    public ApiResponse<?> getMyAvailablePosts(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        List<PostResponseDto> postResponseDtoList = postService.getMyAvailablePosts(loginUser.getUserId());
+        return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postResponseDtoList);
+    }
+
+    @GetMapping("/completed")
+    public ApiResponse<?> getMyCompletedPosts(@AuthenticationPrincipal CustomUserDetails loginUser) {
+        List<PostResponseDto> postResponseDtoList = postService.getMyCompletedPosts(loginUser.getUserId());
+        return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postResponseDtoList);
     }
 
     private Long getCurrentUserId() {
