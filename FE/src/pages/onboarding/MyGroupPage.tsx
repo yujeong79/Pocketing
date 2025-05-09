@@ -8,6 +8,7 @@ import { SearchIcon } from '@/assets/assets';
 import { useGroupsAll } from '@/hooks/artist/query/useGroups';
 import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
+import { hasSelectedMembers } from '@/utils/storage';
 
 const MyGroupPage = () => {
   const navigate = useNavigate();
@@ -33,12 +34,19 @@ const MyGroupPage = () => {
           <S.SearchIcon src={SearchIcon} />
         </S.SearchContainer>
         <S.GroupListContainer>
-          {filteredGroups.map((group: Group) => (
-            <S.GroupInfo key={group.groupId} onClick={() => navigate(`/member/${group.groupId}`)}>
-              <S.GroupImage src={group.groupImageUrl} />
-              <S.GroupName>{group.groupNameKo}</S.GroupName>
-            </S.GroupInfo>
-          ))}
+          {filteredGroups.map((group: Group) => {
+            const hasSelected = hasSelectedMembers(group.groupId);
+            return (
+              <S.GroupInfo
+                key={group.groupId}
+                onClick={() => navigate(`/member/${group.groupId}`)}
+                $isSelected={hasSelected}
+              >
+                <S.GroupImage src={group.groupImageUrl} $isSelected={hasSelected} />
+                <S.GroupName>{group.groupNameKo}</S.GroupName>
+              </S.GroupInfo>
+            );
+          })}
         </S.GroupListContainer>
       </S.ItemContainer>
       <Button text="완료" onClick={() => navigate('/profile')} />
