@@ -113,5 +113,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'COMPLETED'")
     List<Post> findCompletedPostsByUserId(Long userId);
 
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.photoCard pc
+        JOIN FETCH pc.album a
+        JOIN FETCH pc.member m
+        JOIN FETCH m.group
+        WHERE p.seller.userId = :userId AND p.status = :status
+    """)
+    List<Post> findPostsByUserIdAndStatusWithAll(Long userId, String status);
+
 }
 

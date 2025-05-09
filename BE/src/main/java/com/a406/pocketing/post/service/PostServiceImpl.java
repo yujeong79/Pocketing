@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -178,15 +179,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponseDto> getMyAvailablePosts(Long userId) {
-        List<Post> postList = postRepository.findAvailablePostsByUserId(userId);
-        return List.of();
+    public List<PostListItemResponseDto> getMyAvailablePosts(Long userId) {
+        List<Post> postList = postRepository.findPostsByUserIdAndStatusWithAll(userId, "AVAILABLE");
+        return postList.stream()
+                .map(PostListItemResponseDto::from)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<PostResponseDto> getMyCompletedPosts(Long userId) {
-        List<Post> postList = postRepository.findCompletedPostsByUserId(userId);
-        return List.of();
+    public List<PostListItemResponseDto> getMyCompletedPosts(Long userId) {
+        List<Post> postList = postRepository.findPostsByUserIdAndStatusWithAll(userId, "COMPLETED");
+        return postList.stream()
+                .map(PostListItemResponseDto::from)
+                .collect(Collectors.toList());
     }
 
 }

@@ -76,13 +76,13 @@ public class PostController {
 
     @GetMapping("/available")
     public ApiResponse<?> getMyAvailablePosts(@AuthenticationPrincipal CustomUserDetails loginUser) {
-        List<PostResponseDto> postResponseDtoList = postService.getMyAvailablePosts(loginUser.getUserId());
+        List<PostListItemResponseDto> postResponseDtoList = postService.getMyAvailablePosts(loginUser.getUserId());
         return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postResponseDtoList);
     }
 
     @GetMapping("/completed")
     public ApiResponse<?> getMyCompletedPosts(@AuthenticationPrincipal CustomUserDetails loginUser) {
-        List<PostResponseDto> postResponseDtoList = postService.getMyCompletedPosts(loginUser.getUserId());
+        List<PostListItemResponseDto> postResponseDtoList = postService.getMyCompletedPosts(loginUser.getUserId());
         return ApiResponse.of(SuccessStatus.POST_LIST_FETCH_SUCCESS, postResponseDtoList);
     }
 
