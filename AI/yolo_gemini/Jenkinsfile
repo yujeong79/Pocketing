@@ -14,7 +14,7 @@ pipeline {
 
                         echo "🚀 Building Docker Image for yolo_gemini"
                         sh """
-                        docker build -t yolo_gemini-app .
+                        docker build --no-cache -t yolo_gemini-app .
                         """
 
                         echo "🚀 Running yolo_gemini FastAPI server"
