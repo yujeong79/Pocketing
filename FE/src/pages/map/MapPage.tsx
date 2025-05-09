@@ -75,10 +75,21 @@ const MapPage = () => {
     }
   };
 
+  const getZoomLevel = (range: number) => {
+    switch (range) {
+      case 100:
+        return 17;
+      case 300:
+        return 16;
+      case 500:
+        return 15;
+    }
+  };
+
   const handleReturnClick = () => {
     if (naverMapRef.current && currentLocation) {
       const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
-      naverMapRef.current.morph(location, 17);
+      naverMapRef.current.morph(location, getZoomLevel(range));
     }
   };
 
@@ -105,7 +116,7 @@ const MapPage = () => {
       // 지도 생성
       const map = new window.naver.maps.Map(mapRef.current, {
         center: location,
-        zoom: 17,
+        zoom: getZoomLevel(range),
         zoomControl: false,
         zoomControlOptions: {
           position: window.naver.maps.Position.TOP_RIGHT,
