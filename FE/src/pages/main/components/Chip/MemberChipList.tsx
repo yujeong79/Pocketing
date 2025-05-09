@@ -4,8 +4,8 @@ import { useMembers } from '@/hooks/artist/query/useMembers';
 
 interface MemberChipListProps {
   groupId: number;
-  selectedMember: string | null;
-  onSelectMember: (member: string | null) => void;
+  selectedMember: number | null;
+  onSelectMember: (memberId: number | null) => void;
 }
 
 const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipListProps) => {
@@ -32,8 +32,9 @@ const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipL
           <MemberChip
             key={member.memberId}
             name={member.interest ? `♥ ${member.name}` : member.name}
-            isSelected={selectedMember === member.name}
-            onClick={() => onSelectMember(member.name)}
+            memberId={member.memberId}
+            isSelected={selectedMember === member.memberId}
+            onClick={() => onSelectMember(member.memberId)}
           />
         ))}
       </StyledMemberChipList>

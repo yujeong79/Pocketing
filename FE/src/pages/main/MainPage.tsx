@@ -4,22 +4,23 @@ import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
-import { photocardListMock } from '@/mocks/photocard-list';
 import { useState, useMemo, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation } from 'react-router-dom';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { UserLikedGroup } from '@/types/user';
+import { useMembers } from '@/hooks/artist/query/useMembers';
 
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-  const [selectedMember, setSelectedMember] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<number | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
-  const location = useLocation();
 
+  const location = useLocation();
   const { data: likedGroups } = useLikedGroups();
+  const { data: membersData } = useMembers(selectedGroupId || selectedAllGroup || 0);
 
   // 컴포넌트 마운트 시 첫 번째 관심그룹 선택
   useEffect(() => {
@@ -42,24 +43,17 @@ const MainPage = () => {
     return (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === groupId);
   }, [selectedGroupId, selectedAllGroup, likedGroups]);
 
-  const albums = useMemo(() => {
-    const { content } = photocardListMock.result;
-    const filteredContent = content.filter((card) => {
-      const groupId = selectedGroupId || selectedAllGroup;
-      if (!groupId) return true;
-      if (selectedMember) {
-        return card.memberName === selectedMember;
-      }
-      return card.groupNameKo === selectedGroup?.groupNameKo;
-    });
-
-    return [...new Set(filteredContent.map((card) => card.albumTitle))];
-  }, [selectedGroupId, selectedAllGroup, selectedMember, selectedGroup]);
-
   const handleAlbumSelect = (albumTitle: string | null) => {
     setSelectedAlbum(albumTitle);
     setIsAlbumModalOpen(false);
   };
+
+  // 선택된 멤버의 이름 찾기
+  const selectedMemberName = useMemo(() => {
+    if (!selectedMember || !membersData) return null;
+    const member = membersData.find((m) => m.memberId === selectedMember);
+    return member?.name || null;
+  }, [selectedMember, membersData]);
 
   return (
     <>
@@ -79,9 +73,9 @@ const MainPage = () => {
           />
         )}
         <FilterContainer>
-          {selectedMember && (
+          {selectedMemberName && (
             <SelectedMemberText>
-              <span>{selectedMember}</span>의 포토카드
+              <span>{selectedMemberName}</span>의 포토카드
             </SelectedMemberText>
           )}
           {!selectedMember && selectedGroup && (
@@ -94,16 +88,12 @@ const MainPage = () => {
             onClick={() => setIsAlbumModalOpen(true)}
           />
         </FilterContainer>
-        <PhotoCardList
-          selectedGroupId={selectedGroupId || selectedAllGroup}
-          selectedMember={selectedMember}
-          selectedAlbum={selectedAlbum}
-        />
+        <PhotoCardList selectedMember={selectedMember} selectedAlbum={selectedAlbum} />
         <AlbumModal
           isOpen={isAlbumModalOpen}
           onClose={() => setIsAlbumModalOpen(false)}
           onSelectAlbum={handleAlbumSelect}
-          albums={albums}
+          albums={[]} // TODO: albums 데이터 연동 필요
           selectedAlbum={selectedAlbum}
         />
       </MainContainer>
