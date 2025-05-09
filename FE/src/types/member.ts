@@ -2,7 +2,7 @@ export interface MemberResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: Member;
+  result: Member[];
 }
 
 export interface Member {
@@ -11,4 +11,13 @@ export interface Member {
   groupNameKo: string;
   groupNameEn: string;
   interest: boolean;
+}
+
+export interface SelectedGroupMembers {
+  groupId: number;
+  likedMemberList: number[];
+}
+
+export interface LikedInfo {
+  likedGroupList: SelectedGroupMembers[];
 }
