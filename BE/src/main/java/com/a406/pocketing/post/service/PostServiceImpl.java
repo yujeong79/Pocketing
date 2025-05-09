@@ -177,6 +177,17 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Override
+    public List<PostResponseDto> getMyAvailablePosts(Long userId) {
+        List<Post> postList = postRepository.findAvailablePostsByUserId(userId);
+        return List.of();
+    }
+
+    @Override
+    public List<PostResponseDto> getMyCompletedPosts(Long userId) {
+        List<Post> postList = postRepository.findCompletedPostsByUserId(userId);
+        return List.of();
+    }
 
 }
 
