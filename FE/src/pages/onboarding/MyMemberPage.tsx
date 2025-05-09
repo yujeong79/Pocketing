@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
 
 import * as S from './MyMemberStyle';
@@ -16,6 +16,7 @@ import { useLikedMembersStore } from '@/store/likedMembers';
 
 const MyMemberPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { groupId } = useParams();
   const { data: membersData } = useMembersAll(Number(groupId)) as {
     data: MemberResponse | undefined;
@@ -56,8 +57,10 @@ const MyMemberPage = () => {
   const handleComplete = useCallback(() => {
     if (!groupId) return;
     updateGroupMembers(Number(groupId), selectedMemberIds);
-    navigate('/group');
-  }, [groupId, selectedMemberIds, navigate, updateGroupMembers]);
+    navigate('/group', {
+      state: location.state, // OAuth 정보 전달
+    });
+  }, [groupId, selectedMemberIds, navigate, updateGroupMembers, location.state]);
 
   return (
     <S.PageContainer>
