@@ -4,24 +4,26 @@ pipeline {
     stages {
         stage('Docker Build & Deploy') {
             steps {
-                script {
-                    echo "🚀 Stopping existing yolo_gemini server (if any)"
-                    sh """
-                    docker stop yolo_gemini-app || true
-                    docker rm yolo_gemini-app || true
-                    """
+                dir('AI/yolo_gemini') {
+                    script {
+                        echo "🚀 Stopping existing yolo_gemini server (if any)"
+                        sh """
+                        docker stop yolo_gemini-app || true
+                        docker rm yolo_gemini-app || true
+                        """
 
-                    echo "🚀 Building Docker Image for yolo_gemini"
-                    sh """
-                    docker build -t yolo_gemini-app .
-                    """
+                        echo "🚀 Building Docker Image for yolo_gemini"
+                        sh """
+                        docker build -t yolo_gemini-app .
+                        """
 
-                    echo "🚀 Running yolo_gemini FastAPI server"
-                    sh """
-                    docker run -d --name yolo_gemini-app \
-                    --env-file /yolo_gemini/secret/.env \
-                    -p 8000:8000 yolo_gemini-app
-                    """
+                        echo "🚀 Running yolo_gemini FastAPI server"
+                        sh """
+                        docker run -d --name yolo_gemini-app \
+                        --env-file /yolo_gemini/secret/.env \
+                        -p 8000:8000 yolo_gemini-app
+                        """
+                    }
                 }
             }
         }
