@@ -23,7 +23,6 @@ public class PhotoCardVectorDto {
 	private List<String> tag;
 	private Object embedding;
 
-
 	public static PhotoCardVectorDto from(PhotoCard photocard) {
 		if (photocard == null) {
 			return null;
