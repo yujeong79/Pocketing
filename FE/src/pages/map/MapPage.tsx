@@ -33,6 +33,7 @@ const MapPage = () => {
 
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const naverMapRef = useRef<any>(null);
 
   const filteredList = useMemo(
     () => exchangeList.filter((user) => user.distance <= range),
@@ -74,6 +75,24 @@ const MapPage = () => {
     }
   };
 
+  const getZoomLevel = (range: number) => {
+    switch (range) {
+      case 100:
+        return 17;
+      case 300:
+        return 16;
+      case 500:
+        return 15;
+    }
+  };
+
+  const handleReturnClick = () => {
+    if (naverMapRef.current && currentLocation) {
+      const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
+      naverMapRef.current.morph(location, getZoomLevel(range));
+    }
+  };
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -97,7 +116,7 @@ const MapPage = () => {
       // 지도 생성
       const map = new window.naver.maps.Map(mapRef.current, {
         center: location,
-        zoom: 17,
+        zoom: getZoomLevel(range),
         zoomControl: false,
         zoomControlOptions: {
           position: window.naver.maps.Position.TOP_RIGHT,
@@ -120,6 +139,8 @@ const MapPage = () => {
         tileQuality: 'high',
         mapTypeId: window.naver.maps.MapTypeId.NORMAL,
       });
+
+      naverMapRef.current = map; // 지도 객체 저장
 
       // 마커 생성
       const marker = new window.naver.maps.Marker({
@@ -198,7 +219,7 @@ const MapPage = () => {
 
       <S.ButtonsContainer>
         <S.ButtonContainer>
-          <S.ReturnButton src={ReturnIcon} />
+          <S.ReturnButton src={ReturnIcon} onClick={handleReturnClick} />
         </S.ButtonContainer>
         <S.ButtonContainer onClick={handleRefreshClick}>
           <S.RefreshButton src={RefreshIcon2} $spinning={spinning} />
