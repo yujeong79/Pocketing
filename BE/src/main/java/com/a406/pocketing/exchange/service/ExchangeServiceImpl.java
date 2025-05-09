@@ -60,7 +60,7 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // fcm 전송
         notificationService.sendFcmToUser(
-                responder.getUserId(),
+                requester.getUserId(),
                 "포켓콜 도착!",
                 requester.getNickname() + "님이 포켓콜을 보냈어요"
         );
