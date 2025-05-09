@@ -9,7 +9,7 @@ scipy==1.15.2
 matplotlib==3.10.1
 pandas==2.2.3
 PyYAML==6.0.2
-torch==2.1.0+cu121 # 버전 수정
-torchvision==0.16.0+cu121 # 버전 수정
+# torch==2.1.0+cu121 # 버전 수정
+# torchvision==0.16.0+cu121 # 버전 수정
 psutil==7.0.0
 typing_extensions==4.13.2
