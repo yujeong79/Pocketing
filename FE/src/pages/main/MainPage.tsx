@@ -4,7 +4,6 @@ import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
-import { artistList } from '@/mocks/artist';
 import { photocardListMock } from '@/mocks/photocard-list';
 import { useState, useMemo, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
@@ -39,8 +38,9 @@ const MainPage = () => {
 
   const selectedGroup = useMemo(() => {
     const groupId = selectedGroupId || selectedAllGroup;
-    return artistList.find((group) => group.groupId === groupId);
-  }, [selectedGroupId, selectedAllGroup]);
+    if (!likedGroups?.result) return null;
+    return (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === groupId);
+  }, [selectedGroupId, selectedAllGroup, likedGroups]);
 
   const albums = useMemo(() => {
     const { content } = photocardListMock.result;
@@ -50,7 +50,7 @@ const MainPage = () => {
       if (selectedMember) {
         return card.memberName === selectedMember;
       }
-      return card.groupNameKo === selectedGroup?.name;
+      return card.groupNameKo === selectedGroup?.groupNameKo;
     });
 
     return [...new Set(filteredContent.map((card) => card.albumTitle))];
@@ -86,7 +86,7 @@ const MainPage = () => {
           )}
           {!selectedMember && selectedGroup && (
             <SelectedMemberText>
-              <span>{selectedGroup.name}</span>의 포토카드
+              <span>{selectedGroup.groupNameKo}</span>의 포토카드
             </SelectedMemberText>
           )}
           <AlbumChip
