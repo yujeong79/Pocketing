@@ -5,6 +5,10 @@ FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
 WORKDIR /app
 
 # Install system dependencies
+RUN pip install --upgrade pip
+COPY requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
 RUN apt-get update && apt-get install -y \
     git \
     libgl1-mesa-glx \
@@ -13,14 +17,10 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 # Copy app code
-COPY ../../../../../Users/SSAFY/Downloads /app
-
-# Install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
 # Expose port
 EXPOSE 8000
 
 # Start FastAPI app with uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
