@@ -98,7 +98,7 @@ const MainPage = () => {
           isOpen={isAlbumModalOpen}
           onClose={() => setIsAlbumModalOpen(false)}
           onSelectAlbum={handleAlbumSelect}
-          albums={[]} // TODO: albums 데이터 연동 필요
+          groupId={groupId}
           selectedAlbum={selectedAlbum}
         />
       </MainContainer>
