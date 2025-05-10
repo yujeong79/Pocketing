@@ -1,16 +1,4 @@
-export interface Post {
-  content: PostContent[];
-  pageable: PostPageable;
-  last: boolean;
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  sort: PostSort2;
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
+import { ApiResponse, Page } from '@/types/api';
 
 export interface PostContent {
   postId: number;
@@ -24,23 +12,6 @@ export interface PostContent {
   avgPrice: number;
 }
 
-export interface PostPageable {
-  pageNumber: number;
-  pageSize: number;
-  sort: PostSort;
-  offset: number;
-  paged: boolean;
-  unpaged: boolean;
-}
+export type Post = Page<PostContent>;
 
-export interface PostSort {
-  empty: boolean;
-  sorted: boolean;
-  unsorted: boolean;
-}
-
-export interface PostSort2 {
-  empty: boolean;
-  sorted: boolean;
-  unsorted: boolean;
-}
+export type PostResponse = ApiResponse<Post>;
