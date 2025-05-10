@@ -20,7 +20,8 @@ const MainPage = () => {
 
   const location = useLocation();
   const { data: likedGroups } = useLikedGroups();
-  const { data: membersData } = useMembers(selectedGroupId || selectedAllGroup || 0);
+  const groupId = selectedGroupId || selectedAllGroup || 0;
+  const { data: membersData } = useMembers(groupId);
 
   // 컴포넌트 마운트 시 첫 번째 관심그룹 선택
   useEffect(() => {
@@ -88,7 +89,11 @@ const MainPage = () => {
             onClick={() => setIsAlbumModalOpen(true)}
           />
         </FilterContainer>
-        <PhotoCardList selectedMember={selectedMember} selectedAlbum={selectedAlbum} />
+        <PhotoCardList
+          selectedMember={selectedMember}
+          selectedAlbum={selectedAlbum}
+          groupId={groupId}
+        />
         <AlbumModal
           isOpen={isAlbumModalOpen}
           onClose={() => setIsAlbumModalOpen(false)}

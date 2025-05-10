@@ -8,6 +8,7 @@ export const useMembersAll = (groupId: number) => {
   return useQuery<MemberResponse>({
     queryKey: [QUERY_KEYS.MEMBERS, groupId],
     queryFn: () => fetchMembersAll(groupId),
+    enabled: groupId > 0,
   });
 };
 
@@ -16,5 +17,6 @@ export const useMembers = (groupId: number) => {
   return useQuery<Member[]>({
     queryKey: [QUERY_KEYS.MEMBERS, groupId],
     queryFn: () => fetchMembers(groupId),
+    enabled: groupId > 0,
   });
 };

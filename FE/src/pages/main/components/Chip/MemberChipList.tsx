@@ -11,6 +11,8 @@ interface MemberChipListProps {
 const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipListProps) => {
   const { data: membersData } = useMembers(groupId);
 
+  if (!groupId) return null;
+
   const sortedMembers = membersData
     ? [...membersData].sort((a, b) => {
         // interest가 true인 멤버를 앞으로 정렬
