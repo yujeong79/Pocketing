@@ -6,7 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 // 그룹의 앨범 조회
 export const useAlbums = (groupId: number) => {
   return useQuery<AlbumResponse>({
-    queryKey: [QUERY_KEYS.MEMBERS, groupId],
+    queryKey: [QUERY_KEYS.ALBUMS, groupId],
     queryFn: () => fetchAlbums(groupId),
+    enabled: groupId > 0,
   });
 };
