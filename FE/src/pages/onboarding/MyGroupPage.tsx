@@ -11,7 +11,7 @@ import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
 import { useLikedMembersStore } from '@/store/likedMembers';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { postSignUp } from '@/api/signUp';
+import { createSignUp } from '@/api/signUp';
 import type { SignUpRequest } from '@/types/signUp';
 
 const MyGroupPage = () => {
@@ -54,7 +54,7 @@ const MyGroupPage = () => {
         likedInfo,
       };
 
-      const response = await postSignUp(signUpData);
+      const response = await createSignUp(signUpData);
 
       if (response.isSuccess) {
         localStorage.setItem('accessToken', response.result.accessToken);
