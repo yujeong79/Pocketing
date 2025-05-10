@@ -57,7 +57,7 @@ const GroupImageList = ({
               }}
             />
           ))}
-        <GroupImage type="add" onClick={() => navigate('/group')} />
+        <GroupImage type="add" onClick={() => navigate('/myGroupEdit')} />
       </StyledGroupImageList>
     </StyledGroupImageWrapper>
   );

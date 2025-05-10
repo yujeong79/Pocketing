@@ -44,7 +44,7 @@ const MyMemberEditPage = () => {
           ))}
         </S.MemberListContainer>
       </S.ItemContainer>
-      <Button text="다음" onClick={() => navigate('/group')} />
+      <Button text="다음" onClick={() => navigate('/myGroupEdit')} />
     </S.PageContainer>
   );
 };
