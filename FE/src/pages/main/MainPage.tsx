@@ -24,6 +24,12 @@ const MainPage = () => {
   const groupId = selectedGroupId || selectedAllGroup || 0;
   const { data: membersData } = useMembers(groupId);
 
+  // 그룹이 변경될 때마다 선택된 멤버 초기화
+  useEffect(() => {
+    setSelectedMember(null);
+    setSelectedAlbumId(null);
+  }, [selectedGroupId, selectedAllGroup]);
+
   // 컴포넌트 마운트 시 첫 번째 관심그룹 선택
   useEffect(() => {
     if (likedGroups?.result && (likedGroups.result as UserLikedGroup[]).length > 0) {
