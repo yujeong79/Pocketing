@@ -6,13 +6,13 @@ import { useQuery } from '@tanstack/react-query';
 export const usePostList = (
   memberId: number,
   groupId: number,
-  albumTitle: string | null,
+  albumId: number | null,
   page: number,
   size: number
 ) => {
   return useQuery<Post>({
-    queryKey: [QUERY_KEYS.POST_LIST, memberId, groupId, albumTitle, page, size],
-    queryFn: () => fetchPostList({ memberId, groupId, albumTitle, page, size }),
+    queryKey: [QUERY_KEYS.POST_LIST, memberId, groupId, albumId, page, size],
+    queryFn: () => fetchPostList({ memberId, groupId, albumId, page, size }),
     enabled: groupId > 0,
   });
 };

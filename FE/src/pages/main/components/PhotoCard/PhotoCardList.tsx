@@ -5,15 +5,15 @@ import { PostContent } from '@/types/post';
 
 interface PhotoCardListProps {
   selectedMember: number | null;
-  selectedAlbum: string | null;
+  selectedAlbumId: number | null;
   groupId: number;
 }
 
-const PhotoCardList = ({ selectedMember, selectedAlbum, groupId }: PhotoCardListProps) => {
+const PhotoCardList = ({ selectedMember, selectedAlbumId, groupId }: PhotoCardListProps) => {
   const { data } = usePostList(
     selectedMember === null ? 0 : selectedMember,
     groupId,
-    selectedAlbum,
+    selectedAlbumId,
     0,
     10
   );

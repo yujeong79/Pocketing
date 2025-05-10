@@ -9,7 +9,7 @@ import { ApiResponse } from '@/types/api';
 interface PostListParams {
   memberId: number;
   groupId: number;
-  albumTitle?: string | null;
+  albumId?: number | null;
   page?: number;
   size?: number;
 }
@@ -17,7 +17,7 @@ interface PostListParams {
 interface PostListRequestParams {
   memberId: number;
   groupId: number;
-  albumTitle?: string;
+  albumId?: number;
   page: number;
   size: number;
 }
@@ -26,7 +26,7 @@ interface PostListRequestParams {
 export const fetchPostList = async ({
   memberId,
   groupId,
-  albumTitle,
+  albumId,
   page = 0,
   size = 10,
 }: PostListParams): Promise<Post> => {
@@ -37,8 +37,8 @@ export const fetchPostList = async ({
     size,
   };
 
-  if (albumTitle) {
-    params.albumTitle = albumTitle;
+  if (albumId !== null && albumId !== undefined) {
+    params.albumId = albumId;
   }
 
   const response = await axiosInstance.get<ApiResponse<Post>>('/posts', {

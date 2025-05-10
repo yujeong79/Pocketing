@@ -6,7 +6,7 @@ import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
 import { useState, useMemo, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { UserLikedGroup } from '@/types/user';
 import { useMembers } from '@/hooks/artist/query/useMembers';
@@ -14,11 +14,12 @@ import { useMembers } from '@/hooks/artist/query/useMembers';
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMember, setSelectedMember] = useState<number | null>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
   const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: likedGroups } = useLikedGroups();
   const groupId = selectedGroupId || selectedAllGroup || 0;
   const { data: membersData } = useMembers(groupId);
@@ -44,8 +45,8 @@ const MainPage = () => {
     return (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === groupId);
   }, [selectedGroupId, selectedAllGroup, likedGroups]);
 
-  const handleAlbumSelect = (albumTitle: string | null) => {
-    setSelectedAlbum(albumTitle);
+  const handleAlbumSelect = (albumId: number | null) => {
+    setSelectedAlbumId(albumId);
     setIsAlbumModalOpen(false);
   };
 
@@ -56,6 +57,10 @@ const MainPage = () => {
     return member?.name || null;
   }, [selectedMember, membersData]);
 
+  const handleEditGroup = () => {
+    navigate('/myGroupEdit', { state: { from: '/main' } });
+  };
+
   return (
     <>
       <Header type="main" />
@@ -65,6 +70,7 @@ const MainPage = () => {
           onSelectGroup={setSelectedGroupId}
           selectedAllGroup={selectedAllGroup}
           onSelectAllGroup={setSelectedAllGroup}
+          onEditGroup={handleEditGroup}
         />
         {(selectedGroupId || selectedAllGroup) && (
           <MemberChipList
@@ -85,13 +91,13 @@ const MainPage = () => {
             </SelectedMemberText>
           )}
           <AlbumChip
-            isSelected={selectedAlbum !== null}
+            isSelected={selectedAlbumId !== null}
             onClick={() => setIsAlbumModalOpen(true)}
           />
         </FilterContainer>
         <PhotoCardList
           selectedMember={selectedMember}
-          selectedAlbum={selectedAlbum}
+          selectedAlbumId={selectedAlbumId}
           groupId={groupId}
         />
         <AlbumModal
@@ -99,7 +105,7 @@ const MainPage = () => {
           onClose={() => setIsAlbumModalOpen(false)}
           onSelectAlbum={handleAlbumSelect}
           groupId={groupId}
-          selectedAlbum={selectedAlbum}
+          selectedAlbumId={selectedAlbumId}
         />
       </MainContainer>
     </>
