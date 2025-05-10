@@ -62,7 +62,7 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_LOCATION_SAVE_SUCCESS(HttpStatus.OK, "EXCHANGE2002","사용자 위치가 성공적으로 저장되었습니다."),
 	EXCHANGE_AVAILABLE_USERS_FOUND_SUCCESS(HttpStatus.OK, "EXCHANGE2003", "반경 내 교환 가능 사용자 목록입니다."),
 	EXCHANGE_REQUEST_REGISTER_SUCCESS(HttpStatus.OK, "EXCHANGE2004", "교환 요청이 성공적으로 등록되었습니다."),
-	EXCHANGE_RECEIVED_REQUESTS_SUCCESS(HttpStatus.OK, "EXCHANGE2005", "받은 요청 목록을 성공적으로 조회했습니다."),
+	EXCHANGE_RECEIVED_REQUESTS_SUCCESS(HttpStatus.OK, "EXCHANGE2005", "알림 목록을 성공적으로 조회했습니다."),
 	EXCHANGE_ACCEPT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2006", "요청을 수락하고 채팅방이 생성되었습니다."),
 	EXCHANGE_REJECT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2007", "요청을 거절했습니다."),
 	EXCHANGE_REQUEST_STATUS_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2008", "교환 요청 상태 조회에 성공했습니다."),
