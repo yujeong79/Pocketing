@@ -1,14 +1,23 @@
 package com.a406.pocketing.notification.repository;
 
+import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.notification.dto.NotificationProjection;
 import com.a406.pocketing.notification.entity.Notification;
+import com.a406.pocketing.notification.enums.NotificationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
+
+    Boolean existsByExchangeRequestAndNotificationType(ExchangeRequest exchangeRequest, NotificationType type);
+
+    Optional<Notification> findByExchangeRequestAndNotificationType(ExchangeRequest exchangeRequest, NotificationType type);
 
     @Query("""
         SELECT 
@@ -16,27 +25,35 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             er.exchangeRequestId AS exchangeRequestId,
             n.notificationType AS notificationType,
             n.isRead AS isRead,
-            CASE 
+            CASE
                 WHEN n.notificationType = 'RECEIVED' THEN requester.userId
-                ELSE responder.userId
+                WHEN n.notificationType = 'ACCEPTED_ACTIVE' THEN requester.userId
+                WHEN n.notificationType = 'ACCEPTED_PASSIVE' THEN requester.userId
+                WHEN n.notificationType = 'REJECTED' THEN requester.userId
             END AS userId,
-            CASE 
+            CASE
                 WHEN n.notificationType = 'RECEIVED' THEN requester.nickname
-                ELSE responder.nickname
+                WHEN n.notificationType = 'ACCEPTED_ACTIVE' THEN requester.nickname
+                WHEN n.notificationType = 'ACCEPTED_PASSIVE' THEN requester.nickname
+                WHEN n.notificationType = 'REJECTED' THEN requester.nickname
             END AS nickname,
-            CASE 
+            CASE
                 WHEN n.notificationType = 'RECEIVED' THEN requester.profileImageUrl
-                ELSE responder.profileImageUrl
+                WHEN n.notificationType = 'ACCEPTED_ACTIVE' THEN requester.profileImageUrl
+                WHEN n.notificationType = 'ACCEPTED_PASSIVE' THEN requester.profileImageUrl
+                WHEN n.notificationType = 'REJECTED' THEN requester.profileImageUrl
             END AS profileImageUrl
         FROM Notification n
         JOIN n.requester requester
         JOIN n.responder responder
         JOIN n.exchangeRequest er
         WHERE
-            (n.notificationType = 'RECEIVED' AND n.responder.userId = :userId)
-            OR 
-            (n.notificationType IN ('ACCEPTED', 'REJECTED') AND n.requester.userId = :userId)
+            n.notificationType IN ('RECEIVED', 'ACCEPTED_ACTIVE', 'ACCEPTED_PASSIVE', 'REJECTED')
+            AND n.responder.userId = :userId
         ORDER BY n.notificationId DESC 
     """)
-    Page<NotificationProjection> findAllProjectionsByUserRelated(Long userId, Pageable pageable);
+    Page<NotificationProjection> findAllProjectionsByUserRelated(
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
 }

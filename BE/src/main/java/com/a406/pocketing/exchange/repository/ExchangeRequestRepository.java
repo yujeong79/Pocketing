@@ -2,6 +2,7 @@ package com.a406.pocketing.exchange.repository;
 
 import com.a406.pocketing.exchange.entity.ExchangeCard;
 import com.a406.pocketing.exchange.entity.ExchangeRequest;
+import com.a406.pocketing.exchange.enums.ExchangeRequestStatus;
 import com.a406.pocketing.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,6 +14,6 @@ public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequest
     Boolean existsByRequesterAndResponderAndRequesterOwnedCardAndResponderOwnedCardAndStatus(
             User requester, User responder,
             ExchangeCard requesterCard, ExchangeCard responderCard,
-            String status
+            ExchangeRequestStatus status
     );
 }

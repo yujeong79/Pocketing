@@ -40,7 +40,12 @@ public class Notification {
     @Column(name = "is_read", nullable = false)
     private Boolean isRead;
 
-    @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
-    private String notificationType = NotificationType.RECEIVED.name();
+    @Builder.Default
+    private NotificationType notificationType = NotificationType.RECEIVED;
+
+    public void updateStatus(NotificationType notificationType) {
+        this.notificationType = notificationType;
+    }
 }
