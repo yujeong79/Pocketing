@@ -9,6 +9,7 @@ interface SlideUpModalProps {
   onClose: () => void;
   children: React.ReactNode;
   isCloseButtonHidden?: boolean;
+  height?: string;
 }
 
 const SlideUpModal = ({
@@ -17,6 +18,7 @@ const SlideUpModal = ({
   onClose,
   children,
   isCloseButtonHidden,
+  height,
 }: SlideUpModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -36,7 +38,7 @@ const SlideUpModal = ({
   return (
     <Portal>
       <S.Overlay $isOpen={isOpen} onClick={onClose}>
-        <S.ModalContainer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
+        <S.ModalContainer $isOpen={isOpen} $height={height} onClick={(e) => e.stopPropagation()}>
           <S.ModalHeader>
             <S.ModalTitle>{header}</S.ModalTitle>
             {!isCloseButtonHidden && <S.CloseButton src={CloseIcon} onClick={onClose} />}
