@@ -22,7 +22,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) {
 
-        log.info("WebSocket before handshake");
+//        log.info("WebSocket before handshake");
 
         if (request instanceof ServletServerHttpRequest servletRequest) {
             HttpServletRequest servletReq = servletRequest.getServletRequest();

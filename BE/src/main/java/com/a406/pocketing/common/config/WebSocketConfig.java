@@ -32,8 +32,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // 클라이언트 연결 경로 (ws://localhost:8080/ws)
                 .addInterceptors(new JwtHandshakeInterceptor(jwtProvider))
-                .setAllowedOrigins("https://k12a406.p.ssafy.io", "http://k12a406.p.ssafy.io")
-//                .setAllowedOriginPatterns("*")
+//                .setAllowedOrigins("https://k12a406.p.ssafy.io", "http://k12a406.p.ssafy.io")
+                .setAllowedOriginPatterns("*")
                 .withSockJS(); // WebSocket 미지원 브라우저 대응
     }
 
