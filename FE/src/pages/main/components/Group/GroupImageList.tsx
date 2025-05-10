@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { StyledGroupImageList, StyledGroupImageWrapper } from './GroupImageStyle';
 import GroupImage from './GroupImage';
-import { Artist } from '@/types/artist';
+import { useLikedGroups } from '@/hooks/user/query/useLike';
+import { UserLikedGroup } from '@/types/user';
 
 interface GroupImageListProps {
-  groups: Artist[];
   selectedId: number | null;
   onSelectGroup: (id: number | null) => void;
   selectedAllGroup: number | null;
@@ -12,13 +12,19 @@ interface GroupImageListProps {
 }
 
 const GroupImageList = ({
-  groups,
   selectedId,
   onSelectGroup,
   selectedAllGroup,
   onSelectAllGroup,
 }: GroupImageListProps) => {
   const navigate = useNavigate();
+  const { data: likedGroups } = useLikedGroups();
+
+  // 어떤 그룹의 이미지 url을 넘겨줄지 찾는 로직
+  const selectedGroup =
+    selectedAllGroup && likedGroups?.result
+      ? (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === selectedAllGroup)
+      : null;
 
   const handleAllGroupClick = () => {
     if (selectedAllGroup) {
@@ -28,10 +34,6 @@ const GroupImageList = ({
     }
   };
 
-  const selectedGroup = selectedAllGroup
-    ? groups.find((group) => group.groupId === selectedAllGroup)
-    : null;
-
   return (
     <StyledGroupImageWrapper>
       <StyledGroupImageList>
@@ -40,20 +42,21 @@ const GroupImageList = ({
           isSelected={selectedId === null}
           onClick={handleAllGroupClick}
           selectedAllGroup={selectedAllGroup}
-          groupImageUrl={selectedGroup?.image}
+          groupImageUrl={selectedGroup?.groupImageUrl || ''}
         />
-        {groups.map((group) => (
-          <GroupImage
-            key={group.groupId}
-            type="interest"
-            groupImageUrl={group.image}
-            isSelected={selectedId === group.groupId}
-            onClick={() => {
-              onSelectGroup(group.groupId);
-              onSelectAllGroup(null);
-            }}
-          />
-        ))}
+        {likedGroups?.result &&
+          (likedGroups.result as UserLikedGroup[]).map((group) => (
+            <GroupImage
+              key={group.groupId}
+              type="interest"
+              groupImageUrl={group.groupImageUrl || ''}
+              isSelected={selectedId === group.groupId}
+              onClick={() => {
+                onSelectGroup(group.groupId);
+                onSelectAllGroup(null);
+              }}
+            />
+          ))}
         <GroupImage type="add" onClick={() => navigate('/group')} />
       </StyledGroupImageList>
     </StyledGroupImageWrapper>

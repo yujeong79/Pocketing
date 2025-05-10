@@ -2,6 +2,7 @@ import { StyledMemberChip } from './MemberChipStyle';
 
 interface MemberChipProps {
   name: string;
+  memberId?: number;
   isSelected?: boolean;
   onClick?: () => void;
 }
