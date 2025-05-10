@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Header from '@/components/common/Header';
 import * as S from './AlarmStyle';
 import { Winter1 } from '@/assets/assets';
-import SmallButton from './components/SmallButton';
+import SmallButton from './components/buttons/SmallButton';
 
 const AlarmPage = () => {
   const [isAccepted, setIsAccepted] = useState(false);
