@@ -1,53 +1,36 @@
+import { usePostList } from '@/hooks/post/query/usePost';
 import PhotoCardItem from './PhotoCardItem';
-import { photocardListMock } from '@/mocks/photocard-list';
-import { artistList } from '@/mocks/artist';
 import { ListContainer, ListWrapper } from './PhotoCardStyle';
+import { PostContent } from '@/types/post';
 
 interface PhotoCardListProps {
-  selectedGroupId: number | null;
-  selectedMember: string | null;
-  selectedAlbum: string | null;
+  selectedMember: number | null;
+  selectedAlbumId: number | null;
+  groupId: number;
 }
 
-const PhotoCardList = ({ selectedGroupId, selectedMember, selectedAlbum }: PhotoCardListProps) => {
-  const { content } = photocardListMock.result;
+const PhotoCardList = ({ selectedMember, selectedAlbumId, groupId }: PhotoCardListProps) => {
+  const { data } = usePostList(
+    selectedMember === null ? 0 : selectedMember,
+    groupId,
+    selectedAlbumId,
+    0,
+    10
+  );
+  const postList = data?.content || [];
 
-  const filteredContent = content.filter((card) => {
-    // 전체 선택 상태일 때
-    if (!selectedGroupId) return true;
-
-    const selectedGroup = artistList.find((group) => group.groupId === selectedGroupId);
-    if (!selectedGroup) return false;
-
-    // 그룹만 선택된 상태일 때
-    if (selectedGroupId && !selectedMember) {
-      if (selectedAlbum) {
-        return card.groupNameKo === selectedGroup.name && card.albumTitle === selectedAlbum;
-      }
-      return card.groupNameKo === selectedGroup.name;
-    }
-
-    // 그룹과 멤버가 모두 선택된 상태일 때
-    if (selectedAlbum) {
-      return (
-        card.groupNameKo === selectedGroup.name &&
-        card.memberName === selectedMember &&
-        card.albumTitle === selectedAlbum
-      );
-    }
-    return card.groupNameKo === selectedGroup.name && card.memberName === selectedMember;
-  });
+  if (!groupId) return null;
 
   return (
     <ListContainer>
       <ListWrapper>
-        {filteredContent.map((card) => (
+        {postList.map((post: PostContent) => (
           <PhotoCardItem
-            key={card.postId}
-            cardId={card.cardId}
-            imageUrl={card.postImageUrl}
-            albumTitle={card.albumTitle}
-            avgPrice={card.avgPrice}
+            key={post.postId}
+            cardId={post.cardId}
+            imageUrl={post.postImageUrl}
+            albumTitle={post.albumTitle}
+            avgPrice={post.avgPrice}
           />
         ))}
       </ListWrapper>

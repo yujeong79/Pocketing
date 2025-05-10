@@ -1,13 +1,30 @@
-import { StyledMemberChipList, StyledMemberChipWrapper } from './MemberChipStyle';
-import MemberChip from './MemberChip';
+import {
+  StyledMemberChipList,
+  StyledMemberChipWrapper,
+} from '@/pages/main/components/Chip/MemberChipStyle';
+import MemberChip from '@/pages/main/components/Chip/MemberChip';
+import { useMembers } from '@/hooks/artist/query/useMembers';
 
 interface MemberChipListProps {
-  members: string[];
-  selectedMember: string | null;
-  onSelectMember: (member: string | null) => void;
+  groupId: number;
+  selectedMember: number | null;
+  onSelectMember: (memberId: number | null) => void;
 }
 
-const MemberChipList = ({ members, selectedMember, onSelectMember }: MemberChipListProps) => {
+const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipListProps) => {
+  const { data: membersData } = useMembers(groupId);
+
+  if (!groupId) return null;
+
+  const sortedMembers = membersData
+    ? [...membersData].sort((a, b) => {
+        // interest가 true인 멤버를 앞으로 정렬
+        if (a.interest && !b.interest) return -1;
+        if (!a.interest && b.interest) return 1;
+        return 0;
+      })
+    : [];
+
   return (
     <StyledMemberChipWrapper>
       <StyledMemberChipList>
@@ -16,12 +33,13 @@ const MemberChipList = ({ members, selectedMember, onSelectMember }: MemberChipL
           isSelected={selectedMember === null}
           onClick={() => onSelectMember(null)}
         />
-        {members.map((member) => (
+        {sortedMembers.map((member) => (
           <MemberChip
-            key={member}
-            name={member}
-            isSelected={selectedMember === member}
-            onClick={() => onSelectMember(member)}
+            key={member.memberId}
+            name={member.interest ? `♥ ${member.name}` : member.name}
+            memberId={member.memberId}
+            isSelected={selectedMember === member.memberId}
+            onClick={() => onSelectMember(member.memberId)}
           />
         ))}
       </StyledMemberChipList>

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 import * as S from './MyMemberEditStyle';
@@ -13,6 +13,8 @@ import MemberItem from '@/pages/onboarding/components/MemberItem';
 
 const MyMemberEditPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = location.state?.from || '/profile';
   const { groupId } = useParams();
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
 
@@ -26,6 +28,10 @@ const MyMemberEditPage = () => {
     setSelectedMembers((prev) =>
       prev.includes(member) ? prev.filter((name) => name !== member) : [...prev, member]
     );
+  };
+
+  const handleComplete = () => {
+    navigate('/myGroupEdit', { state: { from: fromPath } });
   };
 
   return (
@@ -44,7 +50,7 @@ const MyMemberEditPage = () => {
           ))}
         </S.MemberListContainer>
       </S.ItemContainer>
-      <Button text="다음" onClick={() => navigate('/group')} />
+      <Button text="완료" onClick={handleComplete} />
     </S.PageContainer>
   );
 };

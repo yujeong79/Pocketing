@@ -2,9 +2,7 @@ export interface AlbumResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: {
-    albums: Album[];
-  };
+  result: Album[];
 }
 
 export interface Album {

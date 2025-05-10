@@ -1,10 +1,12 @@
 import * as S from './MyGroupStyle';
 import { PhotocardIcon } from '@/assets/assets';
 import { myArtist } from '@/mocks/myInfo';
-import { useNavigate } from 'react-router-dom';
 
-const MyGroup = () => {
-  const navigate = useNavigate();
+interface MyGroupProps {
+  onEditGroup: () => void;
+}
+
+const MyGroup = ({ onEditGroup }: MyGroupProps) => {
   return (
     <S.GroupContainer>
       <S.GroupTitleContainer>
@@ -15,8 +17,7 @@ const MyGroup = () => {
         {myArtist.map((artist, index) => (
           <S.GroupLogo key={artist.groupId ?? index} src={artist.image} alt={artist.name} />
         ))}
-        {/* TODO:관심 그룹 페이지 이동 */}
-        <S.MoreGroupButton onClick={() => navigate('/myGroupEdit')}>+</S.MoreGroupButton>
+        <S.MoreGroupButton onClick={onEditGroup}>+</S.MoreGroupButton>
       </S.GroupLogoContainer>
     </S.GroupContainer>
   );
