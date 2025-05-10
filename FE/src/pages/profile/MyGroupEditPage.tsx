@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import * as S from './MyGroupEditStyle';
 import BackButton from '@/pages/onboarding/components/BackButton';
@@ -8,6 +8,8 @@ import { artistList } from '@/mocks/artist';
 
 const MyGroupEditPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPath = location.state?.from || '/profile';
 
   return (
     <S.PageContainer>
@@ -22,7 +24,11 @@ const MyGroupEditPage = () => {
           {artistList.map((artist) => (
             <S.GroupInfo
               key={artist.groupId}
-              onClick={() => navigate(`/myMemberEdit/${artist.groupId}`)}
+              onClick={() =>
+                navigate(`/myMemberEdit/${artist.groupId}`, {
+                  state: { from: fromPath },
+                })
+              }
             >
               <S.GroupImage src={artist.image} />
               <S.GroupName>{artist.name}</S.GroupName>
@@ -30,7 +36,7 @@ const MyGroupEditPage = () => {
           ))}
         </S.GroupListContainer>
       </S.ItemContainer>
-      <Button text="완료" onClick={() => navigate('/profile')} />
+      <Button text="완료" onClick={() => navigate(fromPath)} />
     </S.PageContainer>
   );
 };

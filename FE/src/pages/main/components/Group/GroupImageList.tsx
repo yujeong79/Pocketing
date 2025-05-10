@@ -9,6 +9,7 @@ interface GroupImageListProps {
   onSelectGroup: (id: number | null) => void;
   selectedAllGroup: number | null;
   onSelectAllGroup: (id: number | null) => void;
+  onEditGroup: () => void;
 }
 
 const GroupImageList = ({
@@ -16,6 +17,7 @@ const GroupImageList = ({
   onSelectGroup,
   selectedAllGroup,
   onSelectAllGroup,
+  onEditGroup,
 }: GroupImageListProps) => {
   const navigate = useNavigate();
   const { data: likedGroups } = useLikedGroups();
@@ -57,7 +59,7 @@ const GroupImageList = ({
               }}
             />
           ))}
-        <GroupImage type="add" onClick={() => navigate('/myGroupEdit')} />
+        <GroupImage type="add" onClick={onEditGroup} />
       </StyledGroupImageList>
     </StyledGroupImageWrapper>
   );

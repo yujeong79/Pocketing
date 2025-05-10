@@ -6,7 +6,7 @@ import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
 import { useState, useMemo, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { UserLikedGroup } from '@/types/user';
 import { useMembers } from '@/hooks/artist/query/useMembers';
@@ -19,6 +19,7 @@ const MainPage = () => {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: likedGroups } = useLikedGroups();
   const groupId = selectedGroupId || selectedAllGroup || 0;
   const { data: membersData } = useMembers(groupId);
@@ -56,6 +57,10 @@ const MainPage = () => {
     return member?.name || null;
   }, [selectedMember, membersData]);
 
+  const handleEditGroup = () => {
+    navigate('/myGroupEdit', { state: { from: '/main' } });
+  };
+
   return (
     <>
       <Header type="main" />
@@ -65,6 +70,7 @@ const MainPage = () => {
           onSelectGroup={setSelectedGroupId}
           selectedAllGroup={selectedAllGroup}
           onSelectAllGroup={setSelectedAllGroup}
+          onEditGroup={handleEditGroup}
         />
         {(selectedGroupId || selectedAllGroup) && (
           <MemberChipList
