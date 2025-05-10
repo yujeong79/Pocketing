@@ -5,9 +5,9 @@ import { useAlbums } from '@/hooks/artist/query/useAlbums';
 interface AlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectAlbum: (albumTitle: string | null) => void;
+  onSelectAlbum: (albumId: number | null) => void;
   groupId: number;
-  selectedAlbum: string | null;
+  selectedAlbumId: number | null;
 }
 
 const AlbumModal = ({
@@ -15,26 +15,29 @@ const AlbumModal = ({
   onClose,
   onSelectAlbum,
   groupId,
-  selectedAlbum,
+  selectedAlbumId,
 }: AlbumModalProps) => {
-  const { data: albumsData, isLoading, error } = useAlbums(groupId);
-  const albums = albumsData?.result?.map((album) => album.title) ?? [];
+  const { data: albumsData } = useAlbums(groupId);
+  const albums = albumsData?.result ?? [];
 
-  console.log('AlbumModal:', { groupId, isLoading, albumsData, error });
+  const handleAlbumSelect = (albumId: number | null) => {
+    console.log('Album selected:', { albumId, groupId });
+    onSelectAlbum(albumId);
+  };
 
   return (
     <SlideUpModal isOpen={isOpen} onClose={onClose} header="앨범 선택" height="55vh">
       <AlbumList>
-        <AlbumItem onClick={() => onSelectAlbum(null)} $isSelected={selectedAlbum === null}>
+        <AlbumItem onClick={() => handleAlbumSelect(null)} $isSelected={selectedAlbumId === null}>
           전체 보기
         </AlbumItem>
         {albums.map((album) => (
           <AlbumItem
-            key={album}
-            onClick={() => onSelectAlbum(album)}
-            $isSelected={album === selectedAlbum}
+            key={album.albumId}
+            onClick={() => handleAlbumSelect(album.albumId)}
+            $isSelected={album.albumId === selectedAlbumId}
           >
-            {album}
+            {album.title}
           </AlbumItem>
         ))}
       </AlbumList>

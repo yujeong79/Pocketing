@@ -14,7 +14,7 @@ import { useMembers } from '@/hooks/artist/query/useMembers';
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMember, setSelectedMember] = useState<number | null>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
   const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
@@ -44,8 +44,8 @@ const MainPage = () => {
     return (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === groupId);
   }, [selectedGroupId, selectedAllGroup, likedGroups]);
 
-  const handleAlbumSelect = (albumTitle: string | null) => {
-    setSelectedAlbum(albumTitle);
+  const handleAlbumSelect = (albumId: number | null) => {
+    setSelectedAlbumId(albumId);
     setIsAlbumModalOpen(false);
   };
 
@@ -85,13 +85,13 @@ const MainPage = () => {
             </SelectedMemberText>
           )}
           <AlbumChip
-            isSelected={selectedAlbum !== null}
+            isSelected={selectedAlbumId !== null}
             onClick={() => setIsAlbumModalOpen(true)}
           />
         </FilterContainer>
         <PhotoCardList
           selectedMember={selectedMember}
-          selectedAlbum={selectedAlbum}
+          selectedAlbumId={selectedAlbumId}
           groupId={groupId}
         />
         <AlbumModal
@@ -99,7 +99,7 @@ const MainPage = () => {
           onClose={() => setIsAlbumModalOpen(false)}
           onSelectAlbum={handleAlbumSelect}
           groupId={groupId}
-          selectedAlbum={selectedAlbum}
+          selectedAlbumId={selectedAlbumId}
         />
       </MainContainer>
     </>
