@@ -1,7 +1,8 @@
 import SlideUpModal from '@/components/common/SlideUpModal';
 import SellerListItem from './SellerListItem';
-import { sellerListMock } from '@/mocks/seller-list';
 import { ModalContent } from './SellerListStyle';
+import { useSellerList } from '@/hooks/post/query/useList';
+import { SellerListItem as SellerListItemType } from '@/types/seller';
 
 interface SellerListModalProps {
   isOpen: boolean;
@@ -10,13 +11,12 @@ interface SellerListModalProps {
 }
 
 const SellerListModal = ({ isOpen, onClose, cardId }: SellerListModalProps) => {
-  const { content } = sellerListMock.result;
-  const filteredContent = content.filter((seller) => seller.cardId === cardId);
+  const { data: sellerList } = useSellerList(cardId);
 
   return (
     <SlideUpModal isOpen={isOpen} onClose={onClose} header="거래 상대 선택">
       <ModalContent>
-        {filteredContent.map((seller) => (
+        {sellerList?.content.content.map((seller: SellerListItemType) => (
           <SellerListItem
             key={seller.postId}
             postId={seller.postId}
