@@ -38,6 +38,15 @@ import CloseIcon from '@/assets/icons/close.svg';
 import VerifyIcon from '@/assets/icons/verify.svg';
 import BracketIcon from '@/assets/icons/bracket.svg';
 
+// map
+import AlarmFalseIcon from '@/assets/icons/alarm-false.svg';
+import AlarmTrueIcon from '@/assets/icons/alarm-true.svg';
+import ReturnIcon from '@/assets/icons/return.svg';
+import RefreshIcon2 from '@/assets/icons/refresh-2.svg';
+import PocketCallIcon from '@/assets/icons/send-call.svg';
+import WhiteCheckIcon from '@/assets/icons/check-white.svg';
+import WhiteWarningIcon from '@/assets/icons/warn-white.svg';
+
 // sell
 import WalletIcon from '@/assets/icons/wallet.svg';
 import PencilIcon from '@/assets/icons/pencil.svg';
@@ -53,6 +62,9 @@ import IncreaseIcon from '@/assets/icons/increase.svg';
 import DecreaseIcon from '@/assets/icons/decrease.svg';
 import AverageIcon from '@/assets/icons/average.svg';
 import CautionIcon from '@/assets/icons/caution.svg';
+
+// message
+import SendIcon from '@/assets/icons/send.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -72,6 +84,9 @@ import Wonyoung1 from '@/assets/icons/wonyoung1.svg';
 import Wonyoung2 from '@/assets/icons/wonyoung2.svg';
 import Wonyoung3 from '@/assets/icons/wonyoung3.svg';
 import Wonyoung4 from '@/assets/icons/wonyoung4.svg';
+import Woodz1 from '@/assets/icons/woodz1.svg';
+import Woodz2 from '@/assets/icons/woodz2.svg';
+
 export {
   //Header
   Logo2d,
@@ -108,6 +123,14 @@ export {
   CloseIcon,
   VerifyIcon,
   BracketIcon,
+  // map
+  AlarmFalseIcon,
+  AlarmTrueIcon,
+  ReturnIcon,
+  RefreshIcon2,
+  PocketCallIcon,
+  WhiteCheckIcon,
+  WhiteWarningIcon,
   //sell
   WalletIcon,
   PencilIcon,
@@ -123,6 +146,8 @@ export {
   DecreaseIcon,
   AverageIcon,
   CautionIcon,
+  // message
+  SendIcon,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
@@ -140,4 +165,6 @@ export {
   Wonyoung2,
   Wonyoung3,
   Wonyoung4,
+  Woodz1,
+  Woodz2,
 };

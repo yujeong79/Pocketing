@@ -32,7 +32,7 @@ export const Title = styled.div`
 export const MemberListContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: ${scale(280)}px;
+  height: ${scale(320)}px;
   gap: ${scale(24)}px;
 
   overflow-y: auto;

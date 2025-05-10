@@ -17,6 +17,7 @@ export const NavBarContainer = styled.nav`
   left: 50%;
   transform: translateX(-50%);
   background-color: white;
+  z-index: 100;
 `;
 
 export const NavItemWrapper = styled.div<{ $isActive: boolean }>`

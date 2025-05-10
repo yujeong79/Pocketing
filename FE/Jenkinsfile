@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(false)
+    }
+
+    stages {
+        stage('Copy Config') {
+            steps {
+                sh '''
+                cp /frontend/secret/.env FE/.env
+                '''
+            }
+        }
+
+        stage('Docker Build & Deploy') {
+            steps {
+                dir('FE') {
+                    sh '''
+                    docker stop frontend-app || true
+                    docker rm frontend-app || true
+                    docker build -t frontend-app .
+                    docker run -d --name frontend-app -p 80:80 -p 443:443 \
+                    -v /etc/letsencrypt:/etc/letsencrypt \
+                    frontend-app
+                    '''
+                }
+            }
+        }
+    }
+}
