@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 public class NotificationResponseDto {
 
     private Long notificationId;
-    private UserDto user;
-    private ExchangeRequestDto exchangeRequest;
     private String notificationType;
     private boolean isRead;
+    private ExchangeRequestDto exchangeRequest;
+    private UserDto user;
 
     @Getter
     @Builder

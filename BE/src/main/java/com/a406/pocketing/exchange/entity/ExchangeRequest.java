@@ -1,5 +1,6 @@
 package com.a406.pocketing.exchange.entity;
 
+import com.a406.pocketing.exchange.enums.ExchangeRequestStatus;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,12 @@ public class ExchangeRequest {
     @JoinColumn(name = "responder_owned_id", nullable = false)
     private ExchangeCard responderOwnedCard;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status = "PENDING";
+    @Builder.Default
+    private ExchangeRequestStatus status = ExchangeRequestStatus.PENDING;
+
+    public void updateStatus(ExchangeRequestStatus status) {
+        this.status = status;
+    }
 }

@@ -46,7 +46,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional(readOnly = true)
     public Page<NotificationResponseDto> getAllNotifications(Long userId, Pageable pageable) {
-        return notificationRepository.findAllProjectionsByUserRelated(userId, pageable)
+        return notificationRepository.findAllProjectionsByUserRelated(
+                userId,
+                pageable)
                 .map(p -> NotificationResponseDto.builder()
                         .notificationId(p.getNotificationId())
                         .exchangeRequest(NotificationResponseDto.ExchangeRequestDto.builder()
@@ -82,6 +84,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendFcmToUser(Long userId, String title, String body) {
+        log.info("FCM 토큰 조회 시도 - userId: {}", userId);
+
         String token = fcmTokenRepository.findFirstActiveTokenByUserId(userId)
                 .map(FcmToken::getToken)
                 .orElseThrow(() -> new GeneralException(NOTIFICATION_TOKEN_NOT_FOUND));
@@ -111,7 +115,7 @@ public class NotificationServiceImpl implements NotificationService {
                                 .responder(responder)
                                         .exchangeRequest(request)
                                                 .isRead(false)
-                                                        .notificationType(type.name())
+                                                        .notificationType(type)
                                                                 .build();
         notificationRepository.save(notification);
     }
