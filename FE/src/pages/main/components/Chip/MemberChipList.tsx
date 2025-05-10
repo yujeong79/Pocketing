@@ -1,5 +1,8 @@
-import { StyledMemberChipList, StyledMemberChipWrapper } from './MemberChipStyle';
-import MemberChip from './MemberChip';
+import {
+  StyledMemberChipList,
+  StyledMemberChipWrapper,
+} from '@/pages/main/components/Chip/MemberChipStyle';
+import MemberChip from '@/pages/main/components/Chip/MemberChip';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 
 interface MemberChipListProps {
