@@ -6,4 +6,5 @@ export const QUERY_KEYS = {
   PHOTOCARDS: 'photocards',
   LIKED_GROUPS: 'likedGroups',
   LIKED_MEMBERS: 'likedMembers',
+  POST_LIST: 'postList',
 } as const;
