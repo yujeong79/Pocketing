@@ -107,21 +107,30 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT MAX(p.price) FROM Post p WHERE p.photoCard.cardId = :cardId")
     Integer findMaxPriceByPhotoCardId(@Param("cardId") Long cardId);
 
-    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'AVAILABLE'")
-    List<Post> findAvailablePostsByUserId(Long userId);
-
-    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'COMPLETED'")
-    List<Post> findCompletedPostsByUserId(Long userId);
-
     @Query("""
         SELECT p FROM Post p
-        JOIN FETCH p.photoCard pc
-        JOIN FETCH pc.album a
-        JOIN FETCH pc.member m
-        JOIN FETCH m.group
-        WHERE p.seller.userId = :userId AND p.status = :status
+        JOIN FETCH p.seller s
+        WHERE p.photoCard.cardId = :cardId
+        AND p.status = 'AVAILABLE'
+        ORDER BY p.price ASC
+        LIMIT 1
     """)
-    List<Post> findPostsByUserIdAndStatusWithAll(Long userId, String status);
+    Post findCheapestByCardId(@Param("cardId") Long cardId);
+
+    // 여러 포토카드의 최저가 판매글 목록 조회
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.seller s
+        WHERE p.photoCard.cardId IN :cardIds
+        AND p.status = 'AVAILABLE'
+        AND p.price = (
+            SELECT MIN(p2.price)
+            FROM Post p2
+            WHERE p2.photoCard.cardId = p.photoCard.cardId
+            AND p2.status = 'AVAILABLE'
+        )
+    """)
+    List<Post> findCheapestByCardIds(@Param("cardIds") List<Long> cardIds);
 
 }
 
