@@ -26,7 +26,8 @@ self.addEventListener("push", (event: PushEvent) => {
     const title = data.notification?.title || "알림";
     const options: NotificationOptions = {
       body: data.notification?.body || "",
-      icon: "/pocketing.svg"
+      icon: "/pocketing.svg",
+      data: data.data || {}, //클릭 시 사용될 데이터터
     };
   
     event.waitUntil(
@@ -37,6 +38,23 @@ self.addEventListener("push", (event: PushEvent) => {
 // 이벤트 핸들러: 알림 클릭 시 버튼 action에 따라 분기 처리
 self.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close();
+
+  
+
+  const { type, roomId} = event.notification.data || {};
+  const BASE_URL =
+    self.location.hostname === 'localhost'
+      ? 'http://localhost:5173'
+      : 'https://k12a406.p.ssafy.io';
+
+    let url = BASE_URL;  
+
+  if (type === "CHAT" && roomId) {
+    url = `${BASE_URL}/chat/${roomId}`;
+  } else if (type === "EXCHANGE") {
+    url = `${BASE_URL}/notifications`;
+  } 
+
   event.waitUntil(
-    self.clients.openWindow("https://j12a707.p.ssafy.io/notifications"));
+    self.clients.openWindow(url));
   });
