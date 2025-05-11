@@ -87,6 +87,10 @@ public enum SuccessStatus implements BaseCode {
 	EMBEDDING_CREATION_SUCCESS(HttpStatus.OK,"CHATBOT2004" ,"임베딩 생성이 성공적으로 완료되었습니다."),
 	EMBEDDING_UPDATE_SUCCESS(HttpStatus.OK,"CHATBOT2005", "임베딩 상태가 성공적으로 업데이트되었습니다."),
 
+	// 챗봇 최저가 판매글 조회 관련 응답
+	CHEAPEST_POST_FETCH_SUCCESS(HttpStatus.OK, "CHEAPESTPOST2001", "최저가 판매글 조회에 성공했습니다."),
+	CHEAPEST_POSTS_FETCH_SUCCESS(HttpStatus.OK, "CHEAPESTPOST2002", "여러 포토카드의 최저가 판매글 조회에 성공했습니다."),
+
 	// 샘플 응답
 	SAMPLE_SUCCESS(HttpStatus.OK, "SAMPLE2001", "샘플 성공 입니다. 이런식으로 작성하면 됩니다.");
 

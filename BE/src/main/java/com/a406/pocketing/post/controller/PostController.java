@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -91,6 +92,18 @@ public class PostController {
                 .getAuthentication()
                 .getPrincipal();
         return userDetails.getUserId();
+    }
+
+    @GetMapping("/cheapest")
+    public ApiResponse<CheapestPostDto> getCheapestPostByCardId(@RequestParam Long cardId) {
+        CheapestPostDto cheapestPost = postService.getCheapestPostByCardId(cardId);
+        return ApiResponse.of(SuccessStatus.CHEAPEST_POST_FETCH_SUCCESS, cheapestPost);
+    }
+
+    @GetMapping("/cheapest/bulk")
+    public ApiResponse<Map<Long, CheapestPostDto>> getCheapestPostsByCardIds(@RequestParam List<Long> cardIds) {
+        Map<Long, CheapestPostDto> cheapestPosts = postService.getCheapestPostsByCardIds(cardIds);
+        return ApiResponse.of(SuccessStatus.CHEAPEST_POSTS_FETCH_SUCCESS, cheapestPosts);
     }
 }
 
