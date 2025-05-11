@@ -110,23 +110,24 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("""
         SELECT p FROM Post p
         JOIN FETCH p.seller s
-        WHERE p.photoCard.cardId = :cardId
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId = :cardId
         AND p.status = 'AVAILABLE'
         ORDER BY p.price ASC
         LIMIT 1
     """)
-    Post findCheapestByCardId(@Param("cardId") Long cardId);
+    Optional<Post> findCheapestByCardId(@Param("cardId") Long cardId);
 
-    // 여러 포토카드의 최저가 판매글 목록 조회
     @Query("""
         SELECT p FROM Post p
         JOIN FETCH p.seller s
-        WHERE p.photoCard.cardId IN :cardIds
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId IN :cardIds
         AND p.status = 'AVAILABLE'
         AND p.price = (
             SELECT MIN(p2.price)
             FROM Post p2
-            WHERE p2.photoCard.cardId = p.photoCard.cardId
+            WHERE p2.photoCard.cardId = pc.cardId
             AND p2.status = 'AVAILABLE'
         )
     """)
