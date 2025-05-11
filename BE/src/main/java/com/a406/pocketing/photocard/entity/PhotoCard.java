@@ -6,24 +6,28 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Slf4j
 @Table(
         name = "photocards",
         indexes = {
                 @Index(name = "idx_photocards_album_id", columnList = "album_id"),
-                @Index(name = "idx_photocards_member_id", columnList = "member_id")
+                @Index(name = "idx_photocards_member_id", columnList = "member_id"),
+                @Index(name = "idx_photocards_created_at", columnList = "createdAt")
         }
 )
 public class PhotoCard {
@@ -50,4 +54,21 @@ public class PhotoCard {
 
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean hasEmbedding = false;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
