@@ -40,8 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         ORDER BY p.createAt DESC
     """)
     Page<PostResponseDto> findFilteredPosts(@Param("memberId") Long memberId,
-                                            @Param("albumId") Long albumId,
-                                            Pageable pageable);
+        @Param("albumId") Long albumId,
+        Pageable pageable);
 
 
     @Query("""
@@ -107,6 +107,22 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT MAX(p.price) FROM Post p WHERE p.photoCard.cardId = :cardId")
     Integer findMaxPriceByPhotoCardId(@Param("cardId") Long cardId);
 
+    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'AVAILABLE'")
+    List<Post> findAvailablePostsByUserId(Long userId);
+
+    @Query("SELECT p FROM Post p WHERE p.seller.userId = :userId AND p.status = 'COMPLETED'")
+    List<Post> findCompletedPostsByUserId(Long userId);
+
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.photoCard pc
+        JOIN FETCH pc.album a
+        JOIN FETCH pc.member m
+        JOIN FETCH m.group
+        WHERE p.seller.userId = :userId AND p.status = :status
+    """)
+    List<Post> findPostsByUserIdAndStatusWithAll(Long userId, String status);
+
     @Query("""
         SELECT p FROM Post p
         JOIN FETCH p.seller s
@@ -132,6 +148,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         )
     """)
     List<Post> findCheapestByCardIds(@Param("cardIds") List<Long> cardIds);
-
 }
 
