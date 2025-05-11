@@ -80,6 +80,13 @@ public enum SuccessStatus implements BaseCode {
 	CHAT_UNREAD_MESSAGE_COUNT_SUCCESS(HttpStatus.OK, "CHAT2003", "안읽은 메시지 전체 개수 조회 성공입니다."),
 	CHAT_MESSAGE_FETCH_SUCCESS(HttpStatus.OK, "CHAT2004", "메시지 불러오기 성공입니다."),
 
+	// 챗봇 관련 응답
+	CHATBOT_RESPONSE_SUCCESS(HttpStatus.OK,"CHATBOT2001" ,"챗봇 응답이 성공적으로 생성되었습니다."),
+	PHOTOCARD_SEARCH_SUCCESS(HttpStatus.OK,"CHATBOT2002", "포토카드 검색이 성공적으로 완료되었습니다."),
+	PHOTOCARD_VECTOR_FETCH_SUCCESS(HttpStatus.OK, "CHATBOT2003","포토카드 벡터 정보 조회가 성공적으로 완료되었습니다."),
+	EMBEDDING_CREATION_SUCCESS(HttpStatus.OK,"CHATBOT2004" ,"임베딩 생성이 성공적으로 완료되었습니다."),
+	EMBEDDING_UPDATE_SUCCESS(HttpStatus.OK,"CHATBOT2005", "임베딩 상태가 성공적으로 업데이트되었습니다."),
+
 	// 샘플 응답
 	SAMPLE_SUCCESS(HttpStatus.OK, "SAMPLE2001", "샘플 성공 입니다. 이런식으로 작성하면 됩니다.");
 
