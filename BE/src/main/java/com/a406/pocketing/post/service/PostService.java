@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PostService {
     List<PostRegisterResponseDto> registerPost(Long userId, List<PostRegisterRequestDto> requestDtos);
@@ -20,6 +21,10 @@ public interface PostService {
     void deletePost(Long postId, Long userId);
 
     void updatePostStatus(Long userId, PostUpdateStatusRequestDto postUpdateStatusRequestDto);
+
+    CheapestPostDto getCheapestPostByCardId(Long cardId);
+
+    Map<Long, CheapestPostDto> getCheapestPostsByCardIds(List<Long> cardIds);
 
     List<PostListItemResponseDto> getMyAvailablePosts(Long userId);
 

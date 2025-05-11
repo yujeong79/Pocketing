@@ -40,8 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         ORDER BY p.createAt DESC
     """)
     Page<PostResponseDto> findFilteredPosts(@Param("memberId") Long memberId,
-                                            @Param("albumId") Long albumId,
-                                            Pageable pageable);
+        @Param("albumId") Long albumId,
+        Pageable pageable);
 
 
     @Query("""
@@ -123,5 +123,30 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     """)
     List<Post> findPostsByUserIdAndStatusWithAll(Long userId, String status);
 
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.seller s
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId = :cardId
+        AND p.status = 'AVAILABLE'
+        ORDER BY p.price ASC
+        LIMIT 1
+    """)
+    Optional<Post> findCheapestByCardId(@Param("cardId") Long cardId);
+
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.seller s
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId IN :cardIds
+        AND p.status = 'AVAILABLE'
+        AND p.price = (
+            SELECT MIN(p2.price)
+            FROM Post p2
+            WHERE p2.photoCard.cardId = pc.cardId
+            AND p2.status = 'AVAILABLE'
+        )
+    """)
+    List<Post> findCheapestByCardIds(@Param("cardIds") List<Long> cardIds);
 }
 
