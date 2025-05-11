@@ -18,13 +18,19 @@ public class GroupController {
 
     private final GroupService groupService;
 
+    @GetMapping("/all")
+    public ApiResponse<?> getAllGroups() {
+        List<GroupResponseDto> groupResponseDtoList = groupService.getAllGroups();
+        return ApiResponse.of(SuccessStatus.GROUP_LIST_FETCH_SUCCESS, groupResponseDtoList);
+    }
+
     /**
-     * 그룹 전체 조회
+     * 그룹 전체 조회(로그인 사용자의 관심 그룹 반영)
      */
     @GetMapping
-    public ApiResponse<List<GroupResponseDto>> getAllGroups() {
+    public ApiResponse<List<GroupResponseDto>> getAllGroupsWithUser() {
         Long userId = getCurrentUserId();
-        List<GroupResponseDto> groups = groupService.getAllGroups(userId);
+        List<GroupResponseDto> groups = groupService.getAllGroupsWithUser(userId);
         return ApiResponse.of(SuccessStatus.GROUP_LIST_FETCH_SUCCESS, groups);
     }
 

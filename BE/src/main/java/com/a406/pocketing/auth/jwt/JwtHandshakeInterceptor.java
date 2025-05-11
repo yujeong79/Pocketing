@@ -21,13 +21,14 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) {
+
+//        log.info("WebSocket before handshake");
+
         if (request instanceof ServletServerHttpRequest servletRequest) {
             HttpServletRequest servletReq = servletRequest.getServletRequest();
             String token = servletReq.getParameter("token");
-//            String authHeader = servletRequest.getServletRequest().getHeader("Authorization");
 
             if (token != null && !token.isBlank()) {
-//                String token = authHeader.substring(7);
                 Authentication authentication = jwtProvider.getAuthentication(token);
                 attributes.put("user", authentication);
 
