@@ -48,8 +48,8 @@ const MainPage = () => {
 
   // 그룹이 변경될 때마다 해당 그룹의 첫 번째 관심 멤버를 선택
   useEffect(() => {
-    if (membersData?.length && selectedGroupId !== null) {
-      const interestMembers = membersData.filter((member) => member.interest);
+    if (membersData?.result && selectedGroupId !== null) {
+      const interestMembers = membersData.result.filter((member) => member.interest);
       if (interestMembers.length > 0) {
         setSelectedMember(interestMembers[0].memberId);
       } else {
@@ -96,10 +96,12 @@ const MainPage = () => {
           onSelectMember={setSelectedMember}
         />
         <FilterContainer>
-          {selectedMember && membersData ? (
+          {selectedMember && membersData?.result ? (
             <SelectedMemberText>
-              <span>{membersData?.find((m) => m.memberId === selectedMember)?.name || ''}</span>의
-              포토카드
+              <span>
+                {membersData.result.find((m) => m.memberId === selectedMember)?.name || ''}
+              </span>
+              의 포토카드
             </SelectedMemberText>
           ) : (
             <SelectedMemberText>

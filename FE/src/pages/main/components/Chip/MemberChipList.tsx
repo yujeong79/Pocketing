@@ -12,12 +12,13 @@ interface MemberChipListProps {
 }
 
 const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipListProps) => {
-  const { data: members, isLoading } = useMembers(groupId);
+  const { data: membersResponse, isLoading } = useMembers(groupId);
 
   if (!groupId) return null;
   if (isLoading) return <div>멤버 목록을 불러오는 중...</div>;
-  if (!members) return null;
+  if (!membersResponse?.result) return null;
 
+  const members = membersResponse.result;
   const sortedMembers = [...members].sort((a, b) => {
     // interest가 true인 멤버를 앞으로 정렬
     if (a.interest && !b.interest) return -1;
