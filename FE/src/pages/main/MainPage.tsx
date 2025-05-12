@@ -4,11 +4,13 @@ import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { Group } from '@/types/group';
+import { UserLikedGroup } from '@/types/user';
 
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
@@ -18,8 +20,44 @@ const MainPage = () => {
   const [selectedGroupData, setSelectedGroupData] = useState<Group | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
+  // 관심 그룹 불러오기
+  const { data: likedGroups } = useLikedGroups();
+  // 초기 한 번만 관심메버 자동 선택
+  const memberInitRef = useRef(false);
+
   const location = useLocation();
   const navigate = useNavigate();
+
+  // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택
+  useEffect(() => {
+    if (likedGroups?.result?.length && selectedGroupId === null && selectedAllGroup === null) {
+      const first = (likedGroups.result as UserLikedGroup[])[0];
+      setSelectedGroupId(first.groupId);
+      setSelectedGroupData({
+        groupId: first.groupId,
+        groupNameKo: first.groupNameKo,
+        groupNameEn: first.groupNameEn,
+        groupImageUrl: first.groupImageUrl || '',
+        members: null,
+        interest: true,
+      });
+    }
+  }, [likedGroups, selectedGroupId, selectedAllGroup]);
+
+  // 선택된 그룹의 ID로 데이터 조회
+  const groupId = selectedAllGroup || selectedGroupId || 0;
+  const { data: membersData } = useMembers(groupId);
+
+  useEffect(() => {
+    if (!memberInitRef.current && membersData?.length) {
+      const interest = membersData.find((member) => member.interest);
+      if (interest) {
+        setSelectedMember(interest.memberId);
+      }
+      // 한 번만 실행되도록 플래그 세팅
+      memberInitRef.current = true;
+    }
+  }, [membersData, selectedMember]);
 
   // location.state에서 선택된 그룹 정보를 가져옴
   useEffect(() => {
@@ -28,10 +66,6 @@ const MainPage = () => {
       setSelectedGroupData(location.state.selectedGroupData);
     }
   }, [location.state]);
-
-  // 선택된 그룹의 ID로 데이터 조회
-  const groupId = selectedAllGroup || selectedGroupId || 0;
-  const { data: membersData } = useMembers(groupId);
 
   const handleAlbumSelect = (albumId: number | null) => {
     setSelectedAlbumId(albumId);
