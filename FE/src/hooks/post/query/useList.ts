@@ -1,4 +1,4 @@
-import { fetchPostList, fetchSellerList } from '@/api/post/list';
+import { fetchPostList, fetchSellerList } from '@/api/posts/list';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Post } from '@/types/post';
 import { SellerList } from '@/types/seller';

@@ -15,3 +15,32 @@ export interface PostContent {
 export type Post = Page<PostContent>;
 
 export type PostResponse = ApiResponse<Post>;
+
+export interface PostDetail {
+  postId: number;
+  postImageUrl: string;
+  price: number;
+  createdAt: string;
+  status: string;
+  isMine: boolean;
+  card: Card;
+  seller: Seller;
+}
+
+export interface Card {
+  cardId: number;
+  cardImageUrl: string;
+  memberName: string;
+  groupNameKo: string;
+  groupNameEn: string;
+  groupImageUrl: string;
+  albumTitle: string;
+}
+
+export interface Seller {
+  nickname: string;
+  isVerified: boolean;
+  profileImageUrl: string;
+}
+
+export type PostDetailResponse = ApiResponse<PostDetail>;
