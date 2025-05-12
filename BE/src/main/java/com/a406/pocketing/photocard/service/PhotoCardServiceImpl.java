@@ -9,6 +9,7 @@ import com.a406.pocketing.member.repository.MemberRepository;
 import com.a406.pocketing.photocard.dto.PhotoCardListResponse;
 import com.a406.pocketing.photocard.dto.PhotoCardPriceResponseDto;
 import com.a406.pocketing.photocard.dto.PhotoCardSimpleDto;
+import com.a406.pocketing.photocard.dto.PhotoCardVectorDto;
 import com.a406.pocketing.photocard.entity.PhotoCard;
 import com.a406.pocketing.photocard.entity.PhotoCardStatistics;
 import com.a406.pocketing.photocard.repository.PhotoCardRepository;
@@ -17,6 +18,10 @@ import com.a406.pocketing.post.repository.PostRepository;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -25,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -177,6 +185,71 @@ public class PhotoCardServiceImpl implements PhotoCardService {
         throw new GeneralException(ErrorStatus.CONCURRENT_UPDATE_FAILED);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<PhotoCardVectorDto> getPhotoCardsUnembedded(Pageable pageable) {
+        Page<PhotoCard> photocardsPage = photoCardRepository.findByHasEmbeddingFalse(pageable);
+        List<Long> cardIds = photocardsPage.getContent().stream()
+            .map(PhotoCard::getCardId)
+            .collect(Collectors.toList());
+        if (cardIds.isEmpty()) {
+            return List.of();
+        }
+        List<PhotoCard> photocards = photoCardRepository.findMetadataUnembedded(cardIds);
+        return PhotoCardVectorDto.fromList(photocards);
+    }
+
+    @Override
+    @Transactional
+    public void updateEmbeddingStatus(Long cardId, Boolean hasEmbedding) {
+        if (cardId == null) {
+            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+        }
+        PhotoCard photocard = photoCardRepository.findById(cardId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND));
+        photocard.setHasEmbedding(true);
+        photoCardRepository.save(photocard);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PhotoCardVectorDto> getPhotoCardByGroup(String groupName, Pageable pageable) {
+        if (groupName == null || groupName.isEmpty()) {
+            throw new GeneralException(ErrorStatus.GROUP_NAME_REQUIRED);
+        }
+        Page<Long> cardIdsPage = photoCardRepository.findCardIdsByGroupName(groupName, pageable);
+        if (cardIdsPage.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        List<PhotoCard> photocards = photoCardRepository.findMetadataByCardIds(cardIdsPage.getContent());
+        List<PhotoCardVectorDto> dtos = PhotoCardVectorDto.fromList(photocards);
+        return new PageImpl<>(dtos, pageable, cardIdsPage.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PhotoCardVectorDto> getRecentPhotoCards(int days, Pageable pageable) {
+        LocalDateTime date = LocalDateTime.now().minusDays(days);
+        Page<Long> cardIds = photoCardRepository.findCardIdsCreatedRecently(date, pageable);
+        if (cardIds.isEmpty()) {
+            return List.of();
+        }
+        List<PhotoCard> photocards = photoCardRepository.findMetadataByCardIds(cardIds.getContent());
+        return PhotoCardVectorDto.fromList(photocards);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PhotoCardVectorDto getPhotoCard(Long cardId) {
+        if (cardId == null) {
+            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+        }
+        PhotoCard photocard = photoCardRepository.findMetadataByCardId(cardId);
+        if (photocard == null) {
+            throw new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND);
+        }
+        return PhotoCardVectorDto.from(photocard);
+    }
 }
 
 

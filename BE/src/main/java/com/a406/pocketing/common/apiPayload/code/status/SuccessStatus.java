@@ -62,7 +62,7 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_LOCATION_SAVE_SUCCESS(HttpStatus.OK, "EXCHANGE2002","사용자 위치가 성공적으로 저장되었습니다."),
 	EXCHANGE_AVAILABLE_USERS_FOUND_SUCCESS(HttpStatus.OK, "EXCHANGE2003", "반경 내 교환 가능 사용자 목록입니다."),
 	EXCHANGE_REQUEST_REGISTER_SUCCESS(HttpStatus.OK, "EXCHANGE2004", "교환 요청이 성공적으로 등록되었습니다."),
-	EXCHANGE_RECEIVED_REQUESTS_SUCCESS(HttpStatus.OK, "EXCHANGE2005", "알림 목록을 성공적으로 조회했습니다."),
+	EXCHANGE_RECEIVED_REQUESTS_SUCCESS(HttpStatus.OK, "EXCHANGE2005", "받은 요청 목록을 성공적으로 조회했습니다."),
 	EXCHANGE_ACCEPT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2006", "요청을 수락하고 채팅방이 생성되었습니다."),
 	EXCHANGE_REJECT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2007", "요청을 거절했습니다."),
 	EXCHANGE_REQUEST_STATUS_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2008", "교환 요청 상태 조회에 성공했습니다."),
@@ -79,6 +79,17 @@ public enum SuccessStatus implements BaseCode {
 	CHAT_ROOM_ENTER_SUCCESS(HttpStatus.OK, "CHAT2002", "채팅방 입장 성공입니다."),
 	CHAT_UNREAD_MESSAGE_COUNT_SUCCESS(HttpStatus.OK, "CHAT2003", "안읽은 메시지 전체 개수 조회 성공입니다."),
 	CHAT_MESSAGE_FETCH_SUCCESS(HttpStatus.OK, "CHAT2004", "메시지 불러오기 성공입니다."),
+
+	// 챗봇 관련 응답
+	CHATBOT_RESPONSE_SUCCESS(HttpStatus.OK,"CHATBOT2001" ,"챗봇 응답이 성공적으로 생성되었습니다."),
+	PHOTOCARD_SEARCH_SUCCESS(HttpStatus.OK,"CHATBOT2002", "포토카드 검색이 성공적으로 완료되었습니다."),
+	PHOTOCARD_VECTOR_FETCH_SUCCESS(HttpStatus.OK, "CHATBOT2003","포토카드 벡터 정보 조회가 성공적으로 완료되었습니다."),
+	EMBEDDING_CREATION_SUCCESS(HttpStatus.OK,"CHATBOT2004" ,"임베딩 생성이 성공적으로 완료되었습니다."),
+	EMBEDDING_UPDATE_SUCCESS(HttpStatus.OK,"CHATBOT2005", "임베딩 상태가 성공적으로 업데이트되었습니다."),
+
+	// 챗봇 최저가 판매글 조회 관련 응답
+	CHEAPEST_POST_FETCH_SUCCESS(HttpStatus.OK, "CHEAPESTPOST2001", "최저가 판매글 조회에 성공했습니다."),
+	CHEAPEST_POSTS_FETCH_SUCCESS(HttpStatus.OK, "CHEAPESTPOST2002", "여러 포토카드의 최저가 판매글 조회에 성공했습니다."),
 
 	// 샘플 응답
 	SAMPLE_SUCCESS(HttpStatus.OK, "SAMPLE2001", "샘플 성공 입니다. 이런식으로 작성하면 됩니다.");

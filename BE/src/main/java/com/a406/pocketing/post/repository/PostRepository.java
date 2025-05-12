@@ -40,8 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         ORDER BY p.createAt DESC
     """)
     Page<PostResponseDto> findFilteredPosts(@Param("memberId") Long memberId,
-                                            @Param("albumId") Long albumId,
-                                            Pageable pageable);
+        @Param("albumId") Long albumId,
+        Pageable pageable);
 
 
     @Query("""
@@ -122,6 +122,80 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         WHERE p.seller.userId = :userId AND p.status = :status
     """)
     List<Post> findPostsByUserIdAndStatusWithAll(Long userId, String status);
+
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.seller s
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId = :cardId
+        AND p.status = 'AVAILABLE'
+        ORDER BY p.price ASC
+        LIMIT 1
+    """)
+    Optional<Post> findCheapestByCardId(@Param("cardId") Long cardId);
+
+    @Query("""
+        SELECT p FROM Post p
+        JOIN FETCH p.seller s
+        JOIN FETCH p.photoCard pc
+        WHERE pc.cardId IN :cardIds
+        AND p.status = 'AVAILABLE'
+        AND p.price = (
+            SELECT MIN(p2.price)
+            FROM Post p2
+            WHERE p2.photoCard.cardId = pc.cardId
+            AND p2.status = 'AVAILABLE'
+        )
+    """)
+    List<Post> findCheapestByCardIds(@Param("cardIds") List<Long> cardIds);
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.PostResponseDto(
+        p.postId,
+        p.photoCard.cardId,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        m.name,
+        a.title,
+        p.postImageUrl,
+        p.price
+    )
+    FROM Post p
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN m.group g
+    JOIN pc.album a
+    WHERE (:albumId IS NULL OR a.albumId = :albumId)
+    ORDER BY p.createAt DESC
+""")
+    Page<PostResponseDto> findAllPosts(@Param("albumId") Long albumId, Pageable pageable);
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.PostResponseDto(
+        p.postId,
+        pc.cardId,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        m.name,
+        a.title,
+        p.postImageUrl,
+        p.price
+    )
+    FROM Post p
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN m.group g
+    JOIN pc.album a
+    WHERE g.groupId = :groupId
+    AND (:albumId IS NULL OR a.albumId = :albumId)
+    ORDER BY p.createAt DESC
+""")
+    Page<PostResponseDto> findPostsByGroupId(@Param("groupId") Long groupId,
+                                             @Param("albumId") Long albumId,
+                                             Pageable pageable);
+
 
 }
 
