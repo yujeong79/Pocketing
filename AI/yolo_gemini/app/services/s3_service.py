@@ -30,3 +30,7 @@ def upload_file_to_s3(local_path: str, s3_folder: str = "photocards") -> str:
     except NoCredentialsError:
         raise RuntimeError("AWS 인증 정보가 없습니다.")
 
+print(f"AWS_ACCESS_KEY_ID: {AWS_ACCESS_KEY}")
+print(f"AWS_SECRET_ACCESS_KEY: {AWS_SECRET_KEY}")
+print(f"AWS_REGION: {AWS_REGION}")
+print(f"BUCKET_NAME: {BUCKET_NAME}")
