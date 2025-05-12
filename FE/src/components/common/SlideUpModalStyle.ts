@@ -42,7 +42,7 @@ export const Overlay = styled.div<{ $isOpen: boolean }>`
 export const ModalContainer = styled.div<{ $isOpen: boolean; $height?: string }>`
   background-color: white;
   width: 100%;
-  height: ${({ $height }) => $height || '95vh'};
+  height: ${({ $height }) => $height || 'auto'};
   max-height: 95vh;
   border-radius: ${scale(20)}px ${scale(20)}px 0 0;
   padding: ${scale(28)}px ${scale(16)}px;
@@ -81,6 +81,7 @@ export const CloseButton = styled.img`
 `;
 
 export const ModalContent = styled.div`
+  flex: 1;
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
