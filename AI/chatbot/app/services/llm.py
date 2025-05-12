@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class LLMService:
-    """대형 언어 모델(LLM) 호출 서비스"""
 
     def __init__(self):
         self.model = settings.LLM_MODEL
