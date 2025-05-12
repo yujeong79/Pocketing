@@ -15,8 +15,14 @@ logging.basicConfig(level=logging.INFO)
 model = YOLO("yolov8n.pt")
 model.to("cuda")  # 이게 있어야 GPU로 작동!
 
+
 def detect_and_crop_person(image_path):
+    logging.info("[YOLO] detect_and_crop_person 진입")
     img = cv2.imread(image_path)
+
+    if img is None:
+        raise RuntimeError(f"이미지를 못 읽음: {image_path}")
+
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     #예측
@@ -39,8 +45,11 @@ def detect_and_crop_person(image_path):
 
         # 크롭도 img_rgb에서 자르기 (색상보존)
         cropped_rgb = img_rgb[y1:y2, x1:x2]
-        save_path = f"app/static/crops/temp_{uuid.uuid4()}.jpg"
+        save_path = f"/app/static/crops/temp_{uuid.uuid4()}.jpg"
         Image.fromarray(cropped_rgb).save(save_path, format="JPEG")
+
+        logging.info(f"[YOLO] 저장된 크롭 경로: {save_path}")
+        logging.info("[YOLO] S3 업로드 시작")
 
         # S3에 업로드
         try:
@@ -48,6 +57,8 @@ def detect_and_crop_person(image_path):
         except Exception as e:
             logging.error(f"S3 업로드 실패: {e}")
             continue
+
+        logging.info(f"[YOLO] S3 업로드 성공: {s3_url}")
 
         saved_files.append({"postImageUrl": s3_url})
 
