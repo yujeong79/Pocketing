@@ -4,64 +4,39 @@ import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLikedGroups } from '@/hooks/user/query/useLike';
-import { UserLikedGroup } from '@/types/user';
 import { useMembers } from '@/hooks/artist/query/useMembers';
+import { Group } from '@/types/group';
 
 const MainPage = () => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMember, setSelectedMember] = useState<number | null>(null);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
   const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
+  const [selectedGroupData, setSelectedGroupData] = useState<Group | null>(null);
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: likedGroups } = useLikedGroups();
-  const groupId = selectedGroupId || selectedAllGroup || 0;
-  const { data: membersData } = useMembers(groupId);
-
-  // 그룹이 변경될 때마다 선택된 멤버 초기화
-  useEffect(() => {
-    setSelectedMember(null);
-    setSelectedAlbumId(null);
-  }, [selectedGroupId, selectedAllGroup]);
-
-  // 컴포넌트 마운트 시 첫 번째 관심그룹 선택
-  useEffect(() => {
-    if (likedGroups?.result && (likedGroups.result as UserLikedGroup[]).length > 0) {
-      const firstGroup = (likedGroups.result as UserLikedGroup[])[0];
-      setSelectedGroupId(firstGroup.groupId);
-    }
-  }, [likedGroups]);
 
   // location.state에서 선택된 그룹 정보를 가져옴
-  useMemo(() => {
-    if (location.state?.selectedAllGroup) {
+  useEffect(() => {
+    if (location.state?.selectedAllGroup && location.state?.selectedGroupData) {
       setSelectedAllGroup(location.state.selectedAllGroup);
+      setSelectedGroupData(location.state.selectedGroupData);
     }
   }, [location.state]);
 
-  const selectedGroup = useMemo(() => {
-    const groupId = selectedGroupId || selectedAllGroup;
-    if (!likedGroups?.result) return null;
-    return (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === groupId);
-  }, [selectedGroupId, selectedAllGroup, likedGroups]);
+  // 선택된 그룹의 ID로 데이터 조회
+  const groupId = selectedAllGroup || selectedGroupId || 0;
+  const { data: membersData } = useMembers(groupId);
 
   const handleAlbumSelect = (albumId: number | null) => {
     setSelectedAlbumId(albumId);
     setIsAlbumModalOpen(false);
   };
-
-  // 선택된 멤버의 이름 찾기
-  const selectedMemberName = useMemo(() => {
-    if (!selectedMember || !membersData) return null;
-    const member = membersData.find((m) => m.memberId === selectedMember);
-    return member?.name || null;
-  }, [selectedMember, membersData]);
 
   const handleEditGroup = () => {
     navigate('/myGroupEdit', { state: { from: '/main' } });
@@ -75,25 +50,24 @@ const MainPage = () => {
           selectedId={selectedGroupId}
           onSelectGroup={setSelectedGroupId}
           selectedAllGroup={selectedAllGroup}
+          selectedGroupData={selectedGroupData}
           onSelectAllGroup={setSelectedAllGroup}
           onEditGroup={handleEditGroup}
+          setSelectedGroupData={setSelectedGroupData}
         />
-        {(selectedGroupId || selectedAllGroup) && (
-          <MemberChipList
-            groupId={selectedGroupId || selectedAllGroup || 0}
-            selectedMember={selectedMember}
-            onSelectMember={setSelectedMember}
-          />
-        )}
+        <MemberChipList
+          groupId={groupId}
+          selectedMember={selectedMember}
+          onSelectMember={setSelectedMember}
+        />
         <FilterContainer>
-          {selectedMemberName && (
+          {selectedMember && membersData ? (
             <SelectedMemberText>
-              <span>{selectedMemberName}</span>의 포토카드
+              <span>{membersData.find((m) => m.memberId === selectedMember)?.name}</span>의 포토카드
             </SelectedMemberText>
-          )}
-          {!selectedMember && selectedGroup && (
+          ) : (
             <SelectedMemberText>
-              <span>{selectedGroup.groupNameKo}</span>의 포토카드
+              <span>{selectedGroupData?.groupNameKo}</span>의 포토카드
             </SelectedMemberText>
           )}
           <AlbumChip
