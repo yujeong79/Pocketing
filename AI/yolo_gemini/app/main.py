@@ -20,10 +20,10 @@ app.add_middleware(
 
 
 # YOLO 저장
-app.include_router(detect.router, prefix="/api")
+app.include_router(detect.router, prefix="/fastapi")
 
 # 제미나이 분석
-app.include_router(gemini.router, prefix="/api")
+app.include_router(gemini.router, prefix="/fastapi")
 
 # 예외 핸들러 등록
 app.add_exception_handler(CustomException, custom_exception_handler)
