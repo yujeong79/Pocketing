@@ -34,9 +34,12 @@ async def upload_image(file: UploadFile=File(...)):
         f.write(content)
 
     # YOLO 분석 & 크롭 -> 크롭된 이미지 리스트 반환
+    print("[DEBUG] YOLO 감지 함수 진입 전")
     try:
         cropped_files = detect_and_crop_person(file_path)
+        print("[DEBUG] YOLO 감지 완료:", cropped_files)
     except Exception as e:
+        print("[ERROR] YOLO 감지 중 에러:", e)
         code, msg = YOLOError.CROP_FAILED
         raise CustomException(code, msg)
     
