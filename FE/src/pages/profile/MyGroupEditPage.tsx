@@ -1,64 +1,99 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useCallback, useEffect } from 'react';
 
 import * as S from './MyGroupEditStyle';
 import BackButton from '@/pages/onboarding/components/BackButton';
 import Button from '@/components/common/Button';
 import { SearchIcon } from '@/assets/assets';
-import { useEffect, useState } from 'react';
-import { useLikedMembersStore } from '@/store/likedMembers';
+import { useGroupsAll } from '@/hooks/artist/query/useGroups';
+import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
-import { useGroups } from '@/hooks/artist/query/useGroups';
-import { useLikedGroups } from '@/hooks/user/query/useLike';
+import { useLikedMembersStore } from '@/store/likedMembers';
 import { useUpdateLikedMembers } from '@/hooks/user/mutation/useLike';
-import { UserLikedGroup } from '@/types/user';
+import { useLikedMembers } from '@/hooks/user/query/useLike';
+import { UserLikedMember, LikedGroupListRequest } from '@/types/user';
+import { AxiosError } from 'axios';
+
+const LikedMembersLoader = ({ groupId }: { groupId: number }) => {
+  const { updateGroupMembers } = useLikedMembersStore();
+  const { data } = useLikedMembers(groupId);
+
+  useEffect(() => {
+    if (data?.isSuccess && Array.isArray(data.result)) {
+      const memberIds = data.result
+        .filter((item): item is UserLikedMember => 'memberId' in item)
+        .map((member) => member.memberId);
+
+      if (memberIds.length > 0) {
+        updateGroupMembers(groupId, memberIds);
+      }
+    }
+  }, [data, groupId, updateGroupMembers]);
+
+  return null;
+};
 
 const MyGroupEditPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fromPath = location.state?.from || '/profile';
-  // API 호출
-  const { data: groupsData } = useGroups();
-  const { data: likedGroupsData } = useLikedGroups();
-  const { mutate: updateLikedMembers } = useUpdateLikedMembers();
 
-  // 상태 관리
+  const { data: groupsData } = useGroupsAll();
   const [searchTerm, setSearchTerm] = useState('');
-  const { getSelectedMembers } = useLikedMembersStore();
-  const [selectedGroups, setSelectedGroups] = useState<number[]>([]);
-
-  // 기존 관심 그룹 정보 로드
-  useEffect(() => {
-    if (likedGroupsData?.result) {
-      const likedGroupIds = likedGroupsData.result
-        .filter((item): item is UserLikedGroup => 'groupId' in item)
-        .map((group) => group.groupId);
-      setSelectedGroups(likedGroupIds);
-    }
-  }, [likedGroupsData]);
+  const { likedInfo, hasSelectedMembers } = useLikedMembersStore();
+  const updateLikedMembersMutation = useUpdateLikedMembers();
 
   const { filteredGroups } = useGroupSearch({
     groups: groupsData?.result,
     searchTerm,
   });
 
-  // 그룹 선택 핸들러
-  const handleComplete = () => {
-    const likedGroupList = {
-      groupId: selectedGroups[0],
-      likedMemberList: getSelectedMembers(selectedGroups[0]).map((memberId) => ({
-        memberId,
+  // 완료 버튼 핸들러
+  const handleComplete = useCallback(() => {
+    const selectedGroups = likedInfo.likedGroupList.filter(
+      (group) => group.likedMemberList.length > 0
+    );
+
+    if (selectedGroups.length === 0) {
+      console.log('선택된 멤버가 없습니다.');
+      return;
+    }
+
+    // API 요청 데이터 로깅
+    console.log('Selected groups:', selectedGroups);
+
+    const requestData: LikedGroupListRequest = {
+      likedGroupList: selectedGroups.map((group) => ({
+        groupId: group.groupId,
+        likedMemberList: group.likedMemberList,
       })),
     };
 
-    updateLikedMembers(likedGroupList, {
-      onSuccess: () => {
-        navigate(fromPath);
+    // 요청 데이터 로깅
+    console.log('Request data:', requestData);
+
+    updateLikedMembersMutation.mutate(requestData, {
+      onSuccess: (response) => {
+        console.log('API 응답:', response);
+        if (response.isSuccess) {
+          console.log('관심 멤버 업데이트 성공');
+          navigate(fromPath);
+        } else {
+          console.error('API 응답 실패:', response.message);
+        }
       },
-      onError: (error) => {
-        console.error('관심 그룹 업데이트 실패', error);
+      onError: (error: Error) => {
+        console.error('API 에러 상세:', error);
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 401) {
+          // 401 에러는 axiosInstance에서 처리
+          console.log('인증 에러 - 토큰 갱신 시도');
+        } else {
+          console.error('API 호출 실패:', axiosError.response?.data);
+        }
       },
     });
-  };
+  }, [updateLikedMembersMutation, likedInfo, navigate, fromPath]);
 
   return (
     <S.PageContainer>
@@ -74,22 +109,33 @@ const MyGroupEditPage = () => {
           <S.SearchIcon src={SearchIcon} />
         </S.SearchContainer>
         <S.GroupListContainer>
-          {filteredGroups.map((group) => (
-            <S.GroupInfo
-              key={group.groupId}
-              onClick={() =>
-                navigate(`/myMemberEdit/${group.groupId}`, {
-                  state: { from: fromPath },
-                })
-              }
-            >
-              <S.GroupImage src={group.groupImageUrl} />
-              <S.GroupName>{group.groupNameKo}</S.GroupName>
-            </S.GroupInfo>
+          {groupsData?.result?.map((group) => (
+            <LikedMembersLoader key={group.groupId} groupId={group.groupId} />
           ))}
+          {filteredGroups?.map((group: Group) => {
+            const isSelected = hasSelectedMembers(group.groupId);
+            return (
+              <S.GroupInfo
+                key={group.groupId}
+                $isSelected={isSelected}
+                onClick={() =>
+                  navigate(`/myMemberEdit/${group.groupId}`, {
+                    state: { from: fromPath },
+                  })
+                }
+              >
+                <S.GroupImage src={group.groupImageUrl} $isSelected={isSelected} />
+                <S.GroupName>{group.groupNameKo}</S.GroupName>
+              </S.GroupInfo>
+            );
+          })}
         </S.GroupListContainer>
       </S.ItemContainer>
-      <Button text="완료" onClick={handleComplete} />
+      <Button
+        text="완료"
+        onClick={handleComplete}
+        disabled={!likedInfo.likedGroupList.some((group) => group.likedMemberList.length > 0)}
+      />
     </S.PageContainer>
   );
 };

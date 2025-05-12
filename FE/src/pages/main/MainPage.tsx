@@ -4,7 +4,7 @@ import MemberChipList from '@/pages/main/components/Chip/MemberChipList';
 import PhotoCardList from '@/pages/main/components/PhotoCard/PhotoCardList';
 import AlbumChip from '@/pages/main/components/Album/AlbumChip';
 import AlbumModal from '@/pages/main/components/Album/AlbumModal';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,8 +22,6 @@ const MainPage = () => {
 
   // 관심 그룹 불러오기
   const { data: likedGroups } = useLikedGroups();
-  // 초기 한 번만 관심메버 자동 선택
-  const memberInitRef = useRef(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,22 +46,25 @@ const MainPage = () => {
   const groupId = selectedAllGroup || selectedGroupId || 0;
   const { data: membersData } = useMembers(groupId);
 
+  // 그룹이 변경될 때마다 해당 그룹의 첫 번째 관심 멤버를 선택
   useEffect(() => {
-    if (!memberInitRef.current && membersData?.length) {
-      const interest = membersData.find((member) => member.interest);
-      if (interest) {
-        setSelectedMember(interest.memberId);
+    if (membersData?.length && selectedGroupId !== null) {
+      const interestMembers = membersData.filter((member) => member.interest);
+      if (interestMembers.length > 0) {
+        setSelectedMember(interestMembers[0].memberId);
+      } else {
+        setSelectedMember(null);
       }
-      // 한 번만 실행되도록 플래그 세팅
-      memberInitRef.current = true;
     }
-  }, [membersData, selectedMember]);
+  }, [selectedGroupId, membersData]);
 
   // location.state에서 선택된 그룹 정보를 가져옴
   useEffect(() => {
     if (location.state?.selectedAllGroup && location.state?.selectedGroupData) {
       setSelectedAllGroup(location.state.selectedAllGroup);
       setSelectedGroupData(location.state.selectedGroupData);
+      // 전체 그룹 선택 시 선택된 멤버 초기화
+      setSelectedMember(null);
     }
   }, [location.state]);
 
@@ -97,7 +98,8 @@ const MainPage = () => {
         <FilterContainer>
           {selectedMember && membersData ? (
             <SelectedMemberText>
-              <span>{membersData.find((m) => m.memberId === selectedMember)?.name}</span>의 포토카드
+              <span>{membersData?.find((m) => m.memberId === selectedMember)?.name || ''}</span>의
+              포토카드
             </SelectedMemberText>
           ) : (
             <SelectedMemberText>

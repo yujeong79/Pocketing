@@ -59,7 +59,7 @@ export const GroupListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: ${scale(28)}px;
-  height: ${scale(280)}px;
+  height: ${scale(330)}px;
   gap: ${scale(24)}px;
 
   overflow-y: auto;
@@ -70,24 +70,32 @@ export const GroupListContainer = styled.div`
   }
 `;
 
-export const GroupInfo = styled.div`
+export const GroupInfo = styled.div<{ $isSelected?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${scale(12)}px;
   width: ${scale(72)}px;
+  cursor: pointer;
+  opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.6)};
+  transition: opacity 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
-export const GroupImage = styled.img`
+export const GroupImage = styled.img<{ $isSelected?: boolean }>`
   width: ${scale(72)}px;
   height: ${scale(72)}px;
   border-radius: 50%;
   background-color: none;
-  border: ${scale(1)}px solid ${colors.white};
-
+  border: ${scale(2)}px solid ${({ $isSelected }) => ($isSelected ? colors.primary : colors.white)};
   box-shadow: ${scale(2)}px ${scale(2)}px ${scale(2)}px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease-in-out;
 `;
 
 export const GroupName = styled.div`
   ${FontStyles.captionMedium};
   color: ${colors.gray800};
+  text-align: center;
 `;
