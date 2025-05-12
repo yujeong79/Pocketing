@@ -182,7 +182,7 @@ def main():
         logger.error("데이터베이스 초기화 실패, 종료")
         sys.exit(1)
 
-    # ETL 파이프라인 실행 (skip-etl 옵션이 지정되지 않은 경우)
+    # ETL 파이프라인 실행
     if not args.skip_etl:
         saved_count = 0
 
