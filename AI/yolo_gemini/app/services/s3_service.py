@@ -3,7 +3,8 @@ from botocore.exceptions import NoCredentialsError
 import os
 import uuid
 from dotenv import load_dotenv
-load_dotenv()
+
+load_dotenv(dotenv_path="/yolo_gemini/secret/.env")
 
 
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
