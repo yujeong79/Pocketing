@@ -4,14 +4,14 @@ import os
 import uuid
 from dotenv import load_dotenv
 
-dotenv_path = "/app/.env"
+# dotenv_path = "/app/.env"
 
 # if os.path.exists(dotenv_path):
 #     print(f".env 파일 로드 : {dotenv_path}")
 # else:
 #     print(f".env 파일을 찾을 수 없습니다: {dotenv_path}") 
 
-load_dotenv(dotenv_path=dotenv_path)
+load_dotenv(dotenv_path="/app/.env")
 
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
