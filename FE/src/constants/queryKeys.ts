@@ -7,6 +7,8 @@ export const QUERY_KEYS = {
   LIKED_GROUPS: 'likedGroups',
   LIKED_MEMBERS: 'likedMembers',
   POST_LIST: 'postList',
+  POST_DETAIL: 'postDetail',
+  SELLER_LIST: 'sellerList',
   ALBUMS: 'albums',
   MYCARD: 'mycard',
 } as const;

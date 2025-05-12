@@ -1,4 +1,4 @@
-import { usePostList } from '@/hooks/post/query/usePost';
+import { usePostList } from '@/hooks/post/query/useList';
 import PhotoCardItem from './PhotoCardItem';
 import { ListContainer, ListWrapper } from './PhotoCardStyle';
 import { PostContent } from '@/types/post';
