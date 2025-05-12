@@ -21,7 +21,7 @@ pipeline {
                         sh """
                         docker run -d --name yolo_gemini-app \
                         --gpus all \
-                        -v /yolo_gemini/secret/.env:/app/.env \
+                        -v /home/ubuntu/project/yolo_gemini/secret/.env:/app/.env \
                         -p 8000:8000 yolo_gemini-app
                         """
                     }
