@@ -85,12 +85,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponseDto> getPosts(Long memberId, Long albumId, Pageable pageable) {
-        if (memberId == null) {
-            throw new GeneralException(ErrorStatus.MEMBER_ID_REQUIRED);
-        }
+    public Page<PostResponseDto> getPostsByGroup(Long groupId, Long albumId, Pageable pageable) {
+        return postRepository.findPostsByGroupId(groupId, albumId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getPostsByMember(Long memberId, Long albumId, Pageable pageable) {
         return postRepository.findFilteredPosts(memberId, albumId, pageable);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)

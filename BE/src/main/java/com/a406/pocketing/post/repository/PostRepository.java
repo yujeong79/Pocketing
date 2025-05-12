@@ -148,5 +148,54 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         )
     """)
     List<Post> findCheapestByCardIds(@Param("cardIds") List<Long> cardIds);
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.PostResponseDto(
+        p.postId,
+        p.photoCard.cardId,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        m.name,
+        a.title,
+        p.postImageUrl,
+        p.price
+    )
+    FROM Post p
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN m.group g
+    JOIN pc.album a
+    WHERE (:albumId IS NULL OR a.albumId = :albumId)
+    ORDER BY p.createAt DESC
+""")
+    Page<PostResponseDto> findAllPosts(@Param("albumId") Long albumId, Pageable pageable);
+
+    @Query("""
+    SELECT new com.a406.pocketing.post.dto.PostResponseDto(
+        p.postId,
+        pc.cardId,
+        g.nameKo,
+        g.nameEn,
+        g.groupImageUrl,
+        m.name,
+        a.title,
+        p.postImageUrl,
+        p.price
+    )
+    FROM Post p
+    JOIN p.photoCard pc
+    JOIN pc.member m
+    JOIN m.group g
+    JOIN pc.album a
+    WHERE g.groupId = :groupId
+    AND (:albumId IS NULL OR a.albumId = :albumId)
+    ORDER BY p.createAt DESC
+""")
+    Page<PostResponseDto> findPostsByGroupId(@Param("groupId") Long groupId,
+                                             @Param("albumId") Long albumId,
+                                             Pageable pageable);
+
+
 }
 

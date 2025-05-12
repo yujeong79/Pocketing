@@ -8,6 +8,8 @@ import com.a406.pocketing.common.apiPayload.code.ErrorReasonDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import com.google.api.Http;
+
 @Getter
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
@@ -61,6 +63,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
 	POST_EDIT_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4007", "본인의 판매글만 수정할 수 있습니다."),
 	POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4008", "본인의 판매글만 삭제할 수 있습니다."),
+	POST_FILTER_REQUIRED(HttpStatus.BAD_REQUEST, "POST4009", "멤버 ID 또는 그룹 ID 중 하나는 필수입니다."),
 
 
 
@@ -76,7 +79,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	EXCHANGE_DUPLICATE_REQUEST(HttpStatus.CONFLICT, "EXCHANGE4006", "이미 동일한 교환 요청이 존재합니다."),
 	EXCHANGE_CARD_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXCHANGE4007", "존재하지 않는 카드입니다."),
 	EXCHANGE_ALREADY_TRADING(HttpStatus.CONFLICT, "EXCHANGE4008", "이미 해당 사용자와 거래가 진행 중입니다."),
-	EXCHANGE_REQUEST_OR_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXCHANGE4009", "존재하지 않는 요청 ID 또는 사용자 ID입니다."),
+	EXCHANGE_REQUEST_USER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "EXCHANGE4009", "해당 요청에 대한 권한이 없습니다."),
 	EXCHANGE_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "EXCHANGE4010", "이미 처리된 요청입니다."),
 	EXCHANGE_REQUEST_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXCHANGE4011", "존재하지 않는 요청입니다."),
 	EXCHANGE_NOTIFICATION_FETCH_ERROR(HttpStatus.BAD_REQUEST, "EXCHANGE4012", "알림 조회에 실패했습니다."),
@@ -90,6 +93,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	// 알림 관련 에러
 	NOTIFICATION_TOKEN_BAD_REQUEST(HttpStatus.BAD_REQUEST, "NOTIFICATION4001", "유효하지 않은 FCM 토큰입니다."),
 	NOTIFICATION_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4002", "FCM 토큰이 존재하지 않습니다."),
+	NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION4003", "알림이 존재하지 않습니다."),
 	NOTIFICATION_TOKEN_REGISTER_SERVER_ERROR(HttpStatus.NOT_FOUND, "NOTIFICATION5001", "서버 오류로 FCM 토큰 등록 실패입니다."),
 
 	// 채팅 관련 에러
