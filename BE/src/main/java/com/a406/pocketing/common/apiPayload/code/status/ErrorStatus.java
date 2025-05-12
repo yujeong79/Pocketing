@@ -63,6 +63,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
 	POST_EDIT_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4007", "본인의 판매글만 수정할 수 있습니다."),
 	POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4008", "본인의 판매글만 삭제할 수 있습니다."),
+	POST_FILTER_REQUIRED(HttpStatus.BAD_REQUEST, "POST4009", "멤버 ID 또는 그룹 ID 중 하나는 필수입니다."),
 
 
 

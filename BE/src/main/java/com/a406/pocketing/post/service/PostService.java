@@ -10,8 +10,6 @@ import java.util.Map;
 public interface PostService {
     List<PostRegisterResponseDto> registerPost(Long userId, List<PostRegisterRequestDto> requestDtos);
 
-    Page<PostResponseDto> getPosts(Long memberId, Long albumId, Pageable pageable);
-
     SellerListResponseDto getSellersByCardId(Long cardId, Pageable pageable);
 
     PostDetailResponseDto getPostDetail(Long postId, Long currentUserId);
@@ -29,5 +27,10 @@ public interface PostService {
     List<PostListItemResponseDto> getMyAvailablePosts(Long userId);
 
     List<PostListItemResponseDto> getMyCompletedPosts(Long userId);
+
+    Page<PostResponseDto> getPostsByGroup(Long groupId, Long albumId, Pageable pageable);
+
+    Page<PostResponseDto> getPostsByMember(Long memberId, Long albumId, Pageable pageable);
+
 }
 
