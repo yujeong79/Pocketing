@@ -82,9 +82,9 @@ export const SelectHeader = styled.div`
   color: ${colors.primary};
 `;
 
-export const SelectContent = styled.div`
+export const SelectContent = styled.div<{ $selected?: string }>`
   ${FontStyles.bodyMedium}
-  color: ${colors.gray500};
+  color: ${({ $selected }) => ($selected ? colors.black : colors.gray500)};
 `;
 
 export const RightInfoContainer = styled.div`
@@ -99,7 +99,7 @@ export const SearchContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: ${scale(124)}px;
-  height: ${scale(28)}px;
+  height: ${scale(26)}px;
   border-radius: ${scale(10)}px;
   border: ${scale(1)}px solid ${colors.primary};
 `;
@@ -120,9 +120,10 @@ export const ResultContainer = styled.div`
   overflow-y: auto;
 `;
 
-export const ResultItem = styled.div`
+export const ResultItem = styled.div<{ $isSelected?: boolean }>`
   ${FontStyles.bodySmall}
-  color: ${colors.gray500};
+  color: ${({ $isSelected }) => ($isSelected ? colors.primary : colors.gray500)};
+  cursor: pointer;
 `;
 
 // step.3

@@ -8,4 +8,5 @@ export const QUERY_KEYS = {
   LIKED_MEMBERS: 'likedMembers',
   POST_LIST: 'postList',
   ALBUMS: 'albums',
+  MYCARD: 'mycard',
 } as const;

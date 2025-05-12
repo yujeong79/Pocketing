@@ -13,3 +13,20 @@ export interface Exchange {
     imageUrl: string;
   };
 }
+
+export interface ExchangeRequest {
+  isOwned: boolean;
+  groupId: number;
+  albumId: number;
+  memberId: number;
+  description: string | null;
+  exchangeImageUrl: string | null;
+}
+
+export interface ExchangeResponse {
+  exchangeCardId: number;
+  isOwned: boolean;
+  group: string | null;
+  album: string | null;
+  member: string | null;
+}
