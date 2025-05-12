@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
 
 import * as S from './MapStyle';
 import { colors } from '@/styles/theme';
@@ -26,8 +25,7 @@ const MapPage = () => {
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
   const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [range, setRange] = useState(100);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [modalStep, setModalStep] = useState(1);
+
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
   const [pocketCallCount, setPocketCallCount] = useState(0);
   const [showMaxToast, setShowMaxToast] = useState(false);
@@ -50,24 +48,11 @@ const MapPage = () => {
     }, 300);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-    }
-  };
-
-  const handleNextClick = () => {
-    setModalStep(modalStep + 1);
-  };
-
   const handleCloseModal = () => {
     setIsMyCardModalOpen(false);
     setIsOtherCardModalOpen(false);
     setIsRangeModalOpen(false);
     setIsExchangeListModalOpen(false);
-    setModalStep(1);
   };
 
   const handlePocketCall = () => {
@@ -234,17 +219,8 @@ const MapPage = () => {
         <S.RangeButton>반경 설정</S.RangeButton>
       </S.RangeButtonContainer>
 
-      <MyCardModal
-        isOpen={isMyCardModalOpen}
-        onClose={handleCloseModal}
-        modalStep={modalStep}
-        selectedImage={selectedImage}
-        onImageUpload={handleImageUpload}
-        onClick={handleNextClick}
-      />
-
+      <MyCardModal isOpen={isMyCardModalOpen} onClose={handleCloseModal} />
       <OthersCardModal isOpen={isOtherCardModalOpen} onClose={handleCloseModal} />
-
       <ExchangeListModal
         isOpen={isExchangeListModalOpen}
         onClose={handleCloseModal}
@@ -254,7 +230,6 @@ const MapPage = () => {
         pocketCallCount={pocketCallCount}
         spinning={spinning}
       />
-
       <SetRangeModal
         isOpen={isRangeModalOpen}
         onClose={handleCloseModal}

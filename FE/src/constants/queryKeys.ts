@@ -10,4 +10,5 @@ export const QUERY_KEYS = {
   POST_DETAIL: 'postDetail',
   SELLER_LIST: 'sellerList',
   ALBUMS: 'albums',
+  MYCARD: 'mycard',
 } as const;
