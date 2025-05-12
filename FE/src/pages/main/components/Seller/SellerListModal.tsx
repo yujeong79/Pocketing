@@ -14,7 +14,7 @@ const SellerListModal = ({ isOpen, onClose, cardId }: SellerListModalProps) => {
   const { data: sellerList } = useSellerList(cardId);
 
   return (
-    <SlideUpModal isOpen={isOpen} onClose={onClose} header="거래 상대 선택">
+    <SlideUpModal isOpen={isOpen} onClose={onClose} height="75vh" header="거래 상대 선택">
       <ModalContent>
         {sellerList?.content.content.map((seller: SellerListItemType) => (
           <SellerListItem
