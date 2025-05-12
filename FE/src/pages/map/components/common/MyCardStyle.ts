@@ -4,6 +4,16 @@ import { colors } from '@/styles/theme';
 import scale from '@/utils/scale';
 import { FontStyles } from '@/constants/fonts';
 
+export const MyCardContainerNon = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: ${colors.white};
+  border-radius: ${scale(10)}px;
+  box-shadow: 0px ${scale(4)}px ${scale(4)}px 0px rgba(0, 0, 0, 0.1);
+  width: ${scale(125)}px;
+  height: ${scale(65)}px;
+`;
+
 export const MyCardContainer = styled.div`
   display: flex;
   flex-direction: column;

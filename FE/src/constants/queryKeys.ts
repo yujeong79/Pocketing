@@ -11,4 +11,5 @@ export const QUERY_KEYS = {
   SELLER_LIST: 'sellerList',
   ALBUMS: 'albums',
   MYCARD: 'mycard',
+  OTHERSCARD: 'otherscard',
 } as const;
