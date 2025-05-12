@@ -37,7 +37,7 @@ pipeline {
                     docker rm backend-app || true
                     docker build -t backend-app .
                     docker run -d --name backend-app \
-                    --network app_network \
+                    --network docker_app_network \
                     -p 8081:8080 backend-app
                     '''
                 }
