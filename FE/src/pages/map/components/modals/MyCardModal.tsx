@@ -15,7 +15,7 @@ import { useAlbums } from '@/hooks/artist/query/useAlbums';
 import { Group } from '@/types/group';
 import { Member } from '@/types/member';
 import { Album } from '@/types/album';
-import { MyCardData } from '@/types/card';
+import { MyCardData } from '@/types/exchange';
 import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { ExchangeRequest } from '@/types/exchange';
 
@@ -74,7 +74,7 @@ const MyCardModal = ({ isOpen, onClose }: MyCardModalProps) => {
       console.log(response);
       handleModalClose();
     } catch (error) {
-      console.error('교환 카드 생성 중 오류 발생:', error);
+      throw error;
     }
   }, [selectedGroupId, selectedAlbumId, selectedMemberId, selectedImage]);
 
