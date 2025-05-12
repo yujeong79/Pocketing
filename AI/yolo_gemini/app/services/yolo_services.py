@@ -45,7 +45,7 @@ def detect_and_crop_person(image_path):
 
         # 크롭도 img_rgb에서 자르기 (색상보존)
         cropped_rgb = img_rgb[y1:y2, x1:x2]
-        save_path = f"app/static/crops/temp_{uuid.uuid4()}.jpg"
+        save_path = f"/app/static/crops/temp_{uuid.uuid4()}.jpg"
         Image.fromarray(cropped_rgb).save(save_path, format="JPEG")
 
         logging.info(f"[YOLO] 저장된 크롭 경로: {save_path}")
