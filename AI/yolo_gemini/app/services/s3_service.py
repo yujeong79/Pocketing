@@ -4,7 +4,7 @@ import os
 import uuid
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/app/.env")
+load_dotenv(dotenv_path="/.env")
 
 
 AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
