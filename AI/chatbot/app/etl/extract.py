@@ -54,7 +54,7 @@ class PhotocardExtractor:
             logger.error(f"포토카드 추출 중 오류 발생: {str(e)}")
             return []
 
-    def extract_photocards_by_group(self, group_name: str, batch_size: int = 100) -> List[Dict[str, Any]]:
+    def extract_photocards_by_group(self, group_name: str, batch_size: int = 20) -> List[Dict[str, Any]]:
         try:
             all_photocards = []
             page = 1
@@ -199,3 +199,18 @@ class PhotocardExtractor:
         except Exception as e:
             logger.error(f"임베딩 없는 포토카드 추출 중 오류 발생: {str(e)}")
             return []
+
+    def update_embedding_status(self, card_id: int, has_embedding: bool = True) -> bool:
+        try:
+            logger.info(f"포토카드 ID {card_id}의 임베딩 상태 업데이트: {has_embedding}")
+            response = requests.post(
+                f"{self.api_url}/api/photocards/{card_id}/embedding-status",
+                headers=self.headers,
+                timeout=10
+            )
+            response.raise_for_status()
+            logger.info(f"포토카드 ID {card_id}의 임베딩 상태 업데이트 성공")
+            return True
+        except Exception as e:
+            logger.error(f"임베딩 상태 업데이트 실패: {str(e)}")
+            return False
