@@ -13,8 +13,8 @@ export const fetchtLikedMembers = async (groupId: number): Promise<UserResponse>
   return response.data;
 };
 
-// 관심 그룹 및 멤버 추가
-export const createLikedMembers = async (likedGroupList: LikedGroupList): Promise<UserResponse> => {
+// 관심 그룹 및 멤버 수정
+export const updateLikedMembers = async (likedGroupList: LikedGroupList): Promise<UserResponse> => {
   const response = await axiosInstance.post('/user/like/info', likedGroupList);
   return response.data;
 };
