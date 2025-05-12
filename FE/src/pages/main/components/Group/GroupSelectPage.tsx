@@ -10,9 +10,9 @@ import { useGroupSearch } from '@/hooks/search/useGroupSearch';
 import { Group } from '@/types/group';
 
 interface GroupSelectPageProps {
-  onGroupSelect: (groupId: number | null) => void;
+  onGroupSelect: (groupId: number) => void;
   selectedAllGroup: number | null;
-  selectedGroupData: Group | null;
+  selectedGroupData?: Group | null;
 }
 
 const GroupSelectPage = ({ onGroupSelect, selectedAllGroup }: GroupSelectPageProps) => {
@@ -51,8 +51,6 @@ const GroupSelectPage = ({ onGroupSelect, selectedAllGroup }: GroupSelectPagePro
       });
     }
   };
-
-
 
   return (
     <S.PageContainer>
