@@ -10,8 +10,6 @@ import { useMembers } from '@/hooks/artist/query/useMembers';
 import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
 import { GroupResponse } from '@/types/group';
-import { useLikedMembers } from '@/hooks/user/query/useLike';
-import { UserResponse, UserLikedMember } from '@/types/user';
 import { Logo2d, CloseIcon } from '@/assets/assets';
 import { useDeleteLikedMembers, useUpdateLikedMembers } from '@/hooks/user/mutation/useLike';
 import { QUERY_KEYS } from '@/constants/queryKeys';
@@ -33,9 +31,6 @@ const MyMemberEditPage = () => {
     data: MemberResponse | undefined;
   };
   const { data: groupsData } = useGroups() as { data: GroupResponse | undefined };
-  const { data: likedMembersData } = useLikedMembers(Number(groupId)) as {
-    data: UserResponse | undefined;
-  };
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedMemberIds, setSelectedMemberIds] = useState<number[]>([]);
   const queryClient = useQueryClient();
@@ -55,16 +50,12 @@ const MyMemberEditPage = () => {
     console.log('멤버 데이터:', groupMembers);
     setMembers(groupMembers);
 
-    // 서버에서 관심 멤버 목록 가져와서 설정
-    if (likedMembersData?.result && Array.isArray(likedMembersData.result)) {
-      const likedMembers = likedMembersData.result.filter(
-        (member): member is UserLikedMember => 'memberId' in member
-      );
-      console.log('관심 멤버 데이터:', likedMembers);
-      const likedMemberIds = likedMembers.map((member) => member.memberId);
-      setSelectedMemberIds(likedMemberIds);
-    }
-  }, [groupId, membersData, groupsData, likedMembersData]);
+    // interest가 true인 멤버들의 ID를 selectedMemberIds에 설정
+    const likedMemberIds = groupMembers
+      .filter((member) => member.interest)
+      .map((member) => member.memberId);
+    setSelectedMemberIds(likedMemberIds);
+  }, [groupId, membersData, groupsData]);
 
   // 관심 멤버 삭제
   const handleDeleteLikedMember = useCallback(
@@ -82,7 +73,6 @@ const MyMemberEditPage = () => {
         setShowToast(true);
 
         // 캐시 무효화 - useMembers 쿼리가 자동으로 다시 실행됨
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_MEMBERS, Number(groupId)] });
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MEMBERS, Number(groupId)] });
       } catch (error) {
         console.error('관심 멤버 삭제 실패:', error);
