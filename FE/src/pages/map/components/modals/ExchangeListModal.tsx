@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import * as S from './ExchangeListModalStyle';
 import SlideUpModal from '@/components/common/SlideUpModal';
@@ -6,6 +6,8 @@ import PocketCallButton from '../buttons/PocketCallButton';
 import Toast from '../common/Toast';
 import { RefreshIcon2 } from '@/assets/assets';
 import { Exchange } from '@/types/exchange';
+import { postPocketCall } from '@/api/exchange/pocketCall';
+import { PocketCallRequest } from '@/types/exchange';
 
 interface ExchangeListModalProps {
   isOpen: boolean;
@@ -33,14 +35,28 @@ const ExchangeListModal = ({
     onRefresh();
   };
 
-  const handlePocketCall = () => {
-    if (pocketCallCount < 5) {
-      setPocketCallCount((prev) => prev + 1);
-      setShowSendToast(true);
-    } else {
-      setShowMaxToast(true);
+  const handlePostPocketCall = useCallback(async (userId: number, responderOwnedCardId: number) => {
+    try {
+      const pocketCallData: PocketCallRequest = {
+        responderId: userId,
+        requesterOwnedCardId: 1,
+        responderOwnedCardId: responderOwnedCardId,
+      };
+      const response = await postPocketCall(pocketCallData);
+      console.log(response);
+      if (pocketCallCount < 5) {
+        setPocketCallCount((prev) => prev + 1);
+        setShowSendToast(true);
+        setTimeout(() => {
+          setPocketCallCount((prev) => prev - 1);
+        }, 180000);
+      } else {
+        setShowMaxToast(true);
+      }
+    } catch (error) {
+      throw error;
     }
-  };
+  }, []);
 
   return (
     <SlideUpModal header="거래중인 포케터" isOpen={isOpen} onClose={onClose}>
@@ -73,7 +89,10 @@ const ExchangeListModal = ({
                   <S.ExchangeCardImage src={user.card.imageUrl} />
                   <S.ExchangeUserName>{user.nickname}</S.ExchangeUserName>
                 </S.ExchangeUserLeft>
-                <PocketCallButton onClick={handlePocketCall} disabled={pocketCallCount >= 5} />
+                <PocketCallButton
+                  onClick={() => handlePostPocketCall(user.userId, user.card.cardId)}
+                  disabled={pocketCallCount >= 5}
+                />
               </S.ExchangeUserList>
               {index !== filteredList.length - 1 && <S.Divider />}
             </React.Fragment>

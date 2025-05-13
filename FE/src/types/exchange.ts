@@ -45,3 +45,16 @@ export interface OthersCardData {
   cardMember?: string;
   cardAlbum?: string;
 }
+
+// 교환 요청
+export interface PocketCallRequest {
+  responderId: number;
+  requesterOwnedCardId: number;
+  responderOwnedCardId: number;
+}
+
+export interface PocketCallResponse {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+}
