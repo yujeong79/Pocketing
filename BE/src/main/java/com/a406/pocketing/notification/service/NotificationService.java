@@ -17,4 +17,6 @@ public interface NotificationService {
     void sendFcmToUser(Long userId, String title, String body);
 
     void createNotification(User requester, User responder, ExchangeRequest request, NotificationType type);
+
+    void sendChatMessageNotification(Long receiverId, String senderNickname, String messageContent, Long roomId);
 }
