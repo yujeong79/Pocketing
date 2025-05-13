@@ -86,14 +86,14 @@ export const SelectedMemberContainer = styled.div`
 
 export const SelectedIcon = styled.img`
   width: ${scale(24)}px;
-  height: ${scale(32)}px;
+  height: ${scale(24)}px;
 `;
 
 export const DeleteButton = styled.button`
   margin-left: auto;
   background: none;
   border: none;
-  padding: ${scale(8)}px;
+  padding: ${scale(4)}px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -106,7 +106,7 @@ export const DeleteButton = styled.button`
   }
 
   img {
-    width: ${scale(16)}px;
-    height: ${scale(16)}px;
+    width: ${scale(20)}px;
+    height: ${scale(20)}px;
   }
 `;

@@ -2,18 +2,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import * as S from './MyGroupEditStyle';
 import Button from '@/components/common/Button';
+import BackButton from '@/components/common/BackButton';
 import { SearchIcon } from '@/assets/assets';
-import { useGroupsAll } from '@/hooks/artist/query/useGroups';
+import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
-import BackButton from '@/pages/onboarding/components/BackButton';
 
 const MyGroupEditPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fromPath = location.state?.from || '/profile';
 
-  const { data: groupsData } = useGroupsAll();
+  const { data: groupsData } = useGroups();
   const [searchTerm, setSearchTerm] = useState('');
   const { filteredGroups } = useGroupSearch({
     groups: groupsData?.result,
@@ -28,7 +28,7 @@ const MyGroupEditPage = () => {
   return (
     <S.PageContainer>
       <S.ItemContainer>
-        <BackButton />
+        <BackButton fallbackPath="/profile" />
         <S.Title>관심 그룹을 선택해주세요</S.Title>
         <S.SearchContainer>
           <S.SearchInput

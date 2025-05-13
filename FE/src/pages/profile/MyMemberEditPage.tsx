@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as S from './MyMemberEditStyle';
 import Button from '@/components/common/Button';
 import Toast from '@/components/common/Toast';
+import BackButton from '@/components/common/BackButton';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
@@ -132,6 +133,10 @@ const MyMemberEditPage = () => {
   return (
     <S.PageContainer>
       <S.ItemContainer>
+        <BackButton
+          fallbackPath="/myGroupEdit"
+          onClick={() => navigate('/myGroupEdit', { state: { from: fromPath } })}
+        />
         <S.Title>관심 멤버를 선택해주세요</S.Title>
         <S.MemberListContainer>
           {members.map((member) => {
