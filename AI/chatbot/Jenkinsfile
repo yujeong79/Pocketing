@@ -20,7 +20,6 @@ pipeline {
                         echo "🚀 Running yolo_gemini FastAPI server"
                         sh """
                         docker run -d --name chatbot-app \
-                        --gpus all \
                         -v /home/ubuntu/project/chatbotAI/secret/.env:/app/.env \
                         -p 8000:8000 chatbot-app
                         """
