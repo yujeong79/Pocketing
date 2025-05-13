@@ -21,9 +21,9 @@ export interface UserLikedMember {
 
 export interface LikedGroupList {
   groupId: number;
-  likedMemberList: LikedMemberList[];
+  likedMemberList: number[];
 }
 
-export interface LikedMemberList {
-  memberId: number;
+export interface LikedGroupListRequest {
+  likedGroupList: LikedGroupList[];
 }
