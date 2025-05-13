@@ -1,29 +1,37 @@
-import { mockExchange } from '@/mocks/exchange';
 import * as S from './ExchangeItemStyle';
-import { ExchangeIcon } from '@/assets/assets';
+import { LinkedExchange } from '@/types/chat';
+import { useAuth } from '@/hooks/useAuth';
 
-const ExchangeItem = () => {
-  const { myCard, otherCard } = mockExchange.result;
+interface ExchangeItemProps {
+  linkedExchange: LinkedExchange;
+}
+
+const ExchangeItem = ({ linkedExchange }: ExchangeItemProps) => {
+  const { user } = useAuth();
+  const isRequester = user?.userId === linkedExchange.requester.userId;
+
+  const myCard = isRequester ? linkedExchange.requester : linkedExchange.responder;
+  const otherCard = isRequester ? linkedExchange.responder : linkedExchange.requester;
 
   return (
     <S.Container>
       <S.CardSection>
-        <S.CardImage src={otherCard.imageUrl} alt={otherCard.member} />
+        <S.CardImage src={myCard.exchangeImageUrl} alt="내 카드" />
         <S.TextSection>
-          <S.Member>{otherCard.member}</S.Member>
-          <S.Album>{otherCard.album}</S.Album>
+          <S.Member>{myCard.memberName}</S.Member>
+          <S.Album>{myCard.albumName}</S.Album>
         </S.TextSection>
       </S.CardSection>
 
       <S.ExchangeIcon>
-        <img src={ExchangeIcon} alt="exchange" />
+        <img src="/icons/exchange.svg" alt="교환" />
       </S.ExchangeIcon>
 
       <S.CardSection isMyCard>
-        <S.CardImage src={myCard.imageUrl} alt={myCard.member} />
+        <S.CardImage src={otherCard.exchangeImageUrl} alt="상대방 카드" />
         <S.TextSection isMyCard>
-          <S.Member>{myCard.member}</S.Member>
-          <S.Album>{myCard.album}</S.Album>
+          <S.Member>{otherCard.memberName}</S.Member>
+          <S.Album>{otherCard.albumName}</S.Album>
         </S.TextSection>
       </S.CardSection>
     </S.Container>

@@ -1,51 +1,59 @@
 import React, { RefObject } from 'react';
-import * as S from '@/pages/message/ChatRoomPageStyle';
-import ChatRoomItem from '@/pages/message/components/ChatRoom/ChatRoomItem';
-import { ChatRoom } from '@/types/chatRoom';
+import * as S from '../../ChatRoomPageStyle';
+import { ChatMessage } from '@/types/chat';
 
-interface ChatRoomListProps {
-  messages: ChatRoom[];
+interface MessageListProps {
+  messages: ChatMessage[];
   myUserId: number;
   opponentNickname: string;
-  opponentProfile: string;
   chatContainerRef: RefObject<HTMLDivElement>;
   endOfMessagesRef: RefObject<HTMLDivElement>;
+  onLoadMore: () => void;
+  hasMore: boolean;
 }
 
-/**
- * 메시지 목록 컴포넌트
- */
-const ChatRoomList: React.FC<ChatRoomListProps> = ({
+const MessageList: React.FC<MessageListProps> = ({
   messages,
   myUserId,
   opponentNickname,
-  opponentProfile,
   chatContainerRef,
   endOfMessagesRef,
+  onLoadMore,
+  hasMore,
 }) => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop } = e.currentTarget;
+    if (scrollTop === 0 && hasMore) {
+      onLoadMore();
+    }
+  };
+
   return (
-    <S.ChatContainer ref={chatContainerRef}>
-      {messages.map((message, idx) => {
+    <S.ChatContainer ref={chatContainerRef} onScroll={handleScroll}>
+      {hasMore && <button onClick={onLoadMore}>이전 메시지 더보기</button>}
+      {messages.map((message, index) => {
         const isUser = message.senderId === myUserId;
-        const prev = messages[idx - 1];
-        const continued = prev && prev.senderId === message.senderId;
+        const showProfile =
+          !isUser && (!messages[index - 1] || messages[index - 1].senderId !== message.senderId);
+        const continued = index > 0 && messages[index - 1].senderId === message.senderId;
 
         return (
-          <ChatRoomItem
-            key={message.messageId}
-            message={message}
-            isUser={isUser}
-            continued={continued}
-            opponentNickname={opponentNickname}
-            opponentProfile={opponentProfile}
-          />
+          <S.MessageWrapper key={message.messageId} isUser={isUser} continued={continued}>
+            {!isUser && showProfile && (
+              <>
+                <S.ProfileImage src="/default-profile.png" alt="프로필" />
+                <div>
+                  <S.NickNameText isUser={isUser}>{opponentNickname}</S.NickNameText>
+                </div>
+              </>
+            )}
+            <S.MessageText isUser={isUser}>{message.messageContent}</S.MessageText>
+          </S.MessageWrapper>
         );
       })}
-
-      {/* 스크롤 타겟 */}
-      <div ref={endOfMessagesRef} style={{ height: 1 }} />
+      <div ref={endOfMessagesRef} />
     </S.ChatContainer>
   );
 };
 
-export default ChatRoomList;
+export default MessageList;
