@@ -48,7 +48,15 @@ const MyMemberEditPage = () => {
 
     const groupMembers = membersData.result;
     console.log('멤버 데이터:', groupMembers);
-    setMembers(groupMembers);
+
+    // 관심 멤버가 앞으로 오도록 정렬
+    const sortedMembers = [...groupMembers].sort((a, b) => {
+      if (a.interest && !b.interest) return -1;
+      if (!a.interest && b.interest) return 1;
+      return 0;
+    });
+
+    setMembers(sortedMembers);
 
     // interest가 true인 멤버들의 ID를 selectedMemberIds에 설정
     const likedMemberIds = groupMembers

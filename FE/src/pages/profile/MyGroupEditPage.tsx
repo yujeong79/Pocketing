@@ -20,6 +20,13 @@ const MyGroupEditPage = () => {
     searchTerm,
   });
 
+  // 관심 그룹이 앞으로 오도록 정렬된 그룹 목록
+  const sortedGroups = filteredGroups?.sort((a, b) => {
+    if (a.interest && !b.interest) return -1;
+    if (!a.interest && b.interest) return 1;
+    return 0;
+  });
+
   // 완료 버튼 핸들러 - 단순히 메인 페이지로 이동
   const handleComplete = useCallback(() => {
     navigate(fromPath);
@@ -39,7 +46,7 @@ const MyGroupEditPage = () => {
           <S.SearchIcon src={SearchIcon} />
         </S.SearchContainer>
         <S.GroupListContainer>
-          {filteredGroups?.map((group: Group) => {
+          {sortedGroups?.map((group: Group) => {
             const hasLikedMembers = group.interest;
             return (
               <S.GroupInfo

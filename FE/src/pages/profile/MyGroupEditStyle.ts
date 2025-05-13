@@ -89,7 +89,8 @@ export const GroupImage = styled.img<{ $isSelected?: boolean }>`
   height: ${scale(72)}px;
   border-radius: 50%;
   background-color: none;
-  border: ${scale(2)}px solid ${({ $isSelected }) => ($isSelected ? colors.primary : colors.white)};
+  border: ${scale(1.5)}px solid
+    ${({ $isSelected }) => ($isSelected ? colors.primary200 : colors.white)};
   box-shadow: ${scale(2)}px ${scale(2)}px ${scale(2)}px rgba(0, 0, 0, 0.3);
   transition: border-color 0.2s ease-in-out;
 `;
