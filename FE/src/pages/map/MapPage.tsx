@@ -114,9 +114,9 @@ const MapPage = () => {
           setCurrentLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
-          throw error;
           // 기본 위치 설정 (멀티캠퍼스)
           setCurrentLocation({ lat: 37.501286, lng: 127.0396029 });
+          throw error;
         }
       );
     }
