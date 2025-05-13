@@ -51,8 +51,12 @@ const MyGroupEditPage = () => {
                   })
                 }
               >
-                <S.GroupImage src={group.groupImageUrl} $isSelected={hasLikedMembers} />
-                <S.GroupName>{group.groupNameKo}</S.GroupName>
+                <S.GroupImage
+                  src={group.groupImageUrl}
+                  $isSelected={hasLikedMembers}
+                  alt={group.groupNameKo}
+                />
+                <S.GroupName $isSelected={hasLikedMembers}>{group.groupNameKo}</S.GroupName>
               </S.GroupInfo>
             );
           })}

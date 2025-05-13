@@ -4,12 +4,13 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import * as S from './MyMemberEditStyle';
 import Button from '@/components/common/Button';
-import { useMembersAll } from '@/hooks/artist/query/useMembers';
-import { useGroupsAll } from '@/hooks/artist/query/useGroups';
+import Toast from '@/components/common/Toast';
+import { useMembers } from '@/hooks/artist/query/useMembers';
+import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
 import { GroupResponse } from '@/types/group';
 import { useLikedMembers } from '@/hooks/user/query/useLike';
-import { UserResponse } from '@/types/user';
+import { UserResponse, UserLikedMember } from '@/types/user';
 import { Logo2d, CloseIcon } from '@/assets/assets';
 import { useDeleteLikedMembers, useUpdateLikedMembers } from '@/hooks/user/mutation/useLike';
 import { QUERY_KEYS } from '@/constants/queryKeys';
@@ -23,11 +24,14 @@ const MyMemberEditPage = () => {
   const location = useLocation();
   const fromPath = location.state?.from || '/profile';
   const { groupId } = useParams();
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'warning'>('success');
 
-  const { data: membersData } = useMembersAll(Number(groupId)) as {
+  const { data: membersData } = useMembers(Number(groupId)) as {
     data: MemberResponse | undefined;
   };
-  const { data: groupsData } = useGroupsAll() as { data: GroupResponse | undefined };
+  const { data: groupsData } = useGroups() as { data: GroupResponse | undefined };
   const { data: likedMembersData } = useLikedMembers(Number(groupId)) as {
     data: UserResponse | undefined;
   };
@@ -47,15 +51,47 @@ const MyMemberEditPage = () => {
     if (!group) return;
 
     const groupMembers = membersData.result;
+    console.log('멤버 데이터:', groupMembers);
     setMembers(groupMembers);
 
     // 서버에서 관심 멤버 목록 가져와서 설정
     if (likedMembersData?.result && Array.isArray(likedMembersData.result)) {
-      const likedMembers = likedMembersData.result;
+      const likedMembers = likedMembersData.result.filter(
+        (member): member is UserLikedMember => 'memberId' in member
+      );
+      console.log('관심 멤버 데이터:', likedMembers);
       const likedMemberIds = likedMembers.map((member) => member.memberId);
       setSelectedMemberIds(likedMemberIds);
     }
   }, [groupId, membersData, groupsData, likedMembersData]);
+
+  // 관심 멤버 삭제
+  const handleDeleteLikedMember = useCallback(
+    async (memberId: number, e: React.MouseEvent) => {
+      e.stopPropagation(); // 이벤트 버블링 방지
+      const member = members.find((m) => m.memberId === memberId);
+      if (!member?.interest) return; // 관심 멤버가 아니면 삭제 불가
+
+      try {
+        await deleteLikedMembersMutation.mutateAsync(memberId);
+
+        // 토스트 메시지 표시
+        setToastMessage('관심 멤버가 삭제되었습니다.');
+        setToastType('success');
+        setShowToast(true);
+
+        // 캐시 무효화 - useMembers 쿼리가 자동으로 다시 실행됨
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_MEMBERS, Number(groupId)] });
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MEMBERS, Number(groupId)] });
+      } catch (error) {
+        console.error('관심 멤버 삭제 실패:', error);
+        setToastMessage('관심 멤버 삭제에 실패했습니다.');
+        setToastType('warning');
+        setShowToast(true);
+      }
+    },
+    [deleteLikedMembersMutation, groupId, queryClient, members]
+  );
 
   // 멤버 클릭 처리 - 관심 멤버가 아닌 경우에만 선택 가능
   const handleMemberClick = useCallback(
@@ -68,21 +104,6 @@ const MyMemberEditPage = () => {
       );
     },
     [members]
-  );
-
-  // 관심 멤버 삭제
-  const handleDeleteLikedMember = useCallback(
-    async (memberId: number, e: React.MouseEvent) => {
-      e.stopPropagation();
-      try {
-        await deleteLikedMembersMutation.mutateAsync(memberId);
-        setSelectedMemberIds((prev) => prev.filter((id) => id !== memberId));
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_MEMBERS, Number(groupId)] });
-      } catch (error) {
-        console.error('관심 멤버 삭제 실패:', error);
-      }
-    },
-    [deleteLikedMembersMutation, groupId, queryClient]
   );
 
   // 완료 버튼 처리
@@ -113,34 +134,40 @@ const MyMemberEditPage = () => {
       <S.ItemContainer>
         <S.Title>관심 멤버를 선택해주세요</S.Title>
         <S.MemberListContainer>
-          {members.map((member) => (
-            <S.MemberItem
-              key={member.memberId}
-              onClick={() => handleMemberClick(member.memberId)}
-              data-selected={selectedMemberIds.includes(member.memberId)}
-            >
-              <S.MemberContentWrapper>
-                <S.MemberItemText $isSelected={selectedMemberIds.includes(member.memberId)}>
-                  {member.name}
-                </S.MemberItemText>
-                {selectedMemberIds.includes(member.memberId) && (
-                  <S.MemberItemIcon src={Logo2d} alt={`${member.name} 아이콘`} />
+          {members.map((member) => {
+            console.log(`멤버 ${member.name}의 interest 상태:`, member.interest);
+            return (
+              <S.MemberItem
+                key={member.memberId}
+                onClick={() => handleMemberClick(member.memberId)}
+                data-selected={selectedMemberIds.includes(member.memberId)}
+              >
+                <S.MemberContentWrapper>
+                  <S.MemberItemText $isSelected={selectedMemberIds.includes(member.memberId)}>
+                    {member.name}
+                  </S.MemberItemText>
+                  {selectedMemberIds.includes(member.memberId) && (
+                    <S.MemberItemIcon src={Logo2d} alt={`${member.name} 아이콘`} />
+                  )}
+                </S.MemberContentWrapper>
+                {member.interest && (
+                  <S.DeleteButton
+                    onClick={(e) => handleDeleteLikedMember(member.memberId, e)}
+                    type="button"
+                    aria-label="멤버 삭제"
+                  >
+                    <img src={CloseIcon} alt="삭제" />
+                  </S.DeleteButton>
                 )}
-              </S.MemberContentWrapper>
-              {member.interest && (
-                <S.DeleteButton
-                  onClick={(e) => handleDeleteLikedMember(member.memberId, e)}
-                  type="button"
-                  aria-label="멤버 삭제"
-                >
-                  <img src={CloseIcon} alt="삭제" />
-                </S.DeleteButton>
-              )}
-            </S.MemberItem>
-          ))}
+              </S.MemberItem>
+            );
+          })}
         </S.MemberListContainer>
       </S.ItemContainer>
       <Button text="완료" onClick={handleComplete} />
+      {showToast && (
+        <Toast type={toastType} message={toastMessage} onClose={() => setShowToast(false)} />
+      )}
     </S.PageContainer>
   );
 };

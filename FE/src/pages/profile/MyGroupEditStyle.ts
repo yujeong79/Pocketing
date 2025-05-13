@@ -94,8 +94,8 @@ export const GroupImage = styled.img<{ $isSelected?: boolean }>`
   transition: border-color 0.2s ease-in-out;
 `;
 
-export const GroupName = styled.div`
+export const GroupName = styled.div<{ $isSelected?: boolean }>`
   ${FontStyles.captionMedium};
-  color: ${colors.gray800};
+  color: ${({ $isSelected }) => ($isSelected ? colors.primary : colors.gray800)};
   text-align: center;
 `;
