@@ -2,12 +2,30 @@ pipeline {
     agent any
 
     stages {
-        stage('Build & Deploy ChatbotAI') {
+        stage('Docker Build & Deploy') {
             steps {
-                // ── 레포 루트(=$WORKSPACE)에서 docker compose 실행 ──
-                sh '''
-                  docker compose up -d --build --no-deps chatbotAI
-                '''
+                dir('AI/chatbot') {
+                    script {
+                        echo "🚀 Stopping existing chatbot server (if any)"
+                        sh """
+                        docker stop chatbot-app || true
+                        docker rm chatbot-app || true
+                        """
+
+                        echo "🚀 Building Docker Image for yolo_gemini"
+                        sh """
+                        docker build --no-cache -t chatbot-app .
+                        """
+
+                        echo "🚀 Running yolo_gemini FastAPI server"
+                        sh """
+                        docker run -d --name chatbot-app \
+                        --gpus all \
+                        -v /home/ubuntu/project/chatbotAI/secret/.env:/app/.env \
+                        -p 8000:8000 chatbot-app
+                        """
+                    }
+                }
             }
         }
     }
