@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import { requestFcmToken } from '@/fcm';
 
 const TwitterCallbackPage = () => {
   const navigate = useNavigate();
@@ -22,8 +23,17 @@ const TwitterCallbackPage = () => {
       });
       navigate('/signup/nickname');
     } else {
-      if (accessToken) localStorage.setItem('accessToken', accessToken);
-      navigate('/');
+      if (!accessToken) {
+        navigate('/sigin', {replace: true});
+        return;
+      }
+
+      localStorage.setItem('accessToken', accessToken);
+
+      // FCM 토큰 등록 -> 완료 후 메인으로 이동
+      requestFcmToken().finally(() => {
+        navigate('/main', {replace: true});
+      });
     }
   }, [location, navigate, queryClient]);
 

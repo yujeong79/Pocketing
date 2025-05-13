@@ -32,16 +32,16 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const status = error?.response?.status;
     const errorMessage = error?.response?.data;
+    const originalRequest = error.config;
 
     logError(status, errorMessage || '');
 
-    if (status === 401) {
+    if (status === 401 && !originalRequest?.url?.includes('/api/notification/fcm-token')) {
       try {
         const accessToken = await getAccessToken();
         if (accessToken) {
           localStorage.setItem('accessToken', accessToken);
           // 실패한 요청 재시도
-          const originalRequest = error.config;
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return axiosInstance(originalRequest);
         }

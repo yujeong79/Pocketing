@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import { requestFcmToken } from '@/fcm';
 
 const KakaoCallbackPage = () => {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ const KakaoCallbackPage = () => {
       }
 
       localStorage.setItem('accessToken', accessToken);
+
+      // 로그인 성공 시 fcm 토큰 등록
+      requestFcmToken();
       navigate('/main', { replace: true });
     } else {
       const oauthProvider = searchParams.get('oauthProvider');
