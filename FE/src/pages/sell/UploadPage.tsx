@@ -7,8 +7,12 @@ import { uploadImageForCrop } from '@/api/postRegistration/uploadImageForCrop'
 import { analyzeWithGemini } from '@/api/postRegistration/analyzeWithGemini'
 import { CroppedImage } from '@/types/yolo'
 import { GeminiResultItem } from '@/types/gemini'
+import { useLocation } from 'react-router-dom'
 
 const UploadPage = () => {
+  const location = useLocation()
+  const capturedFile = location.state?.capturedFile as File | undefined
+
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -35,6 +39,14 @@ const UploadPage = () => {
       openedRef.current = true
     }
   }, [])
+
+  useEffect(() => {
+    if (capturedFile) {
+      setFile(capturedFile)
+      setPreviewImageUrl(URL.createObjectURL(capturedFile))
+    }
+  }, [capturedFile])
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0]
