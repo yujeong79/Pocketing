@@ -23,6 +23,7 @@ import PostPage from '@/pages/sell/PostPage';
 import SellPage from '@/pages/sell/SellPage';
 import GuidePage from '@/pages/sell/GuidePage';
 import UploadPage from '@/pages/sell/UploadPage';
+import CameraPage from '@/pages/sell/CameraPage';
 //message
 import MessagePage from '@/pages/message/MessagePage';
 import ChatRoomPage from '@/pages/message/ChatRoomPage';
@@ -139,6 +140,10 @@ const router = createBrowserRouter(
     {
       path: 'upload',
       element: <UploadPage />,
+    },
+    {
+      path: 'camera',
+      element: <CameraPage />,
     },
     {
       path: 'profileDetail',

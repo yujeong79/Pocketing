@@ -35,7 +35,7 @@ const GuidePage = () => {
           <img src={AlbumIcon} alt="앨범 아이콘" />
           앨범 열기
         </S.ActionButton>
-        <S.ActionButton variant="camera">
+        <S.ActionButton variant="camera" onClick={() => navigate('/camera')}>
           <img src={CameraIcon2} alt="카메라 아이콘" />
           촬영 하기
         </S.ActionButton>
