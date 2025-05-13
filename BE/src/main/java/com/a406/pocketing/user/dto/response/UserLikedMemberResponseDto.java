@@ -12,7 +12,7 @@ public class UserLikedMemberResponseDto {
 
     public static UserLikedMemberResponseDto of(UserLikedMember userLikedMember) {
         return UserLikedMemberResponseDto.builder()
-                .memberId(userLikedMember.getLikedMemberId())
+                .memberId(userLikedMember.getMember().getMemberId())
                 .name(userLikedMember.getMember().getName())
                 .build();
     }

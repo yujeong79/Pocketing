@@ -1,6 +1,5 @@
 package com.a406.pocketing.common.apiPayload.code.status;
 
-import com.google.api.Http;
 import org.springframework.http.HttpStatus;
 
 import com.a406.pocketing.common.apiPayload.code.BaseErrorCode;
@@ -8,6 +7,8 @@ import com.a406.pocketing.common.apiPayload.code.ErrorReasonDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import com.google.api.Http;
 
 @Getter
 @AllArgsConstructor
@@ -62,6 +63,7 @@ public enum ErrorStatus implements BaseErrorCode {
 	POST_DETAIL_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "POST5003", "판매글 상세 조회 중 서버 오류가 발생했습니다."),
 	POST_EDIT_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4007", "본인의 판매글만 수정할 수 있습니다."),
 	POST_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "POST4008", "본인의 판매글만 삭제할 수 있습니다."),
+	POST_FILTER_REQUIRED(HttpStatus.BAD_REQUEST, "POST4009", "멤버 ID 또는 그룹 ID 중 하나는 필수입니다."),
 
 
 
@@ -98,6 +100,12 @@ public enum ErrorStatus implements BaseErrorCode {
 	CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4001", "존재하지 않는 채팅방입니다."),
 	CHAT_ROOM_UNAUTHORIZED_USER(HttpStatus.BAD_REQUEST, "CHAT4002", "이 채팅방의 참여자가 아닌 사용자입니다."),
 	CHAT_ROOM_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT4003", "채팅방과 관련된 거래글이 존재하지 않습니다."),
+
+	// 챗봇 관련 에러
+	CHATBOT_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"CHATBOT4001", "챗봇 처리 중 오류가 발생했습니다."),
+	VECTOR_SEARCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"CHATBOT4002",  "벡터 검색 중 오류가 발생했습니다."),
+	EMBEDDING_CREATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"CHATBOT4003",  "임베딩 생성 중 오류가 발생했습니다."),
+	SEARCH_QUERY_INVALID(HttpStatus.BAD_REQUEST,"CHATBOT4004",  "검색 쿼리가 유효하지 않습니다."),
 
 	// 샘플 에러
 	SAMPLE_ERROR(HttpStatus.BAD_REQUEST, "SAMPLE4001", "샘플 에러 입니다. 이런식으로 작성하면 됩니다.");

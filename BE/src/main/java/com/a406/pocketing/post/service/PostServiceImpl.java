@@ -18,8 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,8 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final PhotoCardService photoCardService;
     private final ChatRoomRepository chatRoomRepository;
+    private static final DateTimeFormatter ISO_FORMATTER =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Override
     @Transactional
@@ -80,12 +85,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<PostResponseDto> getPosts(Long memberId, Long albumId, Pageable pageable) {
-        if (memberId == null) {
-            throw new GeneralException(ErrorStatus.MEMBER_ID_REQUIRED);
-        }
+    public Page<PostResponseDto> getPostsByGroup(Long groupId, Long albumId, Pageable pageable) {
+        return postRepository.findPostsByGroupId(groupId, albumId, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> getPostsByMember(Long memberId, Long albumId, Pageable pageable) {
         return postRepository.findFilteredPosts(memberId, albumId, pageable);
     }
+
+
 
     @Override
     @Transactional(readOnly = true)
@@ -179,6 +189,42 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public CheapestPostDto getCheapestPostByCardId(Long cardId) {
+        if (cardId == null) {
+            throw new GeneralException(ErrorStatus.CARD_ID_REQUIRED);
+        }
+        PhotoCard photoCard = photoCardRepository.findById(cardId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus.PHOTOCARD_NOT_FOUND));
+        Optional<Post> cheapestPostOpt = postRepository.findCheapestByCardId(cardId);
+        if (cheapestPostOpt.isPresent()) {
+            return convertPostToDto(cheapestPostOpt.get());
+        }
+        return createEmptyPostDto(photoCard);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<Long, CheapestPostDto> getCheapestPostsByCardIds(List<Long> cardIds) {
+        if (cardIds == null || cardIds.isEmpty()) {
+            return Map.of();
+        }
+        List<Post> cheapestPosts = postRepository.findCheapestByCardIds(cardIds);
+        Map<Long, CheapestPostDto> result = cheapestPosts.stream()
+            .collect(Collectors.toMap(
+                post -> post.getPhotoCard().getCardId(),
+                this::convertPostToDto
+            ));
+        for (Long cardId : cardIds) {
+            if (!result.containsKey(cardId)) {
+                photoCardRepository.findById(cardId).ifPresent(photoCard -> {
+                    result.put(cardId, createEmptyPostDto(photoCard));
+                });
+            }
+        }
+        return result;
+    }
+    @Override
     public List<PostListItemResponseDto> getMyAvailablePosts(Long userId) {
         List<Post> postList = postRepository.findPostsByUserIdAndStatusWithAll(userId, "AVAILABLE");
         return postList.stream()
@@ -194,5 +240,26 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
+    private CheapestPostDto convertPostToDto(Post post) {
+        return CheapestPostDto.builder()
+            .card_id(post.getPhotoCard().getCardId())
+            .post_id(post.getPostId())
+            .price(post.getPrice())
+            .post_image_url(post.getPostImageUrl())
+            .nickname(post.getSeller().getNickname())
+            .last_updated(post.getCreateAt().format(ISO_FORMATTER))
+            .build();
+    }
+
+    private CheapestPostDto createEmptyPostDto(PhotoCard photoCard) {
+        return CheapestPostDto.builder()
+            .card_id(photoCard.getCardId())
+            .post_id(null)
+            .price(null)
+            .post_image_url(photoCard.getCardImageUrl())
+            .nickname("판매자 없음")
+            .last_updated(LocalDateTime.now().format(ISO_FORMATTER))
+            .build();
+    }
 }
 
