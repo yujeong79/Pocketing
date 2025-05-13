@@ -6,7 +6,11 @@ import com.a406.pocketing.chat.dto.request.ChatRoomRequestDto;
 import com.a406.pocketing.chat.dto.response.*;
 import com.a406.pocketing.chat.service.ChatService;
 import com.a406.pocketing.common.apiPayload.ApiResponse;
+import com.a406.pocketing.common.apiPayload.exception.GeneralException;
 import com.a406.pocketing.common.apiPayload.exception.handler.BadRequestHandler;
+import com.a406.pocketing.notification.service.NotificationService;
+import com.a406.pocketing.user.entity.User;
+import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +37,8 @@ public class ChatController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
+    private final NotificationService notificationService;
+    private final UserRepository userRepository;
 
     /**
      * 채팅방 생성 혹은 조회
@@ -64,6 +70,18 @@ public class ChatController {
                 chatMessageResponseDto.getReceiverId().toString(),
                 "/queue/messages",
                 chatMessageResponseDto
+        );
+
+        // FCM 알림 전송
+        User sender = userRepository.findByUserId(chatMessageResponseDto.getSenderId())
+                        .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+        String senderNickname = sender.getNickname();
+
+        notificationService.sendChatMessageNotification(
+                chatMessageResponseDto.getReceiverId(),
+                senderNickname,
+                chatMessageResponseDto.getMessageContent(),
+                chatMessageRequestDto.getRoomId()
         );
     }
 

@@ -26,7 +26,7 @@ public class FcmToken {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, unique = true, length = 255)
     private String token;
 
     @Column(nullable = false)
@@ -48,7 +48,16 @@ public class FcmToken {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void deactivate() {
-        this.isActive = false;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void updateTimestamp() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }
