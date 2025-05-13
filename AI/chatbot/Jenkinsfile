@@ -6,7 +6,7 @@ pipeline {
             steps {
                 // ── 레포 루트(=$WORKSPACE)에서 docker compose 실행 ──
                 sh '''
-                  docker-compose up -d --build --no-deps chatbotAI
+                  docker compose up -d --build --no-deps chatbotAI
                 '''
             }
         }
