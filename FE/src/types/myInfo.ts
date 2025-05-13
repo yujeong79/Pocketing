@@ -1,7 +1,7 @@
 export interface MyInfo {
   name: string;
   nickname: string;
-  profileImageUrl: string | null;
+  profileImageUrl: string;
   isVerified: boolean;
   address: string;
   bank: string;
