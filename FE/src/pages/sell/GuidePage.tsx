@@ -31,7 +31,7 @@ const GuidePage = () => {
         </span>
       </S.DetailGuideText>
       <S.ButtonContainer>
-        <S.ActionButton variant="album">
+        <S.ActionButton variant="album" onClick={() => navigate('/upload')}>
           <img src={AlbumIcon} alt="앨범 아이콘" />
           앨범 열기
         </S.ActionButton>
@@ -40,7 +40,6 @@ const GuidePage = () => {
           촬영 하기
         </S.ActionButton>
       </S.ButtonContainer>
-      <button onClick={() => navigate('/post')}>임시 버튼</button>
     </S.GuideBackground>
   );
 };
