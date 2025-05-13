@@ -46,6 +46,7 @@ import RefreshIcon2 from '@/assets/icons/refresh-2.svg';
 import PocketCallIcon from '@/assets/icons/send-call.svg';
 import WhiteCheckIcon from '@/assets/icons/check-white.svg';
 import WhiteWarningIcon from '@/assets/icons/warn-white.svg';
+import FullHeartIcon from '@/assets/icons/heart-full.svg';
 
 // sell
 import WalletIcon from '@/assets/icons/wallet.svg';
@@ -131,6 +132,7 @@ export {
   PocketCallIcon,
   WhiteCheckIcon,
   WhiteWarningIcon,
+  FullHeartIcon,
   //sell
   WalletIcon,
   PencilIcon,

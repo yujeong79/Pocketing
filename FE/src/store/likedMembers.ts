@@ -6,6 +6,7 @@ interface LikedMembersState {
   updateGroupMembers: (groupId: number, memberIds: number[]) => void;
   getSelectedMembers: (groupId: number) => number[];
   hasSelectedMembers: (groupId: number) => boolean;
+  removeGroup: (groupId: number) => void;
 }
 
 export const useLikedMembersStore = create<LikedMembersState>((set, get) => ({
@@ -49,5 +50,13 @@ export const useLikedMembersStore = create<LikedMembersState>((set, get) => ({
     const state = get();
     const group = state.likedInfo.likedGroupList.find((g) => g.groupId === groupId);
     return (group?.likedMemberList.length || 0) > 0;
+  },
+
+  removeGroup: (groupId: number) => {
+    set((state) => ({
+      likedInfo: {
+        likedGroupList: state.likedInfo.likedGroupList.filter((group) => group.groupId !== groupId),
+      },
+    }));
   },
 }));
