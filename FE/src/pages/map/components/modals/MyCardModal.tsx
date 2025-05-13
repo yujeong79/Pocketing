@@ -22,9 +22,10 @@ import { ExchangeRequest } from '@/types/exchange';
 interface MyCardModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRefresh: () => void;
 }
 
-const MyCardModal = ({ isOpen, onClose }: MyCardModalProps) => {
+const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const queryClient = useQueryClient();
   const [modalStep, setModalStep] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -50,8 +51,12 @@ const MyCardModal = ({ isOpen, onClose }: MyCardModalProps) => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSelectedImage(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -73,10 +78,11 @@ const MyCardModal = ({ isOpen, onClose }: MyCardModalProps) => {
       const response = await createExchangeCard(ExchangeCardData);
       console.log(response);
       handleModalClose();
+      onRefresh();
     } catch (error) {
       throw error;
     }
-  }, [selectedGroupId, selectedAlbumId, selectedMemberId, selectedImage]);
+  }, [selectedGroupId, selectedAlbumId, selectedMemberId, selectedImage, onRefresh]);
 
   const handleNextClick = () => {
     setModalStep(modalStep + 1);

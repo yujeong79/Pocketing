@@ -21,9 +21,10 @@ import { OthersCardData } from '@/types/exchange';
 interface OthersCardModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRefresh: () => void;
 }
 
-const OthersCardModal = ({ isOpen, onClose }: OthersCardModalProps) => {
+const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) => {
   const queryClient = useQueryClient();
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
@@ -98,10 +99,11 @@ const OthersCardModal = ({ isOpen, onClose }: OthersCardModalProps) => {
       console.log(response);
       handleSaveCardInfo();
       handleModalClose();
+      onRefresh();
     } catch (error) {
       throw error;
     }
-  }, [selectedGroupId, selectedAlbumId, selectedMemberId]);
+  }, [selectedGroupId, selectedAlbumId, selectedMemberId, onRefresh]);
 
   const handleSaveCardInfo = () => {
     const prev = queryClient.getQueryData<OthersCardData>([QUERY_KEYS.OTHERSCARD]) || {};
