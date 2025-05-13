@@ -1,20 +1,71 @@
 import Header from '@/components/common/Header';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as S from './DetailPageStyle';
 import InfoChip from './components/Chip/InfoChip';
 import SellerItem from './components/Seller/SellerItem';
 import Button from '@/components/common/Button';
 import { usePostDetail } from '@/hooks/post/query/usePost';
+import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
+import { useAuth } from '@/hooks/useAuth';
 
 const DetailPage = () => {
   const { postId } = useParams<{ postId: string }>();
-  const { data: postDetail } = usePostDetail(Number(postId));
+  const { data: postDetail, isLoading, isError, error } = usePostDetail(Number(postId));
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  if (!postDetail) {
+  console.log('DetailPage 렌더링:', {
+    postId,
+    postDetail,
+    isLoading,
+    isError,
+    error,
+    user,
+  });
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (isError) {
+    console.error('상세 정보 로드 실패:', error);
+    return <div>상세 정보를 불러오는데 실패했습니다.</div>;
+  }
+
+  if (!postDetail || !user) {
+    console.log('데이터 없음:', { postDetail, user });
     return null;
   }
 
   const { card, seller } = postDetail;
+
+  const handleChatButtonClick = async () => {
+    try {
+      const createResponse = await createOrGetChatRoom(
+        user.userId,
+        seller.sellerId,
+        Number(postId)
+      );
+
+      if (createResponse.isSuccess) {
+        const roomId = createResponse.result.roomId;
+        // 채팅방 입장 API 호출
+        const enterResponse = await enterChatRoom(roomId);
+
+        if (enterResponse.isSuccess) {
+          navigate(`/message/${roomId}`, {
+            state: {
+              nickname: seller.nickname,
+              chatType: 'TRADE',
+              chatRoomDetail: enterResponse.result,
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.error('채팅방 생성 또는 입장 실패:', error);
+    }
+  };
 
   return (
     <div>
@@ -43,7 +94,12 @@ const DetailPage = () => {
           </S.SellerSection>
         </S.ContentSection>
         <S.ButtonWrapper>
-          <Button text="채팅하기" height={40} fontStyle="headingSmall" />
+          <Button
+            text="채팅하기"
+            height={40}
+            fontStyle="headingSmall"
+            onClick={handleChatButtonClick}
+          />
         </S.ButtonWrapper>
       </S.DetailPageContainer>
     </div>

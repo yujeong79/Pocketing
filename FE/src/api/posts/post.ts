@@ -3,6 +3,12 @@ import axiosInstance from '../auth/axiosInstance';
 
 // 판매글 상세 조회
 export const fetchPostDetail = async (postId: number): Promise<PostDetail> => {
-  const { data } = await axiosInstance.get<PostDetailResponse>(`/posts/${postId}`);
-  return data.result;
+  console.log('fetchPostDetail 호출:', postId);
+  const response = await axiosInstance.get<PostDetailResponse>(`/posts/${postId}`);
+  console.log('API 응답:', response.data);
+
+  if (!response.data.isSuccess) {
+    throw new Error(response.data.message);
+  }
+  return response.data.result;
 };
