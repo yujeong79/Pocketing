@@ -68,7 +68,7 @@ class RAGService:
             logger.error(f"포토카드 검색 중 오류 발생: {str(e)}")
             return [], []
 
-    def format_photocard_for_llm(self,
+    def rag_photocard_for_llm(self,
                                  metadata_list: List[Dict[str, Any]],
                                  post_results: List[PhotoCardResult]) -> str:
         try:
