@@ -32,6 +32,7 @@ public class PostDetailResponseDto {
     @Data
     @AllArgsConstructor
     public static class SellerInfo {
+        private Long sellerId;
         private String nickname;
         private Boolean isVerified;
         private String profileImageUrl;
@@ -39,7 +40,7 @@ public class PostDetailResponseDto {
 
     public PostDetailResponseDto(Long postId, String postImageUrl, Integer price, LocalDateTime createdAt, String status,
                                  Long cardId, String cardImageUrl, String memberName, String groupNameKo, String groupNameEn,
-                                 String groupImageUrl, String albumTitle, String nickname, Boolean isVerified,
+                                 String groupImageUrl, String albumTitle, Long sellerId, String nickname, Boolean isVerified,
                                  String profileImageUrl, boolean isMine) {
         this.postId = postId;
         this.postImageUrl = postImageUrl;
@@ -48,6 +49,6 @@ public class PostDetailResponseDto {
         this.status = status;
         this.isMine = isMine;
         this.card = new CardInfo(cardId, cardImageUrl, memberName, groupNameKo, groupNameEn, groupImageUrl, albumTitle);
-        this.seller = new SellerInfo(nickname, isVerified, profileImageUrl);
+        this.seller = new SellerInfo(sellerId, nickname, isVerified, profileImageUrl);
     }
 }
