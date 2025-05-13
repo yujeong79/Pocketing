@@ -49,11 +49,22 @@ export const ExchangeModalThirdHeaderRight = styled.div<{ $isMax?: boolean }>`
   color: ${({ $isMax }) => ($isMax ? colors.primary : colors.black)};
 `;
 
+export const ExchangeListEmptyContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: ${scale(100)}px;
+
+  ${FontStyles.bodyMedium}
+  color: ${colors.gray600};
+`;
+
 export const ExchangeUserListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${scale(12)}px;
-  padding-top: ${scale(16)}px;
+  padding: ${scale(16)}px ${scale(4)}px;
 `;
 
 export const ExchangeUserList = styled.div`
@@ -72,6 +83,7 @@ export const ExchangeCardImage = styled.img`
   width: ${scale(48)}px;
   height: ${scale(73)}px;
   border-radius: ${scale(4)}px;
+  box-shadow: 0px ${scale(3)}px ${scale(6)}px 0px rgba(0, 0, 0, 0.2);
 `;
 
 export const ExchangeUserName = styled.div`

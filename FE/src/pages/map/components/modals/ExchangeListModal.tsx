@@ -1,29 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import * as S from './ExchangeListModalStyle';
 import SlideUpModal from '@/components/common/SlideUpModal';
-import { RefreshIcon2 } from '@/assets/assets';
 import PocketCallButton from '../buttons/PocketCallButton';
+import Toast from '../common/Toast';
+import { RefreshIcon2 } from '@/assets/assets';
+import { Exchange } from '@/types/exchange';
 
 interface ExchangeListModalProps {
   isOpen: boolean;
   onClose: () => void;
-  filteredList: any[];
-  pocketCallCount: number;
-  onPocketCall: () => void;
-  onRefreshClick: () => void;
-  spinning: boolean;
+  filteredList: Exchange[];
+  onRefresh: () => void;
 }
 
 const ExchangeListModal = ({
   isOpen,
   onClose,
   filteredList,
-  pocketCallCount,
-  onPocketCall,
-  onRefreshClick,
-  spinning,
+  onRefresh,
 }: ExchangeListModalProps) => {
+  const [spinning, setSpinning] = useState(false);
+  const [pocketCallCount, setPocketCallCount] = useState(0);
+  const [showMaxToast, setShowMaxToast] = useState(false);
+  const [showSendToast, setShowSendToast] = useState(false);
+
+  const handleRefreshClick = () => {
+    setSpinning(true);
+    setTimeout(() => {
+      setSpinning(false);
+    }, 300);
+    onRefresh();
+  };
+
+  const handlePocketCall = () => {
+    if (pocketCallCount < 5) {
+      setPocketCallCount((prev) => prev + 1);
+      setShowSendToast(true);
+    } else {
+      setShowMaxToast(true);
+    }
+  };
+
   return (
     <SlideUpModal header="거래중인 포케터" isOpen={isOpen} onClose={onClose}>
       <S.ExchangeModalSecondHeader>
@@ -32,7 +50,7 @@ const ExchangeListModal = ({
         </S.ExchangeModalSecondHeaderText>
         <S.ExchangeListRefreshButton
           src={RefreshIcon2}
-          onClick={onRefreshClick}
+          onClick={handleRefreshClick}
           $spinning={spinning}
         />
       </S.ExchangeModalSecondHeader>
@@ -44,20 +62,38 @@ const ExchangeListModal = ({
           {pocketCallCount} /5
         </S.ExchangeModalThirdHeaderRight>
       </S.ExchangeModalThirdHeader>
-      <S.ExchangeUserListContainer>
-        {filteredList.map((user, index) => (
-          <React.Fragment key={user.userId}>
-            <S.ExchangeUserList>
-              <S.ExchangeUserLeft>
-                <S.ExchangeCardImage src={user.card.imageUrl} />
-                <S.ExchangeUserName>{user.nickname}</S.ExchangeUserName>
-              </S.ExchangeUserLeft>
-              <PocketCallButton onClick={onPocketCall} disabled={pocketCallCount >= 5} />
-            </S.ExchangeUserList>
-            {index !== filteredList.length - 1 && <S.Divider />}
-          </React.Fragment>
-        ))}
-      </S.ExchangeUserListContainer>
+      {filteredList.length === 0 ? (
+        <S.ExchangeListEmptyContainer>해당하는 포케터들이 아직 없어요</S.ExchangeListEmptyContainer>
+      ) : (
+        <S.ExchangeUserListContainer>
+          {filteredList.map((user, index) => (
+            <React.Fragment key={user.userId}>
+              <S.ExchangeUserList>
+                <S.ExchangeUserLeft>
+                  <S.ExchangeCardImage src={user.card.imageUrl} />
+                  <S.ExchangeUserName>{user.nickname}</S.ExchangeUserName>
+                </S.ExchangeUserLeft>
+                <PocketCallButton onClick={handlePocketCall} disabled={pocketCallCount >= 5} />
+              </S.ExchangeUserList>
+              {index !== filteredList.length - 1 && <S.Divider />}
+            </React.Fragment>
+          ))}
+        </S.ExchangeUserListContainer>
+      )}
+      {showMaxToast && (
+        <Toast
+          type="warning"
+          message="포켓콜은 3분마다 최대 5개까지 보낼 수 있어요!"
+          onClose={() => setShowMaxToast(false)}
+        />
+      )}
+      {showSendToast && (
+        <Toast
+          type="success"
+          message="포켓콜을 보냈어요! 포케터의 수락을 기다리세요!"
+          onClose={() => setShowSendToast(false)}
+        />
+      )}
     </SlideUpModal>
   );
 };
