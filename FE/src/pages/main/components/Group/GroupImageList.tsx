@@ -3,37 +3,37 @@ import { StyledGroupImageList, StyledGroupImageWrapper } from './GroupImageStyle
 import GroupImage from './GroupImage';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { UserLikedGroup } from '@/types/user';
+import { Group } from '@/types/group';
 
 interface GroupImageListProps {
   selectedId: number | null;
   onSelectGroup: (id: number | null) => void;
   selectedAllGroup: number | null;
+  selectedGroupData: Group | null;
   onSelectAllGroup: (id: number | null) => void;
   onEditGroup: () => void;
+  setSelectedGroupData: (group: Group | null) => void;
 }
 
 const GroupImageList = ({
   selectedId,
   onSelectGroup,
   selectedAllGroup,
+  selectedGroupData,
   onSelectAllGroup,
   onEditGroup,
+  setSelectedGroupData,
 }: GroupImageListProps) => {
   const navigate = useNavigate();
   const { data: likedGroups } = useLikedGroups();
 
-  // 어떤 그룹의 이미지 url을 넘겨줄지 찾는 로직
-  const selectedGroup =
-    selectedAllGroup && likedGroups?.result
-      ? (likedGroups.result as UserLikedGroup[]).find((group) => group.groupId === selectedAllGroup)
-      : null;
-
   const handleAllGroupClick = () => {
-    if (selectedAllGroup) {
-      onSelectAllGroup(null);
-    } else {
-      navigate('/group/select');
-    }
+    navigate('/group/select', {
+      state: {
+        previousSelectedAllGroup: selectedAllGroup,
+        previousSelectedGroupData: selectedGroupData,
+      },
+    });
   };
 
   return (
@@ -44,7 +44,7 @@ const GroupImageList = ({
           isSelected={selectedId === null}
           onClick={handleAllGroupClick}
           selectedAllGroup={selectedAllGroup}
-          groupImageUrl={selectedGroup?.groupImageUrl || ''}
+          groupImageUrl={selectedGroupData?.groupImageUrl || ''}
         />
         {likedGroups?.result &&
           (likedGroups.result as UserLikedGroup[]).map((group) => (
@@ -56,6 +56,15 @@ const GroupImageList = ({
               onClick={() => {
                 onSelectGroup(group.groupId);
                 onSelectAllGroup(null);
+                const selectedGroup: Group = {
+                  groupId: group.groupId,
+                  groupNameKo: group.groupNameKo,
+                  groupNameEn: group.groupNameEn,
+                  groupImageUrl: group.groupImageUrl || '',
+                  members: null,
+                  interest: true,
+                };
+                setSelectedGroupData(selectedGroup);
               }}
             />
           ))}

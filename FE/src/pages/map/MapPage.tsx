@@ -1,17 +1,18 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import React from 'react';
 
 import * as S from './MapStyle';
 import { colors } from '@/styles/theme';
 
-import { ReturnIcon, RefreshIcon2 } from '@/assets/assets';
 import PlaceSearchInput from './components/common/PlaceSearchInput';
 import AlarmButton from './components/buttons/AlarmButton';
 import MyCard from './components/common/MyCard';
 import OthersCard from './components/common/OthersCard';
-import { exchangeList } from '@/mocks/exchange-list';
 import Toast from './components/common/Toast';
+import { exchangeList } from '@/mocks/exchange-list';
+import { ReturnIcon, RefreshIcon2 } from '@/assets/assets';
+import { postLocation } from '@/api/exchange/location';
+import { LocationRequest } from '@/types/location';
 
 import MyCardModal from './components/modals/MyCardModal';
 import OthersCardModal from './components/modals/OthersCardModal';
@@ -26,8 +27,7 @@ const MapPage = () => {
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
   const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [range, setRange] = useState(100);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [modalStep, setModalStep] = useState(1);
+
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
   const [pocketCallCount, setPocketCallCount] = useState(0);
   const [showMaxToast, setShowMaxToast] = useState(false);
@@ -43,23 +43,34 @@ const MapPage = () => {
   );
   const CountfilteredList = filteredList.length;
 
+  const handlePostLocation = useCallback(async () => {
+    try {
+      const PostLocationData: LocationRequest = {
+        latitude: currentLocation?.lat ?? 37.501286,
+        longitude: currentLocation?.lng ?? 127.0396029,
+        isAutoDetected: true,
+        locationName: null,
+      };
+      const response = await postLocation(PostLocationData);
+      console.log(response);
+    } catch (error) {
+      console.error('위치 정보를 가져오는데 실패했습니다:', error);
+      throw error;
+    }
+  }, [currentLocation]);
+
+  useEffect(() => {
+    if (currentLocation) {
+      handlePostLocation();
+    }
+  }, [currentLocation, handlePostLocation]);
+
   const handleRefreshClick = () => {
     setSpinning(true);
     setTimeout(() => {
       setSpinning(false);
     }, 300);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-    }
-  };
-
-  const handleNextClick = () => {
-    setModalStep(modalStep + 1);
+    handlePostLocation();
   };
 
   const handleCloseModal = () => {
@@ -67,7 +78,6 @@ const MapPage = () => {
     setIsOtherCardModalOpen(false);
     setIsRangeModalOpen(false);
     setIsExchangeListModalOpen(false);
-    setModalStep(1);
   };
 
   const handlePocketCall = () => {
@@ -234,17 +244,8 @@ const MapPage = () => {
         <S.RangeButton>반경 설정</S.RangeButton>
       </S.RangeButtonContainer>
 
-      <MyCardModal
-        isOpen={isMyCardModalOpen}
-        onClose={handleCloseModal}
-        modalStep={modalStep}
-        selectedImage={selectedImage}
-        onImageUpload={handleImageUpload}
-        onClick={handleNextClick}
-      />
-
+      <MyCardModal isOpen={isMyCardModalOpen} onClose={handleCloseModal} />
       <OthersCardModal isOpen={isOtherCardModalOpen} onClose={handleCloseModal} />
-
       <ExchangeListModal
         isOpen={isExchangeListModalOpen}
         onClose={handleCloseModal}
@@ -254,7 +255,6 @@ const MapPage = () => {
         pocketCallCount={pocketCallCount}
         spinning={spinning}
       />
-
       <SetRangeModal
         isOpen={isRangeModalOpen}
         onClose={handleCloseModal}

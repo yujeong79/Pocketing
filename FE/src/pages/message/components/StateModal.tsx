@@ -10,7 +10,7 @@ interface StateModalProps {
 
 const StateModal = ({ isOpen, onClose, onSelect, currentStatus }: StateModalProps) => {
   return (
-    <SlideUpModal isOpen={isOpen} onClose={onClose} isCloseButtonHidden={true}>
+    <SlideUpModal isOpen={isOpen} onClose={onClose} height="26vh" isCloseButtonHidden={true}>
       <S.StateList>
         <S.StateItem
           $isSelected={currentStatus === 'AVAILABLE'}

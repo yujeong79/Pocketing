@@ -59,7 +59,7 @@ export const GroupListContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-top: ${scale(28)}px;
-  height: ${scale(280)}px;
+  height: ${scale(300)}px;
   gap: ${scale(24)}px;
 
   overflow-y: auto;

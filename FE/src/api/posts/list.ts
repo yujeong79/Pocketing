@@ -3,8 +3,9 @@
  */
 
 import { Post } from '@/types/post';
-import axiosInstance from '../auth/axiosInstance';
+import axiosInstance from '@/api/auth/axiosInstance';
 import { ApiResponse } from '@/types/api';
+import { SellerList, SellerListResponse } from '@/types/seller';
 
 interface PostListParams {
   memberId: number;
@@ -45,4 +46,12 @@ export const fetchPostList = async ({
     params,
   });
   return response.data.result;
+};
+
+//특정 포토카드 판매자 리스트 조회
+export const fetchSellerList = async (cardId: number): Promise<SellerList> => {
+  const { data } = await axiosInstance.get<SellerListResponse>('/posts/sellers', {
+    params: { cardId },
+  });
+  return data.result;
 };
