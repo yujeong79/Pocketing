@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build & Deploy ChatbotAI') {
+            steps {
+                // ── 레포 루트(=$WORKSPACE)에서 docker compose 실행 ──
+                sh '''
+                  docker-compose up -d --build --no-deps chatbotAI
+                '''
+            }
+        }
+    }
+}

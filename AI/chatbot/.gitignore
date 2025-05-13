@@ -49,7 +49,6 @@ logs/
 *.sqlite
 
 # Docker
-Dockerfile
 .dockerignore
 
 # Vector DB
