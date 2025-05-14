@@ -27,5 +27,21 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 """)
     List<Member> findWithGroupByGroupId(@Param("groupId") Long groupId);
 
+    @Query("""
+    SELECT m FROM Member m
+    WHERE m.group.groupId = :groupId
+    AND (
+        LOWER(m.name) LIKE CONCAT('%', :memberName, '%') OR
+        LOWER(:memberName) LIKE CONCAT('%', LOWER(m.name), '%')
+    )
+    """)
+    Optional<Member> findByGroupIdAndName(
+            @Param("groupId") Long groupId,
+            @Param("memberName") String memberName
+    );
+
+
+
+
 
 }
