@@ -1,4 +1,4 @@
-// ✅ 리팩토링된 PhotocardSettingModal.tsx (group 목록을 Ko (En) 형태로 표시하고 선택 시 ID와 함께 저장 + 앨범 추가)
+// ✅ 리팩토링된 PhotocardSettingModal.tsx (포토카드 버전도 API로 받아서 사진 표시 - cardId number → string 변환 포함)
 
 import React, { useEffect, useState } from 'react';
 import SlideUpModal from '@/components/common/SlideUpModal';
@@ -7,7 +7,7 @@ import * as S from './PhotocardSettingModalStyle';
 import { fetchGroupsAll } from '@/api/artist/group';
 import { fetchMembersAll } from '@/api/artist/member';
 import { fetchAlbums } from '@/api/artist/album';
-import { Wonyoung1, Wonyoung2, Wonyoung3, Wonyoung4 } from '@/assets/assets';
+import { fetchPhotocards } from '@/api/artist/photocard';
 
 interface GroupItem {
   groupId: number;
@@ -23,6 +23,11 @@ interface MemberItem {
 interface AlbumItem {
   albumId: number;
   title: string;
+}
+
+interface PhotocardItem {
+  cardId: string;
+  cardImageUrl: string;
 }
 
 interface PhotocardSettingModalProps {
@@ -66,6 +71,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
   const [groupList, setGroupList] = useState<GroupItem[]>([]);
   const [memberList, setMemberList] = useState<MemberItem[]>([]);
   const [albumList, setAlbumList] = useState<AlbumItem[]>([]);
+  const [photocardList, setPhotocardList] = useState<PhotocardItem[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -97,6 +103,8 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
       member: '',
       albumId: undefined,
       album: '',
+      versionId: undefined,
+      version: '',
     });
     setCurrentSection('member');
     fetchMembersAll(group.groupId)
@@ -116,86 +124,72 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     setCurrentSection('album');
   };
 
-  const handleAlbumSelect = (album: AlbumItem) => {
+  const handleAlbumSelect = async (album: AlbumItem) => {
     setSelectedData({
       ...selectedData,
       albumId: album.albumId,
       album: album.title,
     });
     setCurrentSection('version');
+
+    if (selectedData.memberId) {
+      try {
+        const cards = await fetchPhotocards(album.albumId, selectedData.memberId);
+        const mappedCards = cards.map((card) => ({
+          cardId: String(card.cardId),
+          cardImageUrl: card.cardImageUrl,
+        }));
+        setPhotocardList(mappedCards);
+      } catch {
+        setPhotocardList([]);
+      }
+    }
   };
 
-  const filteredGroups = Array.isArray(groupList)
-    ? groupList.filter((g) =>
-        `${g.groupNameKo} (${g.groupNameEn})`.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  const filteredGroups = groupList.filter((g) =>
+    `${g.groupNameKo} (${g.groupNameEn})`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const filteredMembers = Array.isArray(memberList)
-    ? memberList.filter((m) =>
-        m.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  const filteredMembers = memberList.filter((m) =>
+    m.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const filteredAlbums = Array.isArray(albumList)
-    ? albumList.filter((a) =>
-        a.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+  const filteredAlbums = albumList.filter((a) =>
+    a.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const versionData = [
-    { id: 'ver1', url: Wonyoung1 },
-    { id: 'ver2', url: Wonyoung2 },
-    { id: 'ver3', url: Wonyoung3 },
-    { id: 'ver4', url: Wonyoung4 },
-  ];
-
-  const renderVersionGrid = () => {
-    return (
-      <>
-        <S.VersionTitle>어떤 버전인가요?</S.VersionTitle>
-        <S.VersionGrid>
-          {versionData.map((version, index) => (
-            <S.VersionItem key={version.id} onClick={() => {
-              setSelectedData({ ...selectedData, versionId: version.id, version: version.id });
-            }}>
-              <S.VersionImage
-                src={version.url}
-                selected={selectedData.versionId === version.id}
-                alt={`버전 ${index + 1}`}
-              />
-            </S.VersionItem>
-          ))}
-        </S.VersionGrid>
-      </>
-    );
-  };
+  const renderVersionGrid = () => (
+    <>
+      <S.VersionTitle>어떤 버전인가요?</S.VersionTitle>
+      <S.VersionGrid>
+        {photocardList.map((card, index) => (
+          <S.VersionItem key={card.cardId} onClick={() => {
+            setSelectedData({ ...selectedData, versionId: card.cardId, version: card.cardId });
+          }}>
+            <S.VersionImage
+              src={card.cardImageUrl}
+              selected={selectedData.versionId === card.cardId}
+              alt={`버전 ${index + 1}`}
+            />
+          </S.VersionItem>
+        ))}
+      </S.VersionGrid>
+    </>
+  );
 
   const renderList = () => {
     if (currentSection === 'group') return filteredGroups.map((g) => (
-      <S.Item
-        key={g.groupId}
-        selected={selectedData.groupId === g.groupId}
-        onClick={() => handleGroupSelect(g)}
-      >
+      <S.Item key={g.groupId} selected={selectedData.groupId === g.groupId} onClick={() => handleGroupSelect(g)}>
         {g.groupNameKo} ({g.groupNameEn})
       </S.Item>
     ));
     if (currentSection === 'member') return filteredMembers.map((m) => (
-      <S.Item
-        key={m.memberId}
-        selected={selectedData.memberId === m.memberId}
-        onClick={() => handleMemberSelect(m)}
-      >
+      <S.Item key={m.memberId} selected={selectedData.memberId === m.memberId} onClick={() => handleMemberSelect(m)}>
         {m.name}
       </S.Item>
     ));
     if (currentSection === 'album') return filteredAlbums.map((a) => (
-      <S.Item
-        key={a.albumId}
-        selected={selectedData.albumId === a.albumId}
-        onClick={() => handleAlbumSelect(a)}
-      >
+      <S.Item key={a.albumId} selected={selectedData.albumId === a.albumId} onClick={() => handleAlbumSelect(a)}>
         {a.title}
       </S.Item>
     ));

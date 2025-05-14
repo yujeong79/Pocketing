@@ -1,10 +1,10 @@
-import { PhotocardResponse } from '@/types/photocard';
+import { Photocard } from '@/types/photocard';
 import axiosInstance from '../auth/axiosInstance';
 
 export const fetchPhotocards = async (
   albumId: number,
   memberId: number
-): Promise<PhotocardResponse> => {
+): Promise<Photocard[]> => {
   const response = await axiosInstance.get('/photocards', {
     params: {
       albumId,
