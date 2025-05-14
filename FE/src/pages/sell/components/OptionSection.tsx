@@ -6,12 +6,21 @@ import PhotocardSettingModal from './PhotocardSettingModal';
 import ImageCarousel from './ImageCarousel';
 
 interface PhotocardSettingData {
+  groupId?: number;
   group: string;
+
+  memberId?: number;
   member: string;
+
+  albumId?: number;   // ⬅ 나중에 앨범 API 연동되면 바로 채워짐
   album: string;
+
+  versionId?: string; // ⬅ 예: ver1, ver2 같이 string이면 string
   version: string;
+
   price: string;
 }
+
 
 interface OptionSectionHandle {
   photocardSettings: PhotocardSettingData[];
@@ -198,7 +207,16 @@ return (
       <PhotocardSettingModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        onConfirm={handlePhotocardConfirm}
+        onConfirm={(data) => handlePhotocardConfirm(data)}
+        initialData={{
+          groupId: currentPhotocard.groupId,
+          group: currentPhotocard.group,
+          memberId: currentPhotocard.memberId,
+          member: currentPhotocard.member,
+          album: currentPhotocard.album,
+          version: currentPhotocard.version,
+          price: currentPhotocard.price,
+        }}
       />
     </S.Container>
   );
