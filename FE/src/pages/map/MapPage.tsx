@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './MapStyle';
@@ -8,40 +8,47 @@ import PlaceSearchInput from './components/common/PlaceSearchInput';
 import AlarmButton from './components/buttons/AlarmButton';
 import MyCard from './components/common/MyCard';
 import OthersCard from './components/common/OthersCard';
-import Toast from './components/common/Toast';
-import { exchangeList } from '@/mocks/exchange-list';
-import { ReturnIcon, RefreshIcon2 } from '@/assets/assets';
-import { postLocation } from '@/api/exchange/location';
-import { LocationRequest } from '@/types/location';
-
 import MyCardModal from './components/modals/MyCardModal';
 import OthersCardModal from './components/modals/OthersCardModal';
 import ExchangeListModal from './components/modals/ExchangeListModal';
 import SetRangeModal from './components/modals/SetRangeModal';
+import Toast from './components/common/Toast';
+import { ReturnIcon, RefreshIcon2 } from '@/assets/assets';
+import { postLocation } from '@/api/exchange/location';
+import { getExchangeUserList } from '@/api/exchange/exchangeUserList';
+import { Exchange } from '@/types/exchange';
+import { LocationRequest } from '@/types/location';
 
 const MapPage = () => {
-  const navigate = useNavigate();
-  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [spinning, setSpinning] = useState(false);
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
   const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
-  const [range, setRange] = useState(100);
-
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
-  const [pocketCallCount, setPocketCallCount] = useState(0);
-  const [showMaxToast, setShowMaxToast] = useState(false);
-  const [showSendToast, setShowSendToast] = useState(false);
-
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [spinning, setSpinning] = useState(false);
+  const [range, setRange] = useState(100);
+  const [showEmptyToast, setShowEmptyToast] = useState(false);
+  const [currentUsers, setCurrentUsers] = useState(0);
+  const [userList, setUserList] = useState<Exchange[]>([]);
+  const navigate = useNavigate();
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
+  const countMarkerRef = useRef<any>(null);
 
-  const filteredList = useMemo(
-    () => exchangeList.filter((user) => user.distance <= range),
-    [range]
-  );
-  const CountfilteredList = filteredList.length;
+  const handleGetUserList = useCallback(async () => {
+    try {
+      const response = await getExchangeUserList(range);
+      setCurrentUsers(response.result.length);
+      setUserList(response.result);
+      if (!response.isSuccess) {
+        setShowEmptyToast(true);
+        return null;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }, [range]);
 
   const handlePostLocation = useCallback(async () => {
     try {
@@ -54,7 +61,6 @@ const MapPage = () => {
       const response = await postLocation(PostLocationData);
       console.log(response);
     } catch (error) {
-      console.error('위치 정보를 가져오는데 실패했습니다:', error);
       throw error;
     }
   }, [currentLocation]);
@@ -62,8 +68,9 @@ const MapPage = () => {
   useEffect(() => {
     if (currentLocation) {
       handlePostLocation();
+      handleGetUserList();
     }
-  }, [currentLocation, handlePostLocation]);
+  }, [currentLocation, handlePostLocation, handleGetUserList]);
 
   const handleRefreshClick = () => {
     setSpinning(true);
@@ -71,6 +78,7 @@ const MapPage = () => {
       setSpinning(false);
     }, 300);
     handlePostLocation();
+    handleGetUserList();
   };
 
   const handleCloseModal = () => {
@@ -78,15 +86,6 @@ const MapPage = () => {
     setIsOtherCardModalOpen(false);
     setIsRangeModalOpen(false);
     setIsExchangeListModalOpen(false);
-  };
-
-  const handlePocketCall = () => {
-    if (pocketCallCount < 5) {
-      setPocketCallCount((prev) => prev + 1);
-      setShowSendToast(true);
-    } else {
-      setShowMaxToast(true);
-    }
   };
 
   const getZoomLevel = (range: number) => {
@@ -115,9 +114,9 @@ const MapPage = () => {
           setCurrentLocation({ lat: latitude, lng: longitude });
         },
         (error) => {
-          console.error('위치 정보를 가져오는데 실패했습니다:', error);
           // 기본 위치 설정 (멀티캠퍼스)
           setCurrentLocation({ lat: 37.501286, lng: 127.0396029 });
+          throw error;
         }
       );
     }
@@ -154,7 +153,7 @@ const MapPage = () => {
         mapTypeId: window.naver.maps.MapTypeId.NORMAL,
       });
 
-      naverMapRef.current = map; // 지도 객체 저장
+      naverMapRef.current = map;
 
       // 마커 생성
       const marker = new window.naver.maps.Marker({
@@ -187,7 +186,13 @@ const MapPage = () => {
         zIndex: 50,
       });
 
-      const countMarker = new window.naver.maps.Marker({
+      // 기존 카운트 마커가 있다면 제거
+      if (countMarkerRef.current) {
+        countMarkerRef.current.setMap(null);
+      }
+
+      // 새로운 카운트 마커 생성
+      countMarkerRef.current = new window.naver.maps.Marker({
         map,
         position: location,
         icon: {
@@ -203,7 +208,7 @@ const MapPage = () => {
               transform: translate(-50%, 20px);
               white-space: nowrap;
             ">
-              ${CountfilteredList}명
+              ${currentUsers}명
             </div>
           `,
           size: new window.naver.maps.Size(0, 0),
@@ -212,11 +217,11 @@ const MapPage = () => {
         zIndex: 99,
       });
 
-      window.naver.maps.Event.addListener(countMarker, 'click', () => {
+      window.naver.maps.Event.addListener(countMarkerRef.current, 'click', () => {
         setIsExchangeListModalOpen(true);
       });
     }
-  }, [currentLocation, range]);
+  }, [currentLocation, range, currentUsers]);
 
   return (
     <S.MapContainer ref={mapRef}>
@@ -244,16 +249,21 @@ const MapPage = () => {
         <S.RangeButton>반경 설정</S.RangeButton>
       </S.RangeButtonContainer>
 
-      <MyCardModal isOpen={isMyCardModalOpen} onClose={handleCloseModal} />
-      <OthersCardModal isOpen={isOtherCardModalOpen} onClose={handleCloseModal} />
+      <MyCardModal
+        isOpen={isMyCardModalOpen}
+        onClose={handleCloseModal}
+        onRefresh={handleGetUserList}
+      />
+      <OthersCardModal
+        isOpen={isOtherCardModalOpen}
+        onClose={handleCloseModal}
+        onRefresh={handleGetUserList}
+      />
       <ExchangeListModal
         isOpen={isExchangeListModalOpen}
         onClose={handleCloseModal}
-        filteredList={filteredList}
-        onPocketCall={handlePocketCall}
-        onRefreshClick={handleRefreshClick}
-        pocketCallCount={pocketCallCount}
-        spinning={spinning}
+        filteredList={userList}
+        onRefresh={handleRefreshClick}
       />
       <SetRangeModal
         isOpen={isRangeModalOpen}
@@ -262,18 +272,11 @@ const MapPage = () => {
         onRangeChange={setRange}
       />
 
-      {showMaxToast && (
+      {showEmptyToast && (
         <Toast
           type="warning"
-          message="포켓콜은 3분마다 최대 5개까지 보낼 수 있어요!"
-          onClose={() => setShowMaxToast(false)}
-        />
-      )}
-      {showSendToast && (
-        <Toast
-          type="success"
-          message="포켓콜을 보냈어요! 포케터의 수락을 기다리세요!"
-          onClose={() => setShowSendToast(false)}
+          message="카드 등록을 먼저 해주세요!"
+          onClose={() => setShowEmptyToast(false)}
         />
       )}
     </S.MapContainer>
