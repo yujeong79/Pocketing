@@ -20,9 +20,7 @@ const ProfileDetailPage = () => {
       setMyAddress(response.result.address);
       setMyAccount(response.result.account);
       setMyBank(response.result.bank);
-      console.log(response);
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }, []);
