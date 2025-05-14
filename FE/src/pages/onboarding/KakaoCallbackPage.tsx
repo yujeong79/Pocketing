@@ -15,6 +15,7 @@ const KakaoCallbackPage = () => {
 
     if (isRegistered) {
       const accessToken = searchParams.get('accessToken');
+      const userId = searchParams.get('userId');
 
       if (!accessToken) {
         console.error('액세스 토큰이 없습니다.');
@@ -23,6 +24,15 @@ const KakaoCallbackPage = () => {
       }
 
       localStorage.setItem('accessToken', accessToken);
+
+      if (userId) {
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            userId: Number(userId),
+          })
+        );
+      }
 
       // 로그인 성공 시 fcm 토큰 등록
       requestFcmToken();

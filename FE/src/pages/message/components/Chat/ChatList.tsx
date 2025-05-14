@@ -1,6 +1,8 @@
 import ChatItem from '@/pages/message/components/Chat/ChatItem';
 import * as S from './ChatListStyle';
 import { useNavigate } from 'react-router-dom';
+import { enterChatRoom } from '@/api/chat';
+
 interface TradeChat {
   roomId: number;
   receiverId: number;
@@ -41,13 +43,26 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
     );
   }
 
-  const handleClickChatItem = (roomId: number, nickname: string) => {
-    navigate(`/message/${roomId}`, {
-      state: {
-        nickname,
-        chatType: type === 'trade' ? 'TRADE' : 'EXCHANGE',
-      },
-    });
+  const handleClickChatItem = async (roomId: number, nickname: string) => {
+    try {
+      // 채팅방 입장 API 호출
+      const response = await enterChatRoom(roomId);
+
+      if (response.isSuccess) {
+        // 채팅방 상세 페이지로 이동
+        navigate(`/message/${roomId}`, {
+          state: {
+            nickname,
+            chatType: type === 'trade' ? 'TRADE' : 'EXCHANGE',
+            chatRoomDetail: response.result,
+          },
+        });
+      } else {
+        console.error('채팅방 입장 실패:', response.message);
+      }
+    } catch (error) {
+      console.error('채팅방 입장 중 오류 발생:', error);
+    }
   };
 
   return (

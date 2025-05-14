@@ -1,19 +1,29 @@
-import { mockChat } from '@/mocks/chat';
 import * as S from './TradeItemStyle';
 import { useState } from 'react';
 import StateModal from './StateModal';
+import { LinkedPost } from '@/types/chat';
+import { useUpdatePostStatus } from '@/hooks/post/mutation/useStatus';
+import { useNavigate } from 'react-router-dom';
 
 type Status = 'AVAILABLE' | 'COMPLETED';
 
-const TradeItem = () => {
-  const [status, setStatus] = useState<Status>(mockChat.result.linkedPost.status as Status);
+interface TradeItemProps {
+  linkedPost: LinkedPost;
+  roomId: number;
+  isMyPost: boolean;
+}
+
+const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
+  const [status, setStatus] = useState<Status>(linkedPost.status as Status);
   const [isStateModalOpen, setIsStateModalOpen] = useState(false);
+  const { mutate: updatePostStatus } = useUpdatePostStatus();
+  const navigate = useNavigate();
   const isAvailable = status === 'AVAILABLE';
 
-  const formattedPrice = mockChat.result.linkedPost.price.toLocaleString();
+  const formattedPrice = linkedPost.price.toLocaleString();
 
   const handleClickTradeItem = () => {
-    console.log('해당 거래글로 이동');
+    navigate(`/post/${linkedPost.postId}`);
   };
 
   const handleClickStateButton = (e: React.MouseEvent) => {
@@ -23,27 +33,33 @@ const TradeItem = () => {
 
   const handleStateSelect = (newStatus: Status) => {
     setStatus(newStatus);
+    updatePostStatus({ roomId, status: newStatus });
   };
 
   return (
     <>
       <S.Container onClick={handleClickTradeItem}>
         <S.ProfileSection>
-          <S.ProfileImage src={mockChat.result.linkedPost.photocard.cardImageUrl} />
+          <S.ProfileImage src={linkedPost.photocard.cardImageUrl} />
         </S.ProfileSection>
 
         <S.InfoSection>
           <S.StateButtonContainer>
-            <S.StateButton isAvailable={isAvailable} onClick={handleClickStateButton}>
-              {isAvailable ? '판매중' : '거래완료'}
-              <S.Arrow>&gt;</S.Arrow>
-            </S.StateButton>
+            {isMyPost ? (
+              <S.StateButton data-available={isAvailable} onClick={handleClickStateButton}>
+                {isAvailable ? '판매중' : '거래완료'}
+                <S.Arrow>&gt;</S.Arrow>
+              </S.StateButton>
+            ) : (
+              <S.StateButton data-available={isAvailable} as="div">
+                {isAvailable ? '판매중' : '거래완료'}
+              </S.StateButton>
+            )}
           </S.StateButtonContainer>
 
-          <S.AlbumTitle>{mockChat.result.linkedPost.photocard.albumTitle}</S.AlbumTitle>
+          <S.AlbumTitle>{linkedPost.photocard.albumTitle}</S.AlbumTitle>
         </S.InfoSection>
 
-        {/* 가격 섹션을 오른쪽 끝으로 배치 */}
         <S.PriceSection>{formattedPrice} 원</S.PriceSection>
       </S.Container>
 

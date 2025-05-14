@@ -41,6 +41,7 @@ export interface Seller {
   nickname: string;
   isVerified: boolean;
   profileImageUrl: string;
+  sellerId: number;
 }
 
 export type PostDetailResponse = ApiResponse<PostDetail>;
