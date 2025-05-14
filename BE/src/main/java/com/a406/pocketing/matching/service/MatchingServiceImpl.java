@@ -37,12 +37,10 @@ public class MatchingServiceImpl implements MatchingService {
 
         // 2. 해당 그룹 ID + 멤버 이름으로 멤버 찾기
         Optional<Member> optionalMember = memberRepository.findByGroupIdAndName(group.getGroupId(), cleanedMemberName);
-//        Member member = optionalMember
-//                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
         if (optionalMember.isEmpty()) {
             // 그룹만 반환
-            return new AiResolveResponseDto(group.getGroupId(), group.getNameKo());
+            return new AiResolveResponseDto(group.getGroupId(), group.getNameKo(), group.getNameEn());
         }
 
         Member member = optionalMember.get();
@@ -50,6 +48,7 @@ public class MatchingServiceImpl implements MatchingService {
         return new AiResolveResponseDto(
                 group.getGroupId(),
                 group.getNameKo(),
+                group.getNameEn(),
                 member.getMemberId(),
                 member.getName()
         );
