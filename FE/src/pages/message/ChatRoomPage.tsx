@@ -55,41 +55,25 @@ const ChatRoomPage: React.FC = () => {
 
   useEffect(() => {
     if (!chatRoomDetail) return;
-
     const messageHandler = (message: ChatMessage) => {
       setMessages((prev) => [...prev, message]);
       scrollToBottom();
     };
     webSocketService.addMessageHandler(messageHandler);
-
     return () => {
       webSocketService.removeMessageHandler(messageHandler);
     };
-  }, [chatRoomDetail, scrollToBottom, webSocketService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scrollToBottom, webSocketService]);
 
   useEffect(() => {
-    const initializeChat = async () => {
-      if (!roomId || !token) return;
-
-      if (chatRoomDetail) {
-        setMessages(chatRoomDetail.messagePage.messageList);
-        setHasMore(chatRoomDetail.messagePage.hasNext);
-        scrollToBottom();
-      }
-
-      const messageHandler = (message: ChatMessage) => {
-        setMessages((prev) => [...prev, message]);
-        scrollToBottom();
-      };
-      webSocketService.addMessageHandler(messageHandler);
-
-      return () => {
-        webSocketService.removeMessageHandler(messageHandler);
-      };
-    };
-
-    initializeChat();
-  }, [roomId, token, chatRoomDetail, scrollToBottom, webSocketService]);
+    if (!roomId || !token || !chatRoomDetail) return;
+    // 최초 입장시에만 메시지 초기화
+    setMessages(chatRoomDetail.messagePage.messageList);
+    setHasMore(chatRoomDetail.messagePage.hasNext);
+    scrollToBottom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, token]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
@@ -117,15 +101,15 @@ const ChatRoomPage: React.FC = () => {
   const handleSendMessage = (content: string) => {
     if (!roomId || !user) return;
 
-    // 메시지 전송
+    // 1. 서버로 메시지 전송
     webSocketService.sendMessage(Number(roomId), content);
 
-    // UI에 즉시 반영 (기존 ChatMessage 타입 활용)
+    // 2. UI에 바로 반영
     const newMessage: ChatMessage = {
-      messageId: Date.now(),
+      messageId: Date.now(), // 임시 ID
       roomId: Number(roomId),
       senderId: user.userId,
-      receiverId: null,
+      receiverId: null, // 필요시 수정
       messageContent: content,
       createdAt: new Date().toISOString(),
     };
