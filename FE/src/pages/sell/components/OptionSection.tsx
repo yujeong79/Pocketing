@@ -4,6 +4,7 @@ import * as S from './OptionSectionStyle';
 import { IncreaseIcon, DecreaseIcon, AverageIcon } from '@/assets/assets';
 import PhotocardSettingModal from './PhotocardSettingModal';
 import ImageCarousel from './ImageCarousel';
+import { getPhotoCardPrice } from '@/api/postRegistration/price';
 
 interface PhotocardSettingData {
   groupId?: number;
@@ -40,6 +41,13 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
     const [photocardSettings, setPhotocardSettings] = useState<PhotocardSettingData[]>(
       initialSettings
     );
+
+    const [marketPrice, setMarketPrice] = useState<{
+      minPrice: number;
+      maxPrice: number;
+      avgPrice: number;
+    } | null>(null);
+
 
     useImperativeHandle(ref, () => ({
       photocardSettings,
@@ -84,9 +92,28 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
     });
   };
 
-  const handleMarketPriceClick = () => {
-    setShowMarketPrice(!showMarketPrice);
+  const handleMarketPriceClick = async () => {
+    const current = photocardSettings[currentImageIndex];
+    if (!current.versionId) {
+      alert('포토카드를 먼저 선택해주세요.');
+      return;
+    }
+
+   try {
+      const res = await getPhotoCardPrice(Number(current.versionId));
+      setMarketPrice(res.result);
+      setShowMarketPrice(true);
+    } catch (error: any) {
+      console.error('시세 조회 실패:', error);
+      if (error.response?.data?.code === 'PRICE4002') {
+        alert('해당 포토카드는 아직 시세 정보가 없습니다.');
+      } else {
+        alert('시세 조회에 실패했습니다.');
+      }
+    }
+
   };
+
 
   const handleModalOpen = () => {
     setIsModalOpen(true);
@@ -181,25 +208,25 @@ return (
             <S.MarketPriceButton onClick={handleMarketPriceClick}>
               시세 확인 &gt;
             </S.MarketPriceButton>
-            {showMarketPrice && (
-              <S.PriceInfoContainer>
-                <S.PriceInfoRow>
-                  <img src={DecreaseIcon} alt="최저가" />
-                  최저가
-                  <S.PriceValue>20,000원</S.PriceValue>
-                </S.PriceInfoRow>
-                <S.PriceInfoRow>
-                  <img src={AverageIcon} alt="평균가" />
-                  평균가
-                  <S.PriceValue>23,000원</S.PriceValue>
-                </S.PriceInfoRow>
-                <S.PriceInfoRow>
-                  <img src={IncreaseIcon} alt="최고가" />
-                  최고가
-                  <S.PriceValue>27,000원</S.PriceValue>
-                </S.PriceInfoRow>
-              </S.PriceInfoContainer>
-            )}
+              {showMarketPrice && marketPrice && (
+                <S.PriceInfoContainer>
+                  <S.PriceInfoRow>
+                    <img src={DecreaseIcon} alt="최저가" />
+                    최저가
+                    <S.PriceValue>{marketPrice.minPrice.toLocaleString()}원</S.PriceValue>
+                  </S.PriceInfoRow>
+                  <S.PriceInfoRow>
+                    <img src={AverageIcon} alt="평균가" />
+                    평균가
+                    <S.PriceValue>{marketPrice.avgPrice.toLocaleString()}원</S.PriceValue>
+                  </S.PriceInfoRow>
+                  <S.PriceInfoRow>
+                    <img src={IncreaseIcon} alt="최고가" />
+                    최고가
+                    <S.PriceValue>{marketPrice.maxPrice.toLocaleString()}원</S.PriceValue>
+                  </S.PriceInfoRow>
+                </S.PriceInfoContainer>
+              )}
           </S.MarketPriceContainer>
         </S.PriceSection>
       </S.OptionRow>
