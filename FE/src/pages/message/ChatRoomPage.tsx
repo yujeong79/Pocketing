@@ -7,12 +7,14 @@ import MessageList from './components/ChatRoom/ChatRoomList';
 import MessageInput from './components/ChatRoom/ChatRoomInput';
 import * as S from './ChatRoomPageStyle';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
-import { ChatMessage, ChatRoomDetail } from '@/types/chat';
+import { ChatRoomDetail } from '@/types/chat';
 import { loadMoreMessages } from '@/api/chat';
 import WebSocketService from '@/services/websocket';
 import { useAuth } from '@/hooks/useAuth';
 import { PostDetail } from '@/types/post';
 import { fetchPostDetail } from '@/api/posts/post';
+import { useChatStore } from '@/store/chatStore';
+import { useChatSocket } from '@/hooks/useChatSocket';
 
 type ChatType = 'TRADE' | 'EXCHANGE';
 
@@ -33,9 +35,7 @@ const ChatRoomPage: React.FC = () => {
   }) || {};
 
   const { user, token } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const { messages, setMessages, addMessage, page, setPage, hasMore, setHasMore } = useChatStore();
   const chatRoomDetail = useMemo(() => initialChatRoomDetail || null, [initialChatRoomDetail]);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -45,26 +45,15 @@ const ChatRoomPage: React.FC = () => {
   const { scrollToBottom } = useScrollToBottom(chatContainerRef, [messages]);
   const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
 
-  useEffect(() => {
-    if (!roomId || !token) return;
-    webSocketService.connect(token);
-    return () => {
-      webSocketService.disconnect();
-    };
-  }, [roomId, token, webSocketService]);
-
-  useEffect(() => {
-    if (!chatRoomDetail) return;
-    const messageHandler = (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message]);
+  // WebSocket 연결 및 메시지 핸들러 등록
+  useChatSocket({
+    roomId,
+    token: token || '',
+    onMessage: (msg) => {
+      addMessage(msg);
       scrollToBottom();
-    };
-    webSocketService.addMessageHandler(messageHandler);
-    return () => {
-      webSocketService.removeMessageHandler(messageHandler);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollToBottom, webSocketService]);
+    },
+  });
 
   useEffect(() => {
     if (!roomId || !token || !chatRoomDetail) return;
@@ -89,8 +78,8 @@ const ChatRoomPage: React.FC = () => {
     try {
       const response = await loadMoreMessages(Number(roomId), page + 1);
       if (response.isSuccess) {
-        setMessages((prev) => [...response.result.messageList, ...prev]);
-        setPage((prev) => prev + 1);
+        setMessages([...response.result.messageList, ...messages]);
+        setPage(page + 1);
         setHasMore(response.result.hasNext);
       }
     } catch (error) {
@@ -100,21 +89,17 @@ const ChatRoomPage: React.FC = () => {
 
   const handleSendMessage = (content: string) => {
     if (!roomId || !user) return;
-
-    // 1. 서버로 메시지 전송
+    // WebSocket으로 전송
     webSocketService.sendMessage(Number(roomId), content);
-
-    // 2. UI에 바로 반영
-    const newMessage: ChatMessage = {
-      messageId: Date.now(), // 임시 ID
+    // UI에 바로 반영
+    addMessage({
+      messageId: Date.now(),
       roomId: Number(roomId),
       senderId: user.userId,
-      receiverId: null, // 필요시 수정
+      receiverId: null,
       messageContent: content,
       createdAt: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
+    });
     scrollToBottom();
   };
 
