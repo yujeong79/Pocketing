@@ -8,6 +8,7 @@ import com.a406.pocketing.exchange.dto.ExchangeCardRequestDto;
 import com.a406.pocketing.exchange.dto.ExchangeCardResponseDto;
 import com.a406.pocketing.exchange.dto.NearbyExchangeCardResponseDto;
 import com.a406.pocketing.exchange.service.ExchangeCardService;
+import com.google.protobuf.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,6 +40,22 @@ public class ExchangeCardController {
         ExchangeCardResponseDto responseDto = exchangeCardService.registerExchangeCard(userId, requestDto);
 
         return ApiResponse.of(SuccessStatus.EXCHANGE_CARD_REGISTER_SUCCESS, responseDto);
+    }
+
+    /**
+     * 희망카드/보유카드 조회 API
+     * @param userDetails
+     * @param isOwned
+     * @return
+     */
+    @GetMapping()
+    public ApiResponse<?> getExchangeCard(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam Boolean isOwned
+            ) {
+        Long userId = userDetails.getUserId();
+        ExchangeCardResponseDto responseDto = exchangeCardService.getExchangeCard(userId, isOwned);
+        return ApiResponse.of(SuccessStatus.EXCHANGE_CARD_FETCH_SUCCESS, responseDto);
     }
 
     /**

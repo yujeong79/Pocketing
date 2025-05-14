@@ -74,7 +74,11 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         }
 
         // 2. userId + isOwned + status = ACTIVE인 기존 카드 탐색
-        ExchangeCard existingCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned);
+        ExchangeCard existingCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned)
+                .orElseThrow(() -> {
+                    if (isOwned) return new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND);
+                    else return new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND);
+                });
 
         if(existingCard != null){
             // 3. 있으면 update
@@ -106,6 +110,29 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
     }
 
     /**
+     * 희망카드/보유카드 조회 API
+     * @param userId
+     * @param isOwned
+     * @return
+     */
+    @Override
+    public ExchangeCardResponseDto getExchangeCard(Long userId, Boolean isOwned) {
+        ExchangeCard exchangeCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned)
+                .orElseThrow(() -> {
+                    if (isOwned) return new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND);
+                    else return new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND);
+                });
+
+        return ExchangeCardResponseDto.builder()
+                .exchangeCardId(exchangeCard.getExchangeCardId())
+                .isOwned(isOwned)
+                .group(exchangeCard.getGroup().getNameKo())
+                .album(exchangeCard.getAlbum().getTitle())
+                .member(exchangeCard.getMember().getName())
+                .build();
+    }
+
+    /**
      * 현장 교환 목록 조회 API
      * @param userId
      * @param range
@@ -123,8 +150,10 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         Point myLocation = userLocation.getLocation();
 
         // 2. 내 카드 조합 A-B 저장
-        ExchangeCard wanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, false);
-        ExchangeCard owned = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, true);
+        ExchangeCard wanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, false)
+                .orElseThrow(() -> new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND));
+        ExchangeCard owned = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, true)
+                        .orElseThrow(() -> new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND));
         log.info(wanted.getMember().getName());
         log.info("wantedId = {}", wanted.getMember().getMemberId());
 
@@ -148,6 +177,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
                 myLocation,
                 wanted.getAlbum().getAlbumId(),
                 wanted.getMember().getMemberId(),
+                owned.getExchangeCardId(),
                 owned.getAlbum().getAlbumId(),
                 owned.getMember().getMemberId(),
                 range.doubleValue()
@@ -160,4 +190,5 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
                 .map(NearbyExchangeCardResponseDto::fromNativeResult)
                 .toList();
     }
+
 }

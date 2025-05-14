@@ -1,5 +1,6 @@
 package com.a406.pocketing.exchange.dto;
 
+import com.a406.pocketing.exchange.enums.ExchangeRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,8 @@ public class NearbyExchangeCardResponseDto {
     private String nickname;
     private Double distance;
     private CardDto card;
+    private Long exchangeRequestId;
+    private ExchangeRequestStatus requestStatus;
 
     @Getter
     @Builder
@@ -40,6 +43,10 @@ public class NearbyExchangeCardResponseDto {
                         .album((String) row[7])
                         .member((String) row[8])
                         .build())
+                .exchangeRequestId(row[10] == null ? null : ((Number) row[10]).longValue())
+                .requestStatus(row[11] == null
+                        ? null   // enum에 NONE 추가
+                        : ExchangeRequestStatus.valueOf((String) row[11]))
                 .build();
     }
 }
