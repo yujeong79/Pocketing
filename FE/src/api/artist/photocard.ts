@@ -11,5 +11,5 @@ export const fetchPhotocards = async (
       memberId,
     },
   });
-  return response.data.result.photoCards;
+  return response.data.result;
 };
