@@ -58,10 +58,10 @@ export const NickName = styled.div<{ $isUser: boolean }>`
 
 export const Message = styled.div<{ $isUser: boolean }>`
   ${FontStyles.captionMedium}
-  padding: ${scale(8)}px ${scale(12)}px;
-  border-radius: ${scale(12)}px;
+  padding: ${scale(10)}px ${scale(16)}px;
+  border-radius: ${scale(14)}px;
   background-color: ${({ $isUser }) => ($isUser ? colors.primary200 : colors.primary50)};
-  max-width: 65%;
+  max-width: ${scale(180)}px;
   text-align: left;
   word-break: break-all;
 `;
