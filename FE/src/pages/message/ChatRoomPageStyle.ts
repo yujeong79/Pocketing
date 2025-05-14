@@ -36,12 +36,12 @@ export const ChatContainer = styled.div`
   }
 `;
 
-export const MessageWrapper = styled.div<{ isUser: boolean; continued?: boolean }>`
+export const MessageContainer = styled.div<{ $isUser: boolean; $continued?: boolean }>`
   display: flex;
-  justify-content: ${({ isUser }) => (isUser ? 'flex-end' : 'flex-start')};
+  justify-content: ${({ $isUser }) => ($isUser ? 'flex-end' : 'flex-start')};
   align-items: flex-start;
   gap: ${scale(4)}px;
-  margin-top: ${({ continued }) => (continued ? scale(4) : scale(16))}px;
+  margin-top: ${({ $continued }) => ($continued ? scale(4) : scale(16))}px;
 `;
 
 export const ProfileImage = styled.img`
@@ -50,17 +50,17 @@ export const ProfileImage = styled.img`
   border-radius: ${scale(100)}px;
 `;
 
-export const NickNameText = styled.div<{ isUser: boolean }>`
+export const NickName = styled.div<{ $isUser: boolean }>`
   ${FontStyles.captionSmall}
   margin-bottom: ${scale(2)}px;
   justify-content: flex-start;
 `;
 
-export const MessageText = styled.div<{ isUser: boolean }>`
+export const Message = styled.div<{ $isUser: boolean }>`
   ${FontStyles.captionMedium}
   padding: ${scale(8)}px ${scale(12)}px;
   border-radius: ${scale(12)}px;
-  background-color: ${({ isUser }) => (isUser ? colors.primary200 : colors.primary50)};
+  background-color: ${({ $isUser }) => ($isUser ? colors.primary200 : colors.primary50)};
   max-width: 65%;
   text-align: left;
   word-break: break-all;
@@ -106,4 +106,20 @@ export const SendButton = styled.button`
   justify-content: center;
   width: ${scale(30)}px;
   height: ${scale(30)}px;
+`;
+
+export const LoadMoreButton = styled.button`
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
 `;
