@@ -5,8 +5,9 @@ import axiosInstance from '@/api/auth/axiosInstance';
 export const getKakaoLoginUrl = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const redirectUri = `${baseUrl}/auth/kakao/callback`;
+  const state = import.meta.env.VITE_STATE_URL;
 
-  return `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`;
+  return `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&state=${state}`;
 };
 
 // 카카오 로그인 처리
