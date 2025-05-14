@@ -69,7 +69,7 @@ public class AuthController {
             );
         }
 
-        return new RedirectView(redirectUrl);
+        return new RedirectView(targetUrl + "kakao/callback/?isRegistered=true");
     }
 
     /**
