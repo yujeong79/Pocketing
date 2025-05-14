@@ -65,7 +65,7 @@ public enum SuccessStatus implements BaseCode {
 	EXCHANGE_RECEIVED_REQUESTS_SUCCESS(HttpStatus.OK, "EXCHANGE2005", "받은 요청 목록을 성공적으로 조회했습니다."),
 	EXCHANGE_ACCEPT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2006", "요청을 수락하고 채팅방이 생성되었습니다."),
 	EXCHANGE_REJECT_REQUEST_SUCCESS(HttpStatus.OK, "EXCHANGE2007", "요청을 거절했습니다."),
-	EXCHANGE_REQUEST_STATUS_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2008", "교환 요청 상태 조회에 성공했습니다."),
+	EXCHANGE_CARD_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2008", "희망/보유카드 조회에 성공했습니다."),
 	EXCHANGE_NOTIFICATION_LIST_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2009", "알림 목록 조회 성공"),
 	EXCHANGE_DUPLICATE_CHECK_SUCCESS(HttpStatus.OK, "EXCHANGE2010", "중복 요청 여부 확인 성공"),
 	EXCHANGE_REQUEST_LIMIT_FETCH_SUCCESS(HttpStatus.OK, "EXCHANGE2011", "요청 가능 수량 조회 성공"),

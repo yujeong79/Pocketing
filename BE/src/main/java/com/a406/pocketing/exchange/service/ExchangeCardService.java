@@ -11,4 +11,6 @@ public interface ExchangeCardService {
     ExchangeCardResponseDto registerExchangeCard(Long userId, ExchangeCardRequestDto requestDto);
 
     List<NearbyExchangeCardResponseDto> getNearbyExchangeList(Long userId, Integer range);
+
+    ExchangeCardResponseDto getExchangeCard(Long userId, Boolean isOwned);
 }
