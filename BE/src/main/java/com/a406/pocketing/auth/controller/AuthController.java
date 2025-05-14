@@ -32,8 +32,8 @@ public class AuthController {
     private final TwitterOAuthService twitterOAuthService;
     private final AuthService authService;
 
-    @Value("${frontend.url}")
-    private String frontendUrl;
+//    @Value("${frontend.url}")
+//    private String frontendUrl;
 
     /**
      * 카카오로부터 인가 코드를 전달 받아 회원가입/로그인 로직 수행
@@ -41,12 +41,14 @@ public class AuthController {
      * @return
      */
     @GetMapping("/kakao/callback")
-    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
         log.info("Kakao OAuth callback code: {}", authorizationCode);
 
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
+
+        String frontendUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
@@ -78,10 +80,12 @@ public class AuthController {
      * @return
      */
     @GetMapping("/twitter/callback")
-    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
         String accessToken = twitterOAuthService.getAccessToken(authorizationCode);
         OAuthUserResponseDto oAuthUserResponseDto = twitterOAuthService.getUserInfo(accessToken);
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
+
+        String frontendUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
