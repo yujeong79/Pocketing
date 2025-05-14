@@ -47,10 +47,9 @@ const ChatRoomPage: React.FC = () => {
 
   useEffect(() => {
     const initializeChat = async () => {
-      if (!roomId || !token) return;
+      if (!roomId || !token || webSocketService.isConnected()) return;
 
       try {
-        // 웹소켓 연결
         await webSocketService.connect(token);
 
         // 초기 메시지 및 채팅방 정보 설정
@@ -77,14 +76,19 @@ const ChatRoomPage: React.FC = () => {
     };
 
     initializeChat();
-  }, [roomId, token, webSocketService, scrollToBottom, chatRoomDetail]);
+
+    return () => {
+      webSocketService.disconnect();
+    };
+  }, [roomId, token]);
 
   useEffect(() => {
-    if (chatRoomDetail?.linkedPost?.postId) {
+    const postId = chatRoomDetail?.linkedPost?.postId;
+    if (postId && !postDetail) {
       // postId로 postDetail API 호출
-      fetchPostDetail(chatRoomDetail.linkedPost.postId).then(setPostDetail);
+      fetchPostDetail(postId).then(setPostDetail);
     }
-  }, [chatRoomDetail?.linkedPost?.postId]);
+  }, [chatRoomDetail?.linkedPost?.postId, postDetail]);
 
   const handleLoadMore = async () => {
     if (!roomId || !hasMore) return;
