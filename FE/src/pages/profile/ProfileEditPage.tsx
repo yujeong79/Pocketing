@@ -184,24 +184,26 @@ const ProfileEditPage = () => {
                 onChange={handleAddressChange}
               />
             </S.InputContainer>
-            <S.InputContainer>
-              <S.Label htmlFor="acct">계좌</S.Label>
-              <S.Input
-                id="acct"
-                placeholder="계좌를 입력하세요"
-                value={account ?? ''}
-                onChange={handleAccountChange}
-              />
-            </S.InputContainer>
-            <S.InputContainer>
-              <S.Label htmlFor="bank">은행</S.Label>
-              <S.Input
-                id="bank"
-                placeholder="은행명을 입력하세요"
-                value={bank ?? ''}
-                onChange={handleBankChange}
-              />
-            </S.InputContainer>
+            <S.BankContainer>
+              <S.InputContainer>
+                <S.Label htmlFor="bank">은행</S.Label>
+                <S.Input
+                  id="bank"
+                  placeholder="은행명을 입력하세요"
+                  value={bank ?? ''}
+                  onChange={handleBankChange}
+                />
+              </S.InputContainer>
+              <S.InputContainer>
+                <S.Label htmlFor="acct">계좌</S.Label>
+                <S.Input
+                  id="acct"
+                  placeholder="계좌를 입력하세요"
+                  value={account ?? ''}
+                  onChange={handleAccountChange}
+                />
+              </S.InputContainer>
+            </S.BankContainer>
           </S.TextContainer>
         </S.InfoContainer>
         <Button

@@ -7,10 +7,9 @@ import { FontStyles } from '@/constants/fonts';
 export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background: ${colors.gray100};
-  padding-bottom: ${scale(80)}px;
 `;
 
 export const ContentsContainer = styled.div`
@@ -113,6 +112,7 @@ export const Input = styled.input`
   }
 `;
 
-export const ButtonContainer = styled.div`
-  padding: ${scale(16)}px;
+export const BankContainer = styled.div`
+  display: flex;
+  gap: ${scale(8)}px;
 `;
