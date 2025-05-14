@@ -25,9 +25,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
         onChange={(e) => setMessage(e.target.value)}
         placeholder="메시지를 입력하세요"
       />
-      <S.SendButton type="submit">
-        <img src={SendIcon} alt="send" />
-      </S.SendButton>
+      <S.SendButtonContainer type="submit">
+        <S.SendButton src={SendIcon} alt="send" />
+      </S.SendButtonContainer>
     </S.InputForm>
   );
 };

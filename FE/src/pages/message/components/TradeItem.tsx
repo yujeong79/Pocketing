@@ -3,6 +3,7 @@ import { useState } from 'react';
 import StateModal from './StateModal';
 import { LinkedPost } from '@/types/chat';
 import { useUpdatePostStatus } from '@/hooks/post/mutation/useStatus';
+import { useNavigate } from 'react-router-dom';
 
 type Status = 'AVAILABLE' | 'COMPLETED';
 
@@ -16,12 +17,13 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
   const [status, setStatus] = useState<Status>(linkedPost.status as Status);
   const [isStateModalOpen, setIsStateModalOpen] = useState(false);
   const { mutate: updatePostStatus } = useUpdatePostStatus();
+  const navigate = useNavigate();
   const isAvailable = status === 'AVAILABLE';
 
   const formattedPrice = linkedPost.price.toLocaleString();
 
   const handleClickTradeItem = () => {
-    console.log('해당 거래글로 이동');
+    navigate(`/post/${linkedPost.postId}`);
   };
 
   const handleClickStateButton = (e: React.MouseEvent) => {

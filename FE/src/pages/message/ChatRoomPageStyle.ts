@@ -80,6 +80,7 @@ export const InputForm = styled.form`
 `;
 
 export const Input = styled.input`
+  ${FontStyles.captionMedium}
   flex: 1;
   padding: ${scale(8)}px ${scale(12)}px;
   border: 1px solid ${colors.primary50};
@@ -97,29 +98,36 @@ export const Input = styled.input`
   }
 `;
 
-export const SendButton = styled.button`
+export const SendButtonContainer = styled.button`
   border: none;
   background-color: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${scale(30)}px;
-  height: ${scale(30)}px;
+`;
+
+export const SendButton = styled.img`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: ${scale(4)}px;
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
 `;
 
 export const LoadMoreButton = styled.button`
   width: 100%;
-  padding: 8px;
-  margin: 8px 0;
-  background-color: #f0f0f0;
+  padding: ${scale(8)}px;
+  margin: ${scale(8)}px 0;
+  background-color: ${colors.gray100};
   border: none;
-  border-radius: 8px;
+  border-radius: ${scale(8)}px;
   cursor: pointer;
-  font-size: 14px;
-  color: #666;
+  ${FontStyles.captionMedium}
+  color: ${colors.gray600};
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: ${colors.gray200};
   }
 `;

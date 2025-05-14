@@ -80,7 +80,7 @@ const ChatRoomPage: React.FC = () => {
     return () => {
       webSocketService.disconnect();
     };
-  }, [roomId, token]);
+  }, [roomId, token, webSocketService, scrollToBottom, chatRoomDetail]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
@@ -108,7 +108,21 @@ const ChatRoomPage: React.FC = () => {
   const handleSendMessage = (content: string) => {
     if (!roomId || !user) return;
 
+    // 메시지 전송
     webSocketService.sendMessage(Number(roomId), content);
+
+    // UI에 즉시 반영 (기존 ChatMessage 타입 활용)
+    const newMessage: ChatMessage = {
+      messageId: Date.now(),
+      roomId: Number(roomId),
+      senderId: user.userId,
+      receiverId: null,
+      messageContent: content,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+    scrollToBottom();
   };
 
   if (!user) return null;
