@@ -17,6 +17,11 @@ class WebSocketService {
   }
 
   public connect(token: string): Promise<void> {
+    if (this.client && this.client.connected) {
+      console.log('이미 WebSocket이 연결되어 있습니다.');
+      return Promise.resolve();
+    }
+
     return new Promise((resolve, reject) => {
       const baseUrl =
         import.meta.env.VITE_WS_BASE_URL || import.meta.env.VITE_API_BASE_URL.replace('/api', '');
@@ -33,8 +38,8 @@ class WebSocketService {
           console.log('WebSocket Debug:', str);
         },
         reconnectDelay: 5000,
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
+        heartbeatIncoming: 0,
+        heartbeatOutgoing: 0,
         onConnect: (frame) => {
           console.log('✅ WebSocket 연결 성공:', frame);
           this.subscribeToMessages();

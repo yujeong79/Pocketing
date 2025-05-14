@@ -1,36 +1,35 @@
-import React, { useState, useCallback } from 'react';
-import { Wonyoung1, Wonyoung2, Wonyoung3 } from '@/assets/assets';
+// ImageCarousel.tsx
+import React, { useState, useCallback, useEffect } from 'react';
 import * as S from './ImageCarouselStyle';
 
-const images = [Wonyoung1, Wonyoung2, Wonyoung3];
-
 interface ImageCarouselProps {
+  images: string[];
   onImageChange?: (index: number) => void;
   optionCompleteStatus: boolean[];
 }
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ onImageChange, optionCompleteStatus }) => {
-  const [selectedIndex, setSelectedIndex] = useState(1);
+const ImageCarousel: React.FC<ImageCarouselProps> = ({
+  images,
+  onImageChange,
+  optionCompleteStatus,
+}) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    onImageChange?.(selectedIndex);
+  }, [selectedIndex, onImageChange]);
 
   const handlePrevClick = useCallback(() => {
     if (selectedIndex > 0) {
-      setSelectedIndex((i) => {
-        const newIndex = i - 1;
-        onImageChange?.(newIndex);
-        return newIndex;
-      });
+      setSelectedIndex((i) => i - 1);
     }
-  }, [selectedIndex, onImageChange]);
+  }, [selectedIndex]);
 
   const handleNextClick = useCallback(() => {
     if (selectedIndex < images.length - 1) {
-      setSelectedIndex((i) => {
-        const newIndex = i + 1;
-        onImageChange?.(newIndex);
-        return newIndex;
-      });
+      setSelectedIndex((i) => i + 1);
     }
-  }, [selectedIndex, onImageChange]);
+  }, [selectedIndex, images.length]);
 
   const isFirstSlide = selectedIndex === 0;
   const isLastSlide = selectedIndex === images.length - 1;

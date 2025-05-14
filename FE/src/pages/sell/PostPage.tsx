@@ -1,22 +1,70 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import * as S from './PostPageStyle';
 import OptionSection from '@/pages/sell/components/OptionSection';
 import CautionModal from '@/pages/sell/components/CautionModal';
+import { resolveMatching } from '@/api/artist/matching';
+import { GeminiResultItem } from '@/types/gemini';
+import { MatchingResultItem } from '@/types/matching';
 
 interface PhotocardSettingData {
-  group: string;
+  groupId?: number;
+  group: string;        // ex) "아이브 (IVE)"
+  memberId?: number;
   member: string;
+  albumId?: number;
   album: string;
+  versionId?: string;
   version: string;
   price: string;
 }
 
+
 const PostPage = () => {
+  const location = useLocation();
+  const geminiResult = location.state?.geminiResult as GeminiResultItem[] || [];
+
   const [isCautionModalOpen, setIsCautionModalOpen] = useState(false);
+  const [initialSettings, setInitialSettings] = useState<PhotocardSettingData[]>([]);
+  const [imageList, setImageList] = useState<string[]>([]);
   const optionSectionRef = useRef<{
     photocardSettings: PhotocardSettingData[];
   }>(null);
+
+  useEffect(() => {
+    const fetchMatching = async () => {
+      try {
+        if (geminiResult.length === 0) return;
+
+        const payload = geminiResult.map(({ groupName, memberName }) => ({
+          groupName,
+          memberName,
+        }));
+
+        const matched: MatchingResultItem[] = await resolveMatching(payload);
+
+        const settings: PhotocardSettingData[] = matched.map((item) => ({
+          groupId: item.groupId,
+          group: `${item.groupNameKo} (${item.groupNameEn})`,
+          memberId: item.memberId ?? undefined,
+          member: item.memberName ?? '',
+          album: '',
+          version: '',
+          price: '',
+        }));
+
+        const images = geminiResult.map((g) => g.postImageUrl);
+
+        setInitialSettings(settings);
+        setImageList(images);
+      } catch (error) {
+        console.error('매칭 실패:', error);
+      }
+    };
+
+    fetchMatching();
+  }, [geminiResult]);
 
   const handleRegisterClick = () => {
     const settings = optionSectionRef.current?.photocardSettings;
@@ -32,15 +80,20 @@ const PostPage = () => {
       return;
     }
 
-    // TODO: 등록 로직 구현
-    console.log('모든 옵션이 설정되어 있습니다. 등록을 진행합니다.');
+    console.log('등록 진행:', settings);
   };
 
   return (
     <>
       <Header type="post" onRegister={handleRegisterClick} />
       <S.Container>
-        <OptionSection ref={optionSectionRef} />
+        {initialSettings.length > 0 && imageList.length > 0 && (
+          <OptionSection
+            ref={optionSectionRef}
+            initialSettings={initialSettings}
+            imageList={imageList}
+          />
+        )}
       </S.Container>
       <CautionModal isOpen={isCautionModalOpen} onClose={() => setIsCautionModalOpen(false)} />
     </>

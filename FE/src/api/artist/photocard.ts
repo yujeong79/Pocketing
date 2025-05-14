@@ -6,10 +6,9 @@ export const fetchPhotocards = async (
   memberId: number
 ): Promise<PhotocardResponse> => {
   const response = await axiosInstance.get('/photocards', {
-    params: {
-      albumId,
-      memberId,
-    },
+    params: { albumId, memberId },
   });
-  return response.data.result.photoCards;
+  return response.data;
 };
+
+
