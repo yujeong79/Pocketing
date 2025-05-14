@@ -46,41 +46,50 @@ const ChatRoomPage: React.FC = () => {
   const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
 
   useEffect(() => {
-    const initializeChat = async () => {
-      if (!roomId || !token || webSocketService.isConnected()) return;
-
-      try {
-        await webSocketService.connect(token);
-
-        // 초기 메시지 및 채팅방 정보 설정
-        if (chatRoomDetail) {
-          setMessages(chatRoomDetail.messagePage.messageList);
-          setHasMore(chatRoomDetail.messagePage.hasNext);
-          scrollToBottom();
-        }
-
-        // 메시지 핸들러 등록
-        const messageHandler = (message: ChatMessage) => {
-          setMessages((prev) => [...prev, message]);
-          scrollToBottom();
-        };
-        webSocketService.addMessageHandler(messageHandler);
-
-        return () => {
-          webSocketService.removeMessageHandler(messageHandler);
-          webSocketService.disconnect();
-        };
-      } catch (error) {
-        console.error('채팅방 초기화 실패:', error);
-      }
-    };
-
-    initializeChat();
-
+    if (!roomId || !token) return;
+    webSocketService.connect(token);
     return () => {
       webSocketService.disconnect();
     };
-  }, [roomId, token, webSocketService, scrollToBottom, chatRoomDetail]);
+  }, [roomId, token, webSocketService]);
+
+  useEffect(() => {
+    if (!chatRoomDetail) return;
+
+    const messageHandler = (message: ChatMessage) => {
+      setMessages((prev) => [...prev, message]);
+      scrollToBottom();
+    };
+    webSocketService.addMessageHandler(messageHandler);
+
+    return () => {
+      webSocketService.removeMessageHandler(messageHandler);
+    };
+  }, [chatRoomDetail, scrollToBottom, webSocketService]);
+
+  useEffect(() => {
+    const initializeChat = async () => {
+      if (!roomId || !token) return;
+
+      if (chatRoomDetail) {
+        setMessages(chatRoomDetail.messagePage.messageList);
+        setHasMore(chatRoomDetail.messagePage.hasNext);
+        scrollToBottom();
+      }
+
+      const messageHandler = (message: ChatMessage) => {
+        setMessages((prev) => [...prev, message]);
+        scrollToBottom();
+      };
+      webSocketService.addMessageHandler(messageHandler);
+
+      return () => {
+        webSocketService.removeMessageHandler(messageHandler);
+      };
+    };
+
+    initializeChat();
+  }, [roomId, token, chatRoomDetail, scrollToBottom, webSocketService]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
