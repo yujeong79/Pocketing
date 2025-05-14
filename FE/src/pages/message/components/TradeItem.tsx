@@ -2,16 +2,20 @@ import * as S from './TradeItemStyle';
 import { useState } from 'react';
 import StateModal from './StateModal';
 import { LinkedPost } from '@/types/chat';
+import { useUpdatePostStatus } from '@/hooks/post/mutation/useStatus';
 
 type Status = 'AVAILABLE' | 'COMPLETED';
 
 interface TradeItemProps {
   linkedPost: LinkedPost;
+  roomId: number;
+  isMyPost: boolean;
 }
 
-const TradeItem = ({ linkedPost }: TradeItemProps) => {
+const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
   const [status, setStatus] = useState<Status>(linkedPost.status as Status);
   const [isStateModalOpen, setIsStateModalOpen] = useState(false);
+  const { mutate: updatePostStatus } = useUpdatePostStatus();
   const isAvailable = status === 'AVAILABLE';
 
   const formattedPrice = linkedPost.price.toLocaleString();
@@ -27,6 +31,7 @@ const TradeItem = ({ linkedPost }: TradeItemProps) => {
 
   const handleStateSelect = (newStatus: Status) => {
     setStatus(newStatus);
+    updatePostStatus({ roomId, status: newStatus });
   };
 
   return (
@@ -38,10 +43,16 @@ const TradeItem = ({ linkedPost }: TradeItemProps) => {
 
         <S.InfoSection>
           <S.StateButtonContainer>
-            <S.StateButton data-available={isAvailable} onClick={handleClickStateButton}>
-              {isAvailable ? '판매중' : '거래완료'}
-              <S.Arrow>&gt;</S.Arrow>
-            </S.StateButton>
+            {isMyPost ? (
+              <S.StateButton data-available={isAvailable} onClick={handleClickStateButton}>
+                {isAvailable ? '판매중' : '거래완료'}
+                <S.Arrow>&gt;</S.Arrow>
+              </S.StateButton>
+            ) : (
+              <S.StateButton data-available={isAvailable} as="div">
+                {isAvailable ? '판매중' : '거래완료'}
+              </S.StateButton>
+            )}
           </S.StateButtonContainer>
 
           <S.AlbumTitle>{linkedPost.photocard.albumTitle}</S.AlbumTitle>

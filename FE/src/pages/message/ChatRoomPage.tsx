@@ -11,6 +11,8 @@ import { ChatMessage, ChatRoomDetail } from '@/types/chat';
 import { loadMoreMessages } from '@/api/chat';
 import WebSocketService from '@/services/websocket';
 import { useAuth } from '@/hooks/useAuth';
+import { PostDetail } from '@/types/post';
+import { fetchPostDetail } from '@/api/posts/post';
 
 type ChatType = 'TRADE' | 'EXCHANGE';
 
@@ -41,6 +43,7 @@ const ChatRoomPage: React.FC = () => {
   const webSocketService = WebSocketService.getInstance();
 
   const { scrollToBottom } = useScrollToBottom(chatContainerRef, [messages]);
+  const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
 
   useEffect(() => {
     const initializeChat = async () => {
@@ -76,6 +79,13 @@ const ChatRoomPage: React.FC = () => {
     initializeChat();
   }, [roomId, token, webSocketService, scrollToBottom, chatRoomDetail]);
 
+  useEffect(() => {
+    if (chatRoomDetail?.linkedPost?.postId) {
+      // postId로 postDetail API 호출
+      fetchPostDetail(chatRoomDetail.linkedPost.postId).then(setPostDetail);
+    }
+  }, [chatRoomDetail?.linkedPost?.postId]);
+
   const handleLoadMore = async () => {
     if (!roomId || !hasMore) return;
 
@@ -103,7 +113,14 @@ const ChatRoomPage: React.FC = () => {
     if (!chatRoomDetail) return null;
 
     if (chatType === 'TRADE' && chatRoomDetail.linkedPost) {
-      return <TradeItem linkedPost={chatRoomDetail.linkedPost} />;
+      const isMyPost = postDetail?.isMine === true;
+      return (
+        <TradeItem
+          linkedPost={chatRoomDetail.linkedPost}
+          roomId={Number(roomId)}
+          isMyPost={isMyPost}
+        />
+      );
     }
 
     if (chatType === 'EXCHANGE' && chatRoomDetail.linkedExchange) {

@@ -1,12 +1,18 @@
 import React from 'react';
 import * as S from '@/pages/message/ChatRoomPageStyle';
-import { ChatRoomProps } from '@/types/chatRoom';
+import { ChatMessage } from '@/types/chat';
 import scale from '@/utils/scale';
 
-/**
- * 개별 채팅 메시지 컴포넌트
- */
-const ChatRoomItem: React.FC<ChatRoomProps> = ({
+interface ChatRoomItemProps {
+  message: ChatMessage;
+  isUser: boolean;
+  continued: boolean;
+  opponentNickname: string;
+  opponentProfile: string;
+}
+
+// 개별 채팅 메세지 컴포넌트
+const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
   message,
   isUser,
   continued,
