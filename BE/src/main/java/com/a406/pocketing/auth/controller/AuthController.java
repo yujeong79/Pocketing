@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.awt.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -39,16 +41,18 @@ public class AuthController {
      * @return
      */
     @GetMapping("/kakao/callback")
-    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
+
+        String targetUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
                     "%s/kakao/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
-                    frontendUrl,
+                    targetUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
@@ -56,7 +60,7 @@ public class AuthController {
         } else {
             redirectUrl = String.format(
                     "%s/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
-                    frontendUrl,
+                    targetUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
@@ -74,16 +78,18 @@ public class AuthController {
      * @return
      */
     @GetMapping("/twitter/callback")
-    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode) {
+    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
         String accessToken = twitterOAuthService.getAccessToken(authorizationCode);
         OAuthUserResponseDto oAuthUserResponseDto = twitterOAuthService.getUserInfo(accessToken);
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
+
+        String targetUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
                     "%s/twitter/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
-                    frontendUrl,
+                    targetUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
@@ -91,7 +97,7 @@ public class AuthController {
         } else {
             redirectUrl = String.format(
                     "%s/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
-                    frontendUrl,
+                    targetUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
