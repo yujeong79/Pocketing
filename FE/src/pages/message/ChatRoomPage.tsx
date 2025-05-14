@@ -7,12 +7,14 @@ import MessageList from './components/ChatRoom/ChatRoomList';
 import MessageInput from './components/ChatRoom/ChatRoomInput';
 import * as S from './ChatRoomPageStyle';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
-import { ChatMessage, ChatRoomDetail } from '@/types/chat';
+import { ChatRoomDetail } from '@/types/chat';
 import { loadMoreMessages } from '@/api/chat';
 import WebSocketService from '@/services/websocket';
 import { useAuth } from '@/hooks/useAuth';
 import { PostDetail } from '@/types/post';
 import { fetchPostDetail } from '@/api/posts/post';
+import { useChatStore } from '@/store/chatStore';
+import { useChatSocket } from '@/hooks/useChatSocket';
 
 type ChatType = 'TRADE' | 'EXCHANGE';
 
@@ -33,9 +35,7 @@ const ChatRoomPage: React.FC = () => {
   }) || {};
 
   const { user, token } = useAuth();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  const { messages, setMessages, addMessage, page, setPage, hasMore, setHasMore } = useChatStore();
   const chatRoomDetail = useMemo(() => initialChatRoomDetail || null, [initialChatRoomDetail]);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -45,42 +45,24 @@ const ChatRoomPage: React.FC = () => {
   const { scrollToBottom } = useScrollToBottom(chatContainerRef, [messages]);
   const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
 
+  // WebSocket 연결 및 메시지 핸들러 등록
+  useChatSocket({
+    roomId,
+    token: token || '',
+    onMessage: (msg) => {
+      addMessage(msg);
+      scrollToBottom();
+    },
+  });
+
   useEffect(() => {
-    const initializeChat = async () => {
-      if (!roomId || !token || webSocketService.isConnected()) return;
-
-      try {
-        await webSocketService.connect(token);
-
-        // 초기 메시지 및 채팅방 정보 설정
-        if (chatRoomDetail) {
-          setMessages(chatRoomDetail.messagePage.messageList);
-          setHasMore(chatRoomDetail.messagePage.hasNext);
-          scrollToBottom();
-        }
-
-        // 메시지 핸들러 등록
-        const messageHandler = (message: ChatMessage) => {
-          setMessages((prev) => [...prev, message]);
-          scrollToBottom();
-        };
-        webSocketService.addMessageHandler(messageHandler);
-
-        return () => {
-          webSocketService.removeMessageHandler(messageHandler);
-          webSocketService.disconnect();
-        };
-      } catch (error) {
-        console.error('채팅방 초기화 실패:', error);
-      }
-    };
-
-    initializeChat();
-
-    return () => {
-      webSocketService.disconnect();
-    };
-  }, [roomId, token, webSocketService, scrollToBottom, chatRoomDetail]);
+    if (!roomId || !token || !chatRoomDetail) return;
+    // 최초 입장시에만 메시지 초기화
+    setMessages(chatRoomDetail.messagePage.messageList);
+    setHasMore(chatRoomDetail.messagePage.hasNext);
+    scrollToBottom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, token]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
@@ -96,8 +78,8 @@ const ChatRoomPage: React.FC = () => {
     try {
       const response = await loadMoreMessages(Number(roomId), page + 1);
       if (response.isSuccess) {
-        setMessages((prev) => [...response.result.messageList, ...prev]);
-        setPage((prev) => prev + 1);
+        setMessages([...response.result.messageList, ...messages]);
+        setPage(page + 1);
         setHasMore(response.result.hasNext);
       }
     } catch (error) {
@@ -107,21 +89,17 @@ const ChatRoomPage: React.FC = () => {
 
   const handleSendMessage = (content: string) => {
     if (!roomId || !user) return;
-
-    // 메시지 전송
+    // WebSocket으로 전송
     webSocketService.sendMessage(Number(roomId), content);
-
-    // UI에 즉시 반영 (기존 ChatMessage 타입 활용)
-    const newMessage: ChatMessage = {
+    // UI에 바로 반영
+    addMessage({
       messageId: Date.now(),
       roomId: Number(roomId),
       senderId: user.userId,
       receiverId: null,
       messageContent: content,
       createdAt: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
+    });
     scrollToBottom();
   };
 

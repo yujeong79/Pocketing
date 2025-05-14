@@ -23,7 +23,7 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
   const formattedPrice = linkedPost.price.toLocaleString();
 
   const handleClickTradeItem = () => {
-    navigate(`/post/${linkedPost.postId}`);
+    navigate(`/detail/${linkedPost.postId}`);
   };
 
   const handleClickStateButton = (e: React.MouseEvent) => {
