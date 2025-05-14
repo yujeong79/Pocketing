@@ -134,11 +134,11 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
 
     if (selectedData.memberId) {
       try {
-        const cards = await fetchPhotocards(album.albumId, selectedData.memberId);
-        const mappedCards = cards.result.map((card) => ({
-        cardId: String(card.cardId),
-        cardImageUrl: card.cardImageUrl,
-      }));
+        const response = await fetchPhotocards(album.albumId, selectedData.memberId);
+        const mappedCards = response.result?.photoCards.map((card) => ({
+          cardId: String(card.cardId),
+          cardImageUrl: card.cardImageUrl,
+        })) ?? [];
         setPhotocardList(mappedCards);
       } catch {
         setPhotocardList([]);
