@@ -59,17 +59,17 @@ public class AuthController {
             );
         } else {
             redirectUrl = String.format(
-                    "%s/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    "%s/kakao/callback?isRegistered=%s&userId=%s&accessToken=%s",
                     targetUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
-                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
-                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
+//                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
+//                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
             );
         }
 
-        return new RedirectView(targetUrl + "kakao/callback/?isRegistered=true");
+        return new RedirectView(redirectUrl);
     }
 
     /**
