@@ -41,30 +41,28 @@ public class AuthController {
      * @return
      */
     @GetMapping("/kakao/callback")
-    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
+    public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode) {
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
-
-        String targetUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
                     "%s/kakao/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
-                    targetUrl,
+                    frontendUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
             );
         } else {
             redirectUrl = String.format(
-                    "%s/kakao/callback?isRegistered=%s&userId=%s&accessToken=%s",
-                    targetUrl,
+                    "%s/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    frontendUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
-//                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
-//                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
             );
         }
@@ -78,18 +76,16 @@ public class AuthController {
      * @return
      */
     @GetMapping("/twitter/callback")
-    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
+    public RedirectView twitterCallback(@RequestParam("code") String authorizationCode) {
         String accessToken = twitterOAuthService.getAccessToken(authorizationCode);
         OAuthUserResponseDto oAuthUserResponseDto = twitterOAuthService.getUserInfo(accessToken);
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto);
-
-        String targetUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
 
         String redirectUrl;
         if(!loginResponseDto.getIsRegistered()) {
             redirectUrl = String.format(
                     "%s/twitter/callback?isRegistered=%s&oauthProvider=%s&providerId=%s",
-                    targetUrl,
+                    frontendUrl,
                     URLEncoder.encode("false", StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProviderId(), StandardCharsets.UTF_8)
@@ -97,7 +93,7 @@ public class AuthController {
         } else {
             redirectUrl = String.format(
                     "%s/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
-                    targetUrl,
+                    frontendUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
