@@ -9,12 +9,17 @@ import { GeminiResultItem } from '@/types/gemini';
 import { MatchingResultItem } from '@/types/matching';
 
 interface PhotocardSettingData {
-  group: string;
+  groupId?: number;
+  group: string;        // ex) "아이브 (IVE)"
+  memberId?: number;
   member: string;
+  albumId?: number;
   album: string;
+  versionId?: string;
   version: string;
   price: string;
 }
+
 
 const PostPage = () => {
   const location = useLocation();
