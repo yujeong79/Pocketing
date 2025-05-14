@@ -42,6 +42,8 @@ public class AuthController {
      */
     @GetMapping("/kakao/callback")
     public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode) {
+        log.info("Kakao OAuth callback code: {}", authorizationCode);
+
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
