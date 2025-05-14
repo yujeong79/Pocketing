@@ -1,6 +1,7 @@
 import React, { RefObject } from 'react';
 import * as S from '../../ChatRoomPageStyle';
 import { ChatMessage } from '@/types/chat';
+import ChatRoomItem from './ChatRoomItem';
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -28,27 +29,27 @@ const MessageList: React.FC<MessageListProps> = ({
     }
   };
 
+  // 메시지 시간순으로 정렬
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+
   return (
     <S.ChatContainer ref={chatContainerRef} onScroll={handleScroll}>
-      {hasMore && <button onClick={onLoadMore}>이전 메시지 더보기</button>}
-      {messages.map((message, index) => {
+      {hasMore && <S.LoadMoreButton onClick={onLoadMore}>이전 메시지 더보기</S.LoadMoreButton>}
+      {sortedMessages.map((message, index) => {
         const isUser = message.senderId === myUserId;
-        const showProfile =
-          !isUser && (!messages[index - 1] || messages[index - 1].senderId !== message.senderId);
-        const continued = index > 0 && messages[index - 1].senderId === message.senderId;
+        const continued = index > 0 && sortedMessages[index - 1].senderId === message.senderId;
 
         return (
-          <S.MessageWrapper key={message.messageId} isUser={isUser} continued={continued}>
-            {!isUser && showProfile && (
-              <>
-                <S.ProfileImage src="/default-profile.png" alt="프로필" />
-                <div>
-                  <S.NickNameText isUser={isUser}>{opponentNickname}</S.NickNameText>
-                </div>
-              </>
-            )}
-            <S.MessageText isUser={isUser}>{message.messageContent}</S.MessageText>
-          </S.MessageWrapper>
+          <ChatRoomItem
+            key={message.messageId}
+            message={message}
+            isUser={isUser}
+            continued={continued}
+            opponentNickname={opponentNickname}
+            opponentProfile="/default-profile.png"
+          />
         );
       })}
       <div ref={endOfMessagesRef} />
