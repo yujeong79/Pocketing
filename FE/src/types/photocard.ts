@@ -3,9 +3,13 @@ export interface Photocard {
   cardImageUrl: string;
 }
 
+export interface PhotocardResult {
+  photoCards: Photocard[];
+}
+
 export interface PhotocardResponse {
   isSuccess: boolean;
   code: string;
   message: string;
-  result: Photocard[];
+  result: PhotocardResult | null;
 }
