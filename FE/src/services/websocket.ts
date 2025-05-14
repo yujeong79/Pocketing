@@ -29,12 +29,9 @@ class WebSocketService {
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        debug:
-          process.env.NODE_ENV === 'development'
-            ? (str) => {
-                console.log('WebSocket Debug:', str);
-              }
-            : undefined,
+        debug: (str) => {
+          console.log('WebSocket Debug:', str);
+        },
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
@@ -101,7 +98,7 @@ class WebSocketService {
   }
 
   public isConnected(): boolean {
-    return this.client?.connected ?? false;
+    return !!this.client?.connected;
   }
 }
 
