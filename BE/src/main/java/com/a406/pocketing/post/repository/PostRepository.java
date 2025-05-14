@@ -84,6 +84,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         g.nameEn,
         g.groupImageUrl,
         a.title,
+        u.userId,
         u.nickname,
         u.isVerified,
         u.profileImageUrl,

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long> {
     // 1. userId + isOwned + status = 'ACTIVE' 조회
@@ -58,6 +59,21 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
             @Param("range") Double range
     );
 
+    @Query("""
+    SELECT e FROM ExchangeCard e
+    WHERE e.user.userId = :userId
+      AND e.album.albumId = :albumId
+      AND e.member.memberId = :memberId
+      AND e.isOwned = :isOwned
+      AND e.status = :status
+""")
+    Optional<ExchangeCard> findDuplicateCard(
+            @Param("userId") Long userId,
+            @Param("albumId") Long albumId,
+            @Param("memberId") Long memberId,
+            @Param("isOwned") Boolean isOwned,
+            @Param("status") String status
+    );
 
 
 }

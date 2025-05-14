@@ -64,14 +64,23 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GeneralException(MEMBER_NOT_FOUND));
 
-        // 1. userId + isOwned + status = ACTIVE인 기존 카드 탐색
+        // 1. 동일 카드 중복 등록 방지
+        Optional<ExchangeCard> duplicate = exchangeCardRepository
+                .findDuplicateCard(
+                        userId, albumId, memberId, isOwned,"ACTIVE"
+                );
+        if (duplicate.isPresent()) {
+            throw new GeneralException(EXCHANGE_CARD_EXISTS);
+        }
+
+        // 2. userId + isOwned + status = ACTIVE인 기존 카드 탐색
         ExchangeCard existingCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned);
 
         if(existingCard != null){
-            // 2. 있으면 update
+            // 3. 있으면 update
             existingCard.updateCardInfo(group, album, member, description, exchangeImageUrl);
         } else {
-            // 3. 없으면 insert
+            // 4. 없으면 insert
             ExchangeCard newCard = ExchangeCard.builder()
                     .user(user)
                     .group(group)

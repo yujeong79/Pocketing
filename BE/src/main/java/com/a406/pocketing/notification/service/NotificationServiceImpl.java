@@ -16,12 +16,15 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.NOTIFICATION_TOKEN_NOT_FOUND;
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
@@ -64,47 +67,78 @@ public class NotificationServiceImpl implements NotificationService {
                         .build());
     }
 
+    /**
+     * FCM 등록 API
+     * @param userId
+     * @param requestDto
+     */
     @Override
+    @Transactional
     public void registerFcmToken(Long userId, FcmTokenRequestDto requestDto) {
         String token = requestDto.getFcmToken();
+
+        if (token == null || token.isBlank()) {
+            throw new GeneralException(NOTIFICATION_TOKEN_NOT_FOUND);
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
-
-        Boolean exists = fcmTokenRepository.existsByUserAndToken(user, token);
-        if(!exists) {
-            FcmToken fcmToken = FcmToken.builder()
-                    .user(user)
-                    .token(token)
-                    .isActive(true)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            fcmTokenRepository.save(fcmToken);
+        try {
+            fcmTokenRepository.findByToken(token).ifPresentOrElse(existingToken -> {
+                //토큰이 이미 존재할 때
+                if (!existingToken.getUser().getUserId().equals(userId)) {
+                    existingToken.setUser(user);
+                }
+                existingToken.setIsActive(true);
+                existingToken.updateTimestamp();
+                fcmTokenRepository.save(existingToken);
+            }, () -> {
+                // 토큰이 없을 때
+                FcmToken newToken = FcmToken.builder()
+                        .user(user)
+                        .token(token)
+                        .isActive(true)
+                        .build();
+                fcmTokenRepository.save(newToken);
+            });
+        } catch (DataIntegrityViolationException e) {
+            log.warn("FCM 중복 토큰 처리됨: {}", token);
         }
     }
 
     @Override
+    @Transactional
     public void sendFcmToUser(Long userId, String title, String body) {
         log.info("FCM 토큰 조회 시도 - userId: {}", userId);
+        List<String> tokens = fcmTokenRepository.findActiveTokensByUserId(userId);
+        log.info("조회된 FCM 토큰 개수: {}", tokens.size());
 
-        String token = fcmTokenRepository.findFirstActiveTokenByUserId(userId)
-                .map(FcmToken::getToken)
-                .orElseThrow(() -> new GeneralException(NOTIFICATION_TOKEN_NOT_FOUND));
+        for (String token : tokens) {
+            log.info("전송 시도: token={}", token);
 
-        // fcm 메시지 생성
-        Message message = Message.builder()
-                .setToken(token)
-                .setNotification(com.google.firebase.messaging.Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
-                .build();
+            Message message = Message.builder()
+                    .setToken(token)
+                    .putData("title", title)
+                    .putData("body", body)
+                    .putData("type", "EXCHANGE")
+                    .build();
 
-        //fcm 전송
-        try {
-            firebaseMessaging.send(message);
-            log.info("FCM 전송 성공: {}", firebaseMessaging.send(message));
-        } catch (FirebaseMessagingException e) {
-            log.error("FCM 전송 실패 (UserId={}): {}", userId, e.getMessage());
+            try {
+                firebaseMessaging.send(message);
+                log.info("FCM 전송 성공: token={}", token);
+            } catch (FirebaseMessagingException e) {
+                log.error("FCM 전송 실패 (token: {}): {}",  token, e.getMessage());
+                if (e.getErrorCode().equals("registration-token-not-registered") ||
+                    e.getErrorCode().equals("Requested entity was not found")) {
+                    fcmTokenRepository.deactivateToken(token);
+
+                    if ("registration-token-not-registered".equals(e.getErrorCode()) ||
+                            (e.getMessage().contains("Requested entity was not found."))) {
+                        fcmTokenRepository.deactivateToken(token);
+                        log.info("비활성화 처리 완료: {}", token);
+                    }
+                }
+            }
         }
     }
 
@@ -118,5 +152,38 @@ public class NotificationServiceImpl implements NotificationService {
                                                         .notificationType(type)
                                                                 .build();
         notificationRepository.save(notification);
+    }
+
+    @Override
+    @Transactional
+    public void sendChatMessageNotification(Long receiverId, String senderNickname, String messageContent, Long roomId) {
+        log.info("채팅 FCM 전송 시도 - receiverId: {}, roomId: {}", receiverId, roomId);
+
+        List<String> tokens = fcmTokenRepository.findActiveTokensByUserId(receiverId);
+
+        String title = "새로운 메시지 도착";
+        String body = senderNickname + ":" + (messageContent.length() > 50 ? messageContent.substring(0, 47) + "..." : messageContent);
+
+        for (String token : tokens) {
+            Message message = Message.builder()
+                    .setToken(token)
+                    .putData("title", title)
+                    .putData("body", body)
+                    .putData("type", "CHAT")
+                    .putData("roomId", roomId.toString())
+                    .build();
+
+            try {
+                firebaseMessaging.send(message);
+            } catch (FirebaseMessagingException e) {
+                log.error("FCM 전송 실패 (token: {}): {}", token, e.getMessage());
+
+                if ("registration-token-not-registered".equals(e.getErrorCode()) ||
+                        (e.getMessage().contains("Requested entity was not found."))) {
+                    fcmTokenRepository.deactivateToken(token);
+                    log.info("비활성화 처리 완료: {}", token);
+                }
+            }
+        }
     }
 }
