@@ -17,19 +17,25 @@ interface OptionSectionHandle {
   photocardSettings: PhotocardSettingData[];
 }
 
-const OptionSection = forwardRef<OptionSectionHandle>((_, ref) => {
-  const [showMarketPrice, setShowMarketPrice] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(1);
-  const [photocardSettings, setPhotocardSettings] = useState<PhotocardSettingData[]>([
-    { group: '', member: '', album: '', version: '', price: '' },
-    { group: '', member: '', album: '', version: '', price: '' },
-    { group: '', member: '', album: '', version: '', price: '' },
-  ]);
+interface OptionSectionProps {
+  initialSettings: PhotocardSettingData[];
+  imageList: string[];
+}
 
-  useImperativeHandle(ref, () => ({
-    photocardSettings,
-  }));
+
+const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
+  ({ initialSettings, imageList }, ref) => {
+    const [showMarketPrice, setShowMarketPrice] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [photocardSettings, setPhotocardSettings] = useState<PhotocardSettingData[]>(
+      initialSettings
+    );
+
+    useImperativeHandle(ref, () => ({
+      photocardSettings,
+    }));
+
 
   const handlePriceChange = (e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/[^0-9]/g, '');
@@ -97,22 +103,22 @@ const OptionSection = forwardRef<OptionSectionHandle>((_, ref) => {
     setCurrentImageIndex(index);
   };
 
-  const currentPhotocard = photocardSettings[currentImageIndex];
-
   const optionCompleteStatus = useMemo(() => {
-    return photocardSettings.map((settings) =>
-      Boolean(
-        settings.group && settings.member && settings.album && settings.version && settings.price
-      )
-    );
-  }, [photocardSettings]);
+      return photocardSettings.map((settings) =>
+        Boolean(
+          settings.group && settings.member && settings.album && settings.version && settings.price
+        )
+      );
+    }, [photocardSettings]);
 
-  return (
-    <S.Container>
-      <ImageCarousel
-        onImageChange={handleImageChange}
-        optionCompleteStatus={optionCompleteStatus}
-      />
+    const currentPhotocard = photocardSettings[currentImageIndex];
+return (
+      <S.Container>
+        <ImageCarousel
+          images={imageList}
+          onImageChange={handleImageChange}
+          optionCompleteStatus={optionCompleteStatus}
+        />
 
       <S.OptionRow>
         <S.Label>아티스트</S.Label>
