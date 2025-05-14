@@ -1,34 +1,45 @@
 import React, { RefObject } from 'react';
-import * as S from '@/pages/message/ChatRoomPageStyle';
-import ChatRoomItem from '@/pages/message/components/ChatRoom/ChatRoomItem';
-import { ChatRoom } from '@/types/chatRoom';
+import * as S from '../../ChatRoomPageStyle';
+import { ChatMessage } from '@/types/chat';
+import ChatRoomItem from './ChatRoomItem';
 
-interface ChatRoomListProps {
-  messages: ChatRoom[];
+interface MessageListProps {
+  messages: ChatMessage[];
   myUserId: number;
   opponentNickname: string;
-  opponentProfile: string;
   chatContainerRef: RefObject<HTMLDivElement>;
   endOfMessagesRef: RefObject<HTMLDivElement>;
+  onLoadMore: () => void;
+  hasMore: boolean;
 }
 
-/**
- * 메시지 목록 컴포넌트
- */
-const ChatRoomList: React.FC<ChatRoomListProps> = ({
+const MessageList: React.FC<MessageListProps> = ({
   messages,
   myUserId,
   opponentNickname,
-  opponentProfile,
   chatContainerRef,
   endOfMessagesRef,
+  onLoadMore,
+  hasMore,
 }) => {
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop } = e.currentTarget;
+    if (scrollTop === 0 && hasMore) {
+      onLoadMore();
+    }
+  };
+
+  // 메시지 시간순으로 정렬
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  );
+
   return (
-    <S.ChatContainer ref={chatContainerRef}>
-      {messages.map((message, idx) => {
+    <S.ChatContainer ref={chatContainerRef} onScroll={handleScroll}>
+      {hasMore && <S.LoadMoreButton onClick={onLoadMore}>이전 메시지 더보기</S.LoadMoreButton>}
+      {sortedMessages.map((message, index) => {
         const isUser = message.senderId === myUserId;
-        const prev = messages[idx - 1];
-        const continued = prev && prev.senderId === message.senderId;
+        const continued = index > 0 && sortedMessages[index - 1].senderId === message.senderId;
 
         return (
           <ChatRoomItem
@@ -37,15 +48,13 @@ const ChatRoomList: React.FC<ChatRoomListProps> = ({
             isUser={isUser}
             continued={continued}
             opponentNickname={opponentNickname}
-            opponentProfile={opponentProfile}
+            opponentProfile="/default-profile.png"
           />
         );
       })}
-
-      {/* 스크롤 타겟 */}
-      <div ref={endOfMessagesRef} style={{ height: 1 }} />
+      <div ref={endOfMessagesRef} />
     </S.ChatContainer>
   );
 };
 
-export default ChatRoomList;
+export default MessageList;

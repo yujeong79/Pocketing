@@ -1,12 +1,18 @@
 import React from 'react';
 import * as S from '@/pages/message/ChatRoomPageStyle';
-import { ChatRoomProps } from '@/types/chatRoom';
+import { ChatMessage } from '@/types/chat';
 import scale from '@/utils/scale';
 
-/**
- * 개별 채팅 메시지 컴포넌트
- */
-const ChatRoomItem: React.FC<ChatRoomProps> = ({
+interface ChatRoomItemProps {
+  message: ChatMessage;
+  isUser: boolean;
+  continued: boolean;
+  opponentNickname: string;
+  opponentProfile: string;
+}
+
+// 개별 채팅 메세지 컴포넌트
+const ChatRoomItem: React.FC<ChatRoomItemProps> = ({
   message,
   isUser,
   continued,
@@ -14,24 +20,24 @@ const ChatRoomItem: React.FC<ChatRoomProps> = ({
   opponentProfile,
 }) => {
   return (
-    <S.MessageWrapper isUser={isUser} continued={continued}>
+    <S.MessageContainer $isUser={isUser} $continued={continued}>
       {!isUser && (
         <>
           {/* 연속된 메시지가 아닐 때만 프로필 이미지 표시 */}
           {!continued ? (
-            <S.ProfileImage src={opponentProfile} />
+            <S.ProfileImage src={opponentProfile} alt="프로필" />
           ) : (
             <div style={{ width: `${scale(32)}px` }} />
           )}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             {/* 연속된 메시지가 아닐 때만 닉네임 표시 */}
-            {!continued && <S.NickNameText isUser={isUser}>{opponentNickname}</S.NickNameText>}
-            <S.MessageText isUser={isUser}>{message.messageContent}</S.MessageText>
+            {!continued && <S.NickName $isUser={isUser}>{opponentNickname}</S.NickName>}
+            <S.Message $isUser={isUser}>{message.messageContent}</S.Message>
           </div>
         </>
       )}
-      {isUser && <S.MessageText isUser={isUser}>{message.messageContent}</S.MessageText>}
-    </S.MessageWrapper>
+      {isUser && <S.Message $isUser={isUser}>{message.messageContent}</S.Message>}
+    </S.MessageContainer>
   );
 };
 

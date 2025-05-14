@@ -35,13 +35,18 @@ export const StateButtonContainer = styled.div`
   width: 100%;
 `;
 
-export const StateButton = styled.div<{ isAvailable: boolean }>`
+export const StateButton = styled.div`
   ${FontStyles.captionMedium}
   width: 100%;
   display: flex;
   justify-content: flex-start;
 
-  color: ${({ isAvailable }) => (isAvailable ? colors.success : colors.gray700)};
+  &[data-available='true'] {
+    color: ${colors.success};
+  }
+  &[data-available='false'] {
+    color: ${colors.gray700};
+  }
 `;
 
 export const Arrow = styled.div`
