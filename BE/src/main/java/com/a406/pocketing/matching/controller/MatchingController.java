@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/matching")
 @RequiredArgsConstructor
@@ -19,9 +21,9 @@ public class MatchingController {
     private final MatchingService matchingService;
 
     @PostMapping("/resolve-ai")
-    public ApiResponse<AiResolveResponseDto> resolveAi(@RequestBody AiResolveRequestDto dto) {
+    public ApiResponse<List<AiResolveResponseDto>> resolveAi(@RequestBody List<AiResolveRequestDto> requests) {
         return ApiResponse.of(SuccessStatus.AI_RESOLVE_SUCCESS,
-                matchingService.resolve(dto.getGroupName(), dto.getMemberName()));
+                matchingService.resolveAll(requests));
     }
 }
 
