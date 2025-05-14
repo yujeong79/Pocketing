@@ -11,14 +11,17 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 const ProfileImagePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSelectedImage(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
