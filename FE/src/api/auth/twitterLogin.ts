@@ -6,14 +6,14 @@ export const getTwitterLoginUrl = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const redirectUri = `${baseUrl}/auth/twitter/callback`;
   const clientId = import.meta.env.VITE_TWITTER_CLIENT_ID;
-
+  const state = import.meta.env.VITE_STATE_URL;
   return (
     `https://twitter.com/i/oauth2/authorize` +
     `?response_type=code` +
     `&client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
     `&scope=users.read%20tweet.read` +
-    `&state=random_value` +
+    `&state=${state}` +
     `&code_challenge=challenge` +
     `&code_challenge_method=plain`
   );
