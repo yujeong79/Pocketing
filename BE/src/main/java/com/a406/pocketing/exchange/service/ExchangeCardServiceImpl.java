@@ -129,6 +129,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
                 .group(exchangeCard.getGroup().getDisplayName())
                 .album(exchangeCard.getAlbum().getTitle())
                 .member(exchangeCard.getMember().getName())
+                .imageUrl(exchangeCard.getExchangeImageUrl())
                 .build();
     }
 
