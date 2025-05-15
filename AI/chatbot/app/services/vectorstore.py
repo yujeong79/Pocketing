@@ -11,8 +11,8 @@ class VectorStore:
     def __init__(self):
         try:
             self.client = chromadb.HttpClient(
-                host=settings.CHROMADB_HOST,
-                port=settings.CHROMADB_PORT,
+                host=settings.CHROMA_HOST,
+                port=settings.CHROMA_PORT,
                 settings=ChromadbSettings(
                     persist_directory=settings.CHROMA_DB_PATH,
                     anonymized_telemetry=False

@@ -2,6 +2,9 @@
 openai>=1.0.0
 langchain>=0.0.267
 langchain-openai>=0.0.1
+chromadb>=0.4.13
+redis>=5.0.0
+
 
 # 웹 프레임워크
 fastapi>=0.103.1
@@ -10,12 +13,9 @@ websockets>=11.0.3
 
 # 유틸리티
 pydantic>=2.4.2
+pydantic-settings>=2.0.0
 python-dotenv>=1.0.0
 loguru>=0.7.0
-numpy>=1.24.0
-
-# 데이터베이스
-redis>=4.6.0
-pymongo==4.6.3
-chromadb>=0.4.13
-httpx>=0.24.1
+numpy==1.26.4
+schedule>=1.2.0
+requests>=2.25.1

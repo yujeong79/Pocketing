@@ -12,7 +12,8 @@ class PhotocardExtractor:
         self.api_url = settings.BACKEND_API_URL
         self.headers = {
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Authorization": f"Bearer {settings.API_TOKEN}"
         }
 
     def extract_all_photocards(self, batch_size: int = 100) -> List[Dict[str, Any]]:
@@ -163,7 +164,7 @@ class PhotocardExtractor:
     def extract_photocards_without_embeddings(self, batch_size: int = 100) -> List[Dict[str, Any]]:
         try:
             all_photocards = []
-            page = 1
+            page = 0
             has_more = True
 
             while has_more:
@@ -177,16 +178,13 @@ class PhotocardExtractor:
                 response.raise_for_status()
 
                 data = response.json()
-                photocards = data.get("content", [])
+                photocards = data.get("result", [])
 
                 if not photocards:
                     has_more = False
                 else:
                     all_photocards.extend(photocards)
                     page += 1
-
-                    if data.get("last", True):
-                        has_more = False
 
                 logger.info(f"임베딩 없는 포토카드, 페이지 {page - 1} 완료. 총 {len(all_photocards)}개")
 

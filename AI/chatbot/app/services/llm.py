@@ -14,24 +14,32 @@ class LLMService:
         self.model = settings.LLM_MODEL
         self.temperature = settings.LLM_TEMPERATURE
         self.api_key = settings.OPENAI_API_KEY
-        self.api_url = "https://api.openai.com/v1/chat/completions"
+        self.api_url = f"{settings.OPENAI_API_BASE}/chat/completions"
         self.headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
-        logger.info(f"LLM 서비스 초기화 완료. 모델: {self.model}, 온도: {self.temperature}")
+        logger.info(f"LLM 서비스 초기화 완료. 모델: {self.model}, 온도: {self.temperature}") \
 
-    def generate_response(self, messages: List[Dict[str, str]], system_prompt: Optional[str] = None) -> str:
+
+    def generate_response(self, messages: List[Dict[str, str]],
+                          system_prompt: Optional[str] = None,
+                          response_format: Optional[Dict[str, str]] = None) -> str:
         try:
             all_messages = []
             if system_prompt:
                 all_messages.append({"role": "system", "content": system_prompt})
             all_messages.extend(messages)
+
             payload = {
                 "model": self.model,
                 "messages": all_messages,
                 "temperature": self.temperature
             }
+
+            if response_format:
+                payload["response_format"] = response_format
+
             response = requests.post(
                 self.api_url,
                 headers=self.headers,

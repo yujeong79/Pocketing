@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
 
     OPENAI_API_KEY: str
+    OPENAI_API_BASE: str
 
     EMBEDDING_MODEL: str
 
@@ -10,6 +11,7 @@ class Settings(BaseSettings):
     WS_PORT: int
 
     BACKEND_API_URL:str
+    API_TOKEN: str
 
     CHROMA_HOST: str
     CHROMA_PORT: int

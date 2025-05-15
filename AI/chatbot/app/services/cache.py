@@ -31,7 +31,8 @@ class RedisCache:
             self.api_url = settings.BACKEND_API_URL
             self.headers = {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "Authorization": f"Bearer {settings.API_TOKEN}"  # 인증 토큰 추가
             }
             logger.info("Redis 캐시 및 포토카드 판매글 클라이언트 초기화 완료")
         except Exception as e:
@@ -235,6 +236,7 @@ class RedisCache:
                                 post_id=cached_json["post_id"],
                                 price=cached_json["price"],
                                 post_image_url=cached_json["post_image_url"],
+                                card_image_url=cached_json.get("post_image_url"),  # post_image_url로 대체
                                 nickname=cached_json["nickname"],
                                 last_updated=cached_json["last_updated"]
                             )
@@ -256,29 +258,34 @@ class RedisCache:
             if missing_card_ids:
                 logger.info(f"{len(missing_card_ids)}개 포토카드의 최저가 판매글 API에서 일괄 조회 시작")
                 card_ids_str = ",".join(map(str, missing_card_ids))
-                response = requests.get(
-                    f"{self.api_url}/api/posts/cheapest/bulk",
-                    params={"cardIds": card_ids_str},
-                    headers=self.headers,
-                    timeout=15
-                )
-                response.raise_for_status()
+                try:
+                    response = requests.get(
+                        f"{self.api_url}/api/posts/cheapest/bulk",
+                        params={"cardIds": card_ids_str},
+                        headers=self.headers,
+                        timeout=15
+                    )
+                    response.raise_for_status()
 
-                data = response.json()
-                if data.get("success") and "result" in data:
+                    data = response.json()
+                    logger.debug(f"API 응답: {data}")
 
-                    for card_id_str, post_data in data["result"].items():
-                        card_id = int(card_id_str)
+                    if data.get("isSuccess") and "result" in data:
+                        result_data = data["result"]
 
-                        if post_data.get("post_id") is not None:
+                        for card_id_str, post_data in result_data.items():
+                            card_id = int(card_id_str)
+
                             post_info = PostInfo(
                                 post_id=post_data.get("post_id"),
                                 price=post_data.get("price"),
                                 post_image_url=post_data.get("post_image_url"),
+                                card_image_url=post_data.get("post_image_url"),  # post_image_url과 동일하게 설정
                                 nickname=post_data.get("nickname"),
                                 last_updated=post_data.get("last_updated")
                             )
-                            if cache_config.enabled and self.redis_client:
+
+                            if cache_config.enabled and self.redis_client and post_data.get("post_id") is not None:
                                 cache_key = f"{self.post_prefix}{generate_cache_key(card_id)}"
                                 cache_ttl = cache_config.get_ttl_seconds()
                                 cache_data = {
@@ -301,29 +308,58 @@ class RedisCache:
                                     card_id=card_id,
                                     cheapest_post=post_info
                                 )
-                        else:
-                            logger.info(f"포토카드 ID {card_id}의 판매글 없음, 포토카드 대표이미지 정보만 반환")
+
+                        logger.info(f"포토카드 최저가 판매글 API 일괄 조회 성공: {len(results)}개 결과")
+                    else:
+                        logger.warning(f"포토카드 최저가 판매글 API 응답 오류: {data}")
+
+                        for card_id in missing_card_ids:
                             post_info = PostInfo(
                                 post_id=None,
                                 price=None,
-                                post_image_url=post_data.get("post_image_url"),
+                                post_image_url="",
+                                card_image_url="",
                                 nickname="판매자 없음",
-                                last_updated=post_data.get("last_updated")
+                                last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                             )
-
                             results[card_id] = PhotoCardResult(
                                 card_id=card_id,
                                 cheapest_post=post_info
                             )
+                except requests.exceptions.HTTPError as e:
+                    logger.error(f"API 요청 실패: {str(e)}")
 
-                    logger.info(f"포토카드 최저가 판매글 API 일괄 조회 성공: {len(results)}개 결과")
-                else:
-                    logger.warning("포토카드 최저가 판매글 API 응답 오류")
+                    for card_id in missing_card_ids:
+                        post_info = PostInfo(
+                            post_id=None,
+                            price=None,
+                            post_image_url="",
+                            card_image_url="",
+                            nickname="판매자 없음",
+                            last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                        )
+                        results[card_id] = PhotoCardResult(
+                            card_id=card_id,
+                            cheapest_post=post_info
+                        )
+                except Exception as e:
+                    logger.error(f"최저가 판매글 일괄 조회 중 오류 발생: {str(e)}")
+
+                    for card_id in missing_card_ids:
+                        post_info = PostInfo(
+                            post_id=None,
+                            price=None,
+                            post_image_url="",
+                            card_image_url="",
+                            nickname="판매자 없음",
+                            last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                        )
+                        results[card_id] = PhotoCardResult(
+                            card_id=card_id,
+                            cheapest_post=post_info
+                        )
             return results
 
-        except requests.exceptions.HTTPError as e:
-            logger.error(f"API 요청 실패: {str(e)}")
-            return results
         except Exception as e:
             logger.error(f"최저가 판매글 일괄 조회 중 오류 발생: {str(e)}")
-            return results
+            return {}

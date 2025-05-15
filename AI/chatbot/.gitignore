@@ -24,6 +24,8 @@ var/
 htmlcov/
 coverage.xml
 *.cover
+*.yml
+
 
 # Virtual Environment
 venv/
