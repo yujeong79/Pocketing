@@ -45,7 +45,6 @@ export const initForegroundMessageListener = () => {
     console.log('📩 포그라운드 알림 수신:', payload);
 
     // 메시지 구조
-    const title = payload.data?.title ?? '알림';
     const body = payload.data?.body ?? '';
     const type = payload.data?.type;
     const roomId = payload.data?.roomId;
