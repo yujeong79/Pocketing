@@ -180,15 +180,6 @@ return (
       </S.OptionRow>
 
       <S.OptionRow>
-        <S.Label>버전</S.Label>
-        <S.ChipsWrapper>
-          <S.Chip selected={!!currentPhotocard.version} clickable onClick={handleModalOpen}>
-            {currentPhotocard.version || '선택'}
-          </S.Chip>
-        </S.ChipsWrapper>
-      </S.OptionRow>
-
-      <S.OptionRow>
         <S.PriceSection>
           <S.PriceInputWrapper>
             <S.Label>판매가</S.Label>

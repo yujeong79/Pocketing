@@ -1,5 +1,5 @@
 // src/pages/sell/UploadPageStyle.ts
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { FontStyles } from '@/constants/fonts'
 import { colors } from '@/styles/theme'
 import scale, { scaleLetterSpacing } from '@/utils/scale'
@@ -90,3 +90,26 @@ export const SmallActionButton = styled.button<{ variant: 'album' | 'camera' }>`
   background-color: ${({ variant }) => (variant === 'album' ? colors.primary50 : colors.primary)};
   color: ${({ variant }) => (variant === 'album' ? colors.primary : colors.white)};
 `
+
+// 위로 튀는 애니메이션
+const bounce = keyframes`
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.6; }
+  40% { transform: translateY(-12px); opacity: 1; }
+`
+
+export const LogoBounceWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 12px;
+  height: 80px;
+  margin-top: 80px;
+`
+
+export const Logo = styled.img<{ delay: string }>`
+  width: 36px;
+  height: 36px;
+  animation: ${bounce} 1.4s infinite ease-in-out;
+  animation-delay: ${(props) => props.delay};
+  opacity: 0.6;
+  `
