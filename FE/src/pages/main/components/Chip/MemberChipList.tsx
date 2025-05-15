@@ -32,8 +32,8 @@ const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipL
       <StyledMemberChipList>
         <MemberChip
           name="전체"
-          isSelected={selectedMember === 0}
-          onClick={() => onSelectMember(0)}
+          isSelected={selectedMember === null}
+          onClick={() => onSelectMember(null)}
         />
         {sortedMembers.map((member) => {
           const isSelected = selectedMember === member.memberId;

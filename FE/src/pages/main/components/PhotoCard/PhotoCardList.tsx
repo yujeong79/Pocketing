@@ -17,13 +17,7 @@ interface PhotoCardListProps {
 }
 
 const PhotoCardList = ({ selectedMember, selectedAlbumId, groupId }: PhotoCardListProps) => {
-  const { data } = usePostList(
-    selectedMember === null ? 0 : selectedMember,
-    groupId,
-    selectedAlbumId,
-    0,
-    10
-  );
+  const { data } = usePostList(selectedMember, groupId, selectedAlbumId, 0, 10);
   const postList = data?.content || [];
 
   if (!groupId) return null;

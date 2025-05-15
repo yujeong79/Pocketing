@@ -57,10 +57,11 @@ const MainPage = () => {
   // 그룹이 변경될 때마다 해당 그룹의 첫 번째 관심 멤버를 선택
   useEffect(() => {
     if (membersData?.result && selectedGroupId !== null) {
-      // 현재 선택된 멤버가 새 그룹의 멤버 목록에 포함되어 있는지 확인
+      if (selectedMember === null) {
+        return;
+      }
       const memberIds = membersData.result.map((m) => m.memberId);
-      if (selectedMember && memberIds.includes(selectedMember)) {
-        // 그대로 유지
+      if (memberIds.includes(selectedMember)) {
         return;
       }
       // 포함되어 있지 않으면 첫 번째 관심 멤버 선택
