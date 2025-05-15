@@ -8,6 +8,7 @@ import { analyzeWithGemini } from '@/api/postRegistration/analyzeWithGemini'
 import { CroppedImage } from '@/types/yolo'
 import { GeminiResultItem } from '@/types/gemini'
 import { useLocation } from 'react-router-dom'
+import Logo2D from '@/assets/icons/logo-2d.svg';
 
 const UploadPage = () => {
   const location = useLocation()
@@ -103,6 +104,15 @@ const UploadPage = () => {
 
       <S.MainGuideText>{guideText}</S.MainGuideText>
       <S.GuideText>{subGuideText}</S.GuideText>
+
+      {/* 통통 튀는 애니메이션션 */}
+      {phase === 'cropping' && (
+        <S.LogoBounceWrapper>
+          <S.Logo src={Logo2D} alt="로고1" delay="-0.32s" />
+          <S.Logo src={Logo2D} alt="로고2" delay="-0.16s" />
+          <S.Logo src={Logo2D} alt="로고3" delay="0s" />
+        </S.LogoBounceWrapper>
+      )}
 
       {/* 상태: 대기 중 */}
       {phase === 'idle' && previewImageUrl && (
