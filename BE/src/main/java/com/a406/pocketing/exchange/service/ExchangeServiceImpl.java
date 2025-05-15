@@ -37,14 +37,18 @@ public class ExchangeServiceImpl implements ExchangeService{
     @Transactional
     public void sendExchangeRequest(Long requesterId, ExchangeRequestDto requestDto) {
         log.info("요청 보내기 requesterId = {}", requesterId);
+        if(requesterId.equals(requestDto.getResponderId())) {
+            throw new GeneralException(EXCHANGE_NOTIFICATION_FETCH_ERROR);
+        }
+
         User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
         User responder = userRepository.findById(requestDto.getResponderId())
                 .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
         ExchangeCard requesterCard = exchangeCardRepository.findById(requestDto.getRequesterOwnedCardId())
-                .orElseThrow(() -> new GeneralException(EXCHANGE_CARD_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND));
         ExchangeCard responderCard = exchangeCardRepository.findById(requestDto.getResponderOwnedCardId())
-                .orElseThrow(() -> new GeneralException(EXCHANGE_CARD_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND));
 
         // 중복 요청 확인 로직
         Boolean check = exchangeRequestRepository.existsByRequesterAndResponderAndRequesterOwnedCardAndResponderOwnedCardAndStatus(
