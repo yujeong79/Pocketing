@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 
 class Settings(BaseSettings):
 
@@ -11,7 +12,7 @@ class Settings(BaseSettings):
     WS_PORT: int
 
     BACKEND_API_URL:str
-    API_TOKEN: str
+    API_TOKEN: Optional[str] = None
 
     CHROMA_HOST: str
     CHROMA_PORT: int
