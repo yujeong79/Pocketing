@@ -40,15 +40,14 @@ public class MatchingServiceImpl implements MatchingService {
 
         if (optionalMember.isEmpty()) {
             // 그룹만 반환
-            return new AiResolveResponseDto(group.getGroupId(), group.getNameKo(), group.getNameEn());
+            return new AiResolveResponseDto(group.getGroupId(), group.getDisplayName());
         }
 
         Member member = optionalMember.get();
 
         return new AiResolveResponseDto(
                 group.getGroupId(),
-                group.getNameKo(),
-                group.getNameEn(),
+                group.getDisplayName(),
                 member.getMemberId(),
                 member.getName()
         );
