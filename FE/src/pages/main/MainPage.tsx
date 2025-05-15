@@ -9,15 +9,22 @@ import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { SelectedMemberText, MainContainer, FilterContainer } from './MainPageStyle';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useMembers } from '@/hooks/artist/query/useMembers';
-import { Group } from '@/types/group';
 import { UserLikedGroup } from '@/types/user';
+import { useMainPageStore } from '@/store/mainPageStore';
 
 const MainPage = () => {
-  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-  const [selectedMember, setSelectedMember] = useState<number | null>(null);
-  const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
-  const [selectedAllGroup, setSelectedAllGroup] = useState<number | null>(null);
-  const [selectedGroupData, setSelectedGroupData] = useState<Group | null>(null);
+  const {
+    selectedGroupId,
+    setSelectedGroupId,
+    selectedMember,
+    setSelectedMember,
+    selectedAlbumId,
+    setSelectedAlbumId,
+    selectedAllGroup,
+    setSelectedAllGroup,
+    selectedGroupData,
+    setSelectedGroupData,
+  } = useMainPageStore();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
 
   // 관심 그룹 불러오기
@@ -40,6 +47,7 @@ const MainPage = () => {
         interest: true,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [likedGroups, selectedGroupId, selectedAllGroup]);
 
   // 선택된 그룹의 ID로 데이터 조회
@@ -49,6 +57,13 @@ const MainPage = () => {
   // 그룹이 변경될 때마다 해당 그룹의 첫 번째 관심 멤버를 선택
   useEffect(() => {
     if (membersData?.result && selectedGroupId !== null) {
+      // 현재 선택된 멤버가 새 그룹의 멤버 목록에 포함되어 있는지 확인
+      const memberIds = membersData.result.map((m) => m.memberId);
+      if (selectedMember && memberIds.includes(selectedMember)) {
+        // 그대로 유지
+        return;
+      }
+      // 포함되어 있지 않으면 첫 번째 관심 멤버 선택
       const interestMembers = membersData.result.filter((member) => member.interest);
       if (interestMembers.length > 0) {
         setSelectedMember(interestMembers[0].memberId);
@@ -56,7 +71,7 @@ const MainPage = () => {
         setSelectedMember(null);
       }
     }
-  }, [selectedGroupId, membersData]);
+  }, [selectedGroupId, membersData, selectedMember, setSelectedMember]);
 
   // location.state에서 선택된 그룹 정보를 가져옴
   useEffect(() => {
@@ -66,6 +81,7 @@ const MainPage = () => {
       // 전체 그룹 선택 시 선택된 멤버 초기화
       setSelectedMember(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
   const handleAlbumSelect = (albumId: number | null) => {
