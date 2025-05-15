@@ -17,17 +17,18 @@ class ChatRequest(BaseModel):
     chat_message_id: Optional[int] = None
 
 class PostInfo(BaseModel):
-    post_id: int
-    price: int
-    post_image_url: str
+    post_id: Optional[int] = None
+    price: Optional[int] = None
+    post_image_url: Optional[str] = None
+    card_image_url: Optional[str] = None
     nickname: str
     last_updated: str = Field(default_factory= lambda: time.strftime("%Y-%m-%dT%H:%M:%SZ"))
 
 class PhotoCardResult(BaseModel):
     card_id: int
-    cheapest_post: PostInfo
-    _cache_key: Optional[str] = Field(None, exclude=True) # 사용자한테 보여주면 안됨
-    _ttl : Optional[int] = Field(None, exclude=True) # 캐시 남은 시간
+    cheapest_post: Optional[PostInfo] = None
+    cache_key: Optional[str] = Field(None, exclude=True)
+    ttl : Optional[int] = Field(None, exclude=True)
 
 class ChatResponseMeta(BaseModel):
     user_id: int

@@ -1,6 +1,7 @@
 import logging
 from typing import List, Optional, Dict, Any
 from openai import OpenAI
+import requests
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -9,13 +10,14 @@ logger = logging.getLogger(__name__)
 class EmbeddingService:
 
     def __init__(self):
-        try:
-            self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
-            self.model = settings.EMBEDDING_MODEL
-            logger.info(f"임베딩 서비스 초기화 완료. 모델: {self.model}")
-        except Exception as e:
-            logger.error(f"임베딩 서비스 초기화 실패: {str(e)}")
-            raise
+        self.model = settings.EMBEDDING_MODEL
+        self.api_key = settings.OPENAI_API_KEY
+        self.api_url = f"{settings.OPENAI_API_BASE}/embeddings"
+        self.headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        logger.info(f"임베딩 서비스 초기화 완료. 모델: {self.model}")
 
     def get_text_embedding(self, text: str) -> List[float]:
         try:
@@ -23,14 +25,22 @@ class EmbeddingService:
                 logger.warning("비어있는 텍스트에 대한 임베딩이 요청됨")
                 return []
 
-            response = self.client.embeddings.create(
-                input=text,
-                model=self.model
+            payload = {
+                "input": text,
+                "model": self.model
+            }
+
+            response = requests.post(
+                self.api_url,
+                headers=self.headers,
+                json=payload,
+                timeout=30
             )
+            response.raise_for_status()
+            result = response.json()
 
-            embedding = response.data[0].embedding
+            embedding = result["data"][0]["embedding"]
             logger.debug(f"텍스트 임베딩 완료. 차원: {len(embedding)}")
-
             return embedding
 
         except Exception as e:
@@ -49,16 +59,24 @@ class EmbeddingService:
             for i in range(0, total_texts, batch_size):
                 batch = texts[i:i + batch_size]
 
-                response = self.client.embeddings.create(
-                    input=batch,
-                    model=self.model
-                )
+                payload = {
+                    "input": batch,
+                    "model": self.model
+                }
 
-                batch_embeddings = [item.embedding for item in response.data]
+                response = requests.post(
+                    self.api_url,
+                    headers=self.headers,
+                    json=payload,
+                    timeout=30
+                )
+                response.raise_for_status()
+                result = response.json()
+
+                batch_embeddings = [item["embedding"] for item in result["data"]]
                 all_embeddings.extend(batch_embeddings)
 
-                processed = min(i + batch_size, total_texts)
-                logger.debug(f"대량 텍스트 임베딩 진행: {processed}/{total_texts}")
+                logger.debug(f"대량 텍스트 임베딩 진행: {min(i + batch_size, total_texts)}/{total_texts}")
 
             logger.info(f"전체 대량 텍스트 임베딩 완료: {len(all_embeddings)}개 텍스트")
             return all_embeddings

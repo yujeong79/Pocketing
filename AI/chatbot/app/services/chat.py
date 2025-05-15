@@ -99,6 +99,54 @@ class ChatService:
             )
             return error_response.dict()
 
+    def _format_photocard_results(self, metadata_list: List[Dict[str, Any]],
+                                  post_results: List[PhotoCardResult]) -> str:
+        if not metadata_list:
+            return "검색 결과가 없습니다."
+
+        result_map = {}
+        for metadata in metadata_list:
+            result_map[metadata["card_id"]] = {
+                "card_info": metadata,
+                "post_info": None,
+                "similarity": metadata.get("semantic_similarity", 0)  # 의미적 유사도 점수
+            }
+
+        for post_result in post_results:
+            if post_result.card_id in result_map:
+                result_map[post_result.card_id]["post_info"] = post_result
+
+        formatted_info = []
+        formatted_info.append(f"총 {len(metadata_list)}개의 포토카드를 찾았습니다.")
+
+        sorted_results = sorted(result_map.items(), key=lambda x: x[1]["similarity"], reverse=True)
+
+        for i, (card_id, data) in enumerate(sorted_results):
+            card_info = data["card_info"]
+            post_info = data["post_info"]
+            similarity = data["similarity"]
+
+            card_text = (
+                f"포토카드 {i + 1}:\n"
+                f"- 그룹: {card_info['group_name']}\n"
+                f"- 멤버: {card_info['member_name']}\n"
+                f"- 앨범: {card_info['album_name']}\n"
+                f"- 태그: {', '.join(card_info['tag'])}\n"
+                f"- 유사도: {similarity:.2f}\n"  # 유사도 정보 추가
+            )
+
+            if post_info and post_info.cheapest_post.post_id:
+                card_text += (
+                    f"- 최저가: {post_info.cheapest_post.price}원\n"
+                    f"- 판매자: {post_info.cheapest_post.nickname}\n"
+                )
+            else:
+                card_text += "- 현재 판매 중인 포토카드가 없습니다.\n"
+
+            formatted_info.append(card_text)
+
+        return "\n".join(formatted_info)
+
     async def clear_chat_history(self, user_id: int) -> bool:
         try:
             result = self.cache.clear_chat_context(user_id)
