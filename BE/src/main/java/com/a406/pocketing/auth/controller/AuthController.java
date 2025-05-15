@@ -32,9 +32,6 @@ public class AuthController {
     private final TwitterOAuthService twitterOAuthService;
     private final AuthService authService;
 
-//    @Value("${frontend.url}")
-//    private String frontendUrl;
-
     /**
      * 카카오로부터 인가 코드를 전달 받아 회원가입/로그인 로직 수행
      * @param authorizationCode
@@ -70,6 +67,23 @@ public class AuthController {
                     URLEncoder.encode(loginResponseDto.getAccessToken(), StandardCharsets.UTF_8)
             );
         }
+
+        return new RedirectView(redirectUrl);
+    }
+
+    /**
+     * 카카오계정과 함께 로그아웃 콜백
+     * @param state
+     * @return
+     */
+    @GetMapping("/kakao/logout/callback")
+    public RedirectView kakaoLogoutCallback(@RequestParam("state") String state) {
+
+        String frontendUrl = URLDecoder.decode(state, StandardCharsets.UTF_8);
+        String redirectUrl = String.format(
+                "%s/signin",
+                frontendUrl
+        );
 
         return new RedirectView(redirectUrl);
     }
