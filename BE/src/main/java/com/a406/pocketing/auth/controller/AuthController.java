@@ -39,8 +39,6 @@ public class AuthController {
      */
     @GetMapping("/kakao/callback")
     public RedirectView kakaoCallback(@RequestParam("code") String authorizationCode, @RequestParam("state") String state) {
-        log.info("Kakao OAuth callback code: {}", authorizationCode);
-
         String accessToken = kakaoOAuthService.getAccessToken(authorizationCode); // 1. 카카오에서 Access Token 발급
         OAuthUserResponseDto oAuthUserResponseDto = kakaoOAuthService.getUserInfo(accessToken); // 2. Access Token으로 사용자 정보 요청
         LoginResponseDto loginResponseDto = authService.authenticateOAuthUser(oAuthUserResponseDto); // 3. 회원 확인
@@ -58,9 +56,10 @@ public class AuthController {
             );
         } else {
             redirectUrl = String.format(
-                    "%s/kakao/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    "%s/kakao/callback?isRegistered=%s&oauthProvider=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
                     frontendUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),
@@ -112,9 +111,10 @@ public class AuthController {
             );
         } else {
             redirectUrl = String.format(
-                    "%s/twitter/callback?isRegistered=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
+                    "%s/twitter/callback?isRegistered=%s&oauthProvider=%s&userId=%s&nickname=%s&profileImageUrl=%s&accessToken=%s",
                     frontendUrl,
                     URLEncoder.encode("true", StandardCharsets.UTF_8),
+                    URLEncoder.encode(loginResponseDto.getOauthProvider(), StandardCharsets.UTF_8),
                     URLEncoder.encode(String.valueOf(loginResponseDto.getUserId()), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getNickname(), StandardCharsets.UTF_8),
                     URLEncoder.encode(loginResponseDto.getProfileImageUrl(), StandardCharsets.UTF_8),

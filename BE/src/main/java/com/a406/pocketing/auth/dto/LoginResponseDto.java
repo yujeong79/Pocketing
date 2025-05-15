@@ -21,6 +21,7 @@ public class LoginResponseDto {
     public static LoginResponseDto ofExistingUser(User user) {
         return LoginResponseDto.builder()
                 .isRegistered(true)
+                .oauthProvider(user.getOauthProvider())
                 .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
