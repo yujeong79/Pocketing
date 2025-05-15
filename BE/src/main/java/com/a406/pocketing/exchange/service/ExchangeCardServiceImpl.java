@@ -74,34 +74,30 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         }
 
         // 2. userId + isOwned + status = ACTIVE인 기존 카드 탐색
-        ExchangeCard existingCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned)
-                .orElseThrow(() -> {
-                    if (isOwned) return new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND);
-                    else return new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND);
-                });
+        Optional<ExchangeCard> optCard = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(userId, isOwned);
 
-        if(existingCard != null){
-            // 3. 있으면 update
-            existingCard.updateCardInfo(group, album, member, description, exchangeImageUrl);
-        } else {
-            // 4. 없으면 insert
-            ExchangeCard newCard = ExchangeCard.builder()
-                    .user(user)
-                    .group(group)
-                    .album(album)
-                    .member(member)
-                    .isOwned(isOwned)
-                    .description(description)
-                    .exchangeImageUrl(exchangeImageUrl)
-                    .status("ACTIVE")
-                    .build();
-            exchangeCardRepository.save(newCard);
-            existingCard = newCard;
-        }
+        ExchangeCard card = optCard
+                .map(existing -> {
+                    existing.updateCardInfo(group, album, member, description, exchangeImageUrl);
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    ExchangeCard newCard = ExchangeCard.builder()
+                            .user(user)
+                            .group(group)
+                            .album(album)
+                            .member(member)
+                            .isOwned(isOwned)
+                            .description(description)
+                            .exchangeImageUrl(exchangeImageUrl)
+                            .status("ACTIVE")
+                            .build();
+                    return exchangeCardRepository.save(newCard);
+                });
 
         // 4. 응답 DTO 구성
         return ExchangeCardResponseDto.builder()
-                .exchangeCardId(existingCard.getExchangeCardId())
+                .exchangeCardId(card.getExchangeCardId())
                 .isOwned(isOwned)
                 .group(group.getDisplayName())
                 .album(album.getTitle())
