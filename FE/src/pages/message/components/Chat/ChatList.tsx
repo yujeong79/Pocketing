@@ -65,9 +65,23 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
     }
   };
 
+  const sortedChats = chats.slice().sort((a, b) => {
+    // trade: lastMessageContent은 시간 정보가 아니므로, 서버에서 시간 정보가 있다면 추가 필요
+    if (type === 'trade') {
+      // TradeChat에는 createdAt/updatedAt이 없으므로, 정렬 불가(혹은 서버에서 시간 정보 추가 필요)
+      return 0; // 혹은 원하는 다른 정렬 기준
+    } else {
+      // ExchangeChat은 updatedAt 사용
+      return (
+        new Date((b as ExchangeChat).updatedAt).getTime() -
+        new Date((a as ExchangeChat).updatedAt).getTime()
+      );
+    }
+  });
+
   return (
     <S.Container>
-      {chats.map((chat) => (
+      {sortedChats.map((chat) => (
         <ChatItem
           key={chat.roomId}
           type={type}
