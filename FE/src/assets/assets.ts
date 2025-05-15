@@ -40,6 +40,10 @@ import BracketIcon from '@/assets/icons/bracket.svg';
 import EmptyCartIcon from '@/assets/icons/empty-cart.svg';
 import HeartWhiteIcon from '@/assets/icons/heart-white.svg';
 import HeartGrayIcon from '@/assets/icons/heart-gray.svg';
+import CashEditIcon from '@/assets/icons/cash-edit.svg';
+import CashEditIcon2 from '@/assets/icons/cash-edit2.svg';
+import EditIcon from '@/assets/icons/edit.svg';
+import DeleteIcon from '@/assets/icons/delete.svg';
 
 // map
 import AlarmFalseIcon from '@/assets/icons/alarm-false.svg';
@@ -130,6 +134,10 @@ export {
   EmptyCartIcon,
   HeartWhiteIcon,
   HeartGrayIcon,
+  CashEditIcon,
+  CashEditIcon2,
+  EditIcon,
+  DeleteIcon,
   // map
   AlarmFalseIcon,
   AlarmTrueIcon,
