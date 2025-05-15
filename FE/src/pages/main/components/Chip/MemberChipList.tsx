@@ -27,6 +27,28 @@ const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipL
     return 0;
   });
 
+  // 멤버가 1명일 때는 "전체" 칩 삭제, 항상 그 멤버 칩 레더링
+  if (sortedMembers.length === 1) {
+    const soloMember = sortedMembers[0];
+    // 선택된 멤버가 아니면 자동으로 선택
+    if (selectedMember !== soloMember.memberId) {
+      onSelectMember(soloMember.memberId);
+    }
+    return (
+      <StyledMemberChipWrapper>
+        <StyledMemberChipList>
+          <MemberChip
+            name={soloMember.name}
+            memberId={soloMember.memberId}
+            isSelected={selectedMember === soloMember.memberId}
+            onClick={() => onSelectMember(soloMember.memberId)}
+            heartIcon={soloMember.interest ? HeartWhiteIcon : HeartGrayIcon}
+          />
+        </StyledMemberChipList>
+      </StyledMemberChipWrapper>
+    );
+  }
+
   return (
     <StyledMemberChipWrapper>
       <StyledMemberChipList>
