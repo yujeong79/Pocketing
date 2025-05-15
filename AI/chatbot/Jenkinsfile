@@ -21,6 +21,7 @@ pipeline {
                         sh """
                         docker run -d --name chatbot-app \
                         -v /home/ubuntu/project/chatbotAI/secret/.env:/app/.env \
+                        --network docker_app_network \
                         -p 8000:8000 chatbot-app
                         """
                     }
