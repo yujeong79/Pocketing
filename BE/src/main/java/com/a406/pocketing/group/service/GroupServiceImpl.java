@@ -30,7 +30,7 @@ public class GroupServiceImpl implements GroupService {
         User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         // 전체 그룹 조회
-        List<Group> groups = groupRepository.findAll();
+        List<Group> groups = groupRepository.findAll(Sort.by(Sort.Direction.ASC, "nameKo"));
 
         // 좋아요 누른 그룹 ID를 Set으로 변환
         Set<Long> likedGroupIds = user.getLikedGroups().stream()
