@@ -10,12 +10,13 @@ import com.a406.pocketing.photocard.service.PhotoCardService;
 import com.a406.pocketing.common.apiPayload.code.status.SuccessStatus;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/photocards")
@@ -42,6 +43,9 @@ public class PhotoCardController {
     public ApiResponse<List<PhotoCardVectorDto>> getPhotoCardsUnembedded(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "100") int size) {
+
+        log.info("컨트롤러 진입 성공, getPhotoCardsUnembedding...");
+
         Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.of(SuccessStatus.PHOTOCARD_VECTOR_FETCH_SUCCESS,
             photoCardService.getPhotoCardsUnembedded(pageable));
