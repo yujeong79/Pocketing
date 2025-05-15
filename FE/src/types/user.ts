@@ -9,6 +9,7 @@ export interface UserResponse {
 export interface UserLikedGroup {
   userId: number;
   groupId: number;
+  groupDisplayName?: string | null;
   groupNameKo: string;
   groupNameEn: string;
   groupImageUrl: string | null;

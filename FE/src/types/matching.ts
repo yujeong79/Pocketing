@@ -6,6 +6,7 @@ export interface MatchingRequestItem {
 
 export interface MatchingResultItem {
   groupId: number;
+  groupDisplayName?: string| null;
   groupNameKo: string;
   groupNameEn: string;
   memberId: number | null;

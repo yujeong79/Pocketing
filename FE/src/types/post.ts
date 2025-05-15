@@ -3,6 +3,7 @@ import { ApiResponse, Page } from '@/types/api';
 export interface PostContent {
   postId: number;
   cardId: number;
+  groupDisplayName?: string | null;
   groupNameKo: string;
   groupNameEn: string;
   groupImageUrl: string;
