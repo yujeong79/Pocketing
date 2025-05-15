@@ -49,15 +49,35 @@ const PostPage = () => {
 
         const matched: MatchingResultItem[] = await resolveMatching(payload);
 
-        const settings: PhotocardSettingData[] = matched.map((item) => ({
-          groupId: item.groupId,
-          group: item.groupDisplayName ?? '',
-          memberId: item.memberId ?? undefined,
-          member: item.memberName ?? '',
-          album: '',
-          version: '',
-          price: '',
-        }));
+        const settings: PhotocardSettingData[] = geminiResult.map((_, index) => {
+          const matchedItem = matched[index]; // ⬅ 순서 보장: 매칭된 것만 채워서 오고, 실패한 건 아예 빠짐
+
+          if (matchedItem) {
+            return {
+              groupId: matchedItem.groupId,
+              group: matchedItem.groupDisplayName ?? '',
+              memberId: matchedItem.memberId ?? undefined,
+              member: matchedItem.memberName ?? '',
+              album: '',
+              version: '',
+              price: '',
+            };
+          } else {
+            // 매칭 실패 → 빈 값으로 초기화
+            return {
+              groupId: undefined,
+              group: '',
+              memberId: undefined,
+              member: '',
+              album: '',
+              version: '',
+              price: '',
+            };
+          }
+        });
+
+        
+
 
         const images = geminiResult.map((g) => g.postImageUrl);
 
