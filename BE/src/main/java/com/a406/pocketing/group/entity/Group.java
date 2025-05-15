@@ -21,6 +21,9 @@ public class Group {
     private Long groupId;
 
     @Column(nullable = false, length = 50)
+    private String displayName;
+
+    @Column(nullable = false, length = 50)
     private String nameKo;
 
     @Column(nullable = false, length = 50)
