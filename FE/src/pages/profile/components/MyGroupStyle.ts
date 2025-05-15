@@ -29,6 +29,14 @@ export const GroupTitle = styled.div`
 export const GroupLogoContainer = styled.div`
   display: flex;
   gap: ${scale(8)}px;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const GroupLogo = styled.img`
@@ -36,6 +44,7 @@ export const GroupLogo = styled.img`
   height: ${scale(44)}px;
   border-radius: 50%;
   border: 1px solid ${colors.gray400};
+  flex-shrink: 0;
 `;
 
 export const MoreGroupButton = styled.div`
@@ -53,4 +62,5 @@ export const MoreGroupButton = styled.div`
   ${FontStyles.bodySmall};
   font-weight: bold;
   color: ${colors.gray400};
+  flex-shrink: 0;
 `;

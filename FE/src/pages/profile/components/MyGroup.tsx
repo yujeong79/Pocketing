@@ -1,12 +1,15 @@
 import * as S from './MyGroupStyle';
 import { PhotocardIcon } from '@/assets/assets';
-import { myArtist } from '@/mocks/myInfo';
+import { useLikedGroups } from '@/hooks/user/query/useLike';
+import { UserLikedGroup } from '@/types/user';
 
 interface MyGroupProps {
   onEditGroup: () => void;
 }
 
 const MyGroup = ({ onEditGroup }: MyGroupProps) => {
+  const { data: likedGroups } = useLikedGroups();
+
   return (
     <S.GroupContainer>
       <S.GroupTitleContainer>
@@ -14,8 +17,12 @@ const MyGroup = ({ onEditGroup }: MyGroupProps) => {
         <S.GroupTitle>관심 그룹</S.GroupTitle>
       </S.GroupTitleContainer>
       <S.GroupLogoContainer>
-        {myArtist.map((artist, index) => (
-          <S.GroupLogo key={artist.groupId ?? index} src={artist.image} alt={artist.name} />
+        {(likedGroups?.result as UserLikedGroup[]).map((group, index) => (
+          <S.GroupLogo
+            key={group.groupId ?? index}
+            src={group.groupImageUrl ?? ''}
+            alt={group.groupNameKo ?? ''}
+          />
         ))}
         <S.MoreGroupButton onClick={onEditGroup}>+</S.MoreGroupButton>
       </S.GroupLogoContainer>
