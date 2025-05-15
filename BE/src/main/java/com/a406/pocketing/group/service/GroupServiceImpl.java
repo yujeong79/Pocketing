@@ -8,6 +8,7 @@ import com.a406.pocketing.user.entity.User;
 import com.a406.pocketing.group.repository.GroupRepository;
 import com.a406.pocketing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
@@ -50,7 +51,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponseDto> getAllGroups() {
-        return groupRepository.findAll().stream()
+        return groupRepository.findAll(Sort.by(Sort.Direction.ASC, "nameKo")).stream()
                 .map(GroupResponseDto::from)
                 .toList();
     }
