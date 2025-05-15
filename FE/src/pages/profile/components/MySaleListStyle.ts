@@ -46,6 +46,19 @@ export const MySaleDetailButton = styled.div`
   font-weight: bold;
 `;
 
+export const NonItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: ${scale(50)}px;
+`;
+
+export const NonItemText = styled.div`
+  ${FontStyles.bodySmall};
+  color: ${colors.gray500};
+`;
+
 export const MySaleItemContainer = styled.div`
   display: flex;
   justify-content: center;

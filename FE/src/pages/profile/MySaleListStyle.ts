@@ -17,6 +17,19 @@ export const ContentContainer = styled.div`
   gap: ${scale(8)}px;
 `;
 
+export const NonItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: ${scale(50)}px;
+`;
+
+export const NonItemText = styled.div`
+  ${FontStyles.bodySmall};
+  color: ${colors.gray500};
+`;
+
 export const RightArrowButton = styled.img`
   width: ${scale(6)}px;
   height: ${scale(12)}px;
