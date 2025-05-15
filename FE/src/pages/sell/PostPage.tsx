@@ -7,6 +7,8 @@ import CautionModal from '@/pages/sell/components/CautionModal';
 import { resolveMatching } from '@/api/artist/matching';
 import { GeminiResultItem } from '@/types/gemini';
 import { MatchingResultItem } from '@/types/matching';
+import { registerPhotoCardPosts } from '@/api/postRegistration/register'; 
+import { useNavigate } from 'react-router-dom';
 
 interface PhotocardSettingData {
   groupId?: number;
@@ -21,7 +23,10 @@ interface PhotocardSettingData {
 }
 
 
+
 const PostPage = () => {
+  const navigate = useNavigate();
+  
   const location = useLocation();
   const geminiResult = location.state?.geminiResult as GeminiResultItem[] || [];
 
@@ -66,13 +71,17 @@ const PostPage = () => {
     fetchMatching();
   }, [geminiResult]);
 
-  const handleRegisterClick = () => {
+  const handleRegisterClick = async () => {
     const settings = optionSectionRef.current?.photocardSettings;
-    if (!settings) return;
+    if (!settings || imageList.length !== settings.length) return;
 
     const isAllComplete = settings.every(
       (setting) =>
-        setting.group && setting.member && setting.album && setting.version && setting.price
+        setting.group &&
+        setting.member &&
+        setting.album &&
+        setting.version &&
+        setting.price
     );
 
     if (!isAllComplete) {
@@ -80,7 +89,24 @@ const PostPage = () => {
       return;
     }
 
-    console.log('등록 진행:', settings);
+    try {
+      // 변환 로직: PhotocardSettingData → RegisterPostItem[]
+      const payload = settings.map((setting, index) => ({
+        cardId: Number(setting.versionId),          // versionId가 string이므로 변환
+        postImageUrl: imageList[index],
+        price: Number(setting.price.replace(/,/g, '')),
+      }));
+
+      const result = await registerPhotoCardPosts(payload);
+
+      console.log('등록 성공:', result);
+      // 이후 페이지 이동 or 알림 처리 등 추가 가능
+      alert(`${result.length}개의 게시물이 등록되었습니다.`);
+      navigate('/mySaleList');
+    } catch (error) {
+      console.error('등록 실패:', error);
+      alert('등록에 실패했습니다.');
+    }
   };
 
   return (
