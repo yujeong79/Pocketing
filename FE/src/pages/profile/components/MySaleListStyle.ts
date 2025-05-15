@@ -51,7 +51,7 @@ export const NonItemContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: ${scale(50)}px;
+  height: ${scale(48)}px;
 `;
 
 export const NonItemText = styled.div`
