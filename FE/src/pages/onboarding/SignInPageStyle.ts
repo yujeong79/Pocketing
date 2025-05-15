@@ -18,8 +18,8 @@ export const LogoContainer = styled.div`
 `;
 
 export const LogoImage = styled.img`
-  width: ${scale(64)}px;
-  height: ${scale(88)}px;
+  width: ${scale(48)}px;
+  height: ${scale(66)}px;
 `;
 
 export const LogoText = styled.img`

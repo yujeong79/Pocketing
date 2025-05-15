@@ -35,8 +35,8 @@ export const LogoContainer = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: ${scale(64)}px;
-  height: ${scale(88)}px;
+  width: ${scale(48)}px;
+  height: ${scale(66)}px;
   transform: translateY(+30px);
   animation: ${moveUp} 1s 1s forwards;
 `;

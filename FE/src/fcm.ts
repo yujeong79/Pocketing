@@ -2,6 +2,7 @@ import { messaging } from './firebase';
 import { getToken, onMessage } from 'firebase/messaging';
 import axiosInstance from './api/auth/axiosInstance';
 import { useChatStore } from './store/chatStore';
+import { useToastStore } from './store/toastStore';
 
 export const requestFcmToken = async () => {
   // 먼저 푸시 지원 여부 확인
@@ -38,12 +39,13 @@ export const requestFcmToken = async () => {
 };
 
 export const initForegroundMessageListener = () => {
+  console.log('📣 onMessage listener 등록 시작');
+
   onMessage(messaging, async (payload) => {
     console.log('📩 포그라운드 알림 수신:', payload);
 
     // 메시지 구조
-    const title = payload.data?.title ?? payload.notification?.title ?? '알림';
-    const body = payload.data?.body ?? payload.notification?.body ?? '';
+    const body = payload.data?.body ?? '';
     const type = payload.data?.type;
     const roomId = payload.data?.roomId;
 
@@ -52,12 +54,9 @@ export const initForegroundMessageListener = () => {
     if (type === 'CHAT' && currentRoomId !== null && Number(roomId) === currentRoomId) return;
 
     if (document.visibilityState === 'visible') {
+      const showToast = useToastStore.getState().showToast;
+      showToast('success', body);
       /* 창이 보이는 중 -> Toast 등 커스텀 UI */
-      new Notification(title, {
-        body,
-        icon: '/pocketing.svg',
-        data: { type, roomId },
-      });
     }
   });
 };

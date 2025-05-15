@@ -9,13 +9,16 @@ import { theme } from './styles/theme';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { initForegroundMessageListener } from '@/fcm';
 import { registerServiceWorker } from './serviceWorkerRegistration';
+import ToastContainer from './components/common/ToastContainer';
 
 const queryClient = new QueryClient();
 
 function App() {
   useEffect(() => {
-    registerServiceWorker();
-    initForegroundMessageListener();
+    registerServiceWorker();           // 먼저 등록
+    setTimeout(() => {
+      initForegroundMessageListener(); // 200ms 후 등록
+    }, 200);
   }, []);
 
   return (
@@ -23,6 +26,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <RouterProvider router={router} />
+        <ToastContainer />
       </ThemeProvider>
     </QueryClientProvider>
   );
