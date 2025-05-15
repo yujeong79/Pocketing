@@ -36,6 +36,7 @@ interface PhotocardSettingModalProps {
   onClose: () => void;
   onConfirm: (data: PhotocardSettingData) => void;
   initialData?: PhotocardSettingData;
+  initialSection?: 'group' | 'member' | 'album' | 'version';
 }
 
 interface PhotocardSettingData {
@@ -55,6 +56,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
   onClose,
   onConfirm,
   initialData,
+  initialSection,
 }) => {
   const [selectedData, setSelectedData] = useState<PhotocardSettingData>({
     groupId: undefined,
@@ -76,7 +78,9 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      setCurrentSection(initialSection || 'group'); // ✅ 선택된 섹션 강조
       setSearchQuery('');
+
       fetchGroupsAll()
         .then((res) => setGroupList(Array.isArray(res.result) ? res.result : []))
         .catch(() => setGroupList([]));
@@ -94,7 +98,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
 
       }
     }
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData, initialSection]);
 
   // 섹션 변경 시 검색어 초기화
   useEffect(() => {
@@ -209,15 +213,15 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     <SlideUpModal isOpen={isOpen} onClose={onClose} header="포카 설정">
       <S.Container>
         <S.LeftSection>
-          <S.SettingLabel onClick={() => setCurrentSection('group')}>
+          <S.SettingLabel onClick={() => setCurrentSection('group')} selected={currentSection === 'group'}>
             <S.LabelText>그룹명</S.LabelText>
             <S.SelectedValue>{selectedData.group || '선택'}</S.SelectedValue>
           </S.SettingLabel>
-          <S.SettingLabel onClick={() => setCurrentSection('member')}>
+          <S.SettingLabel onClick={() => setCurrentSection('member')} selected={currentSection === 'member'}>
             <S.LabelText>멤버명</S.LabelText>
             <S.SelectedValue>{selectedData.member || '선택'}</S.SelectedValue>
           </S.SettingLabel>
-          <S.SettingLabel onClick={() => setCurrentSection('album')}>
+          <S.SettingLabel onClick={() => setCurrentSection('album')} selected={currentSection === 'album'}>
             <S.LabelText>앨범명</S.LabelText>
             <S.SelectedValue>{selectedData.album || '선택'}</S.SelectedValue>
           </S.SettingLabel>
