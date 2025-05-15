@@ -70,3 +70,24 @@ export const ListWrapper = styled.div`
   gap: ${scale(12)}px ${scale(32)}px;
   justify-content: center;
 `;
+
+export const EmptyContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin-top: ${scale(40)}px;
+  gap: ${scale(12)}px;
+`;
+
+export const EmptyCartImage = styled.img`
+  width: ${scale(40)}px;
+  height: ${scale(40)}px;
+`;
+
+export const EmptyText = styled.span`
+  ${FontStyles.bodySmall};
+  color: ${colors.gray600};
+`;

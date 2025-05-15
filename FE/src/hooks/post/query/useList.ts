@@ -5,7 +5,7 @@ import { SellerList } from '@/types/seller';
 import { useQuery } from '@tanstack/react-query';
 
 export const usePostList = (
-  memberId: number,
+  memberId: number | null,
   groupId: number,
   albumId: number | null,
   page: number,

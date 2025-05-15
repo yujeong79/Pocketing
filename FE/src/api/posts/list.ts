@@ -8,7 +8,7 @@ import { ApiResponse } from '@/types/api';
 import { SellerList, SellerListResponse } from '@/types/seller';
 
 interface PostListParams {
-  memberId: number;
+  memberId: number | null;
   groupId: number;
   albumId?: number | null;
   page?: number;
@@ -16,7 +16,7 @@ interface PostListParams {
 }
 
 interface PostListRequestParams {
-  memberId: number;
+  memberId: number | null;
   groupId: number;
   albumId?: number;
   page: number;
