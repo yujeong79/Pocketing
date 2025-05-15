@@ -6,7 +6,7 @@ import { requestFcmToken } from '@/fcm';
 
 // iOS 디바이스인지 확인
 function isIos(): boolean {
-  return /ipone|ipad|ipod/i.test(window.navigator.userAgent);
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 }
 
 // 홈 화면에서 실행중인 pwa인지 확인
