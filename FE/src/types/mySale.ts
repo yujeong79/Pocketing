@@ -12,6 +12,7 @@ export interface MySale {
 
 export interface MySaleListResponse {
   postId: number;
+  groupDisplayName?: string | null;
   groupNameKo: string;
   groupNameEn: string;
   memberName: string;

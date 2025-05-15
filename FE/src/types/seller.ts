@@ -6,6 +6,7 @@ export interface SellerListItem {
   isVerified: boolean;
   price: number;
   status: string;
+  groupDisplayName?: string | null;
   groupNameKo: string;
   groupNameEn: string;
   groupImageUrl: string;

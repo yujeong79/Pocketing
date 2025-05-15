@@ -9,6 +9,7 @@ export interface GroupResponse {
 
 export interface Group {
   groupId: number;
+  groupDisplayName?: string| null;
   groupNameKo: string;
   groupNameEn: string;
   groupImageUrl: string;
