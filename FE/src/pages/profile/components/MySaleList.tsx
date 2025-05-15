@@ -16,10 +16,8 @@ const MySaleList = () => {
     try {
       const response = await getMySales();
       setMySales(response.result);
-      console.log(response);
-      console.log(mySales);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }, []);
 

@@ -27,3 +27,14 @@ export interface MySaleListResult {
   message: string;
   result: [MySaleListResponse];
 }
+
+export interface MyCompleteListResponse {
+  postId: number;
+  groupNameKo: string;
+  groupNameEn: string;
+  memberName: string;
+  albumTitle: string;
+  postImageUrl: string;
+  price: number;
+  createdAt: string;
+}
