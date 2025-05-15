@@ -71,8 +71,10 @@ const MainPage = () => {
       } else {
         setSelectedMember(null);
       }
+      // 그룹이 바뀔 때 앨범 필터도 초기화
+      setSelectedAlbumId(null);
     }
-  }, [selectedGroupId, membersData, selectedMember, setSelectedMember]);
+  }, [selectedGroupId, membersData, selectedMember, setSelectedMember, setSelectedAlbumId]);
 
   // location.state에서 선택된 그룹 정보를 가져옴
   useEffect(() => {
