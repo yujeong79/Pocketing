@@ -7,12 +7,20 @@ import Button from '@/components/common/Button';
 import { usePostDetail } from '@/hooks/post/query/usePost';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
 import { useAuth } from '@/hooks/useAuth';
+import { DeleteIcon } from '@/assets/assets';
+import ConfirmModal from '@/components/common/ConfirmModal';
+import { useDeletePost } from '@/hooks/post/mutation/usePost';
+import { useToastStore } from '@/store/toastStore';
+import { useState } from 'react';
 
 const DetailPage = () => {
   const { postId } = useParams<{ postId: string }>();
   const { data: postDetail, isLoading, isError, error } = usePostDetail(Number(postId));
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const deletePostMutation = useDeletePost();
+  const showToast = useToastStore((state) => state.showToast);
 
   console.log('DetailPage 렌더링:', {
     postId,
@@ -67,9 +75,32 @@ const DetailPage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deletePostMutation.mutateAsync(Number(postId));
+      showToast('success', '판매글이 삭제되었습니다.');
+      navigate('/main');
+    } catch (e) {
+      console.error('삭제 실패:', e);
+      showToast('warning', '삭제에 실패했습니다.');
+    }
+  };
+
   return (
     <div>
-      <Header type="detail" />
+      <Header
+        type="detail"
+        rightElement={
+          user.userId === seller.sellerId ? (
+            <img
+              src={DeleteIcon}
+              alt="삭제"
+              style={{ cursor: 'pointer' }}
+              onClick={() => setIsModalOpen(true)}
+            />
+          ) : undefined
+        }
+      />
       <S.DetailPageContainer>
         <S.ContentSection>
           <S.GraySection>
@@ -94,14 +125,24 @@ const DetailPage = () => {
           </S.SellerSection>
         </S.ContentSection>
         <S.ButtonWrapper>
-          <Button
-            text="채팅하기"
-            height={40}
-            fontStyle="headingSmall"
-            onClick={handleChatButtonClick}
-          />
+          {user.userId !== seller.sellerId && (
+            <Button
+              text="채팅하기"
+              height={40}
+              fontStyle="headingSmall"
+              onClick={handleChatButtonClick}
+            />
+          )}
         </S.ButtonWrapper>
       </S.DetailPageContainer>
+      {isModalOpen && (
+        <ConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleDelete}
+          title="정말 삭제하시겠습니까?"
+        />
+      )}
     </div>
   );
 };

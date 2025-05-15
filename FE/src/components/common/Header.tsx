@@ -20,9 +20,17 @@ interface HeaderProps {
   title?: string;
   hasBorder?: boolean;
   onRegister?: () => void;
+  rightElement?: React.ReactNode;
 }
 
-export default function Header({ type, onBack, title, hasBorder = true, onRegister }: HeaderProps) {
+export default function Header({
+  type,
+  onBack,
+  title,
+  hasBorder = true,
+  onRegister,
+  rightElement,
+}: HeaderProps) {
   const navigate = useNavigate();
 
   const renderLeftContent = () => {
@@ -93,6 +101,9 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
   };
 
   const renderRightContent = () => {
+    if (rightElement) {
+      return <S.RightSection>{rightElement}</S.RightSection>;
+    }
     switch (type) {
       case 'main':
       case 'detail':
