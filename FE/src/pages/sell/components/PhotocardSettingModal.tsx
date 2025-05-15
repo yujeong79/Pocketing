@@ -11,6 +11,7 @@ import { fetchPhotocards } from '@/api/artist/photocard';
 
 interface GroupItem {
   groupId: number;
+  groupDisplayName: string; 
   groupNameKo: string;
   groupNameEn: string;
 }
@@ -98,7 +99,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     setSelectedData({
       ...selectedData,
       groupId: group.groupId,
-      group: `${group.groupNameKo} (${group.groupNameEn})`,
+      group: group.groupDisplayName,
       memberId: undefined,
       member: '',
       albumId: undefined,
@@ -147,8 +148,9 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
   };
 
   const filteredGroups = groupList.filter((g) =>
-    `${g.groupNameKo} (${g.groupNameEn})`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${g.groupNameKo} ${g.groupNameEn}`.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
 
   const filteredMembers = memberList.filter((m) =>
     m.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -180,7 +182,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
   const renderList = () => {
     if (currentSection === 'group') return filteredGroups.map((g) => (
       <S.Item key={g.groupId} selected={selectedData.groupId === g.groupId} onClick={() => handleGroupSelect(g)}>
-        {g.groupNameKo} ({g.groupNameEn})
+        {g.groupDisplayName}
       </S.Item>
     ));
     if (currentSection === 'member') return filteredMembers.map((m) => (
