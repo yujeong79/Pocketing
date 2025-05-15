@@ -107,7 +107,7 @@ public class ExchangeServiceImpl implements ExchangeService{
                         .orElseThrow(() -> new GeneralException(NOTIFICATION_NOT_FOUND));
 
         // RECEIVE 알림 -> ACCEPTED_ACTIVE로 상태 업데이트
-        receivedNotification.updateStatus(accepted ? NotificationType.ACCEPTED_ACTIVE : NotificationType.RECEIVED);
+        receivedNotification.updateStatus(accepted ? NotificationType.ACCEPTED_ACTIVE : NotificationType.REJECTED);
 
         // fcm 알림 전송
         notificationService.sendFcmToUser(

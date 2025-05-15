@@ -11,4 +11,5 @@ public class ExchangeCardResponseDto {
     private String group;
     private String album;
     private String member;
+    private String imageUrl;
 }
