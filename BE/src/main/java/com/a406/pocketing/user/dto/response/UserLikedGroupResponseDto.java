@@ -9,6 +9,7 @@ import lombok.Getter;
 public class UserLikedGroupResponseDto {
     private Long userId;
     private Long groupId;
+    private String groupDisplayName;
     private String groupNameKo;
     private String groupNameEn;
     private String groupImageUrl;
@@ -17,6 +18,7 @@ public class UserLikedGroupResponseDto {
         return UserLikedGroupResponseDto.builder()
                 .userId(userLikedGroup.getUser().getUserId())
                 .groupId(userLikedGroup.getGroup().getGroupId())
+                .groupDisplayName(userLikedGroup.getGroup().getDisplayName())
                 .groupNameKo(userLikedGroup.getGroup().getNameKo())
                 .groupNameEn(userLikedGroup.getGroup().getNameEn())
                 .groupImageUrl(userLikedGroup.getGroup().getGroupImageUrl())

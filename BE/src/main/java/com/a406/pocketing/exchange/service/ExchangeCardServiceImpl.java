@@ -103,7 +103,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         return ExchangeCardResponseDto.builder()
                 .exchangeCardId(existingCard.getExchangeCardId())
                 .isOwned(isOwned)
-                .group(group.getNameKo())
+                .group(group.getDisplayName())
                 .album(album.getTitle())
                 .member(member.getName())
                 .build();
@@ -126,7 +126,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
         return ExchangeCardResponseDto.builder()
                 .exchangeCardId(exchangeCard.getExchangeCardId())
                 .isOwned(isOwned)
-                .group(exchangeCard.getGroup().getNameKo())
+                .group(exchangeCard.getGroup().getDisplayName())
                 .album(exchangeCard.getAlbum().getTitle())
                 .member(exchangeCard.getMember().getName())
                 .build();

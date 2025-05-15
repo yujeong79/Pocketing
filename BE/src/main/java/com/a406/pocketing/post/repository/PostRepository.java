@@ -22,6 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         SELECT new com.a406.pocketing.post.dto.PostResponseDto(
             p.postId,
             p.photoCard.cardId,
+            g.displayName,
             g.nameKo,
             g.nameEn,
             g.groupImageUrl,
@@ -51,6 +52,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         u.isVerified,
         p.price,
         p.status,
+        g.displayName,
         g.nameKo,
         g.nameEn,
         g.groupImageUrl,
@@ -80,6 +82,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         pc.cardId,
         pc.cardImageUrl,
         m.name,
+        g.displayName,
         g.nameKo,
         g.nameEn,
         g.groupImageUrl,
@@ -154,6 +157,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     SELECT new com.a406.pocketing.post.dto.PostResponseDto(
         p.postId,
         p.photoCard.cardId,
+        g.displayName,
         g.nameKo,
         g.nameEn,
         g.groupImageUrl,
@@ -176,6 +180,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     SELECT new com.a406.pocketing.post.dto.PostResponseDto(
         p.postId,
         pc.cardId,
+        g.displayName,
         g.nameKo,
         g.nameEn,
         g.groupImageUrl,

@@ -44,7 +44,7 @@ public class PhotoCardVectorDto {
 			if (photocard.getMember().getGroup() != null) {
 				builder
 					.group_id(photocard.getMember().getGroup().getGroupId())
-					.group_name(photocard.getMember().getGroup().getNameKo());
+					.group_name(photocard.getMember().getGroup().getDisplayName());
 			}
 		}
 

@@ -8,6 +8,7 @@ import lombok.Data;
 public class PostResponseDto {
     private Long postId;
     private Long cardId;
+    private String groupDisplayName;
     private String groupNameKo;
     private String groupNameEn;
     private String groupImageUrl;
