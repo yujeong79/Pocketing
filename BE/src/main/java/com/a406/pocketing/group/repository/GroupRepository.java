@@ -14,7 +14,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("""
         SELECT g FROM Group g
         WHERE LOWER(g.nameKo) = LOWER(:name) OR LOWER(g.nameEn) = LOWER(:name)
-        ORDER BY g.groupId ASC
+        ORDER BY g.nameKo ASC
     """)
     Optional<Group> findByNameKoOrNameEn(@Param("name") String name);
 

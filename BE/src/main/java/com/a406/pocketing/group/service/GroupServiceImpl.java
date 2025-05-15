@@ -51,7 +51,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupResponseDto> getAllGroups() {
-        return groupRepository.findAll(Sort.by(Sort.Direction.ASC, "groupId")).stream()
+        return groupRepository.findAll(Sort.by(Sort.Direction.ASC, "nameKo")).stream()
                 .map(GroupResponseDto::from)
                 .toList();
     }
