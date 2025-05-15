@@ -18,6 +18,7 @@ import { Album } from '@/types/album';
 import { MyCardData } from '@/types/exchange';
 import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { ExchangeRequest } from '@/types/exchange';
+import { postS3Image, putS3Image } from '@/api/s3/s3Image';
 
 interface MyCardModalProps {
   isOpen: boolean;
@@ -29,6 +30,9 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const queryClient = useQueryClient();
   const [modalStep, setModalStep] = useState(1);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null); // 사용자가 선택한 실제 이미지 파일
+  const [currentCardImage, setCurrentCardImage] = useState<string | null>(null);
+
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
@@ -51,12 +55,42 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setSelectedImage(base64String);
-      };
-      reader.readAsDataURL(file);
+      const previewUrl = URL.createObjectURL(file);
+      setSelectedImage(previewUrl);
+      setImageFile(file);
+      setCurrentCardImage(previewUrl);
+    }
+  };
+
+  // PresignedUrl 받기
+  const handleGetPresignedUrl = useCallback(async () => {
+    if (!imageFile) {
+      return null;
+    }
+    try {
+      const response = await postS3Image({
+        fileName: imageFile.name,
+        contentType: imageFile.type,
+      });
+      const presignedUrl = response.result.presignedUrl;
+      return presignedUrl;
+    } catch (error) {
+      throw error;
+    }
+  }, [imageFile]);
+
+  // S3에 직접 파일을 업로드
+  const handleS3Upload = async (presignedUrl: string, file: File, contentType: string) => {
+    try {
+      await putS3Image({
+        presignedUrl: presignedUrl,
+        uploadFile: file,
+        header: {
+          'Content-Type': contentType,
+        },
+      });
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -66,6 +100,24 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   };
 
   const handlePostExchangeCard = useCallback(async () => {
+    let finalImageUrl = currentCardImage ?? '';
+
+    // 이미지 파일이 있으면 S3 업로드
+    if (imageFile) {
+      try {
+        const presignedUrl = await handleGetPresignedUrl();
+        if (!presignedUrl) {
+          alert('이미지 업로드 준비에 실패했습니다.');
+          return;
+        }
+        await handleS3Upload(presignedUrl, imageFile, imageFile.type);
+        finalImageUrl = presignedUrl.split('?')[0]; // S3 업로드 성공 시 영구 URL 사용
+      } catch (error) {
+        alert('이미지 업로드 중 오류가 발생했습니다.');
+        return;
+      }
+    }
+
     try {
       const ExchangeCardData: ExchangeRequest = {
         isOwned: true,
@@ -73,7 +125,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
         albumId: selectedAlbumId ?? 0,
         memberId: selectedMemberId ?? 0,
         description: null,
-        exchangeImageUrl: selectedImage ?? null,
+        exchangeImageUrl: finalImageUrl,
       };
       const response = await createExchangeCard(ExchangeCardData);
       console.log(response);
@@ -133,16 +185,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   };
 
   const handleSaveCardInfo = () => {
-    console.log('저장할 데이터:', {
-      cardImage: selectedImage,
-      cardGroup: selectedGroup,
-      cardMember: selectedMember,
-      cardAlbum: selectedAlbum,
-    });
-
     const prev = queryClient.getQueryData<MyCardData>([QUERY_KEYS.MYCARD]) || {};
-    console.log('이전 데이터:', prev);
-
     queryClient.setQueryData<MyCardData>([QUERY_KEYS.MYCARD], {
       ...prev,
       cardImage: selectedImage || undefined,
@@ -150,10 +193,6 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
       cardMember: selectedMember || undefined,
       cardAlbum: selectedAlbum || undefined,
     });
-
-    const after = queryClient.getQueryData<MyCardData>([QUERY_KEYS.MYCARD]);
-    console.log('저장 후 데이터:', after);
-
     handleNextClick();
   };
 
