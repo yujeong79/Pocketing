@@ -37,6 +37,9 @@ import RefreshIcon from '@/assets/icons/refresh.svg';
 import CloseIcon from '@/assets/icons/close.svg';
 import VerifyIcon from '@/assets/icons/verify.svg';
 import BracketIcon from '@/assets/icons/bracket.svg';
+import EmptyCartIcon from '@/assets/icons/empty-cart.svg';
+import HeartWhiteIcon from '@/assets/icons/heart-white.svg';
+import HeartGrayIcon from '@/assets/icons/heart-gray.svg';
 
 // map
 import AlarmFalseIcon from '@/assets/icons/alarm-false.svg';
@@ -124,6 +127,9 @@ export {
   CloseIcon,
   VerifyIcon,
   BracketIcon,
+  EmptyCartIcon,
+  HeartWhiteIcon,
+  HeartGrayIcon,
   // map
   AlarmFalseIcon,
   AlarmTrueIcon,

@@ -4,6 +4,7 @@ import {
 } from '@/pages/main/components/Chip/MemberChipStyle';
 import MemberChip from '@/pages/main/components/Chip/MemberChip';
 import { useMembers } from '@/hooks/artist/query/useMembers';
+import { HeartWhiteIcon, HeartGrayIcon } from '@/assets/assets';
 
 interface MemberChipListProps {
   groupId: number;
@@ -31,18 +32,24 @@ const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipL
       <StyledMemberChipList>
         <MemberChip
           name="전체"
-          isSelected={selectedMember === null}
-          onClick={() => onSelectMember(null)}
+          isSelected={selectedMember === 0}
+          onClick={() => onSelectMember(0)}
         />
-        {sortedMembers.map((member) => (
-          <MemberChip
-            key={member.memberId}
-            name={member.interest ? `♥ ${member.name}` : member.name}
-            memberId={member.memberId}
-            isSelected={selectedMember === member.memberId}
-            onClick={() => onSelectMember(member.memberId)}
-          />
-        ))}
+        {sortedMembers.map((member) => {
+          const isSelected = selectedMember === member.memberId;
+          const isInterest = member.interest;
+
+          return (
+            <MemberChip
+              key={member.memberId}
+              name={member.name}
+              memberId={member.memberId}
+              isSelected={isSelected}
+              onClick={() => onSelectMember(member.memberId)}
+              heartIcon={isInterest ? (isSelected ? HeartWhiteIcon : HeartGrayIcon) : undefined}
+            />
+          );
+        })}
       </StyledMemberChipList>
     </StyledMemberChipWrapper>
   );

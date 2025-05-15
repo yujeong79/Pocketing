@@ -19,6 +19,8 @@ export const StyledMemberChip = styled.button<StyledMemberChipProps>`
   font-size: ${scale(12)}px;
   white-space: nowrap;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledMemberChipList = styled.div`
@@ -41,4 +43,11 @@ export const StyledMemberChipWrapper = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+export const StyledHeartIcon = styled.img`
+  width: ${scale(12)}px;
+  height: ${scale(12)}px;
+  margin-right: ${scale(2)}px;
+  vertical-align: middle;
 `;
