@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     REDIS_DB: int
     CACHE_SECRET_KEY: str = "poketingjjangjjanghahahahaha"
 
-    LLM_MODEL:
+    LLM_MODEL: str
     LLM_TEMPERATURE: float
 
     LOG_LEVEL: str
