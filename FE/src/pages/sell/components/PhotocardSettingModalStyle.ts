@@ -41,7 +41,7 @@ export const RightSection = styled.div`
   }
 `;
 
-export const SettingLabel = styled.div`
+export const SettingLabel = styled.div<{ selected?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${scale(4)}px;
@@ -49,10 +49,13 @@ export const SettingLabel = styled.div`
   padding: ${scale(4)}px;
   border-radius: ${scale(8)}px;
 
+  background-color: ${({ selected }) => (selected ? colors.primary50 : 'transparent')};
+
   &:hover {
-    background-color: ${colors.primary50};
+    background-color: ${({ selected }) => (selected ? colors.primary50 : colors.primary50)};
   }
 `;
+
 
 export const LabelText = styled.span`
   ${FontStyles.bodySmall}
