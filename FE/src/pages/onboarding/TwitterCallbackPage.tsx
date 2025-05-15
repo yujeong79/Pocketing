@@ -16,6 +16,7 @@ const TwitterCallbackPage = () => {
     if (isRegistered) {
       const accessToken = searchParams.get('accessToken');
       const userId = searchParams.get('userId');
+      const oauthProvider = searchParams.get('oauthProvider');
 
       if (!accessToken) {
         console.error('액세스 토큰이 없습니다.');
@@ -30,6 +31,7 @@ const TwitterCallbackPage = () => {
           'user',
           JSON.stringify({
             userId: Number(userId),
+            oauthProvider: oauthProvider,
           })
         );
       }
