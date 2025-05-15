@@ -22,14 +22,10 @@ class Settings(BaseSettings):
     REDIS_DB: int
     CACHE_SECRET_KEY: str = "poketingjjangjjanghahahahaha"
 
-    LLM_MODEL: str
+    LLM_MODEL:
     LLM_TEMPERATURE: float
 
     LOG_LEVEL: str
-
-    MONGO_URI: str
-    MONGO_DB_NAME: str
-    MONGO_COLLECTION: str
 
     model_config = SettingsConfigDict(
         env_file='.env',

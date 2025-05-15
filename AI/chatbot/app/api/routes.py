@@ -31,7 +31,7 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-@router.websocket("/ws/chatbot")
+@router.websocket("/chatbot/ws")
 async def websocket_chat(websocket: WebSocket):
     user_id = None
     try:
