@@ -49,7 +49,7 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
       case 'profileDetail':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={() => navigate(-1)}>
+            <S.BackButton onClick={() => navigate('/profile')}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
           </S.LeftSection>
