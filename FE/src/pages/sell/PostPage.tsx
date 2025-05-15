@@ -51,7 +51,7 @@ const PostPage = () => {
 
         const settings: PhotocardSettingData[] = matched.map((item) => ({
           groupId: item.groupId,
-          group: `${item.groupNameKo} (${item.groupNameEn})`,
+          group: item.groupDisplayName ?? '',
           memberId: item.memberId ?? undefined,
           member: item.memberName ?? '',
           album: '',
