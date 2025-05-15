@@ -76,6 +76,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      setSearchQuery('');
       fetchGroupsAll()
         .then((res) => setGroupList(Array.isArray(res.result) ? res.result : []))
         .catch(() => setGroupList([]));
@@ -90,10 +91,16 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
           .catch(() => setAlbumList([]));
 
         setSelectedData(initialData);
-        setCurrentSection('member');
+
       }
     }
   }, [isOpen, initialData]);
+
+  // 섹션 변경 시 검색어 초기화
+  useEffect(() => {
+    setSearchQuery('');
+  }, [currentSection]);
+
 
   const handleGroupSelect = (group: GroupItem) => {
     setSelectedData({
