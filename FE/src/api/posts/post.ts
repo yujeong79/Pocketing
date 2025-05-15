@@ -13,7 +13,20 @@ export const fetchPostDetail = async (postId: number): Promise<PostDetail> => {
   return response.data.result;
 };
 
+// 판매글 상태 업데이트
 export const updatePostStatus = async (roomId: number, status: string) => {
   const response = await axiosInstance.put('/posts/status', { roomId, status });
   return response.data.result;
+};
+
+// 판매글 가격 업데이트
+export const updatePostPrice = async (postId: number, price: number) => {
+  const response = await axiosInstance.put(`/posts/${postId}`, { price });
+  return response.data;
+};
+
+// 판매글 삭제
+export const deletePost = async (postId: number) => {
+  const response = await axiosInstance.delete(`/posts/${postId}`);
+  return response.data;
 };
