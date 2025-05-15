@@ -7,11 +7,12 @@ import Button from '@/components/common/Button';
 import { usePostDetail } from '@/hooks/post/query/usePost';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
 import { useAuth } from '@/hooks/useAuth';
-import { DeleteIcon } from '@/assets/assets';
+import { DeleteIcon, CashEditIcon } from '@/assets/assets';
 import ConfirmModal from '@/components/common/ConfirmModal';
-import { useDeletePost } from '@/hooks/post/mutation/usePost';
+import { useDeletePost, useUpdatePostPrice } from '@/hooks/post/mutation/usePost';
 import { useToastStore } from '@/store/toastStore';
 import { useState } from 'react';
+import InputModal from '@/components/common/InputModal';
 
 const DetailPage = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -21,6 +22,9 @@ const DetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const deletePostMutation = useDeletePost();
   const showToast = useToastStore((state) => state.showToast);
+  const updatePriceMutation = useUpdatePostPrice();
+  const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+  const [priceInput, setPriceInput] = useState(postDetail?.price.toString() || '');
 
   console.log('DetailPage 렌더링:', {
     postId,
@@ -86,6 +90,26 @@ const DetailPage = () => {
     }
   };
 
+  const handleEditPrice = () => {
+    setPriceInput(postDetail.price.toString());
+    setIsPriceModalOpen(true);
+  };
+
+  const handleConfirmPrice = async (input: string) => {
+    const newPrice = Number(input);
+    if (isNaN(newPrice) || newPrice <= 0) {
+      showToast('warning', '올바른 가격을 입력하세요.');
+      return;
+    }
+    try {
+      await updatePriceMutation.mutateAsync({ postId: Number(postId), price: newPrice });
+      showToast('success', '가격이 수정되었습니다.');
+    } catch {
+      showToast('warning', '가격 수정에 실패했습니다.');
+    }
+    setIsPriceModalOpen(false);
+  };
+
   return (
     <div>
       <Header
@@ -121,7 +145,11 @@ const DetailPage = () => {
               isVerified={seller.isVerified}
               profileImgUrl={seller.profileImageUrl}
               price={postDetail.price}
-            />
+            >
+              {user.userId === seller.sellerId && (
+                <S.PriceEditIcon src={CashEditIcon} alt="가격 수정" onClick={handleEditPrice} />
+              )}
+            </SellerItem>
           </S.SellerSection>
         </S.ContentSection>
         <S.ButtonWrapper>
@@ -143,6 +171,15 @@ const DetailPage = () => {
           title="정말 삭제하시겠습니까?"
         />
       )}
+      <InputModal
+        isOpen={isPriceModalOpen}
+        onClose={() => setIsPriceModalOpen(false)}
+        onConfirm={handleConfirmPrice}
+        title="가격 수정"
+        defaultValue={priceInput}
+        confirmText="수정"
+        cancelText="취소"
+      />
     </div>
   );
 };

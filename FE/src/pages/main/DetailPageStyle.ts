@@ -66,3 +66,11 @@ export const ButtonWrapper = styled.div`
   justify-content: center;
   margin-bottom: ${scale(24)}px;
 `;
+
+export const PriceEditIcon = styled.img`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+  vertical-align: middle;
+  margin-right: ${scale(2)}px;
+  transform: translateY(-${scale(2)}px);
+`;
