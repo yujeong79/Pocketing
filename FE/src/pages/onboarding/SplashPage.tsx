@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import * as S from './SplashPageStyle';
-import { ThreeDLogo } from '@/assets/assets';
+import { TextLogo, ThreeDLogo } from '@/assets/assets';
 
 const SplashPage = () => {
   const navigate = useNavigate();
@@ -10,14 +10,17 @@ const SplashPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate('/signin');
-    }, 2000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
     <S.SplashPageContainer>
-      <S.Logo src={ThreeDLogo} alt="포켓팅 로고" />
+      <S.LogoContainer>
+        <S.Logo src={ThreeDLogo} alt="포켓팅 로고" />
+        <S.LogoText src={TextLogo} alt="포켓팅 로고" />
+      </S.LogoContainer>
     </S.SplashPageContainer>
   );
 };

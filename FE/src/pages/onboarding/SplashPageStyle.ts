@@ -10,6 +10,15 @@ const fadeIn = keyframes`
   }
 `;
 
+const moveUp = keyframes`
+  from {
+    transform: translateY(+30px);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
+
 export const SplashPageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,8 +27,24 @@ export const SplashPageContainer = styled.div`
   height: 100vh;
 `;
 
+export const LogoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${scale(10)}px;
+`;
+
 export const Logo = styled.img`
-  animation: ${fadeIn} 1s ease;
   width: ${scale(64)}px;
   height: ${scale(88)}px;
+  transform: translateY(+30px);
+  animation: ${moveUp} 1s 1s forwards;
+`;
+
+export const LogoText = styled.img`
+  opacity: 0;
+  width: ${scale(136)}px;
+  height: ${scale(32)}px;
+
+  animation: ${fadeIn} 1s 2s forwards;
 `;
