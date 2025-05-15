@@ -40,16 +40,27 @@ const MessageList: React.FC<MessageListProps> = ({
       {sortedMessages.map((message, index) => {
         const isUser = message.senderId === myUserId;
         const continued = index > 0 && sortedMessages[index - 1].senderId === message.senderId;
+        const prevDate = index > 0 ? sortedMessages[index - 1].createdAt : '';
+        const currDate = message.createdAt.slice(0, 10); // 'YYYY-MM-DD'
+        const showDate = !prevDate || prevDate.slice(0, 10) !== currDate;
+
+        // 마지막 메시지인지, 다음 메시지의 sender가 다르면 true
+        const isLastOfGroup =
+          index === sortedMessages.length - 1 ||
+          sortedMessages[index + 1].senderId !== message.senderId;
 
         return (
-          <ChatRoomItem
-            key={message.messageId}
-            message={message}
-            isUser={isUser}
-            continued={continued}
-            opponentNickname={opponentNickname}
-            opponentProfile="/default-profile.png"
-          />
+          <React.Fragment key={message.messageId}>
+            {showDate && <S.DateDivider>{currDate.replace(/-/g, '. ')}</S.DateDivider>}
+            <ChatRoomItem
+              message={message}
+              isUser={isUser}
+              continued={continued}
+              opponentNickname={opponentNickname}
+              opponentProfile="/default-profile.png"
+              showTime={isLastOfGroup}
+            />
+          </React.Fragment>
         );
       })}
       <div ref={endOfMessagesRef} />

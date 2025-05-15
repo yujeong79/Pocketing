@@ -131,3 +131,24 @@ export const LoadMoreButton = styled.button`
     background-color: ${colors.gray200};
   }
 `;
+
+export const DateDivider = styled.div`
+  text-align: center;
+  color: ${colors.gray400};
+  ${FontStyles.captionSmall};
+  margin: 12px 0;
+`;
+
+export const TimeTextRight = styled.span`
+  ${FontStyles.captionSmall};
+  color: ${colors.gray400};
+  margin-left: 8px;
+  align-self: flex-end;
+`;
+
+export const TimeTextLeft = styled.span`
+  ${FontStyles.captionSmall};
+  color: ${colors.gray400};
+  margin-right: 8px;
+  align-self: flex-start;
+`;
