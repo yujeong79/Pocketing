@@ -11,7 +11,7 @@ import { fetchPhotocards } from '@/api/artist/photocard';
 
 interface GroupItem {
   groupId: number;
-  groupDisplayName: string; 
+  groupDisplayName?: string | null; 
   groupNameKo: string;
   groupNameEn: string;
 }
@@ -99,7 +99,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     setSelectedData({
       ...selectedData,
       groupId: group.groupId,
-      group: group.groupDisplayName,
+      group: group.groupDisplayName ?? '',
       memberId: undefined,
       member: '',
       albumId: undefined,
