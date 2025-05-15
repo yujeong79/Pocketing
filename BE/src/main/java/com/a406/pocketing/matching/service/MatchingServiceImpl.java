@@ -40,7 +40,7 @@ public class MatchingServiceImpl implements MatchingService {
 
         if (optionalMember.isEmpty()) {
             // 그룹만 반환
-            return new AiResolveResponseDto(group.getGroupId(), group.getDisplayName());
+            return new AiResolveResponseDto(group.getGroupId(), group.getDisplayName(), group.getNameKo(), group.getNameEn());
         }
 
         Member member = optionalMember.get();
@@ -48,6 +48,8 @@ public class MatchingServiceImpl implements MatchingService {
         return new AiResolveResponseDto(
                 group.getGroupId(),
                 group.getDisplayName(),
+                group.getNameKo(),
+                group.getNameEn(),
                 member.getMemberId(),
                 member.getName()
         );

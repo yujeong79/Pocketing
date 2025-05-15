@@ -47,6 +47,7 @@ public class MemberServiceImpl implements MemberService {
                         m.getMemberId(),
                         m.getName(),
                         likedMemberIds.contains(m.getMemberId()),
+                        m.getGroup().getDisplayName(),
                         m.getGroup().getNameKo(),
                         m.getGroup().getNameEn()
                 ))
@@ -73,6 +74,7 @@ public class MemberServiceImpl implements MemberService {
                         m.getMemberId(),
                         m.getName(),
                         false,  // 로그인하지 않은 사용자이므로 관심 여부는 false
+                        m.getGroup().getDisplayName(),
                         m.getGroup().getNameKo(),
                         m.getGroup().getNameEn()
                 ))

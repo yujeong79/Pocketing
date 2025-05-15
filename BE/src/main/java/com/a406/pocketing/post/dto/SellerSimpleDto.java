@@ -11,6 +11,7 @@ public class SellerSimpleDto {
     private Boolean isVerified;
     private Integer price;
     private String status;
+    private String groupDisplayName;
     private String groupNameKo;
     private String groupNameEn;
     private String groupImageUrl;

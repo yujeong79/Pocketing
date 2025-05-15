@@ -8,20 +8,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AiResolveResponseDto {
     private Long groupId;
-    private String displayName;
+    private String groupDisplayName;
+    private String groupNameKo;
+    private String groupNameEn;
     private Long memberId;
     private String memberName;
 
-    public AiResolveResponseDto(Long groupId, String displayName) {
+    public AiResolveResponseDto(Long groupId, String groupDisplayName, String groupNameKo, String groupNameEn) {
         this.groupId = groupId;
-        this.displayName = displayName;
+        this.groupDisplayName = groupDisplayName;
+        this.groupNameKo = groupNameKo;
+        this.groupNameEn = groupNameEn;
         this.memberId = null;
         this.memberName = null;
     }
 
-    public AiResolveResponseDto(Long groupId, String displayName, Long memberId, String memberName) {
+    public AiResolveResponseDto(Long groupId, String groupDisplayName, String groupNameKo, String groupNameEn, Long memberId, String memberName) {
         this.groupId = groupId;
-        this.displayName = displayName;
+        this.groupDisplayName = groupDisplayName;
+        this.groupNameKo = groupNameKo;
+        this.groupNameEn = groupNameEn;
         this.memberId = memberId;
         this.memberName = memberName;
     }

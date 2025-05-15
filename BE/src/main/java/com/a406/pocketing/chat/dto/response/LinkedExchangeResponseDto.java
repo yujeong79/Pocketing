@@ -33,7 +33,7 @@ public class LinkedExchangeResponseDto {
         public static ExchangeCardResponseDto of(User user, ExchangeCard exchangeCard) {
             return ExchangeCardResponseDto.builder()
                     .userId(user.getUserId())
-                    .groupName(exchangeCard.getGroup().getNameKo())
+                    .groupName(exchangeCard.getGroup().getDisplayName())
                     .memberName(exchangeCard.getMember().getName())
                     .albumName(exchangeCard.getAlbum().getTitle())
                     .exchangeImageUrl(exchangeCard.getExchangeImageUrl())

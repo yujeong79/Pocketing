@@ -23,6 +23,7 @@ public class PostDetailResponseDto {
         private Long cardId;
         private String cardImageUrl;
         private String memberName;
+        private String groupDisplayName;
         private String groupNameKo;
         private String groupNameEn;
         private String groupImageUrl;
@@ -39,7 +40,7 @@ public class PostDetailResponseDto {
     }
 
     public PostDetailResponseDto(Long postId, String postImageUrl, Integer price, LocalDateTime createdAt, String status,
-                                 Long cardId, String cardImageUrl, String memberName, String groupNameKo, String groupNameEn,
+                                 Long cardId, String cardImageUrl, String memberName, String groupDisplayName, String groupNameKo, String groupNameEn,
                                  String groupImageUrl, String albumTitle, Long sellerId, String nickname, Boolean isVerified,
                                  String profileImageUrl, boolean isMine) {
         this.postId = postId;
@@ -48,7 +49,7 @@ public class PostDetailResponseDto {
         this.createdAt = createdAt;
         this.status = status;
         this.isMine = isMine;
-        this.card = new CardInfo(cardId, cardImageUrl, memberName, groupNameKo, groupNameEn, groupImageUrl, albumTitle);
+        this.card = new CardInfo(cardId, cardImageUrl, memberName, groupDisplayName, groupNameKo, groupNameEn, groupImageUrl, albumTitle);
         this.seller = new SellerInfo(sellerId, nickname, isVerified, profileImageUrl);
     }
 }

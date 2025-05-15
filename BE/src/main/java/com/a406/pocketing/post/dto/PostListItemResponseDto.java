@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class PostListItemResponseDto {
     private Long postId;
+    private String groupDisplayName;
     private String groupNameKo;
     private String groupNameEn;
     private String memberName;
@@ -30,6 +31,7 @@ public class PostListItemResponseDto {
 
         return PostListItemResponseDto.builder()
                 .postId(post.getPostId())
+                .groupDisplayName(group.getDisplayName())
                 .groupNameKo(group.getNameKo())
                 .groupNameEn(group.getNameEn())
                 .memberName(member.getName())

@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 public class GroupResponseDto {
     private Long groupId;
-    private String displayName;
+    private String groupDisplayName;
     private String groupNameKo;
     private String groupNameEn;
     private String groupImageUrl;
@@ -22,7 +22,7 @@ public class GroupResponseDto {
     public static GroupResponseDto from(Group group) {
         return GroupResponseDto.builder()
                 .groupId(group.getGroupId())
-                .displayName(group.getDisplayName())
+                .groupDisplayName(group.getDisplayName())
                 .groupNameKo(group.getNameKo())
                 .groupNameEn(group.getNameEn())
                 .groupImageUrl(group.getGroupImageUrl())
