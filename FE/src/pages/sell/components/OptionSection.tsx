@@ -99,6 +99,9 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
       return;
     }
 
+    setMarketPrice(null);
+    setShowMarketPrice(false);
+
    try {
       const res = await getPhotoCardPrice(Number(current.versionId));
       setMarketPrice(res.result);
@@ -136,7 +139,12 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
   };
 
   const handleImageChange = (index: number) => {
-    setCurrentImageIndex(index);
+    if (index !== currentImageIndex) {
+      setShowMarketPrice(false);
+      setMarketPrice(null);
+      setCurrentImageIndex(index);
+    }
+    
   };
 
   const optionCompleteStatus = useMemo(() => {
