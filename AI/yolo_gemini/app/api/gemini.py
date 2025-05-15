@@ -18,17 +18,21 @@ class VisionRequest(BaseModel):
 
 @router.post("/analyze")
 async def analyze_images_with_gemini(req: VisionRequest):
+    print("[📥] Gemini 분석 요청 수신됨")
+    print(f"[🖼️] 요청 이미지 개수: {len(req.postImageUrls)}")
+
     # 입력 유효성 검증
     if not req.postImageUrls or len(req.postImageUrls) == 0:
         code, msg = VisionError.IMAGE_REQUIRED
+        print("[❌] 이미지 리스트 비어 있음")
         raise CustomException(code, msg)
 
-    # 이미지 개수 제한 (최대 6개)
     if len(req.postImageUrls) > 6:
         code, msg = VisionError.TOO_MANY_IMAGES
+        print("[❌] 이미지 6장 초과")
         raise CustomException(code, msg)
 
-    # 모든 이미지에 대해 병렬 처리
+    print("[🚀] Gemini 분석 병렬 처리 시작")
     tasks = [analyze_image_async(url) for url in req.postImageUrls]
     results_and_errors = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -36,30 +40,34 @@ async def analyze_images_with_gemini(req: VisionRequest):
     errors = []
 
     for i, result in enumerate(results_and_errors):
+        image_url = req.postImageUrls[i]
         if isinstance(result, Exception):
+            print(f"[⚠️] 분석 실패: {image_url}")
             if isinstance(result, CustomException):
+                print(f"[❌] CustomException: {result.code} - {result.message}")
                 errors.append({
-                    "url": req.postImageUrls[i],
+                    "url": image_url,
                     "error": {"code": result.code, "message": result.message}
                 })
             else:
+                print(f"[❌] 일반 예외: {str(result)}")
                 errors.append({
-                    "url": req.postImageUrls[i],
+                    "url": image_url,
                     "error": {"code": "VISION4003", "message": str(result)}
                 })
         else:
-            result["postImageUrl"] = req.postImageUrls[i]
+            print(f"[✅] 분석 성공: {image_url} → {result}")
+            result["postImageUrl"] = image_url
             results.append(result)
 
     if not results and errors:
-        # 모든 이미지 분석 실패
         code, msg = VisionError.ANALYSIS_FAILED
+        print("[🛑] 모든 이미지 분석 실패")
         raise CustomException(code, msg)
 
-    # success_code에서 정의된 성공 코드 사용
     code, msg = GeminiSuccess.ANALYSIS_SUCCESS
+    print(f"[🎉] 분석 완료: 성공 {len(results)} / 실패 {len(errors)}")
 
-    # 통일된 응답 형식
     return success(code, msg, {
         "results": results,
         "errors": errors if errors else None,
@@ -67,6 +75,3 @@ async def analyze_images_with_gemini(req: VisionRequest):
         "success": len(results),
         "failed": len(errors)
     })
-
-
-
