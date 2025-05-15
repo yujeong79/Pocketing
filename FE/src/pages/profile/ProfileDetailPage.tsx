@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AddressIcon, AccountIcon } from '@/assets/assets';
 import { DefaultProfileImage } from '@/assets/assets.ts';
 import { getMyInfo } from '@/api/user/myInfo';
+import { getKakaoLogout } from '@/api/auth/kakaoLogout';
 
 const ProfileDetailPage = () => {
   const [myImage, setMyImage] = useState<string | null>(null);
@@ -11,6 +12,10 @@ const ProfileDetailPage = () => {
   const [myAddress, setMyAddress] = useState<string | null>(null);
   const [myAccount, setMyAccount] = useState<string | null>(null);
   const [myBank, setMyBank] = useState<string | null>(null);
+
+  const handleKakaoLogout = () => {
+    window.location.href = getKakaoLogout();
+  };
 
   const handleGetMyInfo = useCallback(async () => {
     try {
@@ -55,7 +60,7 @@ const ProfileDetailPage = () => {
           </S.AccountContainer>
         </S.ProfileInfoContainer>
         <S.LeaveContainer>
-          <S.Logout>로그아웃</S.Logout>
+          <S.Logout onClick={handleKakaoLogout}>로그아웃</S.Logout>
           <S.DeleteAccount>회원탈퇴</S.DeleteAccount>
         </S.LeaveContainer>
       </S.ContentsContainer>
