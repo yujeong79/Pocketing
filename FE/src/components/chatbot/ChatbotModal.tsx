@@ -1,7 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { ThreeDLogo } from '@/assets/assets';
+import { ThreeDLogo, CloseIcon } from '@/assets/assets';
 import * as S from './ChatbotModalStyle';
-import { CloseIcon } from '@/assets/assets';
+
+// WebSocket 주소 설정 (API 서버 주소)
+const SOCKET_URL = 'wss://k12a406.p.ssafy.io/chatbot/ws';
+
+interface Photocard {
+  card_id: number;
+  cheapest_post: {
+    post_id: number | null;
+    price: number | null;
+    post_image_url: string | null;
+    card_image_url: string | null;
+    nickname: string;
+    last_updated: string;
+  };
+}
+
+interface ChatbotMeta {
+  user_id: number;
+  total_results: number;
+  in_response_to: number;
+  new_chat_message_id: number;
+}
+
+interface ChatbotResponse {
+  status: string;
+  code: number;
+  message: string;
+  result?: {
+    text: string;
+    photocards?: Photocard[];
+    meta?: ChatbotMeta;
+  };
+}
 
 interface ChatMessage {
   text: string;
@@ -21,23 +53,77 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
     },
   ]);
   const [inputText, setInputText] = useState('');
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
+  // 로컬스토리지에서 user_id 가져오기
+  const userId = localStorage.getItem('userId');
+
+  // 컴포넌트가 열리면 웹소켓 연결을 설정
   useEffect(() => {
+    if (isOpen) {
+      const ws = new WebSocket(SOCKET_URL);
+      setSocket(ws);
+
+      ws.onopen = () => {
+        console.log('웹소켓 연결 성공');
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        handleIncomingMessage(data);
+      };
+
+      ws.onclose = (event) => {
+        console.log('웹소켓 연결 종료', event);
+      };
+
+      ws.onerror = (error) => {
+        console.error('웹소켓 오류', error);
+      };
+
+      return () => {
+        ws.close(); // 컴포넌트 언마운트 시 웹소켓 연결 종료
+      };
+    }
+
+    // 이펙트가 실행될 때마다 overflow 속성 변경
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
+
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
+  // 서버에서 받은 메시지 처리
+  const handleIncomingMessage = (data: ChatbotResponse) => {
+    if (data.status === 'SUCCESS' && data.result) {
+      const result = data.result;
+      setMessages((prevMessages) => [...prevMessages, { text: result.text, isUser: false }]);
+      if (result.photocards && result.photocards.length > 0) {
+        // 포토카드 데이터 처리 (추가 작업)
+      }
+    } else {
+      console.error('에러 발생:', data.message);
+    }
+  };
+
+  // 사용자가 보낸 메시지 처리 및 웹소켓으로 전송
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || !userId) return; // userId가 없으면 메시지 보내지 않음
 
     setMessages([...messages, { text: inputText, isUser: true }]);
+    if (socket) {
+      const message = {
+        user_id: userId, // 로컬스토리지에서 가져온 user_id 사용
+        chat_message: inputText,
+      };
+      socket.send(JSON.stringify(message)); // 서버로 메시지 전송
+    }
     setInputText('');
   };
 
