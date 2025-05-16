@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
 import TradeItem from './components/TradeItem';
 import ExchangeItem from './components/ExchangeItem';
@@ -15,6 +15,7 @@ import { PostDetail } from '@/types/post';
 import { fetchPostDetail } from '@/api/posts/post';
 import { useChatStore } from '@/store/chatStore';
 import { useChatSocket } from '@/hooks/useChatSocket';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 type ChatType = 'TRADE' | 'EXCHANGE';
 
@@ -44,6 +45,8 @@ const ChatRoomPage: React.FC = () => {
 
   const { scrollToBottom } = useScrollToBottom(chatContainerRef, [messages]);
   const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // WebSocket 연결 및 메시지 핸들러 등록
   useChatSocket({
@@ -132,7 +135,7 @@ const ChatRoomPage: React.FC = () => {
 
   return (
     <>
-      <Header type="chat" title={nickname} />
+      <Header type="chat" title={nickname} roomId={roomId} />
       <S.Container>
         {renderTradeOrExchangeItem()}
         <MessageList
@@ -147,6 +150,18 @@ const ChatRoomPage: React.FC = () => {
         />
         <MessageInput onSendMessage={handleSendMessage} />
       </S.Container>
+      <ConfirmModal
+        isOpen={isLeaveModalOpen}
+        onClose={() => setIsLeaveModalOpen(false)}
+        onConfirm={async () => {
+          // await deleteChatRoom(Number(roomId)); // API가 있다면
+          navigate('/message');
+        }}
+        text="정말 이 채팅방에서 나가시겠습니까?"
+        title="채팅방 나가기"
+        confirmText="나가기"
+        cancelText="취소"
+      />
     </>
   );
 };

@@ -77,7 +77,6 @@ const MessagePage = ({ type }: MessagePageProps) => {
         if (type === 'trade') {
           const response = await getPostChatRooms();
           if (response.isSuccess) {
-            console.log(response.result);
             const validTradeChats = response.result
               .map(convertToTradeChat)
               .filter(
@@ -116,6 +115,9 @@ const MessagePage = ({ type }: MessagePageProps) => {
           return bTime - aTime;
         });
 
+  const leavedRooms = JSON.parse(localStorage.getItem('leavedRooms') || '[]');
+  const filteredChats = sortedChats.filter((room) => !leavedRooms.includes(room.roomId));
+
   return (
     <>
       <Header type="profile" hasBorder={false} />
@@ -123,8 +125,8 @@ const MessagePage = ({ type }: MessagePageProps) => {
         <ChatTabs activeTab={type} onTabChange={handleTabChange} />
         <ChatList
           type={type}
-          tradeChats={type === 'trade' ? (sortedChats as TradeChat[]) : []}
-          exchangeChats={type === 'exchange' ? (sortedChats as ExchangeChat[]) : []}
+          tradeChats={type === 'trade' ? (filteredChats as TradeChat[]) : []}
+          exchangeChats={type === 'exchange' ? (filteredChats as ExchangeChat[]) : []}
         />
       </Container>
     </>

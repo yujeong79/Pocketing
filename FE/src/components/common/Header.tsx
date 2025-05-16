@@ -1,6 +1,9 @@
 import { BackIcon, LogoText, Logo2d, ModifyIcon } from '@/assets/assets';
 import * as S from './HeaderStyle.ts';
 import { useNavigate } from 'react-router-dom';
+import ConfirmModal from '@/components/common/ConfirmModal';
+import { useState } from 'react';
+import { useChatStore } from '@/store/chatStore';
 
 interface HeaderProps {
   type:
@@ -21,6 +24,7 @@ interface HeaderProps {
   hasBorder?: boolean;
   onRegister?: () => void;
   rightElement?: React.ReactNode;
+  roomId?: string | number;
 }
 
 export default function Header({
@@ -30,8 +34,11 @@ export default function Header({
   hasBorder = true,
   onRegister,
   rightElement,
+  roomId,
 }: HeaderProps) {
   const navigate = useNavigate();
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const { removeChatRoom } = useChatStore();
 
   const renderLeftContent = () => {
     switch (type) {
@@ -128,7 +135,7 @@ export default function Header({
       case 'chat':
         return (
           <S.RightSection>
-            <S.LeaveButton>방 나가기</S.LeaveButton>
+            <S.LeaveButton onClick={() => setIsLeaveModalOpen(true)}>방 나가기</S.LeaveButton>
           </S.RightSection>
         );
       case 'profile':
@@ -147,9 +154,27 @@ export default function Header({
   };
 
   return (
-    <S.HeaderContainer $hasBorder={hasBorder}>
-      {renderLeftContent()}
-      {renderRightContent()}
-    </S.HeaderContainer>
+    <>
+      <S.HeaderContainer $hasBorder={hasBorder}>
+        {renderLeftContent()}
+        {renderRightContent()}
+      </S.HeaderContainer>
+      <ConfirmModal
+        isOpen={isLeaveModalOpen}
+        onClose={() => setIsLeaveModalOpen(false)}
+        onConfirm={() => {
+          if (roomId) {
+            removeChatRoom(Number(roomId));
+            const leavedRooms = JSON.parse(localStorage.getItem('leavedRooms') || '[]');
+            localStorage.setItem('leavedRooms', JSON.stringify([...leavedRooms, Number(roomId)]));
+          }
+          navigate('/message');
+        }}
+        text="정말 이 채팅방에서 나가시겠습니까?"
+        title="채팅방 나가기"
+        confirmText="나가기"
+        cancelText="취소"
+      />
+    </>
   );
 }
