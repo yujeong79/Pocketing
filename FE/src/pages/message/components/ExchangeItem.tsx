@@ -1,6 +1,7 @@
 import * as S from './ExchangeItemStyle';
 import { LinkedExchange } from '@/types/chat';
 import { useAuth } from '@/hooks/useAuth';
+import { ExchangeIcon2 } from '@/assets/assets';
 
 interface ExchangeItemProps {
   linkedExchange: LinkedExchange;
@@ -24,7 +25,7 @@ const ExchangeItem = ({ linkedExchange }: ExchangeItemProps) => {
       </S.CardSection>
 
       <S.ExchangeIcon>
-        <img src="/icons/exchange.svg" alt="교환" />
+        <img src={ExchangeIcon2} alt="교환" />
       </S.ExchangeIcon>
 
       <S.CardSection isMyCard>

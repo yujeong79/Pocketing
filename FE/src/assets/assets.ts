@@ -73,6 +73,7 @@ import CautionIcon from '@/assets/icons/caution.svg';
 
 // message
 import SendIcon from '@/assets/icons/send.svg';
+import ExchangeIcon2 from '@/assets/icons/exchange-gd.svg';
 
 // profile
 import DefaultProfileImage from '@/assets/images/default-profile.png';
@@ -164,6 +165,7 @@ export {
   CautionIcon,
   // message
   SendIcon,
+  ExchangeIcon2,
   // profile
   DefaultProfileImage,
   RightArrowIcon,
