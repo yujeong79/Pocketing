@@ -29,11 +29,11 @@ function App() {
           return;
         }
 
-        // 2) 개발 모드 분기: 토큰 발급/동기화 대신 리스너만
-        if (process.env.NODE_ENV === 'development') {
-          initForegroundMessageListener();
-          return;
-        }
+        // // 2) 개발 모드 분기: 토큰 발급/동기화 대신 리스너만
+        // if (process.env.NODE_ENV === 'development') {
+        //   initForegroundMessageListener();
+        //   return;
+        // }
 
         // 3) 권한이 granted 또는 default 상태일 때만 토큰 로직
         if (Notification.permission === 'granted' || Notification.permission === 'default') {
