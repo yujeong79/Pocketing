@@ -126,6 +126,10 @@ const ChatRoomPage: React.FC = () => {
     return null;
   };
 
+  const opponent = chatRoomDetail?.participants.find((p) => !p.isMyInfo);
+  const opponentProfile = opponent?.profileImageUrl || '/default-profile.png';
+  const opponentNickname = opponent?.nickname || '';
+
   return (
     <>
       <Header type="chat" title={nickname} />
@@ -134,7 +138,8 @@ const ChatRoomPage: React.FC = () => {
         <MessageList
           messages={messages}
           myUserId={user.userId}
-          opponentNickname={nickname || ''}
+          opponentNickname={opponentNickname}
+          opponentProfile={opponentProfile}
           chatContainerRef={chatContainerRef as React.RefObject<HTMLDivElement>}
           endOfMessagesRef={endOfMessagesRef as React.RefObject<HTMLDivElement>}
           onLoadMore={handleLoadMore}

@@ -11,6 +11,7 @@ interface MessageListProps {
   endOfMessagesRef: RefObject<HTMLDivElement>;
   onLoadMore: () => void;
   hasMore: boolean;
+  opponentProfile: string;
 }
 
 const MessageList: React.FC<MessageListProps> = ({
@@ -21,6 +22,7 @@ const MessageList: React.FC<MessageListProps> = ({
   endOfMessagesRef,
   onLoadMore,
   hasMore,
+  opponentProfile,
 }) => {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop } = e.currentTarget;
@@ -67,7 +69,7 @@ const MessageList: React.FC<MessageListProps> = ({
               isUser={isUser}
               continued={continued}
               opponentNickname={opponentNickname}
-              opponentProfile="/default-profile.png"
+              opponentProfile={opponentProfile}
               showTime={isLastOfGroup}
             />
           </React.Fragment>
