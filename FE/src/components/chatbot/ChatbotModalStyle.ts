@@ -93,7 +93,7 @@ export const ChatContainer = styled.div`
 export const MessageWrapper = styled.div<{ isUser: boolean }>`
   display: flex;
   justify-content: ${({ isUser }) => (isUser ? 'flex-end' : 'flex-start')};
-  align-items: flex-start;
+  align-items: center;
   gap: ${scale(4)}px;
 `;
 

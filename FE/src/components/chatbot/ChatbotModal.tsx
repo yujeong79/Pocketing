@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ThreeDLogo, CloseIcon, SendIcon } from '@/assets/assets';
 import * as S from './ChatbotModalStyle';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
+import ChatBotLoader from '@/components/common/ChatBotLoader';
 
 // WebSocket 주소 설정 (API 서버 주소)
 const SOCKET_URL = 'wss://k12a406.p.ssafy.io/chatbot/ws';
@@ -55,13 +56,20 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   ]);
   const [inputText, setInputText] = useState('');
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 로컬스토리지에서 user_id 가져오기
   const user = localStorage.getItem('user');
   const userId = user ? JSON.parse(user).userId : null;
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  useScrollToBottom(chatContainerRef, [messages]);
+  const { scrollToBottom } = useScrollToBottom(chatContainerRef, [messages]);
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  }, [isOpen, scrollToBottom]);
 
   // 컴포넌트가 열리면 웹소켓 연결을 설정
   useEffect(() => {
@@ -105,6 +113,7 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
 
   // 서버에서 받은 메시지 처리
   const handleIncomingMessage = (data: ChatbotResponse) => {
+    setIsLoading(false);
     if (data.status === 'SUCCESS' && data.result) {
       const result = data.result;
       setMessages((prevMessages) => [...prevMessages, { text: result.text, isUser: false }]);
@@ -119,18 +128,12 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   // 사용자가 보낸 메시지 처리 및 웹소켓으로 전송
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('handleSubmit 호출됨');
-    if (!inputText.trim() || !userId) return; // userId가 없으면 메시지 보내지 않음
-
+    if (!inputText.trim() || !userId) return;
     setMessages([...messages, { text: inputText, isUser: true }]);
+    setIsLoading(true);
     if (socket && socket.readyState === WebSocket.OPEN) {
-      const message = {
-        user_id: userId, // 로컬스토리지에서 가져온 user_id 사용
-        chat_message: inputText,
-      };
-      socket.send(JSON.stringify(message)); // 서버로 메시지 전송
-    } else {
-      console.error('WebSocket이 열려 있지 않습니다.');
+      const message = { user_id: userId, chat_message: inputText };
+      socket.send(JSON.stringify(message));
     }
     setInputText('');
   };
@@ -155,6 +158,12 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
                 <S.Message isUser={message.isUser}>{message.text}</S.Message>
               </S.MessageWrapper>
             ))}
+            {isLoading && (
+              <S.MessageWrapper isUser={false}>
+                <S.BotIcon src={ThreeDLogo} alt="Bot" />
+                <ChatBotLoader />
+              </S.MessageWrapper>
+            )}
           </S.ChatContainer>
 
           <S.InputForm onSubmit={handleSubmit}>
