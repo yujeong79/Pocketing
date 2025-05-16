@@ -41,6 +41,7 @@ public class GroupServiceImpl implements GroupService {
         return groups.stream()
                 .map(group -> GroupResponseDto.builder()
                         .groupId(group.getGroupId())
+                        .groupDisplayName(group.getDisplayName())
                         .groupNameKo(group.getNameKo())
                         .groupNameEn(group.getNameEn())
                         .groupImageUrl(group.getGroupImageUrl())
