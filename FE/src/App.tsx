@@ -18,16 +18,23 @@ function App() {
     (async () => {
       // 1) 서비스워커 등록
       const registration = await registerServiceWorker();
-      if (!registration) return;
+      
+      // // 2) 개발모드면 토큰/리스너 로직만 등록
+      // if (process.env.NODE_ENV === 'development') {
+      //   initForegroundMessageListener();
+      //   return;
+      // }
 
-      // 2) 최초 FCM 토큰 요청 (권한 요청 포함)
-      await requestFcmToken(registration);
-
-      // 3) SDK 내부에서 교체된 토큰이 있으면 동기화
-      await syncFcmToken(registration);
-
-      // 4) 포그라운드 알림 리스너
-      initForegroundMessageListener();
+      if (registration) {
+        // 2) 최초 FCM 토큰 요청 (권한 요청 포함)
+        await requestFcmToken(registration);
+  
+        // 3) SDK 내부에서 교체된 토큰이 있으면 동기화
+        await syncFcmToken(registration);
+  
+        // 4) 포그라운드 알림 리스너
+        initForegroundMessageListener();
+      }
     })();
   }, []);
 

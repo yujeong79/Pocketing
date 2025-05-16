@@ -1,5 +1,5 @@
 // 서비스 워커 등록 함수
-export async function registerServiceWorker() {
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   // 서비스워커 지원 여부 체크
   if (!('serviceWorker' in navigator)) {
     console.warn('🚫 이 브라우저는 Service Worker를 지원하지 않습니다.');
