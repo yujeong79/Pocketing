@@ -12,7 +12,17 @@ firebase.initializeApp({
   measurementId: "G-ZBLL446HH9"
 });
 
-// **여기에서 반드시 정의해야 합니다!**
+// 서비스 워커 설치/활성화
+self.addEventListener('install', () => {
+  // 새로운 sw가 설치되면 즉시 활성화
+  self.skipWaiting();
+})
+self.addEventListener('activate', () => {
+  // 활성화된 sw가 곧바로 페이지 제어 시작
+  self.clients.claim();
+})
+
+
 const messaging = firebase.messaging();
 
 // 2) 백그라운드 전용 메시지 처리

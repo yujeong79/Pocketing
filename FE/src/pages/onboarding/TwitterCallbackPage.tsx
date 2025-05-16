@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { requestFcmToken } from '@/fcm';
 
 const TwitterCallbackPage = () => {
   const navigate = useNavigate();
@@ -36,9 +35,7 @@ const TwitterCallbackPage = () => {
         );
       }
 
-      requestFcmToken()
-        .catch((err) => console.error('FCM 토큰 등록 실패:', err))
-        .finally(() => navigate('/main', { replace: true }));
+      navigate('/main', { replace: true });
     } else {
       const oauthProvider = searchParams.get('oauthProvider');
       const providerId = searchParams.get('providerId');
