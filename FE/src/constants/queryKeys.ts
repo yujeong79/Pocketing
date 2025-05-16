@@ -12,4 +12,8 @@ export const QUERY_KEYS = {
   ALBUMS: 'albums',
   MYCARD: 'mycard',
   OTHERSCARD: 'otherscard',
+  POST_CHAT_ROOMS: 'postChatRooms',
+  EXCHANGE_CHAT_ROOMS: 'exchangeChatRooms',
+  CHAT_ROOM_DETAIL: 'chatRoomDetail',
+  UNREAD_MESSAGE_COUNT: 'unreadMessageCount',
 } as const;
