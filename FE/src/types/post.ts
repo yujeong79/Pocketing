@@ -32,6 +32,7 @@ export interface Card {
   cardId: number;
   cardImageUrl: string;
   memberName: string;
+  groupDisplayName: string;
   groupNameKo: string;
   groupNameEn: string;
   groupImageUrl: string;

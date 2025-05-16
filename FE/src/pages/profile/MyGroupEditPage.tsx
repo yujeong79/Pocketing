@@ -61,9 +61,9 @@ const MyGroupEditPage = () => {
                 <S.GroupImage
                   src={group.groupImageUrl}
                   $isSelected={hasLikedMembers}
-                  alt={group.groupNameKo}
+                  alt={group.groupDisplayName || ''}
                 />
-                <S.GroupName $isSelected={hasLikedMembers}>{group.groupNameKo}</S.GroupName>
+                <S.GroupName $isSelected={hasLikedMembers}>{group.groupDisplayName}</S.GroupName>
               </S.GroupInfo>
             );
           })}
