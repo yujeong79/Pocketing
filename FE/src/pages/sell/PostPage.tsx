@@ -76,6 +76,7 @@ const PostPage = () => {
           }
         });
 
+
         
 
 
@@ -90,6 +91,21 @@ const PostPage = () => {
 
     fetchMatching();
   }, [geminiResult]);
+
+  
+  useEffect(() => {
+    const handlePopState = () => {
+          if (window.history.state?.idx > 0) {
+        navigate('/guide', { replace: true });
+      } // ✅ 기기 뒤로가기도 가이드로
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
 
   const handleRegisterClick = async () => {
     const settings = optionSectionRef.current?.photocardSettings;
@@ -122,7 +138,10 @@ const PostPage = () => {
       console.log('등록 성공:', result);
       // 이후 페이지 이동 or 알림 처리 등 추가 가능
       alert(`${result.length}개의 게시물이 등록되었습니다.`);
-      navigate('/mySaleList');
+      navigate('/mySaleList', {
+        replace: true,
+        state: { fromRegister: true }, // ✅ 등록 완료 표시
+      });
     } catch (error) {
       console.error('등록 실패:', error);
       alert('등록에 실패했습니다.');

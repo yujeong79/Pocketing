@@ -37,6 +37,13 @@ export default function Header({
     switch (type) {
       case 'artist':
       case 'post':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate('/guide')}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
+          </S.LeftSection>
+        );
       case 'exchange':
       case 'alarm':
         return (
@@ -66,7 +73,7 @@ export default function Header({
       case 'mySaleList':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={() => navigate(-1)}>
+            <S.BackButton onClick={onBack ?? (() => navigate(-1))}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
             {title && <S.Title>{title}</S.Title>}
