@@ -1,22 +1,34 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import * as S from './OthersCardStyle';
 
-import { useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants/queryKeys';
-import { OthersCardData } from '@/types/exchange';
 import { FullHeartIcon } from '@/assets/assets';
+import { getOthersCard } from '@/api/exchange/exchangeCard';
+import { GetRegisteredCardResponse } from '@/types/exchange';
 
 interface OthersCardProps {
   onClick: () => void;
 }
 
 const OthersCard = ({ onClick }: OthersCardProps) => {
-  const queryClient = useQueryClient();
-  const cardData = queryClient.getQueryData<OthersCardData>([QUERY_KEYS.OTHERSCARD]);
-  const hasCardData = cardData?.cardGroup && cardData?.cardMember && cardData?.cardAlbum;
+  const [othersCard, setOthersCard] = useState<GetRegisteredCardResponse | null>(null);
+
+  const handleGetOthersCard = useCallback(async () => {
+    try {
+      const response = await getOthersCard();
+      setOthersCard(response.result);
+    } catch (error) {
+      throw error;
+    }
+  }, []);
+
+  useEffect(() => {
+    handleGetOthersCard();
+  }, [handleGetOthersCard]);
 
   return (
     <>
-      {!hasCardData ? (
+      {!othersCard ? (
         <S.OthersCardContainerNon onClick={onClick}>
           <S.TextContainer>
             <S.Title>원하는 포카</S.Title>
@@ -32,9 +44,9 @@ const OthersCard = ({ onClick }: OthersCardProps) => {
                 <S.HeartIcon src={FullHeartIcon} />
               </S.CardImage>
               <S.CardInfo>
-                <S.CardText>{cardData.cardGroup}</S.CardText>
-                <S.CardText>{cardData.cardMember}</S.CardText>
-                <S.CardText>{cardData.cardAlbum}</S.CardText>
+                <S.CardText>{othersCard?.group}</S.CardText>
+                <S.CardText>{othersCard?.member}</S.CardText>
+                <S.CardText>{othersCard?.album}</S.CardText>
               </S.CardInfo>
             </S.Content>
           </S.CardContainer>
