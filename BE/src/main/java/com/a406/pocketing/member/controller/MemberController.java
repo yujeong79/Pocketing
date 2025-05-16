@@ -19,7 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
     /**
-     * 멤버 전체 조회
+     * 로그인한 유저의 멤버 전체 조회
      */
     @GetMapping
     public ApiResponse<List<MemberResponseDto>> getMembers(@RequestParam(required = false) Long groupId) {
@@ -29,13 +29,12 @@ public class MemberController {
     }
 
     /**
-     * 관심 멤버 조회
+     * 로그인 하지 않은 유저의 (회원가입에서) 멤버 전체 조회
      */
-    @GetMapping("/like")
-    public ApiResponse<List<MemberResponseDto>> getLikedMembers(@RequestParam(required = false) Long groupId) {
-        Long userId = getCurrentUserId();
-        List<MemberResponseDto> members = memberService.getLikedMembersByGroupId(userId, groupId);
-        return ApiResponse.of(SuccessStatus.MEMBER_LIKE_LIST_FETCH_SUCCESS, members);
+    @GetMapping("/all")
+    public  ApiResponse<List<MemberResponseDto>> getAllMembers(@RequestParam(required = false) Long groupId){
+        List<MemberResponseDto> members = memberService.getAllMembersByGroupId(groupId);
+        return ApiResponse.of(SuccessStatus.MEMBER_LIST_FETCH_SUCCESS, members);
     }
 
     /**
@@ -45,6 +44,6 @@ public class MemberController {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        return userDetails.getId();
+        return userDetails.getUserId();
     }
 }

@@ -13,16 +13,18 @@ public class LoginResponseDto {
     String oauthProvider;
     String providerId;
 
+    Long userId;
     String nickname;
     String profileImageUrl;
     String accessToken;
 
-    public static LoginResponseDto ofExistingUser(User user, JwtTokenDto jwtTokenDto) {
+    public static LoginResponseDto ofExistingUser(User user) {
         return LoginResponseDto.builder()
                 .isRegistered(true)
+                .oauthProvider(user.getOauthProvider())
+                .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
-                .accessToken(jwtTokenDto.getAccessToken())
                 .build();
     }
 

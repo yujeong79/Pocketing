@@ -1,10 +1,16 @@
 package com.a406.pocketing.album.entity;
 
+import com.a406.pocketing.group.entity.Group;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 @Table(
         name = "albums",
         indexes = {
@@ -19,7 +25,11 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long albumId;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", insertable = false, updatable = false)
+    private Group group;
+
+    @Column(name = "group_id", nullable = false)
     private Long groupId;
 
     @Column(nullable = false, length = 100)
