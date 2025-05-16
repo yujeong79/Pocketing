@@ -11,6 +11,8 @@ export interface ChatState {
   setPage: (page: number) => void;
   hasMore: boolean;
   setHasMore: (hasMore: boolean) => void;
+  chatRooms: { roomId: number }[];
+  removeChatRoom: (roomId: number) => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -23,4 +25,9 @@ export const useChatStore = create<ChatState>((set) => ({
   setPage: (page) => set({ page }),
   hasMore: true,
   setHasMore: (hasMore) => set({ hasMore }),
+  chatRooms: [],
+  removeChatRoom: (roomId) =>
+    set((state) => ({
+      chatRooms: state.chatRooms.filter((room) => room.roomId !== roomId),
+    })),
 }));

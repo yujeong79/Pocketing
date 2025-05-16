@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import * as S from '../../ChatRoomPageStyle';
 import { ChatMessage } from '@/types/chat';
-import ChatRoomItem from './ChatRoomItem';
+import ChatRoomItem from '@/pages/message/components/ChatRoom/ChatRoomItem';
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -11,6 +11,7 @@ interface MessageListProps {
   endOfMessagesRef: RefObject<HTMLDivElement>;
   onLoadMore: () => void;
   hasMore: boolean;
+  opponentProfile: string;
 }
 
 const MessageList: React.FC<MessageListProps> = ({
@@ -21,6 +22,7 @@ const MessageList: React.FC<MessageListProps> = ({
   endOfMessagesRef,
   onLoadMore,
   hasMore,
+  opponentProfile,
 }) => {
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop } = e.currentTarget;
@@ -40,16 +42,37 @@ const MessageList: React.FC<MessageListProps> = ({
       {sortedMessages.map((message, index) => {
         const isUser = message.senderId === myUserId;
         const continued = index > 0 && sortedMessages[index - 1].senderId === message.senderId;
+        const prevDate = index > 0 ? sortedMessages[index - 1].createdAt : '';
+        const currDate = message.createdAt.slice(0, 10); // 'YYYY-MM-DD'
+        const showDate = !prevDate || prevDate.slice(0, 10) !== currDate;
+
+        // 마지막 메시지인지, 다음 메시지의 sender가 다르면 true
+        const isLastOfGroup =
+          index === sortedMessages.length - 1 ||
+          sortedMessages[index + 1].senderId !== message.senderId;
 
         return (
-          <ChatRoomItem
-            key={message.messageId}
-            message={message}
-            isUser={isUser}
-            continued={continued}
-            opponentNickname={opponentNickname}
-            opponentProfile="/default-profile.png"
-          />
+          <React.Fragment key={message.messageId}>
+            {showDate &&
+              (() => {
+                const dateObj = new Date(currDate);
+                const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+                const dayStr = days[dateObj.getDay()];
+                return (
+                  <S.DateDivider>
+                    {currDate.replace(/-/g, '. ')} {dayStr}
+                  </S.DateDivider>
+                );
+              })()}
+            <ChatRoomItem
+              message={message}
+              isUser={isUser}
+              continued={continued}
+              opponentNickname={opponentNickname}
+              opponentProfile={opponentProfile}
+              showTime={isLastOfGroup}
+            />
+          </React.Fragment>
         );
       })}
       <div ref={endOfMessagesRef} />

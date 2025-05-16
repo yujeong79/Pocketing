@@ -29,7 +29,6 @@ export const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-top: ${scale(100)}px;
 `;
 
 export const Title = styled.h2`

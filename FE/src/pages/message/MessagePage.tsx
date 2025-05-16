@@ -16,6 +16,7 @@ interface TradeChat {
   imageUrl: string;
   lastMessageContent: string;
   unreadMessageCount: number;
+  lastMessageTime: string;
 }
 
 interface ExchangeChat {
@@ -44,6 +45,7 @@ const convertToTradeChat = (chatRoom: ChatRoom): TradeChat | null => {
     imageUrl: chatRoom.imageUrl,
     lastMessageContent: chatRoom.lastMessageContent,
     unreadMessageCount: chatRoom.unreadMessageCount,
+    lastMessageTime: chatRoom.lastMessageTime,
   };
 };
 
@@ -56,7 +58,7 @@ const convertToExchangeChat = (chatRoom: ChatRoom): ExchangeChat => {
     },
     lastMessage: chatRoom.lastMessageContent,
     unreadCount: chatRoom.unreadMessageCount,
-    updatedAt: new Date().toISOString(), // API에서 제공하지 않는 값이므로 현재 시간으로 대체
+    updatedAt: chatRoom.lastMessageTime,
   };
 };
 
@@ -77,13 +79,18 @@ const MessagePage = ({ type }: MessagePageProps) => {
           if (response.isSuccess) {
             const validTradeChats = response.result
               .map(convertToTradeChat)
-              .filter((chat): chat is TradeChat => chat !== null);
+              .filter(
+                (chat): chat is TradeChat =>
+                  chat !== null && !!chat.lastMessageTime && !!chat.lastMessageContent
+              );
             setTradeChats(validTradeChats);
           }
         } else {
           const response = await getExchangeChatRooms();
           if (response.isSuccess) {
-            const exchangeChats = response.result.map(convertToExchangeChat);
+            const exchangeChats = response.result
+              .map(convertToExchangeChat)
+              .filter((chat): chat is ExchangeChat => !!chat.updatedAt && !!chat.lastMessage);
             setExchangeChats(exchangeChats);
           }
         }
@@ -95,12 +102,32 @@ const MessagePage = ({ type }: MessagePageProps) => {
     fetchChatRooms();
   }, [type]);
 
+  const sortedChats =
+    type === 'trade'
+      ? tradeChats.slice().sort((a, b) => {
+          const aTime = new Date((a as TradeChat).lastMessageTime).getTime() || 0;
+          const bTime = new Date((b as TradeChat).lastMessageTime).getTime() || 0;
+          return bTime - aTime;
+        })
+      : exchangeChats.slice().sort((a, b) => {
+          const aTime = new Date((a as ExchangeChat).updatedAt).getTime() || 0;
+          const bTime = new Date((b as ExchangeChat).updatedAt).getTime() || 0;
+          return bTime - aTime;
+        });
+
+  const leavedRooms = JSON.parse(localStorage.getItem('leavedRooms') || '[]');
+  const filteredChats = sortedChats.filter((room) => !leavedRooms.includes(room.roomId));
+
   return (
     <>
       <Header type="profile" hasBorder={false} />
       <Container>
         <ChatTabs activeTab={type} onTabChange={handleTabChange} />
-        <ChatList type={type} tradeChats={tradeChats} exchangeChats={exchangeChats} />
+        <ChatList
+          type={type}
+          tradeChats={type === 'trade' ? (filteredChats as TradeChat[]) : []}
+          exchangeChats={type === 'exchange' ? (filteredChats as ExchangeChat[]) : []}
+        />
       </Container>
     </>
   );

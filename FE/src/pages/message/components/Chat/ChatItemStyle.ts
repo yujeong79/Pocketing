@@ -64,6 +64,21 @@ const UnreadBadge = styled.div`
   ${FontStyles.captionMedium};
 `;
 
+export const LastMessageRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+`;
+
+export const LastTime = styled.div`
+  ${FontStyles.captionSmall};
+  color: ${colors.gray400};
+  margin-left: 8px;
+  min-width: 40px;
+  text-align: right;
+`;
+
 export {
   Container,
   CardImage,

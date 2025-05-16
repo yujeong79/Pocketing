@@ -57,10 +57,11 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
             )}
           </S.StateButtonContainer>
 
-          <S.AlbumTitle>{linkedPost.photocard.albumTitle}</S.AlbumTitle>
+          <S.AlbumRow>
+            <S.AlbumTitle>{linkedPost.photocard.albumTitle}</S.AlbumTitle>
+            <S.PriceSection>{formattedPrice} 원</S.PriceSection>
+          </S.AlbumRow>
         </S.InfoSection>
-
-        <S.PriceSection>{formattedPrice} 원</S.PriceSection>
       </S.Container>
 
       <StateModal
