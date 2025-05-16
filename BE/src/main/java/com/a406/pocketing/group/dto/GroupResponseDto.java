@@ -26,6 +26,7 @@ public class GroupResponseDto {
                 .groupNameKo(group.getNameKo())
                 .groupNameEn(group.getNameEn())
                 .groupImageUrl(group.getGroupImageUrl())
+                .isInterest(false)
                 .build();
     }
 }
