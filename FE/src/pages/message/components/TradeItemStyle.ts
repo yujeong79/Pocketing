@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  align-items: start;
+  align-items: center;
   margin-bottom: ${scale(8)}px;
 `;
 
@@ -23,10 +23,18 @@ export const ProfileImage = styled.img`
 `;
 
 export const InfoSection = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: start;
   justify-content: center;
+`;
+
+export const AlbumRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
 `;
 
 export const StateButtonContainer = styled.div`
@@ -60,11 +68,16 @@ export const Arrow = styled.div`
 export const AlbumTitle = styled.div`
   ${FontStyles.bodySmall}
   margin-top: ${scale(4)}px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 `;
 
 export const PriceSection = styled.div`
   ${FontStyles.bodyMedium}
   font-weight: 600;
-  align-self: flex-end;
-  margin-left: auto;
+  margin-left: ${scale(8)}px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
 `;
