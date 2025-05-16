@@ -32,14 +32,14 @@ const UploadPage = () => {
   </>)
   const [phase, setPhase] = useState<'idle' | 'cropping' | 'analyzing'>('idle')
 
-  const openedRef = useRef(false)
+  // const openedRef = useRef(false)
 
-  useEffect(() => {
-    if (!openedRef.current) {
-      inputRef.current?.click()
-      openedRef.current = true
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!openedRef.current) {
+  //     inputRef.current?.click()
+  //     openedRef.current = true
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (capturedFile) {
@@ -50,10 +50,10 @@ const UploadPage = () => {
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0]
-    if (!selected) return
-    setFile(selected)
-    setPreviewImageUrl(URL.createObjectURL(selected))
+    const selected = e.target.files?.[0];
+    if (!selected) return;
+    setFile(selected);
+    setPreviewImageUrl(URL.createObjectURL(selected));
   }
 
   const rotate = () => {
