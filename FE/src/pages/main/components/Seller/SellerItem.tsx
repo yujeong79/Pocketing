@@ -1,11 +1,13 @@
 import * as S from './SellerItemStyle';
 import { VerifyIcon } from '@/assets/assets';
+import { ReactNode } from 'react';
 
 interface SellerItemProps {
   nickname: string;
   isVerified: boolean;
   profileImgUrl: string;
   price: number;
+  children?: ReactNode;
 }
 
 const SellerItem: React.FC<SellerItemProps> = ({
@@ -13,6 +15,7 @@ const SellerItem: React.FC<SellerItemProps> = ({
   isVerified,
   profileImgUrl,
   price,
+  children,
 }: SellerItemProps) => {
   return (
     <S.ItemContainer>
@@ -21,7 +24,10 @@ const SellerItem: React.FC<SellerItemProps> = ({
       </S.ProfileSection>
       <S.NickName>{nickname}</S.NickName>
       {isVerified && <S.VerifiedBadge src={VerifyIcon} alt="인증 아이콘" />}
-      <S.PriceText>{price.toLocaleString()}원</S.PriceText>
+      <S.PriceText>
+        {children}
+        {price.toLocaleString()}원
+      </S.PriceText>
     </S.ItemContainer>
   );
 };

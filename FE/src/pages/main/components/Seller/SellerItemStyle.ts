@@ -6,7 +6,7 @@ export const ItemContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: calc(100% - ${scale(32)}px);
+  width: calc(100% - ${scale(28)}px);
   margin: ${scale(8)}px ${scale(16)}px;
 `;
 

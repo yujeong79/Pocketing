@@ -20,15 +20,30 @@ interface HeaderProps {
   title?: string;
   hasBorder?: boolean;
   onRegister?: () => void;
+  rightElement?: React.ReactNode;
 }
 
-export default function Header({ type, onBack, title, hasBorder = true, onRegister }: HeaderProps) {
+export default function Header({
+  type,
+  onBack,
+  title,
+  hasBorder = true,
+  onRegister,
+  rightElement,
+}: HeaderProps) {
   const navigate = useNavigate();
 
   const renderLeftContent = () => {
     switch (type) {
       case 'artist':
       case 'post':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate('/guide')}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
+          </S.LeftSection>
+        );
       case 'exchange':
       case 'alarm':
         return (
@@ -58,7 +73,7 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
       case 'mySaleList':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={() => navigate(-1)}>
+            <S.BackButton onClick={onBack ?? (() => navigate(-1))}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
             {title && <S.Title>{title}</S.Title>}
@@ -93,6 +108,9 @@ export default function Header({ type, onBack, title, hasBorder = true, onRegist
   };
 
   const renderRightContent = () => {
+    if (rightElement) {
+      return <S.RightSection>{rightElement}</S.RightSection>;
+    }
     switch (type) {
       case 'main':
       case 'detail':

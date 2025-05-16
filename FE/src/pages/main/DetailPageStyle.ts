@@ -7,7 +7,7 @@ export const DetailPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100vh - ${scale(128)}px);
+  height: calc(100vh - ${scale(120)}px);
 `;
 
 export const ContentSection = styled.div`
@@ -17,12 +17,12 @@ export const ContentSection = styled.div`
 
 export const GraySection = styled.div`
   width: 100%;
-  min-height: ${scale(364)}px;
+  min-height: ${scale(350)}px;
   background-color: ${colors.gray100};
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 ${scale(16)}px;
+  padding: ${scale(16)}px;
 `;
 
 export const InformationText = styled.p`
@@ -30,13 +30,12 @@ export const InformationText = styled.p`
   color: ${colors.gray600};
   white-space: pre-line;
   text-align: center;
-  margin-top: ${scale(12)}px;
   margin-bottom: ${scale(12)}px;
 `;
 
 export const PhotoCardImage = styled.img`
-  width: ${scale(168)}px;
-  height: ${scale(258)}px;
+  width: ${scale(150)}px;
+  height: ${scale(230)}px;
   object-fit: cover;
   border-radius: ${scale(4)}px;
 `;
@@ -65,4 +64,12 @@ export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: ${scale(24)}px;
+`;
+
+export const PriceEditIcon = styled.img`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+  vertical-align: middle;
+  margin-right: ${scale(2)}px;
+  transform: translateY(-${scale(2)}px);
 `;

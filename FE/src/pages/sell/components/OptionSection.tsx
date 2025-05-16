@@ -99,6 +99,9 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
       return;
     }
 
+    setMarketPrice(null);
+    setShowMarketPrice(false);
+
    try {
       const res = await getPhotoCardPrice(Number(current.versionId));
       setMarketPrice(res.result);
@@ -114,10 +117,26 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
 
   };
 
+  const [modalSection, setModalSection] = useState<'group' | 'member' | 'album' | 'version'>('group');
 
-  const handleModalOpen = () => {
+
+  const handleModalOpen = (section: 'group' | 'member' | 'album') => {
+    const current = photocardSettings[currentImageIndex];
+
+    if (section === 'member' && !current.groupId) {
+      alert('먼저 그룹을 선택해주세요.');
+      return;
+    }
+
+    if (section === 'album' && (!current.groupId || !current.memberId)) {
+      alert('먼저 그룹과 멤버를 선택해주세요.');
+      return;
+    }
+
+    setModalSection(section);     // ✅ 추가
     setIsModalOpen(true);
   };
+
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -136,7 +155,12 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
   };
 
   const handleImageChange = (index: number) => {
-    setCurrentImageIndex(index);
+    if (index !== currentImageIndex) {
+      setShowMarketPrice(false);
+      setMarketPrice(null);
+      setCurrentImageIndex(index);
+    }
+    
   };
 
   const optionCompleteStatus = useMemo(() => {
@@ -159,11 +183,11 @@ return (
       <S.OptionRow>
         <S.Label>아티스트</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected={!!currentPhotocard.group} clickable onClick={handleModalOpen}>
+          <S.Chip selected={!!currentPhotocard.group} clickable onClick={() => handleModalOpen('group')}>
             {currentPhotocard.group || '선택'}
           </S.Chip>
           {currentPhotocard.member && (
-            <S.Chip selected clickable>
+            <S.Chip selected clickable onClick={() => handleModalOpen('member')}>
               {currentPhotocard.member}
             </S.Chip>
           )}
@@ -173,7 +197,7 @@ return (
       <S.OptionRow>
         <S.Label>앨범</S.Label>
         <S.ChipsWrapper>
-          <S.Chip selected={!!currentPhotocard.album} clickable onClick={handleModalOpen}>
+          <S.Chip selected={!!currentPhotocard.album} clickable onClick={() => handleModalOpen('album')}>
             {currentPhotocard.album || '선택'}
           </S.Chip>
         </S.ChipsWrapper>
@@ -235,6 +259,7 @@ return (
           version: currentPhotocard.version,
           price: currentPhotocard.price,
         }}
+        initialSection={modalSection}
       />
     </S.Container>
   );

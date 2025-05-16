@@ -12,6 +12,7 @@ const KakaoCallbackPage = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const isRegistered = searchParams.get('isRegistered') === 'true';
+    const oauthProvider = searchParams.get('oauthProvider');
 
     if (isRegistered) {
       const accessToken = searchParams.get('accessToken');
@@ -30,6 +31,7 @@ const KakaoCallbackPage = () => {
           'user',
           JSON.stringify({
             userId: Number(userId),
+            oauthProvider: oauthProvider,
           })
         );
       }
