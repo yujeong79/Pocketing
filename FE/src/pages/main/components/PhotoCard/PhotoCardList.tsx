@@ -20,18 +20,23 @@ const PhotoCardList = ({ selectedMember, selectedAlbumId, groupId }: PhotoCardLi
   const { data } = usePostList(selectedMember, groupId, selectedAlbumId, 0, 10);
   const postList = data?.content || [];
 
+  // cardId 기준으로 중복 제거
+  const uniqueCardList = postList.filter(
+    (post, idx, arr) => arr.findIndex((p) => p.cardId === post.cardId) === idx
+  );
+
   if (!groupId) return null;
 
   return (
     <ListContainer>
-      {postList.length === 0 ? (
+      {uniqueCardList.length === 0 ? (
         <EmptyContainer>
           <EmptyCartImage src={EmptyCartIcon} alt="빈 카드" />
           <EmptyText>아직 등록된 판매글이 없어요!</EmptyText>
         </EmptyContainer>
       ) : (
         <ListWrapper>
-          {postList.map((post: PostContent) => (
+          {uniqueCardList.map((post: PostContent) => (
             <PhotoCardItem
               key={post.postId}
               cardId={post.cardId}

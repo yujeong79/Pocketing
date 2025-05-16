@@ -1,9 +1,22 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as S from './GuidePageStyle';
-import { AlbumIcon, BackIcon2, CameraIcon2, CheckIcon, SampleImage } from '@/assets/assets';
+import { BackIcon2, CameraIcon2, CheckIcon, SampleImage } from '@/assets/assets';
 
 const GuidePage = () => {
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleAlbumOpen = () => {
+    inputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    navigate('/upload', { state: { capturedFile: file } });
+  };
+
   return (
     <S.GuideBackground>
       <S.BackButton onClick={() => navigate(-1)}>
@@ -31,14 +44,18 @@ const GuidePage = () => {
         </span>
       </S.DetailGuideText>
       <S.ButtonContainer>
-        <S.ActionButton variant="album" onClick={() => navigate('/upload')}>
-          <img src={AlbumIcon} alt="앨범 아이콘" />
-          앨범 열기
-        </S.ActionButton>
-        <S.ActionButton variant="camera" onClick={() => navigate('/camera')}>
+        <S.ActionButton variant="camera" onClick={handleAlbumOpen}>
           <img src={CameraIcon2} alt="카메라 아이콘" />
-          촬영 하기
+          포토카드 등록하러 가기
         </S.ActionButton>
+        {/* ✅ 숨겨진 input */}
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
       </S.ButtonContainer>
     </S.GuideBackground>
   );

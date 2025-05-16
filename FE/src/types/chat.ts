@@ -15,6 +15,7 @@ export interface ChatRoom {
   exchangeId: number | null;
   imageUrl: string;
   lastMessageContent: string;
+  lastMessageTime: string;
   unreadMessageCount: number;
 }
 
