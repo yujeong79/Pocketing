@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/ws/**", "/api/files/presigned-url", "/api/groups/all", "/api/members/all", "/api/photocards/**", "/api/posts/cheapest").permitAll()
+                        .requestMatchers("/api/auth/**", "/ws/**", "/api/files/presigned-url", "/api/groups/all", "/api/members/all", "/api/photocards/**", "/api/posts/cheapest/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
