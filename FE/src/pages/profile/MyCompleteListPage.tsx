@@ -48,7 +48,7 @@ const MyCompleteListPage = () => {
                         <S.GroupContainer>
                           <S.Group>그룹</S.Group>
                           <S.TagContainer>
-                            <S.Tag>{mySale.groupNameKo}</S.Tag>
+                            <S.Tag>{mySale.groupDisplayName ?? mySale.groupNameKo}</S.Tag>
                           </S.TagContainer>
                         </S.GroupContainer>
                         <S.MemberContainer>

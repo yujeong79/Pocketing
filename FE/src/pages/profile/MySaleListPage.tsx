@@ -32,7 +32,6 @@ const MySaleListPage = () => {
     handleGetMySales();
   }, [handleGetMySales]);
 
-
   useEffect(() => {
     const handlePopState = () => {
       if (fromRegister) {
@@ -46,7 +45,6 @@ const MySaleListPage = () => {
     };
   }, [fromRegister, navigate]);
 
-
   return (
     <S.PageContainer>
       <Header
@@ -55,7 +53,7 @@ const MySaleListPage = () => {
         hasBorder={true}
         onBack={() => {
           if (location.state?.fromRegister) {
-            navigate('/sell', { replace: true });  // ✅ 등록을 통해 온 경우
+            navigate('/sell', { replace: true }); // ✅ 등록을 통해 온 경우
           } else {
             navigate(-1); // ✅ 일반적으로 접근한 경우
           }
@@ -82,7 +80,7 @@ const MySaleListPage = () => {
                         <S.GroupContainer>
                           <S.Group>그룹</S.Group>
                           <S.TagContainer>
-                            <S.Tag>{mySales.groupNameKo}</S.Tag>
+                            <S.Tag>{mySales.groupDisplayName ?? mySales.groupNameKo}</S.Tag>
                           </S.TagContainer>
                         </S.GroupContainer>
                         <S.MemberContainer>

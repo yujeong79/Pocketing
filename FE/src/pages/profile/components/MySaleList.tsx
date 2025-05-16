@@ -54,7 +54,7 @@ const MySaleList = () => {
                       <S.GroupContainer>
                         <S.Group>그룹</S.Group>
                         <S.TagContainer>
-                          <S.Tag>{mySales.groupNameKo}</S.Tag>
+                          <S.Tag>{mySales.groupDisplayName ?? mySales.groupNameKo}</S.Tag>
                         </S.TagContainer>
                       </S.GroupContainer>
                       <S.MemberContainer>
