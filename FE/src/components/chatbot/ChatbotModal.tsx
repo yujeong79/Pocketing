@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ThreeDLogo, CloseIcon } from '@/assets/assets';
+import { ThreeDLogo, CloseIcon, SendIcon } from '@/assets/assets';
 import * as S from './ChatbotModalStyle';
 
 // WebSocket 주소 설정 (API 서버 주소)
@@ -159,6 +159,9 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
               onChange={(e) => setInputText(e.target.value)}
               placeholder="메세지를 입력해주세요..."
             />
+            <S.SendButtonContainer type="submit">
+              <S.SendButton src={SendIcon} alt="send" />
+            </S.SendButtonContainer>
           </S.InputForm>
         </S.Container>
       </S.ModalContainer>

@@ -113,15 +113,21 @@ export const Message = styled.div<{ isUser: boolean }>`
 
 export const InputForm = styled.form`
   position: absolute;
-  bottom: ${scale(20)}px;
-  left: ${scale(20)}px;
-  right: ${scale(20)}px;
+  left: 50%;
+  margin-bottom: -${scale(40)}px;
+  transform: translateX(-50%);
+  width: 105%;
   display: flex;
+  align-items: center;
+  position: relative;
 `;
 
 export const Input = styled.input`
+  ${FontStyles.captionMedium};
   width: 100%;
+  height: ${scale(40)}px;
   padding: ${scale(8)}px;
+  padding-right: ${scale(40)}px;
   border: 1px solid ${colors.primary50};
   border-radius: ${scale(5)}px;
   background-color: ${colors.primary50};
@@ -135,4 +141,22 @@ export const Input = styled.input`
     outline: none;
     border-color: ${colors.primary100};
   }
+`;
+
+export const SendButtonContainer = styled.button`
+  position: absolute;
+  top: 50%;
+  right: ${scale(8)}px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+`;
+
+export const SendButton = styled.img`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
 `;
