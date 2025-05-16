@@ -6,10 +6,16 @@ import Divider from './components/Divider';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { getMySales } from '@/api/user/mySales';
 import { MySaleListResponse } from '@/types/mySale';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const MySaleListPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
   const filteredList = mySales.filter((item) => item.createdAt);
+
+  const fromRegister = location.state?.fromRegister;
 
   const handleGetMySales = useCallback(async () => {
     try {
@@ -26,9 +32,35 @@ const MySaleListPage = () => {
     handleGetMySales();
   }, [handleGetMySales]);
 
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (fromRegister) {
+        navigate('/sell', { replace: true });
+      }
+    };
+    // 뒤로가기를 감지
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [fromRegister, navigate]);
+
+
   return (
     <S.PageContainer>
-      <Header type="mySaleList" title="내 판매 목록" hasBorder={true} />
+      <Header
+        type="mySaleList"
+        title="내 판매 목록"
+        hasBorder={true}
+        onBack={() => {
+          if (location.state?.fromRegister) {
+            navigate('/sell', { replace: true });  // ✅ 등록을 통해 온 경우
+          } else {
+            navigate(-1); // ✅ 일반적으로 접근한 경우
+          }
+        }}
+      />
       <S.ContentContainer>
         {mySales.length === 0 ? (
           <S.NonItemContainer>
