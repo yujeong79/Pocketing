@@ -241,7 +241,8 @@ const MapPage = () => {
   }, [currentLocation, range, currentUsers]);
 
   return (
-    <S.MapContainer ref={mapRef}>
+    <S.MapContainer>
+      <S.MapWrapper ref={mapRef} />
       <S.PageItemContainer>
         <S.MapHeaderContainer>
           <PlaceSearchInput />
