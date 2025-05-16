@@ -1,36 +1,34 @@
-import { useState } from 'react';
 import * as S from './PocketCallButtonStyle';
 import { PocketCallIcon } from '@/assets/assets';
 
 interface PocketCallButtonProps {
   onClick: () => void;
   disabled?: boolean;
+  $isRequested: 'PENDING' | null;
 }
 
-const PocketCallButton = ({ onClick, disabled = false }: PocketCallButtonProps) => {
-  const [type, setType] = useState<'basic' | 'send'>('basic');
-
+const PocketCallButton = ({ onClick, disabled = false, $isRequested }: PocketCallButtonProps) => {
   const handleClick = () => {
     if (disabled) {
-      onClick();
       return;
     }
-    if (type === 'basic') {
-      setType('send');
-      onClick();
+    if ($isRequested) {
+      return;
     }
+    onClick();
   };
 
   return (
     <S.PocketCallButtonContainer onClick={handleClick}>
-      <S.PocketCallContent $type={type}>
-        {type === 'basic' && (
+      <S.PocketCallContent $isRequested={$isRequested}>
+        {!$isRequested ? (
           <>
             <S.PocketCallText>포켓콜</S.PocketCallText>
             <S.PocketCallIcon src={PocketCallIcon} alt="전송" />
           </>
+        ) : (
+          <S.PocketCallText>요청중</S.PocketCallText>
         )}
-        {type === 'send' && <S.PocketCallText>요청중</S.PocketCallText>}
       </S.PocketCallContent>
     </S.PocketCallButtonContainer>
   );

@@ -95,8 +95,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
         description: null,
         exchangeImageUrl: null,
       };
-      const response = await createExchangeCard(ExchangeCardData);
-      console.log(response);
+      await createExchangeCard(ExchangeCardData);
       handleSaveCardInfo();
       handleModalClose();
       onRefresh();

@@ -128,7 +128,6 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
         exchangeImageUrl: finalImageUrl,
       };
       const response = await createExchangeCard(ExchangeCardData);
-      console.log(response);
       handleModalClose();
       onRefresh();
     } catch (error) {
