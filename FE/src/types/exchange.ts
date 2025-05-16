@@ -69,3 +69,16 @@ export interface GetRegisteredCardResponse {
   member: string;
   imageUrl: string;
 }
+
+// 요청 수락/거절
+export interface AcceptOrRejectRequest {
+  exchangeRequestId: number;
+  accepted: boolean;
+}
+
+export interface AcceptOrRejectResponse {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  result: string;
+}
