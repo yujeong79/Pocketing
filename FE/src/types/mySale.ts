@@ -31,6 +31,7 @@ export interface MySaleListResult {
 
 export interface MyCompleteListResponse {
   postId: number;
+  groupDisplayName?: string | null;
   groupNameKo: string;
   groupNameEn: string;
   memberName: string;

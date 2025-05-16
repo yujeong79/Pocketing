@@ -11,13 +11,13 @@ export const PocketCallButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-export const PocketCallContent = styled.div<{ $type: 'basic' | 'send' }>`
+export const PocketCallContent = styled.div<{ $isRequested: 'PENDING' | null }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: ${scale(4)}px;
   width: ${scale(81)}px;
-  background-color: ${({ $type }) => ($type === 'basic' ? colors.primary : colors.gray600)};
+  background-color: ${({ $isRequested }) => (!$isRequested ? colors.primary : colors.gray600)};
   padding: ${scale(4)}px ${scale(8)}px;
   border-radius: ${scale(5)}px;
 `;

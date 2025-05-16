@@ -12,6 +12,7 @@ import { PocketCallRequest } from '@/types/exchange';
 interface ExchangeListModalProps {
   isOpen: boolean;
   onClose: () => void;
+  requesterOwnedCardId: number | undefined;
   filteredList: Exchange[];
   onRefresh: () => void;
 }
@@ -20,6 +21,7 @@ const ExchangeListModal = ({
   isOpen,
   onClose,
   filteredList,
+  requesterOwnedCardId,
   onRefresh,
 }: ExchangeListModalProps) => {
   const [spinning, setSpinning] = useState(false);
@@ -35,28 +37,39 @@ const ExchangeListModal = ({
     onRefresh();
   };
 
-  const handlePostPocketCall = useCallback(async (userId: number, responderOwnedCardId: number) => {
-    try {
-      const pocketCallData: PocketCallRequest = {
-        responderId: userId,
-        requesterOwnedCardId: 1,
-        responderOwnedCardId: responderOwnedCardId,
-      };
-      const response = await postPocketCall(pocketCallData);
-      console.log(response);
-      if (pocketCallCount < 5) {
-        setPocketCallCount((prev) => prev + 1);
-        setShowSendToast(true);
-        setTimeout(() => {
-          setPocketCallCount((prev) => prev - 1);
-        }, 180000);
-      } else {
-        setShowMaxToast(true);
+  const handlePostPocketCall = useCallback(
+    async (userId: number, cardId: number) => {
+      if (!requesterOwnedCardId) {
+        console.log('requesterOwnedCardId가 없습니다.');
+        return;
       }
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+
+      try {
+        const pocketCallData: PocketCallRequest = {
+          responderId: userId,
+          requesterOwnedCardId: requesterOwnedCardId,
+          responderOwnedCardId: cardId,
+        };
+        const response = await postPocketCall(pocketCallData);
+        console.log('포켓콜 보내기 :', response);
+
+        onRefresh();
+
+        if (pocketCallCount < 5) {
+          setPocketCallCount((prev) => prev + 1);
+          setShowSendToast(true);
+          setTimeout(() => {
+            setPocketCallCount((prev) => prev - 1);
+          }, 180000);
+        } else {
+          setShowMaxToast(true);
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    [requesterOwnedCardId, pocketCallCount, onRefresh]
+  );
 
   return (
     <SlideUpModal header="거래중인 포케터" isOpen={isOpen} onClose={onClose}>
@@ -92,6 +105,7 @@ const ExchangeListModal = ({
                 <PocketCallButton
                   onClick={() => handlePostPocketCall(user.userId, user.card.cardId)}
                   disabled={pocketCallCount >= 5}
+                  $isRequested={user.requestStatus}
                 />
               </S.ExchangeUserList>
               {index !== filteredList.length - 1 && <S.Divider />}

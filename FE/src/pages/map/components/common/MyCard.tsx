@@ -1,22 +1,32 @@
 import * as S from './MyCardStyle';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/constants/queryKeys';
-import { MyCardData } from '@/types/exchange';
+import { GetRegisteredCardResponse } from '@/types/exchange';
+import { getMyCard } from '@/api/exchange/exchangeCard';
 
 interface MyCardProps {
   onClick?: () => void;
 }
 
 const MyCard = ({ onClick }: MyCardProps) => {
-  const queryClient = useQueryClient();
-  const cardData = queryClient.getQueryData<MyCardData>([QUERY_KEYS.MYCARD]);
-  const hasCardData =
-    cardData?.cardImage && cardData?.cardGroup && cardData?.cardMember && cardData?.cardAlbum;
+  const [myCard, setMyCard] = useState<GetRegisteredCardResponse | null>(null);
+
+  const handleGetMyCard = useCallback(async () => {
+    try {
+      const response = await getMyCard();
+      setMyCard(response.result);
+    } catch (error) {
+      throw error;
+    }
+  }, []);
+
+  useEffect(() => {
+    handleGetMyCard();
+  }, [handleGetMyCard]);
 
   return (
     <>
-      {!hasCardData ? (
+      {!myCard ? (
         <S.MyCardContainerNon onClick={onClick}>
           <S.TextContainer>
             <S.Title>나의 포카</S.Title>
@@ -28,11 +38,11 @@ const MyCard = ({ onClick }: MyCardProps) => {
           <S.CardContainer>
             <S.Title>나의 포카</S.Title>
             <S.Content>
-              <S.CardImage src={cardData.cardImage} />
+              <S.CardImage src={myCard?.imageUrl} />
               <S.CardInfo>
-                <S.CardText>{cardData.cardGroup}</S.CardText>
-                <S.CardText>{cardData.cardMember}</S.CardText>
-                <S.CardText>{cardData.cardAlbum}</S.CardText>
+                <S.CardText>{myCard?.group}</S.CardText>
+                <S.CardText>{myCard?.member}</S.CardText>
+                <S.CardText>{myCard?.album}</S.CardText>
               </S.CardInfo>
             </S.Content>
           </S.CardContainer>

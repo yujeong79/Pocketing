@@ -2,7 +2,6 @@ export interface Exchange {
   userId: number;
   nickname: string;
   distance: number;
-  matchType: 'EXACT' | 'SUPPLEMENT';
   card: {
     cardId: number;
     isOwned: boolean;
@@ -12,6 +11,8 @@ export interface Exchange {
     content: string;
     imageUrl: string;
   };
+  exchangeRequestId: number;
+  requestStatus: 'PENDING' | null;
 }
 
 export interface ExchangeRequest {
@@ -57,4 +58,14 @@ export interface PocketCallResponse {
   isSuccess: boolean;
   code: string;
   message: string;
+}
+
+// 등록 카드 확인
+export interface GetRegisteredCardResponse {
+  exchangeCardId: number;
+  isOwned: boolean;
+  group: string;
+  album: string;
+  member: string;
+  imageUrl: string;
 }

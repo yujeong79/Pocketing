@@ -18,29 +18,46 @@ import { postLocation } from '@/api/exchange/location';
 import { getExchangeUserList } from '@/api/exchange/exchangeUserList';
 import { Exchange } from '@/types/exchange';
 import { LocationRequest } from '@/types/location';
+import { getMyCard } from '@/api/exchange/exchangeCard';
+import { GetRegisteredCardResponse } from '@/types/exchange';
 
 const MapPage = () => {
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
   const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
+
+  const [currentUsers, setCurrentUsers] = useState(0);
+  const [userList, setUserList] = useState<Exchange[]>([]);
+
+  const [myCard, setMyCard] = useState<GetRegisteredCardResponse | null>(null);
+
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [range, setRange] = useState(100);
   const [showEmptyToast, setShowEmptyToast] = useState(false);
-  const [currentUsers, setCurrentUsers] = useState(0);
-  const [userList, setUserList] = useState<Exchange[]>([]);
+
   const navigate = useNavigate();
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
   const countMarkerRef = useRef<any>(null);
 
+  const handleGetMyCard = useCallback(async () => {
+    try {
+      const response = await getMyCard();
+      setMyCard(response.result);
+    } catch (error) {
+      throw error;
+    }
+  }, []);
+
   const handleGetUserList = useCallback(async () => {
     try {
       const response = await getExchangeUserList(range);
       setCurrentUsers(response.result.length);
       setUserList(response.result);
+
       if (!response.isSuccess) {
         setShowEmptyToast(true);
         return null;
@@ -58,8 +75,7 @@ const MapPage = () => {
         isAutoDetected: true,
         locationName: null,
       };
-      const response = await postLocation(PostLocationData);
-      console.log(response);
+      await postLocation(PostLocationData);
     } catch (error) {
       throw error;
     }
@@ -69,8 +85,9 @@ const MapPage = () => {
     if (currentLocation) {
       handlePostLocation();
       handleGetUserList();
+      handleGetMyCard();
     }
-  }, [currentLocation, handlePostLocation, handleGetUserList]);
+  }, [currentLocation, handlePostLocation, handleGetUserList, handleGetMyCard]);
 
   const handleRefreshClick = () => {
     setSpinning(true);
@@ -263,6 +280,7 @@ const MapPage = () => {
         isOpen={isExchangeListModalOpen}
         onClose={handleCloseModal}
         filteredList={userList}
+        requesterOwnedCardId={myCard?.exchangeCardId ?? undefined}
         onRefresh={handleRefreshClick}
       />
       <SetRangeModal
