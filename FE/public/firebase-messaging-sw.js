@@ -12,15 +12,15 @@ firebase.initializeApp({
   measurementId: "G-ZBLL446HH9"
 });
 
-// 서비스 워커 설치/활성화
-self.addEventListener('install', () => {
-  // 새로운 sw가 설치되면 즉시 활성화
-  self.skipWaiting();
-})
-self.addEventListener('activate', () => {
-  // 활성화된 sw가 곧바로 페이지 제어 시작
-  self.clients.claim();
-})
+// // 서비스 워커 설치/활성화
+// self.addEventListener('install', () => {
+//   // 새로운 sw가 설치되면 즉시 활성화
+//   self.skipWaiting();
+// })
+// self.addEventListener('activate', () => {
+//   // 활성화된 sw가 곧바로 페이지 제어 시작
+//   self.clients.claim();
+// })
 
 
 const messaging = firebase.messaging();
