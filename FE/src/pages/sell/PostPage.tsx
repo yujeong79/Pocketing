@@ -37,6 +37,13 @@ const PostPage = () => {
     photocardSettings: PhotocardSettingData[];
   }>(null);
 
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalIconType, setModalIconType] = useState<'caution' | 'success'>();
+
+ // 상태 하나 추가
+  const [afterConfirmNavigate, setAfterConfirmNavigate] = useState(false);
+
   useEffect(() => {
     const fetchMatching = async () => {
       try {
@@ -106,6 +113,8 @@ const PostPage = () => {
     };
   }, [navigate]);
 
+ 
+
 
   const handleRegisterClick = async () => {
     const settings = optionSectionRef.current?.photocardSettings;
@@ -121,6 +130,9 @@ const PostPage = () => {
     );
 
     if (!isAllComplete) {
+      setModalTitle('카드 정보 누락');
+      setModalMessage('아직 선택되지 않은 카드가 있어요!');
+      setModalIconType('caution'); 
       setIsCautionModalOpen(true);
       return;
     }
@@ -137,14 +149,19 @@ const PostPage = () => {
 
       console.log('등록 성공:', result);
       // 이후 페이지 이동 or 알림 처리 등 추가 가능
-      alert(`${result.length}개의 게시물이 등록되었습니다.`);
-      navigate('/mySaleList', {
-        replace: true,
-        state: { fromRegister: true }, // ✅ 등록 완료 표시
-      });
+      setModalTitle('등록 완료');
+      setModalMessage(`${result.length}개의 게시물이 등록되었습니다.`);
+      setIsCautionModalOpen(true);
+      setModalIconType('success'); 
+
+      setAfterConfirmNavigate(true);
     } catch (error) {
       console.error('등록 실패:', error);
-      alert('등록에 실패했습니다.');
+      setModalTitle('등록 실패');
+      setModalMessage('등록에 실패했습니다. 다시 시도해주세요.');
+      setModalIconType('caution'); 
+      setIsCautionModalOpen(true);
+
     }
   };
 
@@ -160,7 +177,22 @@ const PostPage = () => {
           />
         )}
       </S.Container>
-      <CautionModal isOpen={isCautionModalOpen} onClose={() => setIsCautionModalOpen(false)} />
+      <CautionModal
+        isOpen={isCautionModalOpen}
+        onClose={() => {
+          setIsCautionModalOpen(false);
+          if (afterConfirmNavigate) {
+            navigate('/mySaleList', {
+              replace: true,
+              state: { fromRegister: true },
+            });
+            setAfterConfirmNavigate(false); // 초기화
+          }
+        }}
+        title={modalTitle}
+        message={modalMessage}
+        iconType={modalIconType}
+      />
     </>
   );
 };
