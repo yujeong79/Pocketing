@@ -56,7 +56,8 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   // 로컬스토리지에서 user_id 가져오기
-  const userId = localStorage.getItem('userId');
+  const user = localStorage.getItem('user');
+  const userId = user ? JSON.parse(user).userId : null;
 
   // 컴포넌트가 열리면 웹소켓 연결을 설정
   useEffect(() => {
@@ -114,15 +115,18 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   // 사용자가 보낸 메시지 처리 및 웹소켓으로 전송
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('handleSubmit 호출됨');
     if (!inputText.trim() || !userId) return; // userId가 없으면 메시지 보내지 않음
 
     setMessages([...messages, { text: inputText, isUser: true }]);
-    if (socket) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
       const message = {
         user_id: userId, // 로컬스토리지에서 가져온 user_id 사용
         chat_message: inputText,
       };
       socket.send(JSON.stringify(message)); // 서버로 메시지 전송
+    } else {
+      console.error('WebSocket이 열려 있지 않습니다.');
     }
     setInputText('');
   };
