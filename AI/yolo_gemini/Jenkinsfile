@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Docker Build & Deploy') {
+            steps {
+                dir('AI/yolo_gemini') {
+                    script {
+                        echo "🚀 Stopping existing yolo_gemini server (if any)"
+                        sh """
+                        docker stop yolo_gemini-app || true
+                        docker rm yolo_gemini-app || true
+                        """
+
+                        echo "🚀 Building Docker Image for yolo_gemini"
+                        sh """
+                        docker build --no-cache -t yolo_gemini-app .
+                        """
+
+                        echo "🚀 Running yolo_gemini FastAPI server"
+                        sh """
+                        docker run -d --name yolo_gemini-app \
+                        --gpus all \
+                        -v /home/ubuntu/project/yolo_gemini/secret/.env:/app/.env \
+                        -p 8000:8000 yolo_gemini-app
+                        """
+                    }
+                }
+            }
+        }
+    }
+}

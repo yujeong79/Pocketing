@@ -1,0 +1,38 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+*.log
+
+# 가상환경
+.venv/
+
+# 환경변수 파일
+.env
+
+# 이미지 업로드/크롭 임시 파일
+*.jpg
+*.png
+app/static/uploads/
+app/static/crops/
+
+# YOLO 모델
+*.pt
+
+# IDE 설정 (PyCharm/IntelliJ)
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
