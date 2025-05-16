@@ -46,8 +46,16 @@ class ChatService:
             message_number = context.add_message("user", user_query)
             logger.debug(f"사용자 메시지 추가됨: 메시지 ID {message_number}")
 
-            metadata_list, post_results = self.rag_service.search_photocards(user_query, n_results=5)
-            logger.info(f"포토카드 검색 완료: {len(metadata_list)}개 결과, {len(post_results)}개 판매글 정보")
+            is_photocard_related = self.llm_service.is_photocard_related_query(user_query)
+
+            if not is_photocard_related:
+                logger.info("일상적인 대화 감지됨, 포토카드 검색 건너뜀")
+                metadata_list = []
+                post_results = []
+            else:
+                metadata_list, post_results = self.rag_service.search_photocards(user_query, n_results=5)
+                logger.info(f"포토카드 검색 완료: {len(metadata_list)}개 결과, {len(post_results)}개 판매글 정보")
+
             rag_result = self.rag_service.rag_photocard_for_llm(metadata_list, post_results)
 
             messages = context.get_formatted_messages(include_roles=["user", "assistant"])

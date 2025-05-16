@@ -96,3 +96,39 @@ class LLMService:
         except Exception as e:
             logger.error(f"포토카드 정보를 포함한 응답 생성 중 오류 발생: {str(e)}")
             return "죄송합니다. 응답을 생성하는 중에 오류가 발생했습니다."
+
+    def is_photocard_related_query(self, user_query: str) -> bool:
+        try:
+            system_prompt = """
+            당신은 K-POP 포토카드 검색 챗봇입니다. 사용자의 메시지가 포토카드 검색 의도를 가지고 있는지 판단해야 합니다.
+
+            다음과 같은 경우 포토카드 검색 의도가 있다고 판단하세요:
+            - 특정 아이돌이나 그룹 이름을 언급하는 경우
+            - 포토카드, 앨범, 사진 등 관련 단어를 언급하는 경우
+            - 가격이나 판매 정보를 요청하는 경우
+            - 특정 스타일, 색상, 의상, 포즈 등과 함께 멤버를 언급하는 경우
+     
+            다음과 같은 경우 일상적인 대화로 판단하세요:
+            - 인사, 감사 표현 (안녕, 안녕하세요, 고마워, 감사합니다 등)
+            - 날씨, 시간, 기분 등의 일상적인 주제
+            - 단순한 대화 (뭐해?, 잘 지내?, 오늘 어때? 등)
+            - 챗봇 자체에 대한 질문 (너는 누구야?, 뭘 할 수 있어? 등)
+
+            포토카드 검색 의도가 있으면 "true"를, 일상적인 대화이면 "false"를 반환하세요.
+            응답은 오직 "true" 또는 "false"만 포함해야 합니다.
+            """
+
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_query}
+            ]
+
+            response = self.generate_response(messages)
+            is_related = response.strip().lower() == "true"
+
+            logger.info(f"쿼리 '{user_query}' 포토카드 관련 여부: {is_related}")
+            return is_related
+
+        except Exception as e:
+            logger.error(f"쿼리 분석 중 오류 발생: {str(e)}")
+            return True
