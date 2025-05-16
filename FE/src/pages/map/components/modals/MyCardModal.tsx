@@ -127,7 +127,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
         description: null,
         exchangeImageUrl: finalImageUrl,
       };
-      const response = await createExchangeCard(ExchangeCardData);
+      await createExchangeCard(ExchangeCardData);
       handleModalClose();
       onRefresh();
     } catch (error) {
