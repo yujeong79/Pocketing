@@ -68,6 +68,13 @@ export default function Header({
           </S.LeftSection>
         );
       case 'detail':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate('/main')}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
+          </S.LeftSection>
+        );
       case 'profileDetail':
         return (
           <S.LeftSection>

@@ -8,6 +8,8 @@ import { DefaultProfileImage, CameraIcon } from '@/assets/assets';
 import { postS3Image, putS3Image } from '@/api/s3/s3Image';
 import { putMyInfo, getMyInfo } from '@/api/user/myInfo';
 import { EditMyInfoRequest } from '@/types/myInfo';
+import ImageCropModal from '@/components/common/ImageCropModal';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
@@ -21,6 +23,10 @@ const ProfileEditPage = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [bank, setBank] = useState<string | null>(null);
 
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [rawImage, setRawImage] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   // 프로필 정보 가져오기
   const fetchMyInfo = useCallback(async () => {
     try {
@@ -31,7 +37,7 @@ const ProfileEditPage = () => {
       setAccount(response.result.account);
       setBank(response.result.bank);
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   }, []);
 
@@ -43,11 +49,30 @@ const ProfileEditPage = () => {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const previewUrl = URL.createObjectURL(file);
-      setSelectedImage(previewUrl); // 미리보기용 URL 업데이트
-      setImageFile(file); // 실제 파일 업데이트
-      setCurrentProfileImage(previewUrl); // 프로필 수정 시 보여줄 이미지도 선택한 것으로 우선 변경
+      const img = new window.Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width < 400 || img.height < 400) {
+          setConfirmOpen(true);
+          e.target.value = '';
+          return;
+        }
+        setRawImage(img.src);
+        setCropModalOpen(true);
+        e.target.value = '';
+      };
     }
+  };
+
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setSelectedImage(croppedImageUrl);
+    fetch(croppedImageUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+        setImageFile(file);
+        setCurrentProfileImage(croppedImageUrl);
+      });
   };
 
   // PresignedUrl 받기
@@ -63,7 +88,7 @@ const ProfileEditPage = () => {
       const presignedUrl = response.result.presignedUrl;
       return presignedUrl;
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   }, [imageFile]);
 
@@ -78,7 +103,7 @@ const ProfileEditPage = () => {
         },
       });
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   };
 
@@ -100,6 +125,7 @@ const ProfileEditPage = () => {
         throw error;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [nickname, currentProfileImage, address, bank, account, putMyInfo]
   );
 
@@ -119,7 +145,7 @@ const ProfileEditPage = () => {
         await handleS3Upload(presignedUrl, imageFile, imageFile.type);
         finalImageUrlForProfileUpdate = presignedUrl.split('?')[0]; // S3 업로드 성공 시 영구 URL 사용
         setCurrentProfileImage(finalImageUrlForProfileUpdate); // 업로드된 이미지로 상태 업데이트 (선택적)
-      } catch (error) {
+      } catch {
         alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
         setIsUploading(false);
         return;
@@ -212,6 +238,20 @@ const ProfileEditPage = () => {
           disabled={isUploading}
         />
       </S.ContentsContainer>
+      <ImageCropModal
+        open={cropModalOpen}
+        image={rawImage}
+        onClose={() => setCropModalOpen(false)}
+        onCropComplete={handleCropComplete}
+      />
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={() => setConfirmOpen(false)}
+        title="이미지 크기 오류"
+        text={`이미지의 최소 크기는 400x400px입니다.\n더 큰 이미지를 선택해주세요.`}
+        confirmText="확인"
+      />
     </S.PageContainer>
   );
 };

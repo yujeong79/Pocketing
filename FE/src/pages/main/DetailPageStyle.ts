@@ -42,9 +42,15 @@ export const PhotoCardImage = styled.img`
 
 export const ChipsContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  gap: ${scale(8)}px;
+  flex-direction: column;
   flex-wrap: wrap;
+`;
+
+export const InfoChipContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${scale(8)}px;
+  margin-top: -${scale(8)}px;
 `;
 
 export const SellerSection = styled.div`

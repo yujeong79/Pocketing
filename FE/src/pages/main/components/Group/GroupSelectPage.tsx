@@ -73,7 +73,7 @@ const GroupSelectPage = ({ onGroupSelect, selectedAllGroup }: GroupSelectPagePro
               $isSelected={tempSelectedGroup === group.groupId}
             >
               <S.GroupImage src={group.groupImageUrl} />
-              <S.GroupName>{group.groupNameKo}</S.GroupName>
+              <S.GroupName>{group.groupDisplayName}</S.GroupName>
             </S.GroupInfo>
           ))}
         </S.GroupListContainer>

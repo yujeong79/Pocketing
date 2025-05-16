@@ -17,7 +17,7 @@ const MyGroup = ({ onEditGroup }: MyGroupProps) => {
         <S.GroupTitle>관심 그룹</S.GroupTitle>
       </S.GroupTitleContainer>
       <S.GroupLogoContainer>
-        {(likedGroups?.result as UserLikedGroup[]).map((group, index) => (
+        {((likedGroups?.result as UserLikedGroup[]) || []).map((group, index) => (
           <S.GroupLogo
             key={group.groupId ?? index}
             src={group.groupImageUrl ?? ''}
