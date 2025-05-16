@@ -12,8 +12,7 @@ class PhotocardExtractor:
         self.api_url = settings.BACKEND_API_URL
         self.headers = {
             "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": f"Bearer {settings.API_TOKEN}"
+            "Accept": "application/json"
         }
 
     def extract_all_photocards(self, batch_size: int = 100) -> List[Dict[str, Any]]:
