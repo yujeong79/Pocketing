@@ -12,6 +12,7 @@ interface TradeChat {
   imageUrl: string;
   lastMessageContent: string;
   unreadMessageCount: number;
+  lastMessageTime: string;
 }
 
 interface ExchangeChat {
@@ -66,10 +67,12 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
   };
 
   const sortedChats = chats.slice().sort((a, b) => {
-    // trade: lastMessageContent은 시간 정보가 아니므로, 서버에서 시간 정보가 있다면 추가 필요
     if (type === 'trade') {
-      // TradeChat에는 createdAt/updatedAt이 없으므로, 정렬 불가(혹은 서버에서 시간 정보 추가 필요)
-      return 0; // 혹은 원하는 다른 정렬 기준
+      // TradeChat의 lastMessageTime 기준 최신순 정렬
+      return (
+        new Date((b as any).lastMessageTime).getTime() -
+        new Date((a as any).lastMessageTime).getTime()
+      );
     } else {
       // ExchangeChat은 updatedAt 사용
       return (

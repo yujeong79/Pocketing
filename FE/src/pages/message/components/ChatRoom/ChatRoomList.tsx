@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 import * as S from '../../ChatRoomPageStyle';
 import { ChatMessage } from '@/types/chat';
-import ChatRoomItem from './ChatRoomItem';
+import ChatRoomItem from '@/pages/message/components/ChatRoom/ChatRoomItem';
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -51,7 +51,17 @@ const MessageList: React.FC<MessageListProps> = ({
 
         return (
           <React.Fragment key={message.messageId}>
-            {showDate && <S.DateDivider>{currDate.replace(/-/g, '. ')}</S.DateDivider>}
+            {showDate &&
+              (() => {
+                const dateObj = new Date(currDate);
+                const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+                const dayStr = days[dateObj.getDay()];
+                return (
+                  <S.DateDivider>
+                    {currDate.replace(/-/g, '. ')} {dayStr}
+                  </S.DateDivider>
+                );
+              })()}
             <ChatRoomItem
               message={message}
               isUser={isUser}

@@ -38,15 +38,19 @@ const ChatRoomItem: React.FC<ChatRoomItemProps & { showTime?: boolean }> = ({
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             {/* 연속된 메시지가 아닐 때만 닉네임 표시 */}
             {!continued && <S.NickName $isUser={isUser}>{opponentNickname}</S.NickName>}
-            <S.Message $isUser={isUser}>{message.messageContent}</S.Message>
-            {showTime && <S.TimeTextRight>{timeStr}</S.TimeTextRight>}
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+              <S.Message $isUser={isUser}>{message.messageContent}</S.Message>
+              {showTime && <S.TimeTextRight>{timeStr}</S.TimeTextRight>}
+            </div>
           </div>
         </>
       )}
       {isUser && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          <S.Message $isUser={isUser}>{message.messageContent}</S.Message>
-          {showTime && <S.TimeTextLeft>{timeStr}</S.TimeTextLeft>}
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
+            {showTime && <S.TimeTextLeft>{timeStr}</S.TimeTextLeft>}
+            <S.Message $isUser={isUser}>{message.messageContent}</S.Message>
+          </div>
         </div>
       )}
     </S.MessageContainer>

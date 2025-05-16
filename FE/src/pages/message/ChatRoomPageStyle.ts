@@ -64,6 +64,7 @@ export const Message = styled.div<{ $isUser: boolean }>`
   max-width: ${scale(180)}px;
   text-align: left;
   word-break: break-all;
+  display: flex;
 `;
 
 export const InputForm = styled.form`
@@ -76,7 +77,7 @@ export const InputForm = styled.form`
 
   background-color: ${colors.white};
   z-index: 10;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 -${scale(2)}px ${scale(6)}px rgba(0, 0, 0, 0.05);
 `;
 
 export const Input = styled.input`
@@ -134,21 +135,25 @@ export const LoadMoreButton = styled.button`
 
 export const DateDivider = styled.div`
   text-align: center;
-  color: ${colors.gray400};
+  color: ${colors.gray600};
+  justify-content: center;
+  align-items: center;
   ${FontStyles.captionSmall};
-  margin: 12px 0;
+  margin: ${scale(16)}px 0 ${scale(4)}px 0;
 `;
 
 export const TimeTextRight = styled.span`
   ${FontStyles.captionSmall};
   color: ${colors.gray400};
-  margin-left: 8px;
+  margin-left: ${scale(2)}px;
+  margin-top: ${scale(4)}px;
   align-self: flex-end;
 `;
 
 export const TimeTextLeft = styled.span`
   ${FontStyles.captionSmall};
   color: ${colors.gray400};
-  margin-right: 8px;
-  align-self: flex-start;
+  margin-right: ${scale(2)}px;
+  margin-top: ${scale(4)}px;
+  align-self: flex-end;
 `;
