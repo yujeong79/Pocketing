@@ -90,7 +90,7 @@ export const ActionButton = styled.button<{ variant: 'album' | 'camera' }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${scale(126)}px;
+  width: ${scale(256)}px;
   height: ${scale(44)}px;
   border: none;
   border-radius: ${scale(10)}px;
@@ -106,3 +106,4 @@ export const ActionButton = styled.button<{ variant: 'album' | 'camera' }>`
     margin-right: ${scale(8)}px;
   }
 `;
+
