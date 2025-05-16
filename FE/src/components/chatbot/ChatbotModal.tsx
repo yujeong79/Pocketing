@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ThreeDLogo, CloseIcon, SendIcon } from '@/assets/assets';
 import * as S from './ChatbotModalStyle';
+import useScrollToBottom from '@/hooks/useScrollToBottom';
 
 // WebSocket 주소 설정 (API 서버 주소)
 const SOCKET_URL = 'wss://k12a406.p.ssafy.io/chatbot/ws';
@@ -58,6 +59,9 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   // 로컬스토리지에서 user_id 가져오기
   const user = localStorage.getItem('user');
   const userId = user ? JSON.parse(user).userId : null;
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  useScrollToBottom(chatContainerRef, [messages]);
 
   // 컴포넌트가 열리면 웹소켓 연결을 설정
   useEffect(() => {
@@ -144,7 +148,7 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
         </S.Header>
 
         <S.Container>
-          <S.ChatContainer>
+          <S.ChatContainer ref={chatContainerRef}>
             {messages.map((message, index) => (
               <S.MessageWrapper key={index} isUser={message.isUser}>
                 {!message.isUser && <S.BotIcon src={ThreeDLogo} alt="Bot" />}
