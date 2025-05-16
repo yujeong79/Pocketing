@@ -209,6 +209,8 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     return renderVersionGrid();
   };
 
+const versionSelect = "선택 완료";
+
   return (
     <SlideUpModal isOpen={isOpen} onClose={onClose} header="포카 설정">
       <S.Container>
@@ -227,7 +229,7 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
           </S.SettingLabel>
           <S.SettingLabel onClick={() => setCurrentSection('version')}>
             <S.LabelText>버전</S.LabelText>
-            <S.SelectedValue>{selectedData.version || '선택'}</S.SelectedValue>
+            <S.SelectedValue>{versionSelect || '선택'}</S.SelectedValue>
           </S.SettingLabel>
         </S.LeftSection>
 

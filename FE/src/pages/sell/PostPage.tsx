@@ -150,7 +150,7 @@ const PostPage = () => {
       console.log('등록 성공:', result);
       // 이후 페이지 이동 or 알림 처리 등 추가 가능
       setModalTitle('등록 완료');
-      setModalMessage(`${result.length}개의 게시물이 등록되었습니다.`);
+      setModalMessage(`${result.length}개의\n 게시물이 등록되었습니다.`);
       setIsCautionModalOpen(true);
       setModalIconType('success'); 
 
@@ -158,7 +158,7 @@ const PostPage = () => {
     } catch (error) {
       console.error('등록 실패:', error);
       setModalTitle('등록 실패');
-      setModalMessage('등록에 실패했습니다. 다시 시도해주세요.');
+      setModalMessage('등록에 실패했습니다.\n 다시 등록을 시도해주세요.');
       setModalIconType('caution'); 
       setIsCautionModalOpen(true);
 

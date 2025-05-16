@@ -13,7 +13,7 @@ export const Overlay = styled.div<{ $isOpen: boolean }>`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: ${scale(100)}px;
+  padding-top: ${scale(230)}px;
   z-index: 1000;
   visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
