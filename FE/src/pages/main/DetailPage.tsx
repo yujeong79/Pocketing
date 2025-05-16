@@ -134,9 +134,13 @@ const DetailPage = () => {
             </S.InformationText>
             <S.PhotoCardImage src={postDetail.postImageUrl} alt="포토카드 이미지" />
             <S.ChipsContainer>
-              <InfoChip label={card.groupNameKo} />
-              <InfoChip label={card.memberName} />
-              <InfoChip label={card.albumTitle} />
+              <S.InfoChipContainer>
+                <InfoChip label={card.groupDisplayName} />
+                <InfoChip label={card.memberName} />
+              </S.InfoChipContainer>
+              <S.InfoChipContainer>
+                <InfoChip label={card.albumTitle} />
+              </S.InfoChipContainer>
             </S.ChipsContainer>
           </S.GraySection>
           <S.SellerSection>
