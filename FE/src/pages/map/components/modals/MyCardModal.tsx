@@ -67,31 +67,23 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
     if (!imageFile) {
       return null;
     }
-    try {
-      const response = await postS3Image({
-        fileName: imageFile.name,
-        contentType: imageFile.type,
-      });
-      const presignedUrl = response.result.presignedUrl;
-      return presignedUrl;
-    } catch (error) {
-      throw error;
-    }
+    const response = await postS3Image({
+      fileName: imageFile.name,
+      contentType: imageFile.type,
+    });
+    const presignedUrl = response.result.presignedUrl;
+    return presignedUrl;
   }, [imageFile]);
 
   // S3에 직접 파일을 업로드
   const handleS3Upload = async (presignedUrl: string, file: File, contentType: string) => {
-    try {
-      await putS3Image({
-        presignedUrl: presignedUrl,
-        uploadFile: file,
-        header: {
-          'Content-Type': contentType,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    await putS3Image({
+      presignedUrl: presignedUrl,
+      uploadFile: file,
+      header: {
+        'Content-Type': contentType,
+      },
+    });
   };
 
   const handleModalClose = () => {
@@ -112,27 +104,24 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
         }
         await handleS3Upload(presignedUrl, imageFile, imageFile.type);
         finalImageUrl = presignedUrl.split('?')[0]; // S3 업로드 성공 시 영구 URL 사용
-      } catch (error) {
+      } catch {
         alert('이미지 업로드 중 오류가 발생했습니다.');
         return;
       }
     }
 
-    try {
-      const ExchangeCardData: ExchangeRequest = {
-        isOwned: true,
-        groupId: selectedGroupId ?? 0,
-        albumId: selectedAlbumId ?? 0,
-        memberId: selectedMemberId ?? 0,
-        description: null,
-        exchangeImageUrl: finalImageUrl,
-      };
-      await createExchangeCard(ExchangeCardData);
-      handleModalClose();
-      onRefresh();
-    } catch (error) {
-      throw error;
-    }
+    const ExchangeCardData: ExchangeRequest = {
+      isOwned: true,
+      groupId: selectedGroupId ?? 0,
+      albumId: selectedAlbumId ?? 0,
+      memberId: selectedMemberId ?? 0,
+      description: null,
+      exchangeImageUrl: finalImageUrl,
+    };
+    await createExchangeCard(ExchangeCardData);
+    handleModalClose();
+    onRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupId, selectedAlbumId, selectedMemberId, selectedImage, onRefresh]);
 
   const handleNextClick = () => {
@@ -156,7 +145,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   };
 
   const handleGroupClick = (group: Group) => {
-    setSelectedGroup(group.groupNameKo);
+    setSelectedGroup(group.groupDisplayName ?? '');
     setSelectedGroupId(group.groupId);
   };
 
@@ -255,9 +244,9 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
                     <S.ResultItem
                       key={group.groupId}
                       onClick={() => handleGroupClick(group)}
-                      $isSelected={selectedGroup === group.groupNameKo}
+                      $isSelected={selectedGroup === group.groupDisplayName}
                     >
-                      {group.groupNameKo}
+                      {group.groupDisplayName}
                     </S.ResultItem>
                   ))}
                 {isMemberSelectOpen &&
