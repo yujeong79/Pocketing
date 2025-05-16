@@ -82,14 +82,21 @@ export const SmallActionButton = styled.button<{ variant: 'album' | 'camera' }>`
   border: none;
   border-radius: ${scale(12)}px;
   padding: 0 ${scale(20)}px;
-  height: ${scale(30)}px;
+  height: ${scale(33)}px;
 
   font-size: ${scale(15)}px;
   font-family: 'Pretendard-Bold';
 
   background-color: ${({ variant }) => (variant === 'album' ? colors.primary50 : colors.primary)};
   color: ${({ variant }) => (variant === 'album' ? colors.primary : colors.white)};
-`
+  
+  img {
+    width: ${scale(20)}px;
+    height: ${scale(18)}px;
+    margin-right: ${scale(5)}px; // ← 여기 조정
+  }
+
+  `
 
 // 위로 튀는 애니메이션
 const bounce = keyframes`
@@ -113,3 +120,4 @@ export const Logo = styled.img<{ delay: string }>`
   animation-delay: ${(props) => props.delay};
   opacity: 0.6;
   `
+

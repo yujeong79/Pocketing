@@ -9,6 +9,7 @@ import { CroppedImage } from '@/types/yolo'
 import { GeminiResultItem } from '@/types/gemini'
 import { useLocation } from 'react-router-dom'
 import Logo2D from '@/assets/icons/logo-2d.svg';
+import { AlbumIcon, RefreshIcon2 } from '@/assets/assets';
 
 const UploadPage = () => {
   const location = useLocation()
@@ -31,15 +32,6 @@ const UploadPage = () => {
     사진 분석이 제대로 되지 않을 수 있어요.
   </>)
   const [phase, setPhase] = useState<'idle' | 'cropping' | 'analyzing'>('idle')
-
-  // const openedRef = useRef(false)
-
-  // useEffect(() => {
-  //   if (!openedRef.current) {
-  //     inputRef.current?.click()
-  //     openedRef.current = true
-  //   }
-  // }, [])
 
   useEffect(() => {
     if (capturedFile) {
@@ -123,8 +115,8 @@ const UploadPage = () => {
             style={{ transform: `rotate(${rotateDeg}deg)` }}
           />
           <S.ButtonBar>
-            <S.SmallActionButton variant="album" onClick={rotate}>회전</S.SmallActionButton>
-            <S.SmallActionButton variant="camera" onClick={startAnalysis}>분석 시작</S.SmallActionButton>
+            <S.SmallActionButton variant="album" onClick={rotate}><img src={RefreshIcon2} alt="회전 아이콘" />회전</S.SmallActionButton>
+            <S.SmallActionButton variant="camera" onClick={startAnalysis}><img src={AlbumIcon} alt="앨범 아이콘" />분석 시작</S.SmallActionButton>
           </S.ButtonBar>
         </S.PreviewWrapper>
       )}
