@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 import getCroppedImg from '@/utils/cropImage';
-import * as S from '@/components/common/ImageCropModalstyle';
+import * as S from '@/components/common/ImageCropModalStyle';
 import { postS3Image, putS3Image } from '@/api/s3/s3Image';
 
 interface ImageCropModalProps {
