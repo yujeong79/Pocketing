@@ -10,6 +10,7 @@ import { GeminiResultItem } from '@/types/gemini'
 import { useLocation } from 'react-router-dom'
 import Logo2D from '@/assets/icons/logo-2d.svg';
 import { AlbumIcon, RefreshIcon2 } from '@/assets/assets';
+import CautionModal from '@/pages/sell/components/CautionModal';
 
 const UploadPage = () => {
   const location = useLocation()
@@ -22,6 +23,12 @@ const UploadPage = () => {
   const [rotateDeg, setRotateDeg] = useState(0)
   const [file, setFile] = useState<File | null>(null)
   const [croppedList, setCroppedList] = useState<CroppedImage[]>([])
+
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalIconType, setModalIconType] = useState<'caution' | 'success'>();
+
+  const [isCautionModalOpen, setIsCautionModalOpen] = useState(false);
 
   // 🔥 텍스트 상태를 ReactNode로 바꿈
   const [guideText, setGuideText] = useState<React.ReactNode>(
@@ -84,7 +91,10 @@ const UploadPage = () => {
 
       navigate('/post', { state: { geminiResult } })
     } catch (err: any) {
-      alert(err.message || '분석 중 오류 발생')
+      setModalTitle('AI 분석 실패');
+      setModalMessage('인물 분석 중 오류가 발생했습니다. \n 등록을 다시 시도해주세요.');
+      setModalIconType('caution'); 
+      setIsCautionModalOpen(true);
     }
   }
 
@@ -132,7 +142,13 @@ const UploadPage = () => {
           </div>
         </div>
       )}
-
+      <CautionModal
+        isOpen={isCautionModalOpen}
+        onClose={() => setIsCautionModalOpen(false)}
+        title={modalTitle}
+        message={modalMessage}
+        iconType={modalIconType}
+      />
       {/* 숨겨진 업로드 input */}
       <input
         ref={inputRef}
@@ -142,6 +158,7 @@ const UploadPage = () => {
         style={{ display: 'none' }}
       />
     </S.GuideBackground>
+    
   )
 }
 

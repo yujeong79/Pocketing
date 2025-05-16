@@ -119,7 +119,7 @@ const OptionSection = forwardRef<OptionSectionHandle, OptionSectionProps>(
       console.error('시세 조회 실패:', error);
       if (error.response?.data?.code === 'PRICE4002') {
         setModalTitle('시세 정보 없음');
-        setModalMessage('해당 포토카드는 아직 시세 정보가 없습니다.');
+        setModalMessage('해당 포토카드는\n 아직 시세 정보가 없습니다.');
         setModalIconType('caution'); 
         setIsCautionModalOpen(true);
       } else {
