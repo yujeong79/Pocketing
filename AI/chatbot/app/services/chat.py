@@ -140,7 +140,7 @@ class ChatService:
                 f"- 멤버: {card_info['member_name']}\n"
                 f"- 앨범: {card_info['album_name']}\n"
                 f"- 태그: {', '.join(card_info['tag'])}\n"
-                f"- 유사도: {similarity:.2f}\n"  # 유사도 정보 추가
+                f"- 유사도: {similarity:.2f}\n"
             )
 
             if post_info and post_info.cheapest_post.post_id:
