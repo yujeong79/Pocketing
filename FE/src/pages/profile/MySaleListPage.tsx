@@ -7,6 +7,7 @@ import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { getMySales } from '@/api/user/mySales';
 import { MySaleListResponse } from '@/types/mySale';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { formatDate } from '@/utils/formatDate';
 
 const MySaleListPage = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const MySaleListPage = () => {
         ) : (
           filteredList.map((mySales, index) => (
             <S.MySaleItemContainer key={index}>
-              <S.MySaleItemDate>{mySales.createdAt}</S.MySaleItemDate>
+              <S.MySaleItemDate>{formatDate(mySales.createdAt)}</S.MySaleItemDate>
               <S.MySaleItemInfoContainer>
                 <S.InfoAndButtonContainer>
                   <S.InfoContainer>

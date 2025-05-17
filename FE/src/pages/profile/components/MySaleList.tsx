@@ -6,6 +6,7 @@ import Divider from './Divider';
 import { MySaleIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { getMySales } from '@/api/user/mySales';
 import { MySaleListResponse } from '@/types/mySale';
+import { formatDate } from '@/utils/formatDate';
 
 const MySaleList = () => {
   const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
@@ -41,7 +42,7 @@ const MySaleList = () => {
       ) : (
         filteredList.map((mySales, index) => (
           <S.MySaleItemContainer key={index}>
-            <S.MySaleItemDate>{mySales.createdAt}</S.MySaleItemDate>
+            <S.MySaleItemDate>{formatDate(mySales.createdAt)}</S.MySaleItemDate>
             <S.MySaleItemInfoContainer>
               <S.InfoAndButtonContainer>
                 <S.InfoContainer>

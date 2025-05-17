@@ -6,6 +6,7 @@ import Divider from './components/Divider';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { MyCompleteListResponse } from '@/types/mySale';
 import { getMyCompleteSales } from '@/api/user/mySales';
+import { formatDate } from '@/utils/formatDate';
 
 const MyCompleteListPage = () => {
   const [myCompleteSales, setMyCompleteSales] = useState<MyCompleteListResponse[]>([]);
@@ -35,7 +36,7 @@ const MyCompleteListPage = () => {
         ) : (
           filteredList.map((mySale, index) => (
             <S.MyCompleteItemContainer key={index}>
-              <S.MyCompleteItemDate>{mySale.createdAt}</S.MyCompleteItemDate>
+              <S.MyCompleteItemDate>{formatDate(mySale.createdAt)}</S.MyCompleteItemDate>
               <S.MyCompleteItemInfoContainer>
                 <S.InfoAndButtonContainer>
                   <S.InfoContainer>
