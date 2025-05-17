@@ -337,14 +337,17 @@ class RAGService:
                 "similarity": metadata.get("semantic_similarity", 0)
             }
 
+
         for post_result in post_results:
             if post_result.card_id in result_map:
                 result_map[post_result.card_id]["post_info"] = post_result
+                logger.debug(f"포토카드 ID {post_result.card_id}의 판매글 정보: {post_result}")
 
         formatted_info = []
         formatted_info.append(f"총 {len(metadata_list)}개의 포토카드를 찾았습니다.")
 
         sorted_results = sorted(result_map.items(), key=lambda x: x[1]["similarity"], reverse=True)
+        has_sales_posts = False
 
         for i, (card_id, data) in enumerate(sorted_results):
             card_info = data["card_info"]
@@ -360,15 +363,24 @@ class RAGService:
                 f"- 유사도: {similarity:.2f}\n"
             )
 
-            if post_info and post_info.cheapest_post.post_id:
-                card_text += (
-                    f"- 최저가: {post_info.cheapest_post.price}원\n"
-                    f"- 판매자: {post_info.cheapest_post.nickname}\n"
-                )
-            else:
-                card_text += "- 현재 판매 중인 포토카드가 없습니다.\n"
+            if post_info:
+                logger.info(
+                    f"포맷팅: 포토카드 ID {card_id}, post_id={post_info.cheapest_post.post_id}, price={post_info.cheapest_post.price}")
+                if post_info.cheapest_post and post_info.cheapest_post.post_id is not None and post_info.cheapest_post.post_id != 0:
+                    has_sales_posts = True  # 판매글 있음
+                    card_text += (
+                        f"- 최저가: {post_info.cheapest_post.price}원\n"
+                        f"- 판매자: {post_info.cheapest_post.nickname}\n"
+                    )
+                else:
+                    card_text += "- 현재 판매 중인 포토카드가 없습니다.\n"
 
             formatted_info.append(card_text)
+
+        if has_sales_posts:
+            formatted_info.insert(1, "일부 포토카드는 현재 판매 중입니다. 가격 정보를 확인하세요.")
+        else:
+            formatted_info.insert(1, "현재 판매 중인 포토카드가 없습니다.")
 
         return "\n".join(formatted_info)
 
