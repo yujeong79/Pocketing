@@ -7,7 +7,7 @@ import SlideUpModal from '@/components/common/SlideUpModal';
 import { fetchGroupsAll } from '@/api/artist/group';
 import { fetchMembersAll } from '@/api/artist/member';
 import { fetchAlbums } from '@/api/artist/album';
-import { reportMissingItem } from '@/api/postRegistration/report';
+// import { reportMissingItem } from '@/api/postRegistration/report';
 import CautionModal from '@/pages/sell/components/CautionModal';
 
 const ReportMissingPage = () => {
