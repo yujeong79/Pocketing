@@ -57,7 +57,10 @@ const MySaleListPage = () => {
           </S.NonItemContainer>
         ) : (
           filteredList.map((mySales, index) => (
-            <S.MySaleItemContainer key={index}>
+            <S.MySaleItemContainer
+              key={index}
+              onClick={() => navigate(`/detail/${mySales.postId}`)}
+            >
               <S.MySaleItemDate>{formatDate(mySales.createdAt)}</S.MySaleItemDate>
               <S.MySaleItemInfoContainer>
                 <S.InfoAndButtonContainer>

@@ -70,7 +70,7 @@ export default function Header({
       case 'detail':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={() => navigate('/main')}>
+            <S.BackButton onClick={() => navigate(-1)}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
           </S.LeftSection>
