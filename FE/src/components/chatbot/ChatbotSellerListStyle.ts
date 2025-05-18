@@ -5,6 +5,7 @@ import { colors } from '@/styles/theme';
 
 export const ItemContainer = styled.div`
   cursor: pointer;
+  width: 100%;
 `;
 
 export const ItemContent = styled.div`
@@ -20,13 +21,11 @@ export const PhotoCard = styled.img`
   border-radius: ${scale(4)}px;
 `;
 
-export const InfoContainer = styled.div<{ infoWidth?: number }>`
-  flex: 1;
+export const InfoContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: ${scale(24)}px;
-  width: ${({ infoWidth }) => (infoWidth ? `${infoWidth}px` : 'auto')};
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: ${scale(34)}px;
 `;
 
 export const NicknameWrapper = styled.div`
@@ -58,18 +57,51 @@ export const Price = styled.span`
 `;
 
 export const BracketIconWrapper = styled.img`
-  width: ${scale(8)}px;
+  width: ${scale(10)}px;
   height: ${scale(10)}px;
 `;
 
 export const Divider = styled.div`
   width: 100%;
-  height: 1px;
+  height: ${scale(1)}px;
   background-color: ${colors.gray100};
   margin-bottom: ${scale(12)}px;
 `;
 
-export const ModalContent = styled.div`
-  padding: ${scale(8)}px 0;
-  overflow-y: auto;
+export const ModalSellerCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: ${scale(8)}px;
+  margin-top: ${scale(8)}px;
+  width: auto;
+`;
+
+export const ModalSellerImage = styled.img`
+  width: ${scale(80)}px;
+  border-radius: ${scale(4)}px;
+  object-fit: cover;
+  flex-shrink: 0;
+`;
+
+export const ModalSellerInfo = styled.div`
+  width: ${scale(120)}px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${scale(24)}px;
+  margin-left: ${scale(6)}px;
+`;
+
+export const ModalSellerNickname = styled.div`
+  font-weight: bold;
+  font-size: ${scale(14)}px;
+`;
+
+export const ModalSellerPrice = styled.div`
+  color: ${colors.primary};
+
+  font-size: ${scale(13)}px;
+  margin-top: ${scale(2)}px;
 `;

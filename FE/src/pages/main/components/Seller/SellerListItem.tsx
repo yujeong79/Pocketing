@@ -2,12 +2,13 @@ import { VerifyIcon, BracketIcon } from '@/assets/assets';
 import * as S from './SellerListStyle';
 import { useNavigate } from 'react-router-dom';
 
-interface SellerListItemProps {
+export interface SellerListItemProps {
   postId: number;
   nickname: string;
   isVerified: boolean;
   price: number;
   postImageUrl: string;
+  infoWidth?: number;
 }
 
 const SellerListItem = ({
@@ -16,6 +17,7 @@ const SellerListItem = ({
   isVerified,
   price,
   postImageUrl,
+  infoWidth,
 }: SellerListItemProps) => {
   const navigate = useNavigate();
 
@@ -27,7 +29,7 @@ const SellerListItem = ({
     <S.ItemContainer onClick={handleClick}>
       <S.ItemContent>
         <S.PhotoCard src={postImageUrl} alt="포토카드" />
-        <S.InfoContainer>
+        <S.InfoContainer style={infoWidth ? { width: infoWidth } : {}}>
           <S.NicknameWrapper>
             <S.Nickname>{nickname}</S.Nickname>
             {isVerified && <S.VerifyIconWrapper src={VerifyIcon} alt="인증됨" />}
