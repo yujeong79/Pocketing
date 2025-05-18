@@ -150,3 +150,10 @@ export const VersionImage = styled.img<{ selected: boolean }>`
   border: 2px solid ${(props) => (props.selected ? colors.primary : 'transparent')};
   transition: border-color 0.2s ease;
 `;
+
+export const NoPhotocardText = styled.p`
+  color: ${colors.gray400};
+  text-align: center;
+  margin-top: ${scale(20)}px;
+  font-size: ${scale(14)}px;
+`;
