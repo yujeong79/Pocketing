@@ -11,7 +11,10 @@ import { formatDate } from '@/utils/formatDate';
 const MyCompleteList = () => {
   const [myCompleteSales, setMyCompleteSales] = useState<MyCompleteListResponse[]>([]);
   const navigate = useNavigate();
-  const filteredList = myCompleteSales.filter((item) => !item.createdAt).slice(0, 2);
+  const filteredList = myCompleteSales
+    .filter((item) => !item.createdAt)
+    .sort((a, b) => b.postId - a.postId)
+    .slice(0, 2);
 
   const handleGetMyCompleteSales = useCallback(async () => {
     try {
