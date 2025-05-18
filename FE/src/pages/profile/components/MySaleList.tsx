@@ -10,7 +10,10 @@ import { useSales } from '@/hooks/sales/useSales';
 const MySaleList = () => {
   const navigate = useNavigate();
   const { mySales, fetchSales } = useSales();
-  const filteredList = mySales.filter((item) => item.createdAt).slice(0, 2);
+  const filteredList = mySales
+    .filter((item) => item.createdAt)
+    .sort((a, b) => b.postId - a.postId)
+    .slice(0, 2);
 
   useEffect(() => {
     if (mySales.length === 0) {

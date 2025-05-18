@@ -10,9 +10,10 @@ import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleListPage = () => {
   const { mySales, fetchSales } = useSales();
-  const filteredList = mySales.filter((item) => item.createdAt);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const filteredList = mySales.filter((item) => item.createdAt).sort((a, b) => b.postId - a.postId);
 
   const fromRegister = location.state?.fromRegister;
 
