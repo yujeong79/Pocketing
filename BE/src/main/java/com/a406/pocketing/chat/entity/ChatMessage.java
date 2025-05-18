@@ -6,6 +6,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Slf4j
 @Entity
@@ -41,7 +43,7 @@ public class ChatMessage {
 
     @PrePersist
     public void prePersist() {
-        log.info("Pre Persist, local date time: {}", LocalDateTime.now());
+        log.info("Pre Persist, local date time: {}", ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
         this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
     }
 }
