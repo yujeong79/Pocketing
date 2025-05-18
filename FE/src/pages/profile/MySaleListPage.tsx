@@ -1,37 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as S from './MySaleListStyle';
 import Header from '@/components/common/Header';
 import Divider from './components/Divider';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMySales } from '@/api/user/mySales';
-import { MySaleListResponse } from '@/types/mySale';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { formatDate } from '@/utils/formatDate';
+import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleListPage = () => {
+  const { mySales, fetchSales } = useSales();
+  const filteredList = mySales.filter((item) => item.createdAt);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
-  const filteredList = mySales.filter((item) => item.createdAt);
-
   const fromRegister = location.state?.fromRegister;
-
-  const handleGetMySales = useCallback(async () => {
-    try {
-      const response = await getMySales();
-      setMySales(response.result);
-      console.log(response);
-      console.log(mySales);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    handleGetMySales();
-  }, [handleGetMySales]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -45,6 +28,13 @@ const MySaleListPage = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [fromRegister, navigate]);
+
+  // TODO: 추후 판매글 등록에서 fetch 함수를 호출하도록 변경
+  useEffect(() => {
+    if (mySales.length === 0) {
+      fetchSales();
+    }
+  }, [mySales.length, fetchSales]);
 
   return (
     <S.PageContainer>
