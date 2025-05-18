@@ -1,6 +1,7 @@
-import { VerifyIcon, BracketIcon } from '@/assets/assets';
+import React from 'react';
 import * as S from './ChatbotSellerListStyle';
 import { useNavigate } from 'react-router-dom';
+import { BracketIcon } from '@/assets/assets';
 
 interface ChatbotSellerListItemProps {
   postId: number;
@@ -10,13 +11,12 @@ interface ChatbotSellerListItemProps {
   postImageUrl: string;
 }
 
-const ChatbotSellerListItem = ({
+const ChatbotSellerListItem: React.FC<ChatbotSellerListItemProps> = ({
   postId,
   nickname,
-  isVerified,
   price,
   postImageUrl,
-}: ChatbotSellerListItemProps) => {
+}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -24,22 +24,16 @@ const ChatbotSellerListItem = ({
   };
 
   return (
-    <S.ItemContainer onClick={handleClick}>
-      <S.ItemContent>
-        <S.PhotoCard src={postImageUrl} alt="포토카드" />
-        <S.InfoContainer>
-          <S.NicknameWrapper>
-            <S.Nickname>{nickname}</S.Nickname>
-            {isVerified && <S.VerifyIconWrapper src={VerifyIcon} alt="인증됨" />}
-          </S.NicknameWrapper>
-          <S.PriceWrapper>
-            <S.Price>{price.toLocaleString()}원</S.Price>
-            <S.BracketIconWrapper src={BracketIcon} alt="화살표" />
-          </S.PriceWrapper>
-        </S.InfoContainer>
-      </S.ItemContent>
-      <S.Divider />
-    </S.ItemContainer>
+    <S.ModalSellerCard onClick={handleClick}>
+      <S.ModalSellerImage src={postImageUrl} alt="포카 이미지" />
+      <S.ModalSellerInfo>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <S.ModalSellerNickname>{nickname}</S.ModalSellerNickname>
+          <S.ModalSellerPrice>{price.toLocaleString()}원</S.ModalSellerPrice>
+        </div>
+        <S.BracketIconWrapper src={BracketIcon} alt=">" />
+      </S.ModalSellerInfo>
+    </S.ModalSellerCard>
   );
 };
 
