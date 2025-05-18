@@ -206,7 +206,7 @@ const ReportMissingPage = () => {
             setIsCautionModalOpen(false);
             
             if (modalIconType === 'success') {
-            navigate(-1);
+            navigate('/sell');
             }
         }}
         title={modalTitle}
