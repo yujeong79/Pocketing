@@ -154,6 +154,43 @@ export const VersionImage = styled.img<{ selected: boolean }>`
 export const NoPhotocardText = styled.p`
   color: ${colors.gray400};
   text-align: center;
-  margin-top: ${scale(20)}px;
-  font-size: ${scale(14)}px;
+  margin-top: ${scale(-3)}px;
+  margin-bottom: ${scale(5)}px;
+  font-size: ${scale(12)}px;
 `;
+
+export const ReportButton = styled.button`
+  margin-top: ${scale(5)}px;
+  margin-bottom: ${scale(11)}px;
+  width: 100%;
+  padding: ${scale(10)}px;
+  background-color: ${colors.primary50};
+  color: ${colors.primary};
+  border-radius: ${scale(10)}px;
+  font-size: ${scale(13)}px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+
+  // 내부 감싸는 div로 레이아웃 설정
+  .icon-text-wrapper {
+    display: flex;
+    align-items: center; // 이미지와 텍스트 수직 가운데 정렬
+    justify-content: center;
+    gap: ${scale(5)}px;
+  }
+
+  img {
+    width: ${scale(25)}px;
+    height: ${scale(30)}px;
+    margin-left: ${scale(-4)}px;
+    flex-shrink: 0;
+  }
+
+  span {
+    text-align: center;
+    line-height: 1.3;
+  }
+`;
+
+
