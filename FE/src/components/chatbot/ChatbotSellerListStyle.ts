@@ -5,6 +5,7 @@ import { colors } from '@/styles/theme';
 
 export const ItemContainer = styled.div`
   cursor: pointer;
+  width: 100%;
 `;
 
 export const ItemContent = styled.div`
@@ -20,13 +21,12 @@ export const PhotoCard = styled.img`
   border-radius: ${scale(4)}px;
 `;
 
-export const InfoContainer = styled.div<{ infoWidth?: number }>`
-  flex: 1;
+export const InfoContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-left: ${scale(24)}px;
-  width: ${({ infoWidth }) => (infoWidth ? `${infoWidth}px` : 'auto')};
+  width: 240px;
 `;
 
 export const NicknameWrapper = styled.div`
@@ -67,9 +67,4 @@ export const Divider = styled.div`
   height: 1px;
   background-color: ${colors.gray100};
   margin-bottom: ${scale(12)}px;
-`;
-
-export const ModalContent = styled.div`
-  padding: ${scale(8)}px 0;
-  overflow-y: auto;
 `;

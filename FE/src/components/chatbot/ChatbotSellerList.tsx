@@ -1,24 +1,22 @@
 import { VerifyIcon, BracketIcon } from '@/assets/assets';
-import * as S from './SellerListStyle';
+import * as S from './ChatbotSellerListStyle';
 import { useNavigate } from 'react-router-dom';
 
-export interface SellerListItemProps {
+interface ChatbotSellerListItemProps {
   postId: number;
   nickname: string;
   isVerified: boolean;
   price: number;
   postImageUrl: string;
-  infoWidth?: number;
 }
 
-const SellerListItem = ({
+const ChatbotSellerListItem = ({
   postId,
   nickname,
   isVerified,
   price,
   postImageUrl,
-  infoWidth,
-}: SellerListItemProps) => {
+}: ChatbotSellerListItemProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -29,7 +27,7 @@ const SellerListItem = ({
     <S.ItemContainer onClick={handleClick}>
       <S.ItemContent>
         <S.PhotoCard src={postImageUrl} alt="포토카드" />
-        <S.InfoContainer style={infoWidth ? { width: infoWidth } : {}}>
+        <S.InfoContainer>
           <S.NicknameWrapper>
             <S.Nickname>{nickname}</S.Nickname>
             {isVerified && <S.VerifyIconWrapper src={VerifyIcon} alt="인증됨" />}
@@ -45,4 +43,4 @@ const SellerListItem = ({
   );
 };
 
-export default SellerListItem;
+export default ChatbotSellerListItem;

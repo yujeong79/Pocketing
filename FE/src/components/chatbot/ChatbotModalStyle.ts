@@ -93,13 +93,14 @@ export const ChatContainer = styled.div`
 export const MessageWrapper = styled.div<{ isUser: boolean }>`
   display: flex;
   justify-content: ${({ isUser }) => (isUser ? 'flex-end' : 'flex-start')};
-  align-items: center;
+  align-items: flex-start;
   gap: ${scale(4)}px;
 `;
 
-export const BotIcon = styled.img`
+export const BotIcon = styled.img<{ offsetLeft?: boolean }>`
   width: ${scale(32)}px;
   height: ${scale(32)}px;
+  ${({ offsetLeft }) => offsetLeft && `margin-left: ${scale(8)}px;`}
 `;
 
 export const Message = styled.div<{ isUser: boolean }>`
@@ -159,4 +160,38 @@ export const SendButtonContainer = styled.button`
 export const SendButton = styled.img`
   width: ${scale(24)}px;
   height: ${scale(24)}px;
+`;
+
+export const ModalSellerListItemWrapper = styled.div`
+  margin-bottom: -${scale(35)}px;
+  margin-left: ${scale(8)}px;
+  width: ${scale(300)}px;
+`;
+
+export const ChatbotPhotoCard = styled.img`
+  max-width: ${scale(90)}px;
+  border-radius: ${scale(8)}px;
+  margin: ${scale(2)}px 0;
+  margin-left: ${scale(8)}px;
+`;
+
+export const HorizontalScroll = styled.div`
+  display: flex;
+  gap: ${scale(8)}px;
+  overflow-x: auto;
+  padding-bottom: ${scale(4)}px;
+  max-width: 100%;
+  &::-webkit-scrollbar {
+    height: ${scale(4)}px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${colors.gray200};
+    border-radius: ${scale(2)}px;
+  }
+`;
+
+export const BotIconSpacer = styled.div`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+  flex-shrink: 0;
 `;
