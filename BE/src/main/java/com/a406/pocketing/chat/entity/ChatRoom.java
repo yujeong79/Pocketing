@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.CHAT_ROOM_UNAUTHORIZED_USER;
 
@@ -62,7 +64,7 @@ public class ChatRoom {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
+        this.createdAt = this.createdAt == null ? ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime() : this.createdAt;
     }
 
     public User getReceiver(Long senderId) {
