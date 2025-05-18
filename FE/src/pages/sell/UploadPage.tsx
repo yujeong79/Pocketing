@@ -92,7 +92,7 @@ const UploadPage = () => {
       navigate('/post', { state: { geminiResult } })
     } catch (err: any) {
       setModalTitle('AI 분석 실패');
-      setModalMessage('인물 분석 중 오류가 발생했습니다. \n 등록을 다시 시도해주세요.');
+      setModalMessage('인물이 분석되지 않았습니다. \n 등록을 다시 시도해주세요.');
       setModalIconType('caution'); 
       setIsCautionModalOpen(true);
     }
