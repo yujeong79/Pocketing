@@ -18,7 +18,8 @@ interface HeaderProps {
     | 'profileDetail'
     | 'profileEdit'
     | 'mySaleList'
-    | 'alarm';
+    | 'alarm'
+    | 'report';
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
@@ -114,6 +115,14 @@ export default function Header({
         return (
           <S.LeftSection>
             <img src={LogoText} alt="포켓팅 로고" />
+          </S.LeftSection>
+        );
+      case 'report':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate(-1)}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
           </S.LeftSection>
         );
       default:
