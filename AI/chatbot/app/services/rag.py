@@ -63,7 +63,7 @@ class RAGService:
             사용자가 찾는 특징과 포토카드에 태깅된 특징 간의 유사도를 0.0에서 1.0 사이의 숫자로 평가해주세요.
 
             예시:
-            - 사용자 특징 ["노란옷"], 태그 ["yellow", "셔츠"] -> 0.9 (매우 유사)
+            - 사용자 특징 ["노란옷"], 태그 ["yellow", "노랭이"] -> 0.9 (매우 유사)
             - 사용자 특징 ["양갈래"], 태그 ["포니테일"] -> 0.4 (부분 유사)
             - 사용자 특징 ["웃는"], 태그 ["화난"] -> 0.0 (유사하지 않음)
 
@@ -224,11 +224,6 @@ class RAGService:
 
                     scored_results.sort(key=lambda x: x[1], reverse=True)
 
-                    # NOTE: 이 부분에 threshold 변수가 정의되어 있지 않은 것 같습니다.
-                    # 실제 코드에 threshold가 정의되어 있다면 그대로 사용하고,
-                    # 그렇지 않다면 적절한 threshold 값을 설정해야 합니다(예: threshold = 0.5)
-                    threshold = 0.5  # 필요에 따라 적절한 값으로 설정
-
                     filtered_results = [result for result, score in scored_results if score >= threshold]
 
                     if not filtered_results and scored_results:
@@ -373,7 +368,7 @@ class RAGService:
                 logger.info(
                     f"포맷팅: 포토카드 ID {card_id}, post_id={post_info.cheapest_post.post_id}, price={post_info.cheapest_post.price}")
                 if post_info.cheapest_post and post_info.cheapest_post.post_id is not None and post_info.cheapest_post.post_id != 0:
-                    has_sales_posts = True  # 판매글 있음
+                    has_sales_posts = True
                     card_text += (
                         f"- 최저가: {post_info.cheapest_post.price}원\n"
                         f"- 판매자: {post_info.cheapest_post.nickname}\n"
