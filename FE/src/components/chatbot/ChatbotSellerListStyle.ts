@@ -57,8 +57,8 @@ export const Price = styled.span`
 `;
 
 export const BracketIconWrapper = styled.img`
-  width: ${scale(12)}px;
-  height: ${scale(12)}px;
+  width: ${scale(10)}px;
+  height: ${scale(10)}px;
 `;
 
 export const Divider = styled.div`
