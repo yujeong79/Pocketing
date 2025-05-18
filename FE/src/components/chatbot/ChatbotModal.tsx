@@ -3,55 +3,12 @@ import { ThreeDLogo, CloseIcon, SendIcon } from '@/assets/assets';
 import * as S from './ChatbotModalStyle';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
 import ChatBotLoader from '@/components/common/ChatBotLoader';
-import ChatbotSellerListItem from '@/components/chatbot/ChatbotSellerList';
+import { ChatbotResponse, ChatMessage, ChatbotModalProps } from '@/types/chatbot';
+import { splitBotTextToItems, processBotText } from '@/utils/chatbot';
+import ChatbotMessageList from './ChatbotMessageList';
 
 // WebSocket 주소 설정 (API 서버 주소)
-const SOCKET_URL = 'wss://k12a406.p.ssafy.io/chatbot/ws';
-
-interface Photocard {
-  card_id: number;
-  cheapest_post: {
-    post_id: number | null;
-    price: number | null;
-    post_image_url: string | null;
-    card_image_url: string | null;
-    nickname: string;
-    last_updated: string;
-  };
-}
-
-interface ChatbotMeta {
-  user_id: number;
-  total_results: number;
-  in_response_to: number;
-  new_chat_message_id: number;
-}
-
-interface ChatbotResponse {
-  status: string;
-  code: number;
-  message: string;
-  result?: {
-    text: string;
-    photocards?: Photocard[];
-    meta?: ChatbotMeta;
-  };
-}
-
-interface ChatMessage {
-  text: string;
-  isUser: boolean;
-  image?: string;
-  postId?: number;
-  price?: number;
-  nickname?: string;
-  images?: string[];
-}
-
-interface ChatbotModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const SOCKET_URL = import.meta.env.VITE_CHATBOT_SOCKET_URL;
 
 const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -119,7 +76,6 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   // 서버에서 받은 메시지 처리
@@ -196,48 +152,6 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
     setInputText('');
   };
 
-  function splitBotTextToItems(text: string) {
-    // "현재 모든 포토카드는"으로 시작하는 안내문 분리
-    const guideMatch = text.match(/^(현재 모든 포토카드는[^\n]*)/);
-    let guide = '';
-    let rest = text;
-    if (guideMatch) {
-      guide = guideMatch[1];
-      rest = text.replace(guide, '').trim();
-    }
-
-    // "1. "으로 시작하는 부분을 기준으로 분리
-    const items = rest
-      .split(/(?=\d+\.\s)/g)
-      .map((item) => item.trim())
-      .filter(Boolean);
-
-    // 안내문이 있으면 맨 앞에 추가
-    if (guide) {
-      return [guide, ...items];
-    }
-    return items;
-  }
-
-  function formatBold(text: string) {
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-  }
-
-  function processBotText(text: string) {
-    // "더 자세한 내용은"으로 분리
-    const detailSplit = text.split(/(더 자세한 내용은.*)/);
-    const mainText = detailSplit[0].trim();
-    const detailText = detailSplit[1]?.trim();
-
-    // 모든 - 앞에 줄바꿈 추가 (맨 앞 - 제외)
-    const formattedMain = mainText.replace(/(?<!^)-/g, '<br/>-');
-
-    return {
-      main: formattedMain,
-      detail: detailText,
-    };
-  }
-
   if (!isOpen) return null;
 
   return (
@@ -252,54 +166,7 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
 
         <S.Container>
           <S.ChatContainer ref={chatContainerRef}>
-            {messages.map((message, index) => (
-              <S.MessageWrapper key={index} isUser={message.isUser}>
-                {!message.isUser && <S.BotIcon src={ThreeDLogo} alt="Bot" />}
-                {message.isUser ? (
-                  <S.Message
-                    isUser={true}
-                    dangerouslySetInnerHTML={{ __html: formatBold(message.text) }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      width: '100%',
-                    }}
-                  >
-                    <S.Message
-                      isUser={false}
-                      dangerouslySetInnerHTML={{ __html: formatBold(message.text) }}
-                      style={{ marginBottom: message.image ? 8 : 0 }}
-                    />
-                    {message.image &&
-                      (message.postId ? (
-                        <S.ModalSellerListItemWrapper>
-                          <ChatbotSellerListItem
-                            postId={message.postId}
-                            nickname={message.nickname || ''}
-                            price={message.price || 0}
-                            postImageUrl={message.image}
-                            isVerified={false}
-                            onClose={onClose}
-                          />
-                        </S.ModalSellerListItemWrapper>
-                      ) : (
-                        <S.ChatbotPhotoCard src={message.image} alt="포카 이미지" />
-                      ))}
-                  </div>
-                )}
-                {message.images && message.images.length > 0 && (
-                  <S.PhotoCardImage>
-                    {message.images.map((img, idx) => (
-                      <S.ChatbotPhotoCard key={idx} src={img} alt={`포카 이미지 ${idx + 1}`} />
-                    ))}
-                  </S.PhotoCardImage>
-                )}
-              </S.MessageWrapper>
-            ))}
+            <ChatbotMessageList messages={messages} onClose={onClose} />
             {isLoading && (
               <S.MessageWrapper isUser={false}>
                 <S.BotIcon src={ThreeDLogo} alt="Bot" />
