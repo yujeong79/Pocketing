@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 
 import * as S from './MySaleListStyle';
 import Divider from './Divider';
@@ -9,17 +8,11 @@ import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleList = () => {
   const navigate = useNavigate();
-  const { mySales, fetchSales } = useSales();
+  const { mySales } = useSales();
   const filteredList = mySales
     .filter((item) => item.createdAt)
     .sort((a, b) => b.postId - a.postId)
     .slice(0, 2);
-
-  useEffect(() => {
-    if (mySales.length === 0) {
-      fetchSales();
-    }
-  }, [mySales.length, fetchSales]);
 
   return (
     <S.MySaleListContainer>

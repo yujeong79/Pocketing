@@ -9,7 +9,7 @@ import { formatDate } from '@/utils/formatDate';
 import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleListPage = () => {
-  const { mySales, fetchSales } = useSales();
+  const { mySales } = useSales();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,13 +29,6 @@ const MySaleListPage = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [fromRegister, navigate]);
-
-  // TODO: 추후 판매글 등록에서 fetch 함수를 호출하도록 변경
-  useEffect(() => {
-    if (mySales.length === 0) {
-      fetchSales();
-    }
-  }, [mySales.length, fetchSales]);
 
   return (
     <S.PageContainer>
