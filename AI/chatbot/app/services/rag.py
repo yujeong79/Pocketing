@@ -368,7 +368,7 @@ class RAGService:
                 logger.info(
                     f"포맷팅: 포토카드 ID {card_id}, post_id={post_info.cheapest_post.post_id}, price={post_info.cheapest_post.price}")
                 if post_info.cheapest_post and post_info.cheapest_post.post_id is not None and post_info.cheapest_post.post_id != 0:
-                    has_sales_posts = True  # 판매글 있음
+                    has_sales_posts = True
                     card_text += (
                         f"- 최저가: {post_info.cheapest_post.price}원\n"
                         f"- 판매자: {post_info.cheapest_post.nickname}\n"
