@@ -7,12 +7,13 @@ import CautionModal from '@/pages/sell/components/CautionModal';
 import { resolveMatching } from '@/api/artist/matching';
 import { GeminiResultItem } from '@/types/gemini';
 import { MatchingResultItem } from '@/types/matching';
-import { registerPhotoCardPosts } from '@/api/postRegistration/register'; 
+import { registerPhotoCardPosts } from '@/api/postRegistration/register';
 import { useNavigate } from 'react-router-dom';
+import { useSales } from '@/hooks/sales/useSales';
 
 interface PhotocardSettingData {
   groupId?: number;
-  group: string;        // ex) "아이브 (IVE)"
+  group: string; // ex) "아이브 (IVE)"
   memberId?: number;
   member: string;
   albumId?: number;
@@ -22,13 +23,12 @@ interface PhotocardSettingData {
   price: string;
 }
 
-
-
 const PostPage = () => {
+  const { fetchSales } = useSales();
   const navigate = useNavigate();
-  
+
   const location = useLocation();
-  const geminiResult = location.state?.geminiResult as GeminiResultItem[] || [];
+  const geminiResult = (location.state?.geminiResult as GeminiResultItem[]) || [];
 
   const [isCautionModalOpen, setIsCautionModalOpen] = useState(false);
   const [initialSettings, setInitialSettings] = useState<PhotocardSettingData[]>([]);
@@ -41,7 +41,7 @@ const PostPage = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalIconType, setModalIconType] = useState<'caution' | 'success'>();
 
- // 상태 하나 추가
+  // 상태 하나 추가
   const [afterConfirmNavigate, setAfterConfirmNavigate] = useState(false);
 
   useEffect(() => {
@@ -83,10 +83,6 @@ const PostPage = () => {
           }
         });
 
-
-        
-
-
         const images = geminiResult.map((g) => g.postImageUrl);
 
         setInitialSettings(settings);
@@ -99,10 +95,9 @@ const PostPage = () => {
     fetchMatching();
   }, [geminiResult]);
 
-  
   useEffect(() => {
     const handlePopState = () => {
-          if (window.history.state?.idx > 0) {
+      if (window.history.state?.idx > 0) {
         navigate('/guide', { replace: true });
       } // ✅ 기기 뒤로가기도 가이드로
     };
@@ -113,26 +108,19 @@ const PostPage = () => {
     };
   }, [navigate]);
 
- 
-
-
   const handleRegisterClick = async () => {
     const settings = optionSectionRef.current?.photocardSettings;
     if (!settings || imageList.length !== settings.length) return;
 
     const isAllComplete = settings.every(
       (setting) =>
-        setting.group &&
-        setting.member &&
-        setting.album &&
-        setting.version &&
-        setting.price
+        setting.group && setting.member && setting.album && setting.version && setting.price
     );
 
     if (!isAllComplete) {
       setModalTitle('카드 정보 누락');
       setModalMessage('아직 선택되지 않은 카드가 있어요!');
-      setModalIconType('caution'); 
+      setModalIconType('caution');
       setIsCautionModalOpen(true);
       return;
     }
@@ -140,7 +128,7 @@ const PostPage = () => {
     try {
       // 변환 로직: PhotocardSettingData → RegisterPostItem[]
       const payload = settings.map((setting, index) => ({
-        cardId: Number(setting.versionId),          // versionId가 string이므로 변환
+        cardId: Number(setting.versionId), // versionId가 string이므로 변환
         postImageUrl: imageList[index],
         price: Number(setting.price.replace(/,/g, '')),
       }));
@@ -148,20 +136,21 @@ const PostPage = () => {
       const result = await registerPhotoCardPosts(payload);
 
       console.log('등록 성공:', result);
+
+      fetchSales();
       // 이후 페이지 이동 or 알림 처리 등 추가 가능
       setModalTitle('등록 완료');
       setModalMessage(`${result.length}개의\n 게시물이 등록되었습니다.`);
       setIsCautionModalOpen(true);
-      setModalIconType('success'); 
+      setModalIconType('success');
 
       setAfterConfirmNavigate(true);
     } catch (error) {
       console.error('등록 실패:', error);
       setModalTitle('등록 실패');
       setModalMessage('등록에 실패했습니다.\n 다시 등록을 시도해주세요.');
-      setModalIconType('caution'); 
+      setModalIconType('caution');
       setIsCautionModalOpen(true);
-
     }
   };
 
