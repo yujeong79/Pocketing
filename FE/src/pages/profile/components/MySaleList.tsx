@@ -1,30 +1,22 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as S from './MySaleListStyle';
 import Divider from './Divider';
 import { MySaleIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMySales } from '@/api/user/mySales';
-import { MySaleListResponse } from '@/types/mySale';
 import { formatDate } from '@/utils/formatDate';
+import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleList = () => {
-  const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
   const navigate = useNavigate();
+  const { mySales, fetchSales } = useSales();
   const filteredList = mySales.filter((item) => item.createdAt).slice(0, 2);
 
-  const handleGetMySales = useCallback(async () => {
-    try {
-      const response = await getMySales();
-      setMySales(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
-
   useEffect(() => {
-    handleGetMySales();
-  }, [handleGetMySales]);
+    if (mySales.length === 0) {
+      fetchSales();
+    }
+  }, [mySales.length, fetchSales]);
 
   return (
     <S.MySaleListContainer>
