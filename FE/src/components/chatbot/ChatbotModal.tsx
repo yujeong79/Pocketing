@@ -8,7 +8,8 @@ import { splitBotTextToItems, processBotText } from '@/utils/chatbot';
 import ChatbotMessageList from './ChatbotMessageList';
 
 // WebSocket 주소 설정 (API 서버 주소)
-const SOCKET_URL = import.meta.env.VITE_CHATBOT_SOCKET_URL;
+// const SOCKET_URL = import.meta.env.VITE_CHATBOT_SOCKET_URL;
+const SOCKET_URL = 'wss://k12a406.p.ssafy.io/chatbot/ws';
 
 const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([
