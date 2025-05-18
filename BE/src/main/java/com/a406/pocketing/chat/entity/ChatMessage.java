@@ -43,7 +43,6 @@ public class ChatMessage {
 
     @PrePersist
     public void prePersist() {
-        log.info("Pre Persist, local date time: {}", ZonedDateTime.now(ZoneId.of("Asia/Seoul")));
-        this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
+        this.createdAt = this.createdAt == null ? ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime() : this.createdAt;
     }
 }
