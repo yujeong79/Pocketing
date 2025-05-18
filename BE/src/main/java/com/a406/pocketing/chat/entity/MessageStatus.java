@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -25,4 +27,9 @@ public class MessageStatus {
     private Long messageId;
     private Long receiverId;
     private LocalDateTime readAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.readAt = this.readAt == null ? ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime() : this.readAt;
+    }
 }

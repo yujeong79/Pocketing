@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -57,7 +59,7 @@ public class Post {
 
     @PrePersist
     public void prePersist() {
-        this.createAt = this.createAt == null ? LocalDateTime.now() : this.createAt;
+        this.createAt = this.createAt == null ? ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime() : this.createAt;
     }
 
     public void update(Integer price) {
