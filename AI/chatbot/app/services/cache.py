@@ -239,11 +239,18 @@ class RedisCache:
 
                             logger.debug(f"포토카드 ID {card_id}: post_id={post_id}, has_post={has_post}")
 
+                            if has_post:
+                                post_image_url = cached_json.get("post_image_url")
+                                card_image_url = None
+                            else:
+                                post_image_url = None
+                                card_image_url = cached_json.get("card_image_url")
+
                             post_info = PostInfo(
                                 post_id=post_id,
                                 price=cached_json.get("price"),
-                                post_image_url=cached_json.get("post_image_url") if has_post else None,
-                                card_image_url=None if has_post else cached_json.get("card_image_url"),
+                                post_image_url=post_image_url,
+                                card_image_url=card_image_url,
                                 nickname=cached_json.get("nickname", "판매자 없음"),
                                 last_updated=cached_json.get("last_updated",
                                                              datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
@@ -298,12 +305,14 @@ class RedisCache:
                                 has_post = post_id is not None
                                 logger.info(f"포토카드 ID {card_id}: post_id={post_id}, has_post={has_post}")
 
-                                price = post_data.get("price") if has_post else None
-                                post_image_url = post_data.get("post_image_url") if has_post else None
-
-                                card_image_url = None
-                                if not has_post:
-                                    card_image_url = post_data.get("card_image_url")
+                                if has_post:
+                                    post_image_url = post_data.get("post_image_url")
+                                    card_image_url = None
+                                    price = post_data.get("price")
+                                else:
+                                    post_image_url = None
+                                    card_image_url = post_data.get("post_image_url")  # API가 여기에 카드 이미지 제공
+                                    price = None
 
                                 post_info = PostInfo(
                                     post_id=post_id,

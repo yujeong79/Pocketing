@@ -181,7 +181,6 @@ class RAGService:
                                     break
 
                         if feature_match_count > 0:
-
                             match_ratio = feature_match_count / len(features)
                             result["feature_match_score"] = match_ratio
                             filtered_results.append(result)
@@ -224,6 +223,11 @@ class RAGService:
                         scored_results.append((result, semantic_similarity))
 
                     scored_results.sort(key=lambda x: x[1], reverse=True)
+
+                    # NOTE: 이 부분에 threshold 변수가 정의되어 있지 않은 것 같습니다.
+                    # 실제 코드에 threshold가 정의되어 있다면 그대로 사용하고,
+                    # 그렇지 않다면 적절한 threshold 값을 설정해야 합니다(예: threshold = 0.5)
+                    threshold = 0.5  # 필요에 따라 적절한 값으로 설정
 
                     filtered_results = [result for result, score in scored_results if score >= threshold]
 
@@ -304,10 +308,12 @@ class RAGService:
                     post_results.append(cheapest_posts_dict[card_id])
                 else:
                     logger.info(f"포토카드 ID {card_id}의 판매글 정보 없음, 포토카드 이미지로 대체")
+                    # 여기가 수정 필요한 부분입니다 - 판매글이 없는 경우
                     post_info = PostInfo(
                         post_id=None,
                         price=None,
-                        card_image_url=result["metadata"]["card_image_url"],
+                        post_image_url=None,  # 판매자가 없으므로 post_image_url은 null
+                        card_image_url=result["metadata"]["card_image_url"],  # 카드 이미지 URL 설정
                         nickname="판매자 없음",
                         last_updated=datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                     )
