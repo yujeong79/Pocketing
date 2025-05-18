@@ -3,9 +3,11 @@ package com.a406.pocketing.chat.entity;
 import com.a406.pocketing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Entity
 @Getter
 @Builder
@@ -39,6 +41,7 @@ public class ChatMessage {
 
     @PrePersist
     public void prePersist() {
+        log.info("Pre Persist, local date time: {}", LocalDateTime.now());
         this.createdAt = this.createdAt == null ? LocalDateTime.now() : this.createdAt;
     }
 }
