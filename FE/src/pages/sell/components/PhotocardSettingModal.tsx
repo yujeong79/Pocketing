@@ -175,6 +175,9 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     <>
       <S.VersionTitle>어떤 버전인가요?</S.VersionTitle>
       <S.VersionGrid>
+        {photocardList.length === 0 && (
+          <S.NoPhotocardText>아직 등록된<br></br> 포토카드가 없습니다.<br></br><br></br>추후에 업데이트 <br></br> 예정입니다.</S.NoPhotocardText>
+        )}
         {photocardList.map((card, index) => (
           <S.VersionItem key={card.cardId} onClick={() => {
             setSelectedData({ ...selectedData, versionId: card.cardId, version: card.cardId });
