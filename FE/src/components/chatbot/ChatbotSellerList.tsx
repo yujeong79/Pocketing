@@ -9,6 +9,7 @@ interface ChatbotSellerListItemProps {
   isVerified: boolean;
   price: number;
   postImageUrl: string;
+  onClose: () => void;
 }
 
 const ChatbotSellerListItem: React.FC<ChatbotSellerListItemProps> = ({
@@ -16,10 +17,12 @@ const ChatbotSellerListItem: React.FC<ChatbotSellerListItemProps> = ({
   nickname,
   price,
   postImageUrl,
+  onClose,
 }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
+    onClose();
     navigate(`/detail/${postId}`);
   };
 

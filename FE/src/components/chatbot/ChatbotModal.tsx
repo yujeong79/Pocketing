@@ -283,6 +283,7 @@ const ChatbotModal: React.FC<ChatbotModalProps> = ({ isOpen, onClose }) => {
                             price={message.price || 0}
                             postImageUrl={message.image}
                             isVerified={false}
+                            onClose={onClose}
                           />
                         </S.ModalSellerListItemWrapper>
                       ) : (
