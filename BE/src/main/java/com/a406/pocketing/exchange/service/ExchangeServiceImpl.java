@@ -51,10 +51,8 @@ public class ExchangeServiceImpl implements ExchangeService{
                 .orElseThrow(() -> new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND));
 
         // 중복 요청 확인 로직
-        Boolean check = exchangeRequestRepository.existsByRequesterAndResponderAndRequesterOwnedCardAndResponderOwnedCardAndStatus(
-                requester, responder, requesterCard, responderCard, ExchangeRequestStatus.PENDING
-        );
-        if (check) {
+        if (exchangeRequestRepository.existsDuplicate(
+                requester, responder, requesterCard, responderCard, ExchangeRequestStatus.PENDING)) {
             throw new GeneralException(EXCHANGE_DUPLICATE_REQUEST);
         }
 
