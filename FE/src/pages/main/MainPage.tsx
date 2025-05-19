@@ -13,6 +13,7 @@ import { UserLikedGroup } from '@/types/user';
 import { useMainPageStore } from '@/store/mainPageStore';
 import { useSales } from '@/hooks/sales/useSales';
 import { useProfile } from '@/hooks/user/useProfile';
+import { useMyCard } from '@/hooks/exchange/useExchange';
 import { useGlobalStore } from '@/store/globalStore';
 
 const MainPage = () => {
@@ -31,8 +32,15 @@ const MainPage = () => {
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const { fetchSales } = useSales();
   const { fetchProfile } = useProfile();
-  const { isProfileLoading, setIsProfileLoading, isSalesLoading, setIsSalesLoading } =
-    useGlobalStore();
+  const { fetchMyCard } = useMyCard();
+  const {
+    isProfileLoading,
+    setIsProfileLoading,
+    isSalesLoading,
+    setIsSalesLoading,
+    isMyCardLoading,
+    setIsMyCardLoading,
+  } = useGlobalStore();
 
   // 관심 그룹 불러오기
   const { data: likedGroups } = useLikedGroups();
@@ -51,7 +59,22 @@ const MainPage = () => {
       fetchSales();
       setIsSalesLoading(true);
     }
-  }, [isProfileLoading, fetchSales, fetchProfile, setIsProfileLoading]);
+
+    if (!isMyCardLoading) {
+      fetchMyCard();
+      setIsMyCardLoading(true);
+    }
+  }, [
+    isProfileLoading,
+    isSalesLoading,
+    isMyCardLoading,
+    fetchSales,
+    fetchProfile,
+    fetchMyCard,
+    setIsProfileLoading,
+    setIsSalesLoading,
+    setIsMyCardLoading,
+  ]);
 
   // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택
   useEffect(() => {

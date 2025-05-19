@@ -1,28 +1,24 @@
-import * as S from './MyCardStyle';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { GetRegisteredCardResponse } from '@/types/exchange';
-import { getMyCard } from '@/api/exchange/exchangeCard';
+import * as S from './MyCardStyle';
+
+import { useMyCard } from '@/hooks/exchange/useExchange';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface MyCardProps {
   onClick?: () => void;
 }
 
 const MyCard = ({ onClick }: MyCardProps) => {
-  const [myCard, setMyCard] = useState<GetRegisteredCardResponse | null>(null);
-
-  const handleGetMyCard = useCallback(async () => {
-    try {
-      const response = await getMyCard();
-      setMyCard(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const { myCard, fetchMyCard } = useMyCard();
+  const { isMyCardLoading, setIsMyCardLoading } = useGlobalStore();
 
   useEffect(() => {
-    handleGetMyCard();
-  }, [handleGetMyCard]);
+    if (!isMyCardLoading) {
+      fetchMyCard();
+      setIsMyCardLoading(true);
+    }
+  }, [isMyCardLoading, fetchMyCard, setIsMyCardLoading]);
 
   return (
     <>

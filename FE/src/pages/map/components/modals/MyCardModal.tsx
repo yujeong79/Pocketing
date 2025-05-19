@@ -19,6 +19,7 @@ import { MyCardData } from '@/types/exchange';
 import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { ExchangeRequest } from '@/types/exchange';
 import { postS3Image, putS3Image } from '@/api/s3/s3Image';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface MyCardModalProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const { filteredGroups } = useGroupSearch({ groups: groupsData?.result, searchTerm });
   const { filteredMembers } = useMemberSearch({ members: membersData?.result, searchTerm });
   const { filteredAlbums } = useAlbumSearch({ albums: albumsData?.result, searchTerm });
+  const { setIsMyCardLoading } = useGlobalStore();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -119,6 +121,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
       exchangeImageUrl: finalImageUrl,
     };
     await createExchangeCard(ExchangeCardData);
+    setIsMyCardLoading(false);
     handleModalClose();
     onRefresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
