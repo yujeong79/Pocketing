@@ -86,64 +86,70 @@ const AlarmPage = () => {
   return (
     <>
       <Header type="alarm" title="교환 알림" />
-      <S.AlarmPageContainer>
-        {notification?.map((notification, notificationIndex) => (
-          <S.AlarmItemContainer key={notificationIndex}>
-            {notification.notificationType === 'REJECTED' ? <S.RejectedCover /> : null}
-            <S.AlarmProfileImage src={notification.user.profileImageUrl} alt="프로필" />
-            <S.AlarmRightSection>
-              <S.AlarmHeader>
-                <S.AlarmName>{notification.user.nickname}</S.AlarmName>
-                {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
-                  <S.AlarmTitle>님이 포켓콜을 보냈어요</S.AlarmTitle>
-                ) : (
-                  <S.AlarmTitle>님이 포켓콜을 수락했어요</S.AlarmTitle>
-                )}
-              </S.AlarmHeader>
-              <S.AlarmButtonContainer>
-                {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
-                  <SmallButton
-                    type="accept"
-                    text="채팅방으로 이동"
-                    onClick={() =>
-                      handleChatButtonClick(
-                        user?.userId ?? 0,
-                        notification.user.userId,
-                        notification.exchangeRequest.exchangeRequestId
-                      )
-                    }
-                  />
-                ) : notification.notificationType === 'ACCEPTED_PASSIVE' ? (
-                  <SmallButton
-                    type="accept"
-                    text="채팅방으로 이동"
-                    onClick={() =>
-                      handleChatButtonClick(
-                        user?.userId ?? 0,
-                        notification.user.userId,
-                        notification.exchangeRequest.exchangeRequestId
-                      )
-                    }
-                  />
-                ) : (
-                  <>
+      {notification?.length === 0 ? (
+        <S.NonAlarmContainer>
+          <S.NonAlarmText>알림이 없습니다.</S.NonAlarmText>
+        </S.NonAlarmContainer>
+      ) : (
+        <S.AlarmPageContainer>
+          {notification?.map((notification, notificationIndex) => (
+            <S.AlarmItemContainer key={notificationIndex}>
+              {notification.notificationType === 'REJECTED' ? <S.RejectedCover /> : null}
+              <S.AlarmProfileImage src={notification.user.profileImageUrl} alt="프로필" />
+              <S.AlarmRightSection>
+                <S.AlarmHeader>
+                  <S.AlarmName>{notification.user.nickname}</S.AlarmName>
+                  {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
+                    <S.AlarmTitle>님이 포켓콜을 보냈어요</S.AlarmTitle>
+                  ) : (
+                    <S.AlarmTitle>님이 포켓콜을 수락했어요</S.AlarmTitle>
+                  )}
+                </S.AlarmHeader>
+                <S.AlarmButtonContainer>
+                  {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
                     <SmallButton
                       type="accept"
-                      text="수락"
-                      onClick={() => handleAccept(notification.exchangeRequest.exchangeRequestId)}
+                      text="채팅방으로 이동"
+                      onClick={() =>
+                        handleChatButtonClick(
+                          user?.userId ?? 0,
+                          notification.user.userId,
+                          notification.exchangeRequest.exchangeRequestId
+                        )
+                      }
                     />
+                  ) : notification.notificationType === 'ACCEPTED_PASSIVE' ? (
                     <SmallButton
-                      type="reject"
-                      text="거절"
-                      onClick={() => handleReject(notification.exchangeRequest.exchangeRequestId)}
+                      type="accept"
+                      text="채팅방으로 이동"
+                      onClick={() =>
+                        handleChatButtonClick(
+                          user?.userId ?? 0,
+                          notification.user.userId,
+                          notification.exchangeRequest.exchangeRequestId
+                        )
+                      }
                     />
-                  </>
-                )}
-              </S.AlarmButtonContainer>
-            </S.AlarmRightSection>
-          </S.AlarmItemContainer>
-        ))}
-      </S.AlarmPageContainer>
+                  ) : (
+                    <>
+                      <SmallButton
+                        type="accept"
+                        text="수락"
+                        onClick={() => handleAccept(notification.exchangeRequest.exchangeRequestId)}
+                      />
+                      <SmallButton
+                        type="reject"
+                        text="거절"
+                        onClick={() => handleReject(notification.exchangeRequest.exchangeRequestId)}
+                      />
+                    </>
+                  )}
+                </S.AlarmButtonContainer>
+              </S.AlarmRightSection>
+            </S.AlarmItemContainer>
+          ))}
+        </S.AlarmPageContainer>
+      )}
     </>
   );
 };

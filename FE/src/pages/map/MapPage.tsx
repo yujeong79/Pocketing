@@ -18,8 +18,6 @@ import { postLocation } from '@/api/exchange/location';
 import { getExchangeUserList } from '@/api/exchange/exchangeUserList';
 import { Exchange } from '@/types/exchange';
 import { LocationRequest } from '@/types/location';
-import { getMyCard } from '@/api/exchange/exchangeCard';
-import { GetRegisteredCardResponse } from '@/types/exchange';
 
 const MapPage = () => {
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
@@ -29,8 +27,6 @@ const MapPage = () => {
 
   const [currentUsers, setCurrentUsers] = useState(0);
   const [userList, setUserList] = useState<Exchange[]>([]);
-
-  const [myCard, setMyCard] = useState<GetRegisteredCardResponse | null>(null);
 
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [spinning, setSpinning] = useState(false);
@@ -42,15 +38,6 @@ const MapPage = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
   const countMarkerRef = useRef<any>(null);
-
-  const handleGetMyCard = useCallback(async () => {
-    try {
-      const response = await getMyCard();
-      setMyCard(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
 
   const handleGetUserList = useCallback(async () => {
     try {
@@ -85,9 +72,8 @@ const MapPage = () => {
     if (currentLocation) {
       handlePostLocation();
       handleGetUserList();
-      handleGetMyCard();
     }
-  }, [currentLocation, handlePostLocation, handleGetUserList, handleGetMyCard]);
+  }, [currentLocation, handlePostLocation, handleGetUserList]);
 
   const handleRefreshClick = () => {
     setSpinning(true);
@@ -281,7 +267,6 @@ const MapPage = () => {
         isOpen={isExchangeListModalOpen}
         onClose={handleCloseModal}
         filteredList={userList}
-        requesterOwnedCardId={myCard?.exchangeCardId ?? undefined}
         onRefresh={handleRefreshClick}
       />
       <SetRangeModal

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import * as S from './ExchangeListModalStyle';
 import SlideUpModal from '@/components/common/SlideUpModal';
@@ -8,11 +8,12 @@ import { RefreshIcon2 } from '@/assets/assets';
 import { Exchange } from '@/types/exchange';
 import { postPocketCall } from '@/api/exchange/pocketCall';
 import { PocketCallRequest } from '@/types/exchange';
+import { useGlobalStore } from '@/store/globalStore';
+import { useMyCard } from '@/hooks/exchange/useExchange';
 
 interface ExchangeListModalProps {
   isOpen: boolean;
   onClose: () => void;
-  requesterOwnedCardId: number | undefined;
   filteredList: Exchange[];
   onRefresh: () => void;
 }
@@ -21,13 +22,21 @@ const ExchangeListModal = ({
   isOpen,
   onClose,
   filteredList,
-  requesterOwnedCardId,
   onRefresh,
 }: ExchangeListModalProps) => {
   const [spinning, setSpinning] = useState(false);
   const [pocketCallCount, setPocketCallCount] = useState(0);
   const [showMaxToast, setShowMaxToast] = useState(false);
   const [showSendToast, setShowSendToast] = useState(false);
+  const { isMyCardLoading, setIsMyCardLoading } = useGlobalStore();
+  const { myCard, fetchMyCard } = useMyCard();
+
+  useEffect(() => {
+    if (!isMyCardLoading) {
+      fetchMyCard();
+      setIsMyCardLoading(true);
+    }
+  }, [isMyCardLoading, fetchMyCard, setIsMyCardLoading]);
 
   const handleRefreshClick = () => {
     setSpinning(true);
@@ -39,20 +48,17 @@ const ExchangeListModal = ({
 
   const handlePostPocketCall = useCallback(
     async (userId: number, cardId: number) => {
-      if (!requesterOwnedCardId) {
-        console.log('requesterOwnedCardId가 없습니다.');
+      if (!myCard.exchangeCardId) {
         return;
       }
 
       try {
         const pocketCallData: PocketCallRequest = {
           responderId: userId,
-          requesterOwnedCardId: requesterOwnedCardId,
+          requesterOwnedCardId: myCard.exchangeCardId,
           responderOwnedCardId: cardId,
         };
-        const response = await postPocketCall(pocketCallData);
-        console.log('포켓콜 보내기 :', response);
-
+        await postPocketCall(pocketCallData);
         onRefresh();
 
         if (pocketCallCount < 5) {
@@ -68,7 +74,7 @@ const ExchangeListModal = ({
         throw error;
       }
     },
-    [requesterOwnedCardId, pocketCallCount, onRefresh]
+    [myCard.exchangeCardId, pocketCallCount, onRefresh]
   );
 
   return (
