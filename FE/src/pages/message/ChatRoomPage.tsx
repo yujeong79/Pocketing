@@ -133,7 +133,7 @@ const ChatRoomPage: React.FC = () => {
     if (!chatRoomDetail) return null;
 
     if (chatType === 'TRADE' && chatRoomDetail.linkedPost) {
-      const isMyPost = postDetail?.isMine === true;
+      const isMyPost = postDetail?.seller.sellerId === user.userId;
       return (
         <TradeItem
           linkedPost={chatRoomDetail.linkedPost}
