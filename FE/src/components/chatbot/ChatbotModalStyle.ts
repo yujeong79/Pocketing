@@ -171,7 +171,7 @@ export const ModalSellerListItemWrapper = styled.div`
 `;
 
 export const ChatbotPhotoCard = styled.img`
-  width: ${scale(80)}px;
+  width: ${scale(70)}px;
   border-radius: ${scale(8)}px;
   margin: ${scale(2)}px 0;
   margin-left: ${scale(4)}px;
