@@ -11,11 +11,14 @@ import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
 import { GroupResponse } from '@/types/group';
 import { Logo2d, CloseIcon } from '@/assets/assets';
-import { useDeleteLikedMembers, useUpdateLikedMembers } from '@/hooks/user/mutation/useLike';
+import {
+  useDeleteLikedMembers,
+  useUpdateLikedMembers,
+  useDeleteLikedGroups,
+} from '@/hooks/user/mutation/useLike';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
 // TODO:렌더링이 느린 감이 있음. 최적화 필요
-// 아이콘이 커서 클릭시 늘어나는 느낌이 있음. 조정 필요
 // 멤버를 선택했을 시 그룹에 효과를 넣어야함
 
 const MyMemberEditPage = () => {
@@ -39,6 +42,8 @@ const MyMemberEditPage = () => {
   const deleteLikedMembersMutation = useDeleteLikedMembers();
   // 관심 멤버 추가
   const updateLikedMembersMutation = useUpdateLikedMembers();
+  // 관심 그룹 삭제
+  const deleteLikedGroupsMutation = useDeleteLikedGroups();
 
   useEffect(() => {
     if (!groupId || !membersData?.result || !groupsData?.result) return;
@@ -122,11 +127,46 @@ const MyMemberEditPage = () => {
         ],
       });
 
-      navigate('/myGroupEdit', { state: { from: fromPath } });
+      // 토스트 메시지 띄우기
+      setToastMessage('관심 멤버 선택이 완료되었습니다.');
+      setToastType('success');
+      setShowToast(true);
+
+      // 1초 후 페이지 이동 (원하는 시간으로 조정 가능)
+      setTimeout(() => {
+        navigate('/myGroupEdit', { state: { from: fromPath } });
+      }, 1000);
     } catch (error) {
       console.error('관심 멤버 업데이트 실패:', error);
     }
   }, [groupId, selectedMemberIds, navigate, fromPath, updateLikedMembersMutation]);
+
+  // 그룹 전체 취소 처리
+  const handleDeleteAllMembers = useCallback(async () => {
+    if (!groupId) return;
+
+    try {
+      await deleteLikedGroupsMutation.mutateAsync(Number(groupId));
+
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MEMBERS, Number(groupId)] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GROUPS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_GROUPS] });
+
+      setToastMessage('관심 그룹이 해제되었습니다.');
+      setToastType('success');
+      setShowToast(true);
+
+      setTimeout(() => {
+        navigate('/myGroupEdit', { state: { from: fromPath } });
+      }, 1000);
+    } catch (error) {
+      console.error('관심 그룹 해제 실패:', error);
+      setToastMessage('관심 그룹 해제에 실패했습니다.');
+      setToastType('warning');
+      setShowToast(true);
+    }
+  }, [groupId, navigate, fromPath, deleteLikedGroupsMutation, queryClient]);
 
   return (
     <S.PageContainer>
@@ -135,6 +175,7 @@ const MyMemberEditPage = () => {
           fallbackPath="/myGroupEdit"
           onClick={() => navigate('/myGroupEdit', { state: { from: fromPath } })}
         />
+        <S.DeleteAllButton onClick={handleDeleteAllMembers}>그룹 삭제</S.DeleteAllButton>
         <S.Title>관심 멤버를 선택해주세요</S.Title>
         <S.MemberListContainer>
           {members.map((member) => {

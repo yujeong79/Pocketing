@@ -2,13 +2,19 @@ import * as S from './MyGroupStyle';
 import { PhotocardIcon } from '@/assets/assets';
 import { useLikedGroups } from '@/hooks/user/query/useLike';
 import { UserLikedGroup } from '@/types/user';
+import { useNavigate } from 'react-router-dom';
 
 interface MyGroupProps {
   onEditGroup: () => void;
 }
 
 const MyGroup = ({ onEditGroup }: MyGroupProps) => {
+  const navigate = useNavigate();
   const { data: likedGroups } = useLikedGroups();
+
+  const handleClickGroup = (groupId: number) => {
+    navigate(`/myMemberEdit/${groupId}`, { state: { from: '/profile' } });
+  };
 
   return (
     <S.GroupContainer>
@@ -22,6 +28,7 @@ const MyGroup = ({ onEditGroup }: MyGroupProps) => {
             key={group.groupId ?? index}
             src={group.groupImageUrl ?? ''}
             alt={group.groupNameKo ?? ''}
+            onClick={() => handleClickGroup(group.groupId)}
           />
         ))}
         <S.MoreGroupButton onClick={onEditGroup}>+</S.MoreGroupButton>
