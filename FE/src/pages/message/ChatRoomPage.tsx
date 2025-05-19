@@ -166,8 +166,8 @@ const ChatRoomPage: React.FC = () => {
           myUserId={user.userId}
           opponentNickname={opponentNickname}
           opponentProfile={opponentProfile}
-          chatContainerRef={chatContainerRef}
-          endOfMessagesRef={endOfMessagesRef}
+          chatContainerRef={chatContainerRef as React.RefObject<HTMLDivElement>}
+          endOfMessagesRef={endOfMessagesRef as React.RefObject<HTMLDivElement>}
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
         />

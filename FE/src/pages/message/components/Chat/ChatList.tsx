@@ -2,7 +2,7 @@ import ChatItem from '@/pages/message/components/Chat/ChatItem';
 import * as S from './ChatListStyle';
 import { useNavigate } from 'react-router-dom';
 import { enterChatRoom } from '@/api/chat';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface TradeChat {
   roomId: number;
