@@ -15,6 +15,7 @@ import { useSales } from '@/hooks/sales/useSales';
 import { useProfile } from '@/hooks/user/useProfile';
 import { useMyCard } from '@/hooks/exchange/useExchange';
 import { useGlobalStore } from '@/store/globalStore';
+import { useOthersCard } from '@/hooks/exchange/useExchange';
 
 const MainPage = () => {
   const {
@@ -33,6 +34,7 @@ const MainPage = () => {
   const { fetchSales } = useSales();
   const { fetchProfile } = useProfile();
   const { fetchMyCard } = useMyCard();
+  const { fetchOthersCard } = useOthersCard();
   const {
     isProfileLoading,
     setIsProfileLoading,
@@ -40,6 +42,8 @@ const MainPage = () => {
     setIsSalesLoading,
     isMyCardLoading,
     setIsMyCardLoading,
+    isMyWishCardLoading,
+    setIsMyWishCardLoading,
   } = useGlobalStore();
 
   // 관심 그룹 불러오기
@@ -64,16 +68,24 @@ const MainPage = () => {
       fetchMyCard();
       setIsMyCardLoading(true);
     }
+
+    if (!isMyWishCardLoading) {
+      fetchOthersCard();
+      setIsMyWishCardLoading(true);
+    }
   }, [
     isProfileLoading,
     isSalesLoading,
     isMyCardLoading,
+    isMyWishCardLoading,
     fetchSales,
     fetchProfile,
     fetchMyCard,
+    fetchOthersCard,
     setIsProfileLoading,
     setIsSalesLoading,
     setIsMyCardLoading,
+    setIsMyWishCardLoading,
   ]);
 
   // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택

@@ -17,6 +17,7 @@ import { ExchangeRequest } from '@/types/exchange';
 import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { OthersCardData } from '@/types/exchange';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface OthersCardModalProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   const { filteredGroups } = useGroupSearch({ groups: groupsData?.result, searchTerm });
   const { filteredMembers } = useMemberSearch({ members: membersData?.result, searchTerm });
   const { filteredAlbums } = useAlbumSearch({ albums: albumsData?.result, searchTerm });
+  const { setIsMyWishCardLoading } = useGlobalStore();
 
   const handleModalClose = () => {
     onClose();
@@ -97,6 +99,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
       };
       await createExchangeCard(ExchangeCardData);
       handleSaveCardInfo();
+      setIsMyWishCardLoading(false);
       handleModalClose();
       onRefresh();
     } catch (error) {
