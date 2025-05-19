@@ -67,7 +67,6 @@ export async function requestFcmToken(
     });
     if (token) {
       console.log('✅ FCM 토큰 발급:', token);
-      setToken(token);
       await axiosInstance.post('/notification/fcm-token', { fcmToken: token });
       return token;
     }
@@ -99,6 +98,9 @@ export const isPushSupported = (): boolean =>
 
 /** SDK 토큰 갱신 감지 및 서버 동기화 */
 export async function syncFcmToken(registration?: ServiceWorkerRegistration) {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) return;
+  
   try {
     const swReg = registration || (await navigator.serviceWorker.ready);
     const latest = await getToken(messaging, {
@@ -106,7 +108,10 @@ export async function syncFcmToken(registration?: ServiceWorkerRegistration) {
         'BIULqTtkq1GzlTHMjOzncSv_GsJJE36fuyKGR0pCSDNQtLuk2fIiUxObTvw0uN9_AENBNAKhZ_DFrMVuNzZ5B_A',
       serviceWorkerRegistration: swReg,
     });
+
     const stored = getStoredToken();
+
+    // 토큰이 없거나 바뀌었거나 만료됐을 때만 동기화.
     if (latest && (latest !== stored || isStale())) {
       console.log('🔄 FCM 토큰 동기화:', latest);
       await axiosInstance.post('/notification/fcm-token', { fcmToken: latest });
