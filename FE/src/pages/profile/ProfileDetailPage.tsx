@@ -13,8 +13,28 @@ const ProfileDetailPage = () => {
   const [myAccount, setMyAccount] = useState<string | null>(null);
   const [myBank, setMyBank] = useState<string | null>(null);
 
-  const handleKakaoLogout = () => {
-    window.location.href = getKakaoLogout();
+  const handleLogout = () => {
+    const userStr = localStorage.getItem('user');
+    let oauthProvider = '';
+
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        oauthProvider = userData.oauthProvider;
+      } catch (error) {
+        console.error('사용자 정보 파싱 실패:', error);
+      }
+    }
+
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('main-page-store');
+
+    if (oauthProvider === 'kakao') {
+      window.location.href = getKakaoLogout();
+    } else {
+      window.location.href = '/signin';
+    }
   };
 
   const handleGetMyInfo = useCallback(async () => {
@@ -60,7 +80,7 @@ const ProfileDetailPage = () => {
           </S.AccountContainer>
         </S.ProfileInfoContainer>
         <S.LeaveContainer>
-          <S.Logout onClick={handleKakaoLogout}>로그아웃</S.Logout>
+          <S.Logout onClick={handleLogout}>로그아웃</S.Logout>
           <S.DeleteAccount>회원탈퇴</S.DeleteAccount>
         </S.LeaveContainer>
       </S.ContentsContainer>
