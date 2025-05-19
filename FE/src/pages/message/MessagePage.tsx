@@ -119,24 +119,38 @@ const MessagePage = ({ type }: MessagePageProps) => {
   const filteredChats = sortedChats.filter((room) => !leavedRooms.includes(room.roomId));
 
   return (
-    <>
+    <Container>
       <Header type="profile" hasBorder={false} />
-      <Container>
+      <TabsWrapper>
         <ChatTabs activeTab={type} onTabChange={handleTabChange} />
+      </TabsWrapper>
+      <ChatListWrapper>
         <ChatList
           type={type}
           tradeChats={type === 'trade' ? (filteredChats as TradeChat[]) : []}
           exchangeChats={type === 'exchange' ? (filteredChats as ExchangeChat[]) : []}
         />
-      </Container>
-    </>
+      </ChatListWrapper>
+    </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 90vh;
+`;
+
+const TabsWrapper = styled.div`
+  flex-shrink: 0;
+`;
+
+const ChatListWrapper = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 `;
 
 export default MessagePage;
