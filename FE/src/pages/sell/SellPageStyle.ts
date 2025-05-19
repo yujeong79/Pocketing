@@ -7,6 +7,7 @@ export const Container = styled.div`
   padding: ${scale(16)}px ${scale(16)}px 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const TopContainer = styled.div`

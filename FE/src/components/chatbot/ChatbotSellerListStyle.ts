@@ -35,7 +35,7 @@ export const NicknameWrapper = styled.div`
 `;
 
 export const Nickname = styled.span`
-  ${FontStyles.bodySmall};
+  ${FontStyles.captionSmall};
   color: ${colors.gray800};
 `;
 
@@ -50,6 +50,13 @@ export const PriceWrapper = styled.div`
   gap: ${scale(2)}px;
 `;
 
+export const ModalSellerPriceWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: ${scale(6)}px;
+`;
+
 export const Price = styled.span`
   ${FontStyles.bodyMedium};
   color: ${colors.gray800};
@@ -57,8 +64,9 @@ export const Price = styled.span`
 `;
 
 export const BracketIconWrapper = styled.img`
-  width: ${scale(10)}px;
-  height: ${scale(10)}px;
+  margin-top: ${scale(2)}px;
+  width: ${scale(9)}px;
+  height: ${scale(9)}px;
 `;
 
 export const Divider = styled.div`
@@ -78,14 +86,14 @@ export const ModalSellerCard = styled.div`
 `;
 
 export const ModalSellerImage = styled.img`
-  width: ${scale(80)}px;
+  width: ${scale(70)}px;
   border-radius: ${scale(4)}px;
   object-fit: cover;
   flex-shrink: 0;
 `;
 
 export const ModalSellerInfo = styled.div`
-  width: ${scale(120)}px;
+  width: ${scale(150)}px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -95,8 +103,7 @@ export const ModalSellerInfo = styled.div`
 `;
 
 export const ModalSellerNickname = styled.div`
-  font-weight: bold;
-  font-size: ${scale(14)}px;
+  ${FontStyles.captionMedium};
 `;
 
 export const ModalSellerPrice = styled.div`

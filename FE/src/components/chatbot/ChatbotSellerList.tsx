@@ -32,9 +32,11 @@ const ChatbotSellerListItem: React.FC<ChatbotSellerListItemProps> = ({
       <S.ModalSellerInfo>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <S.ModalSellerNickname>{nickname}</S.ModalSellerNickname>
-          <S.ModalSellerPrice>{price.toLocaleString()}원</S.ModalSellerPrice>
+          <S.ModalSellerPriceWrapper>
+            <S.ModalSellerPrice>{price.toLocaleString()}원</S.ModalSellerPrice>
+            <S.BracketIconWrapper src={BracketIcon} alt=">" />
+          </S.ModalSellerPriceWrapper>
         </div>
-        <S.BracketIconWrapper src={BracketIcon} alt=">" />
       </S.ModalSellerInfo>
     </S.ModalSellerCard>
   );
