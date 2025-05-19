@@ -1,36 +1,34 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
 
 import * as S from './MyInformationStyle';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMyInfo } from '@/api/user/myInfo';
+import { useProfile } from '@/hooks/user/useProfile';
+import { useGlobalStore } from '@/store/globalStore';
 
 const MyInformation = () => {
-  const [myImage, setMyImage] = useState<string | null>(null);
-  const [myNickname, setMyNickname] = useState('');
   const navigate = useNavigate();
-
-  const handleGetMyInfo = useCallback(async () => {
-    try {
-      const response = await getMyInfo();
-      setMyImage(response.result.profileImageUrl);
-      setMyNickname(response.result.nickname);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const { myProfile, fetchProfile } = useProfile();
+  const { isProfileLoading, setIsProfileLoading } = useGlobalStore();
+  const [imageTimestamp, setImageTimestamp] = useState(Date.now());
 
   useEffect(() => {
-    handleGetMyInfo();
-  }, []);
+    if (!isProfileLoading) {
+      fetchProfile();
+      setImageTimestamp(Date.now());
+      setIsProfileLoading(true);
+    }
+  }, [fetchProfile, isProfileLoading, setIsProfileLoading]);
 
   return (
     <S.ProfileContainer>
-      <S.ProfileImage src={myImage ?? DefaultProfileImage} alt="프로필 이미지" />
+      <S.ProfileImage
+        src={`${myProfile.profileImageUrl ?? DefaultProfileImage}?t=${imageTimestamp}`}
+        alt="프로필 이미지"
+      />
       <S.ProfileInfoContainer>
         <S.NameContainer>
-          <S.Name>{myNickname}</S.Name>
+          <S.Name>{myProfile.nickname}</S.Name>
           <S.NameAdd>님</S.NameAdd>
         </S.NameContainer>
         <S.RightArrowButton

@@ -1,49 +1,35 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './ProfileEditStyle';
 import Header from '@/components/common/Header';
 import Button from '@/components/common/Button';
-import { DefaultProfileImage, CameraIcon } from '@/assets/assets';
-import { postS3Image, putS3Image } from '@/api/s3/s3Image';
-import { putMyInfo, getMyInfo } from '@/api/user/myInfo';
-import { EditMyInfoRequest } from '@/types/myInfo';
 import ImageCropModal from '@/components/common/ImageCropModal';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { DefaultProfileImage, CameraIcon } from '@/assets/assets';
+import { postS3Image, putS3Image } from '@/api/s3/s3Image';
+import { putMyInfo } from '@/api/user/myInfo';
+import { EditMyInfoRequest } from '@/types/myInfo';
+import { useProfile } from '@/hooks/user/useProfile';
+import { useGlobalStore } from '@/store/globalStore';
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // 사용자가 선택한 이미지의 미리보기 URL
-  const [imageFile, setImageFile] = useState<File | null>(null); // 사용자가 선택한 실제 이미지 파일
+  const { setIsProfileLoading } = useGlobalStore();
+  const { myProfile } = useProfile();
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-
-  const [currentProfileImage, setCurrentProfileImage] = useState<string | null>(null);
-  const [nickname, setNickname] = useState<string | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
-  const [account, setAccount] = useState<string | null>(null);
-  const [bank, setBank] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    nickname: myProfile?.nickname ?? '',
+    address: myProfile?.address ?? '',
+    bank: myProfile?.bank ?? '',
+    account: myProfile?.account ?? '',
+  });
 
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [rawImage, setRawImage] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
-
-  // 프로필 정보 가져오기
-  const fetchMyInfo = useCallback(async () => {
-    try {
-      const response = await getMyInfo();
-      setCurrentProfileImage(response.result.profileImageUrl);
-      setNickname(response.result.nickname);
-      setAddress(response.result.address);
-      setAccount(response.result.account);
-      setBank(response.result.bank);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchMyInfo();
-  }, [fetchMyInfo]);
 
   // 버튼으로 이미지 선택
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +57,6 @@ const ProfileEditPage = () => {
       .then((blob) => {
         const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
         setImageFile(file);
-        setCurrentProfileImage(croppedImageUrl);
       });
   };
 
@@ -107,31 +92,37 @@ const ProfileEditPage = () => {
     }
   };
 
+  // 입력 필드 변경
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
   // 프로필 수정 API 호출
   const handleUserProfileUpdate = useCallback(
     async (finalImageUrl?: string) => {
-      const imageUrlToUpdate = finalImageUrl ?? currentProfileImage ?? '';
+      const imageUrlToUpdate = finalImageUrl ?? selectedImage ?? myProfile?.profileImageUrl ?? '';
       try {
         const profileData: EditMyInfoRequest = {
-          nickname: nickname ?? '',
+          ...formData,
           profileImageUrl: imageUrlToUpdate,
-          address: address ?? '',
-          bank: bank ?? '',
-          account: account ?? '',
         };
         await putMyInfo(profileData);
+        navigate('/profileDetail');
       } catch (error) {
         alert('프로필 정보 업데이트에 실패했습니다.');
         throw error;
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [nickname, currentProfileImage, address, bank, account, putMyInfo]
+    [formData, selectedImage, myProfile?.profileImageUrl, navigate]
   );
 
   const handleSubmit = async () => {
     setIsUploading(true);
-    let finalImageUrlForProfileUpdate = currentProfileImage; // 기본적으로 현재 프로필 이미지 URL 사용
+    let finalImageUrlForProfileUpdate = selectedImage; // 기본적으로 현재 프로필 이미지 URL 사용
 
     if (imageFile) {
       try {
@@ -144,7 +135,6 @@ const ProfileEditPage = () => {
 
         await handleS3Upload(presignedUrl, imageFile, imageFile.type);
         finalImageUrlForProfileUpdate = presignedUrl.split('?')[0]; // S3 업로드 성공 시 영구 URL 사용
-        setCurrentProfileImage(finalImageUrlForProfileUpdate); // 업로드된 이미지로 상태 업데이트 (선택적)
       } catch {
         alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
         setIsUploading(false);
@@ -156,17 +146,8 @@ const ProfileEditPage = () => {
     );
 
     setIsUploading(false);
-    navigate('/profileDetail');
+    setIsProfileLoading(false);
   };
-
-  // 입력 필드 변경
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setNickname(e.target.value);
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setAddress(e.target.value);
-  const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setAccount(e.target.value);
-  const handleBankChange = (e: React.ChangeEvent<HTMLInputElement>) => setBank(e.target.value);
 
   return (
     <S.PageContainer>
@@ -183,7 +164,7 @@ const ProfileEditPage = () => {
               />
               <S.Image>
                 <S.UploadedImage
-                  src={selectedImage ?? currentProfileImage ?? DefaultProfileImage}
+                  src={selectedImage ?? myProfile?.profileImageUrl ?? DefaultProfileImage}
                   alt="프로필 이미지"
                 />
               </S.Image>
@@ -193,21 +174,21 @@ const ProfileEditPage = () => {
 
           <S.TextContainer>
             <S.InputContainer>
-              <S.Label htmlFor="nick">닉네임</S.Label>
+              <S.Label htmlFor="nickname">닉네임</S.Label>
               <S.Input
-                id="nick"
+                id="nickname"
                 placeholder="닉네임을 입력하세요"
-                value={nickname ?? ''}
-                onChange={handleNicknameChange}
+                value={formData.nickname}
+                onChange={handleInputChange}
               />
             </S.InputContainer>
             <S.InputContainer>
-              <S.Label htmlFor="addr">주소</S.Label>
+              <S.Label htmlFor="address">주소</S.Label>
               <S.Input
-                id="addr"
+                id="address"
                 placeholder="주소를 입력하세요"
-                value={address ?? ''}
-                onChange={handleAddressChange}
+                value={formData.address}
+                onChange={handleInputChange}
               />
             </S.InputContainer>
             <S.BankContainer>
@@ -216,17 +197,17 @@ const ProfileEditPage = () => {
                 <S.Input
                   id="bank"
                   placeholder="은행명을 입력하세요"
-                  value={bank ?? ''}
-                  onChange={handleBankChange}
+                  value={formData.bank}
+                  onChange={handleInputChange}
                 />
               </S.InputContainer>
               <S.InputContainer>
-                <S.Label htmlFor="acct">계좌</S.Label>
+                <S.Label htmlFor="account">계좌</S.Label>
                 <S.Input
-                  id="acct"
+                  id="account"
                   placeholder="계좌를 입력하세요"
-                  value={account ?? ''}
-                  onChange={handleAccountChange}
+                  value={formData.account}
+                  onChange={handleInputChange}
                 />
               </S.InputContainer>
             </S.BankContainer>
