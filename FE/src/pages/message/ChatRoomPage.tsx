@@ -68,10 +68,19 @@ const ChatRoomPage: React.FC = () => {
       setChatRoomDetail(chatRoomDetailData.result);
       setMessages(chatRoomDetailData.result.messagePage.messageList);
       setHasMore(chatRoomDetailData.result.messagePage.hasNext);
-      scrollToBottom();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRoomDetailData]);
+
+  // messages가 바뀔 때마다 맨 아래로 스크롤
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
@@ -80,6 +89,12 @@ const ChatRoomPage: React.FC = () => {
       fetchPostDetail(postId).then(setPostDetail);
     }
   }, [chatRoomDetail?.linkedPost?.postId, postDetail]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleLoadMore = async () => {
     if (!roomId || !hasMore) return;
@@ -151,8 +166,8 @@ const ChatRoomPage: React.FC = () => {
           myUserId={user.userId}
           opponentNickname={opponentNickname}
           opponentProfile={opponentProfile}
-          chatContainerRef={chatContainerRef as React.RefObject<HTMLDivElement>}
-          endOfMessagesRef={endOfMessagesRef as React.RefObject<HTMLDivElement>}
+          chatContainerRef={chatContainerRef}
+          endOfMessagesRef={endOfMessagesRef}
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
         />
