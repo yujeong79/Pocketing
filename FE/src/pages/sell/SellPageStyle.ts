@@ -9,11 +9,16 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
+export const TopContainer = styled.div`
+  display: flex;
+  width: 120%;
+`;
 export const TextContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: ${scale(12)}px;
+  width: 120%;
 `;
 
 export const TextWrapper = styled.div`
@@ -39,9 +44,10 @@ export const DefaultText = styled.span`
 `;
 
 export const PhotocardIconWrapper = styled.img`
-  width: ${scale(121)}px;
-  height: ${scale(106)}px;
+  width: ${scale(100)}px;
+  height: ${scale(90)}px;
   margin-top: ${scale(36)}px;
+  transform: translateX(-${scale(60)}px);
 `;
 
 export const BackgroundSection = styled.div`
@@ -87,8 +93,8 @@ export const BaseButton = styled.button`
     position: absolute;
     bottom: ${scale(8)}px;
     right: ${scale(6)}px;
-    width: ${scale(60)}px;
-    height: ${scale(50)}px;
+    width: ${scale(50)}px;
+    height: ${scale(40)}px;
     margin: 0;
   }
 `;
@@ -97,8 +103,8 @@ export const RegisterButton = styled(BaseButton)`
   height: ${scale(195)}px;
 
   img {
-    width: ${scale(80)}px;
-    height: ${scale(80)}px;
+    width: ${scale(70)}px;
+    height: ${scale(70)}px;
   }
 `;
 

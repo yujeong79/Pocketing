@@ -2,6 +2,7 @@ import ChatItem from '@/pages/message/components/Chat/ChatItem';
 import * as S from './ChatListStyle';
 import { useNavigate } from 'react-router-dom';
 import { enterChatRoom } from '@/api/chat';
+import React, { useEffect, useRef } from 'react';
 
 interface TradeChat {
   roomId: number;
@@ -35,6 +36,13 @@ interface ChatListProps {
 const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
   const chats = type === 'trade' ? tradeChats : exchangeChats;
   const navigate = useNavigate();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, []);
 
   if (!chats?.length) {
     return (
@@ -70,8 +78,8 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
     if (type === 'trade') {
       // TradeChat의 lastMessageTime 기준 최신순 정렬
       return (
-        new Date((b as any).lastMessageTime).getTime() -
-        new Date((a as any).lastMessageTime).getTime()
+        new Date((b as TradeChat).lastMessageTime).getTime() -
+        new Date((a as TradeChat).lastMessageTime).getTime()
       );
     } else {
       // ExchangeChat은 updatedAt 사용
@@ -84,21 +92,23 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
 
   return (
     <S.Container>
-      {sortedChats.map((chat) => (
-        <ChatItem
-          key={chat.roomId}
-          type={type}
-          chat={chat}
-          onClick={() =>
-            handleClickChatItem(
-              chat.roomId,
-              type === 'trade'
-                ? (chat as TradeChat).receiverNickname
-                : (chat as ExchangeChat).otherUser.nickname
-            )
-          }
-        />
-      ))}
+      <div ref={chatContainerRef} style={{ overflowY: 'auto', height: '100%' }}>
+        {sortedChats.map((chat) => (
+          <ChatItem
+            key={chat.roomId}
+            type={type}
+            chat={chat}
+            onClick={() =>
+              handleClickChatItem(
+                chat.roomId,
+                type === 'trade'
+                  ? (chat as TradeChat).receiverNickname
+                  : (chat as ExchangeChat).otherUser.nickname
+              )
+            }
+          />
+        ))}
+      </div>
     </S.Container>
   );
 };

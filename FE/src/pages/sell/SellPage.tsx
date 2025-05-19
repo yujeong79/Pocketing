@@ -45,15 +45,17 @@ const SellPage = () => {
     <>
       <Header type="main" />
       <S.Container>
-        <S.TextContainer>
-          <S.TextWrapper>
-            <S.NicknameText>{myProfile?.nickname}</S.NicknameText>
-            <S.DefaultText> 님은{'\n'}</S.DefaultText>
-            <S.CountText>{mySales?.length}</S.CountText>
-            <S.DefaultText>개의 포토카드를{'\n'}판매하고 있어요</S.DefaultText>
-          </S.TextWrapper>
+        <S.TopContainer>
+          <S.TextContainer>
+            <S.TextWrapper>
+              <S.NicknameText>{myProfile?.nickname}</S.NicknameText>
+              <S.DefaultText> 님은{'\n'}</S.DefaultText>
+              <S.CountText>{mySales?.length}</S.CountText>
+              <S.DefaultText>개의 포토카드를{'\n'}판매하고 있어요</S.DefaultText>
+            </S.TextWrapper>
+          </S.TextContainer>
           <S.PhotocardIconWrapper src={PhotocardIcon} alt="포토카드 아이콘" />
-        </S.TextContainer>
+        </S.TopContainer>
 
         <S.BackgroundSection>
           <S.ButtonContainer>

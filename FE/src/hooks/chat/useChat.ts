@@ -14,6 +14,7 @@ export const usePostChatRooms = () =>
   useQuery({
     queryKey: [QUERY_KEYS.POST_CHAT_ROOMS],
     queryFn: getPostChatRooms,
+    refetchInterval: 2000, // 2초마다 자동 갱신
   });
 
 // 교환 채팅방 전체 조회

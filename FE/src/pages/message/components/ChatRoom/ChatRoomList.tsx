@@ -40,16 +40,29 @@ const MessageList: React.FC<MessageListProps> = ({
     <S.ChatContainer ref={chatContainerRef} onScroll={handleScroll}>
       {hasMore && <S.LoadMoreButton onClick={onLoadMore}>이전 메시지 더보기</S.LoadMoreButton>}
       {sortedMessages.map((message, index) => {
+        const prevMessage = sortedMessages[index - 1];
+        let showTime = false;
+
+        if (!prevMessage) {
+          //첫 메시지는 항상 시간 표시
+          showTime = true;
+        } else {
+          const isSameUser = prevMessage.senderId === message.senderId;
+          const prevTime = new Date(prevMessage.createdAt).getTime();
+          const currTime = new Date(message.createdAt).getTime();
+          const diffMinutes = Math.abs(currTime - prevTime) / 1000 / 60;
+
+          //같은 사람이더라도 1분 이상 차이나면 시간 표시
+          if (!isSameUser || diffMinutes >= 1) {
+            showTime = true;
+          }
+        }
+
         const isUser = message.senderId === myUserId;
         const continued = index > 0 && sortedMessages[index - 1].senderId === message.senderId;
         const prevDate = index > 0 ? sortedMessages[index - 1].createdAt : '';
         const currDate = message.createdAt.slice(0, 10); // 'YYYY-MM-DD'
         const showDate = !prevDate || prevDate.slice(0, 10) !== currDate;
-
-        // 마지막 메시지인지, 다음 메시지의 sender가 다르면 true
-        const isLastOfGroup =
-          index === sortedMessages.length - 1 ||
-          sortedMessages[index + 1].senderId !== message.senderId;
 
         return (
           <React.Fragment key={message.messageId}>
@@ -70,7 +83,7 @@ const MessageList: React.FC<MessageListProps> = ({
               continued={continued}
               opponentNickname={opponentNickname}
               opponentProfile={opponentProfile}
-              showTime={isLastOfGroup}
+              showTime={showTime}
             />
           </React.Fragment>
         );
