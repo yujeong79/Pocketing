@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/common/Header';
-import TradeItem from './components/TradeItem';
-import ExchangeItem from './components/ExchangeItem';
-import MessageList from './components/ChatRoom/ChatRoomList';
-import MessageInput from './components/ChatRoom/ChatRoomInput';
-import * as S from './ChatRoomPageStyle';
+import TradeItem from '@/pages/message/components/TradeItem';
+import ExchangeItem from '@/pages/message/components/ExchangeItem';
+import MessageList from '@/pages/message/components/ChatRoom/ChatRoomList';
+import MessageInput from '@/pages/message/components/ChatRoom/ChatRoomInput';
+import * as S from '@/pages/message/ChatRoomPageStyle';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
 import { ChatRoomDetail } from '@/types/chat';
 import { loadMoreMessages } from '@/api/chat';
@@ -16,6 +16,7 @@ import { fetchPostDetail } from '@/api/posts/post';
 import { useChatStore } from '@/store/chatStore';
 import { useChatSocket } from '@/hooks/useChatSocket';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useEnterChatRoom } from '@/hooks/chat/useChat';
 
 type ChatType = 'TRADE' | 'EXCHANGE';
 
@@ -37,7 +38,9 @@ const ChatRoomPage: React.FC = () => {
 
   const { user, token } = useAuth();
   const { messages, setMessages, addMessage, page, setPage, hasMore, setHasMore } = useChatStore();
-  const chatRoomDetail = useMemo(() => initialChatRoomDetail || null, [initialChatRoomDetail]);
+  const [chatRoomDetail, setChatRoomDetail] = useState<ChatRoomDetail | null>(
+    initialChatRoomDetail || null
+  );
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
@@ -47,6 +50,8 @@ const ChatRoomPage: React.FC = () => {
   const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { data: chatRoomDetailData, isLoading } = useEnterChatRoom(Number(roomId));
 
   // WebSocket 연결 및 메시지 핸들러 등록
   useChatSocket({
@@ -59,13 +64,14 @@ const ChatRoomPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!roomId || !token || !chatRoomDetail) return;
-    // 최초 입장시에만 메시지 초기화
-    setMessages(chatRoomDetail.messagePage.messageList);
-    setHasMore(chatRoomDetail.messagePage.hasNext);
-    scrollToBottom();
+    if (chatRoomDetailData) {
+      setChatRoomDetail(chatRoomDetailData.result);
+      setMessages(chatRoomDetailData.result.messagePage.messageList);
+      setHasMore(chatRoomDetailData.result.messagePage.hasNext);
+      scrollToBottom();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId, token]);
+  }, [chatRoomDetailData]);
 
   useEffect(() => {
     const postId = chatRoomDetail?.linkedPost?.postId;
@@ -132,6 +138,8 @@ const ChatRoomPage: React.FC = () => {
   const opponent = chatRoomDetail?.participants.find((p) => !p.isMyInfo);
   const opponentProfile = opponent?.profileImageUrl || '/default-profile.png';
   const opponentNickname = opponent?.nickname || '';
+
+  if (isLoading) return <div>로딩중...</div>;
 
   return (
     <>
