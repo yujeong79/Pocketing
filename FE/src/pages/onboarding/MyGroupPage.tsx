@@ -103,7 +103,7 @@ const MyGroupPage = () => {
                 $isSelected={hasSelected}
               >
                 <S.GroupImage src={group.groupImageUrl} $isSelected={hasSelected} />
-                <S.GroupName>{group.groupNameKo}</S.GroupName>
+                <S.GroupName>{group.groupDisplayName}</S.GroupName>
               </S.GroupInfo>
             );
           })}
