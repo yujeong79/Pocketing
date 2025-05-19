@@ -1,15 +1,3 @@
-// 1) 설치되면 즉시 활성화
-self.addEventListener('install', event => {
-  console.log('[SW] install 이벤트 발생');
-  event.waitUntil(self.skipWaiting());
-});
-
-// 2) 활성화되면 즉시 제어권 획득
-self.addEventListener('activate', event => {
-  console.log('[SW] activate 이벤트 발생');
-  event.waitUntil(self.clients.claim());
-});
-
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js");
 
