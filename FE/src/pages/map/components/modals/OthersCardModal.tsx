@@ -34,7 +34,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
 
-  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(false);
+  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(true);
   const [isMemberSelectOpen, setIsMemberSelectOpen] = useState(false);
   const [isAlbumSelectOpen, setIsAlbumSelectOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,8 +60,12 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   };
 
   const handleGroupClick = (group: Group) => {
-    setSelectedGroup(group.groupNameKo);
+    setSelectedGroup(group.groupDisplayName ?? '');
     setSelectedGroupId(group.groupId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(true);
+    setIsAlbumSelectOpen(false);
   };
 
   const handleMemberSelect = () => {
@@ -74,6 +78,10 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   const handleMemberClick = (member: Member) => {
     setSelectedMember(member.name);
     setSelectedMemberId(member.memberId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(true);
   };
 
   const handleAlbumSelect = () => {
@@ -85,6 +93,10 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   const handleAlbumClick = (album: Album) => {
     setSelectedAlbum(album.title);
     setSelectedAlbumId(album.albumId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(false);
   };
 
   const handlePostExchangeCard = useCallback(async () => {
