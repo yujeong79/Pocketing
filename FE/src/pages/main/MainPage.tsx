@@ -12,6 +12,8 @@ import { useMembers } from '@/hooks/artist/query/useMembers';
 import { UserLikedGroup } from '@/types/user';
 import { useMainPageStore } from '@/store/mainPageStore';
 import { useSales } from '@/hooks/sales/useSales';
+import { useProfile } from '@/hooks/user/useProfile';
+import { useGlobalStore } from '@/store/globalStore';
 
 const MainPage = () => {
   const {
@@ -26,9 +28,11 @@ const MainPage = () => {
     selectedGroupData,
     setSelectedGroupData,
   } = useMainPageStore();
-  const { fetchSales } = useSales();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const { fetchSales } = useSales();
+  const { fetchProfile } = useProfile();
+  const { isProfileLoading, setIsProfileLoading, isSalesLoading, setIsSalesLoading } =
+    useGlobalStore();
 
   // 관심 그룹 불러오기
   const { data: likedGroups } = useLikedGroups();
@@ -38,11 +42,16 @@ const MainPage = () => {
 
   // 초기 데이터 로딩
   useEffect(() => {
-    if (!isFetching) {
-      fetchSales();
-      setIsFetching(true);
+    if (!isProfileLoading) {
+      fetchProfile();
+      setIsProfileLoading(true);
     }
-  }, [isFetching, fetchSales]);
+
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+  }, [isProfileLoading, fetchSales, fetchProfile, setIsProfileLoading]);
 
   // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택
   useEffect(() => {

@@ -7,9 +7,11 @@ import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { formatDate } from '@/utils/formatDate';
 import { useSales } from '@/hooks/sales/useSales';
+import { useGlobalStore } from '@/store/globalStore';
 
 const MySaleListPage = () => {
-  const { mySales } = useSales();
+  const { mySales, fetchSales } = useSales();
+  const { isSalesLoading, setIsSalesLoading } = useGlobalStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,6 +31,13 @@ const MySaleListPage = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [fromRegister, navigate]);
+
+  useEffect(() => {
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+  }, [isSalesLoading, fetchSales, setIsSalesLoading]);
 
   return (
     <S.PageContainer>
