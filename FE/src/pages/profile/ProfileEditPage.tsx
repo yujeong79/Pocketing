@@ -55,7 +55,9 @@ const ProfileEditPage = () => {
     fetch(croppedImageUrl)
       .then((res) => res.blob())
       .then((blob) => {
-        const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+        const userId = localStorage.getItem('userId');
+        const uniqueFileName = `profile_${userId}_${Date.now()}.jpg`;
+        const file = new File([blob], uniqueFileName, { type: 'image/jpeg' });
         setImageFile(file);
       });
   };
