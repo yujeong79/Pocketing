@@ -11,7 +11,11 @@ import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Member, MemberResponse } from '@/types/member';
 import { GroupResponse } from '@/types/group';
 import { Logo2d, CloseIcon } from '@/assets/assets';
-import { useDeleteLikedMembers, useUpdateLikedMembers } from '@/hooks/user/mutation/useLike';
+import {
+  useDeleteLikedMembers,
+  useUpdateLikedMembers,
+  useDeleteLikedGroups,
+} from '@/hooks/user/mutation/useLike';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
 // TODO:렌더링이 느린 감이 있음. 최적화 필요
@@ -38,6 +42,8 @@ const MyMemberEditPage = () => {
   const deleteLikedMembersMutation = useDeleteLikedMembers();
   // 관심 멤버 추가
   const updateLikedMembersMutation = useUpdateLikedMembers();
+  // 관심 그룹 삭제
+  const deleteLikedGroupsMutation = useDeleteLikedGroups();
 
   useEffect(() => {
     if (!groupId || !membersData?.result || !groupsData?.result) return;
@@ -135,6 +141,33 @@ const MyMemberEditPage = () => {
     }
   }, [groupId, selectedMemberIds, navigate, fromPath, updateLikedMembersMutation]);
 
+  // 그룹 전체 취소 처리
+  const handleDeleteAllMembers = useCallback(async () => {
+    if (!groupId) return;
+
+    try {
+      await deleteLikedGroupsMutation.mutateAsync(Number(groupId));
+
+      // 관련 쿼리 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MEMBERS, Number(groupId)] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GROUPS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.LIKED_GROUPS] });
+
+      setToastMessage('관심 그룹이 해제되었습니다.');
+      setToastType('success');
+      setShowToast(true);
+
+      setTimeout(() => {
+        navigate('/myGroupEdit', { state: { from: fromPath } });
+      }, 1000);
+    } catch (error) {
+      console.error('관심 그룹 해제 실패:', error);
+      setToastMessage('관심 그룹 해제에 실패했습니다.');
+      setToastType('warning');
+      setShowToast(true);
+    }
+  }, [groupId, navigate, fromPath, deleteLikedGroupsMutation, queryClient]);
+
   return (
     <S.PageContainer>
       <S.ItemContainer>
@@ -142,6 +175,7 @@ const MyMemberEditPage = () => {
           fallbackPath="/myGroupEdit"
           onClick={() => navigate('/myGroupEdit', { state: { from: fromPath } })}
         />
+        <S.DeleteAllButton onClick={handleDeleteAllMembers}>그룹 삭제</S.DeleteAllButton>
         <S.Title>관심 멤버를 선택해주세요</S.Title>
         <S.MemberListContainer>
           {members.map((member) => {
