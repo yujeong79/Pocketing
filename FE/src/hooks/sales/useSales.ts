@@ -5,12 +5,8 @@ export const useSales = () => {
   const { mySales, setMySales } = useGlobalStore();
 
   const fetchSales = async () => {
-    try {
-      const response = await getMySales();
-      setMySales(response.result);
-    } catch (error) {
-      throw error;
-    }
+    const response = await getMySales();
+    setMySales([...response.result]);
   };
 
   return { mySales, fetchSales };
