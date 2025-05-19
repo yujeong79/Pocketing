@@ -9,7 +9,7 @@ import { formatDate } from '@/utils/formatDate';
 import { useSales } from '@/hooks/sales/useSales';
 
 const MySaleListPage = () => {
-  const { mySales, fetchSales } = useSales();
+  const { mySales } = useSales();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,12 +29,6 @@ const MySaleListPage = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [fromRegister, navigate]);
-
-  useEffect(() => {
-    if (mySales.length === 0) {
-      fetchSales();
-    }
-  }, [mySales.length, fetchSales]);
 
   return (
     <S.PageContainer>

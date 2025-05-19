@@ -5,21 +5,14 @@ import Divider from './Divider';
 import { MySaleIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
 import { formatDate } from '@/utils/formatDate';
 import { useSales } from '@/hooks/sales/useSales';
-import { useEffect } from 'react';
 
 const MySaleList = () => {
   const navigate = useNavigate();
-  const { mySales, fetchSales } = useSales();
+  const { mySales } = useSales();
   const filteredList = mySales
     .filter((item) => item.createdAt)
     .sort((a, b) => b.postId - a.postId)
     .slice(0, 2);
-
-  useEffect(() => {
-    if (mySales.length === 0) {
-      fetchSales();
-    }
-  }, [mySales.length, fetchSales]);
 
   return (
     <S.MySaleListContainer>

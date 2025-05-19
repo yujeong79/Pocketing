@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { UserLikedGroup } from '@/types/user';
 import { useMainPageStore } from '@/store/mainPageStore';
+import { useSales } from '@/hooks/sales/useSales';
 
 const MainPage = () => {
   const {
@@ -25,13 +26,23 @@ const MainPage = () => {
     selectedGroupData,
     setSelectedGroupData,
   } = useMainPageStore();
+  const { fetchSales } = useSales();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   // 관심 그룹 불러오기
   const { data: likedGroups } = useLikedGroups();
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // 초기 데이터 로딩
+  useEffect(() => {
+    if (!isFetching) {
+      fetchSales();
+      setIsFetching(true);
+    }
+  }, [isFetching, fetchSales]);
 
   // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택
   useEffect(() => {
