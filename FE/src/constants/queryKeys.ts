@@ -16,4 +16,5 @@ export const QUERY_KEYS = {
   EXCHANGE_CHAT_ROOMS: 'exchangeChatRooms',
   CHAT_ROOM_DETAIL: 'chatRoomDetail',
   UNREAD_MESSAGE_COUNT: 'unreadMessageCount',
+  MY_SALES: 'mySales',
 } as const;

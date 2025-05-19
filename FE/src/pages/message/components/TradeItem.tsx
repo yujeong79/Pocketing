@@ -4,6 +4,7 @@ import StateModal from './StateModal';
 import { LinkedPost } from '@/types/chat';
 import { useUpdatePostStatus } from '@/hooks/post/mutation/useStatus';
 import { useNavigate } from 'react-router-dom';
+import { useSales } from '@/hooks/sales/useSales';
 
 type Status = 'AVAILABLE' | 'COMPLETED';
 
@@ -19,6 +20,7 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
   const { mutate: updatePostStatus } = useUpdatePostStatus();
   const navigate = useNavigate();
   const isAvailable = status === 'AVAILABLE';
+  const { fetchSales } = useSales();
 
   const formattedPrice = linkedPost.price.toLocaleString();
 
@@ -31,9 +33,10 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
     setIsStateModalOpen(true);
   };
 
-  const handleStateSelect = (newStatus: Status) => {
+  const handleStateSelect = async (newStatus: Status) => {
     setStatus(newStatus);
-    updatePostStatus({ roomId, status: newStatus });
+    await updatePostStatus({ roomId, status: newStatus });
+    await fetchSales();
   };
 
   return (
