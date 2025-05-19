@@ -41,7 +41,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
 
-  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(false);
+  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(true);
   const [isMemberSelectOpen, setIsMemberSelectOpen] = useState(false);
   const [isAlbumSelectOpen, setIsAlbumSelectOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,6 +90,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
 
   const handleModalClose = () => {
     setModalStep(1);
+    setIsGroupSelectOpen(true);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(false);
+    setSearchTerm('');
     onClose();
   };
 
@@ -150,6 +154,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleGroupClick = (group: Group) => {
     setSelectedGroup(group.groupDisplayName ?? '');
     setSelectedGroupId(group.groupId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(true);
+    setIsAlbumSelectOpen(false);
   };
 
   const handleMemberSelect = () => {
@@ -162,6 +170,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleMemberClick = (member: Member) => {
     setSelectedMember(member.name);
     setSelectedMemberId(member.memberId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(true);
   };
 
   const handleAlbumSelect = () => {
@@ -173,6 +185,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleAlbumClick = (album: Album) => {
     setSelectedAlbum(album.title);
     setSelectedAlbumId(album.albumId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(false);
   };
 
   const handleSaveCardInfo = () => {
