@@ -15,7 +15,6 @@ import { useDeleteLikedMembers, useUpdateLikedMembers } from '@/hooks/user/mutat
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
 // TODO:렌더링이 느린 감이 있음. 최적화 필요
-// 아이콘이 커서 클릭시 늘어나는 느낌이 있음. 조정 필요
 // 멤버를 선택했을 시 그룹에 효과를 넣어야함
 
 const MyMemberEditPage = () => {
@@ -122,7 +121,15 @@ const MyMemberEditPage = () => {
         ],
       });
 
-      navigate('/myGroupEdit', { state: { from: fromPath } });
+      // 토스트 메시지 띄우기
+      setToastMessage('관심 멤버 선택이 완료되었습니다.');
+      setToastType('success');
+      setShowToast(true);
+
+      // 1초 후 페이지 이동 (원하는 시간으로 조정 가능)
+      setTimeout(() => {
+        navigate('/myGroupEdit', { state: { from: fromPath } });
+      }, 1000);
     } catch (error) {
       console.error('관심 멤버 업데이트 실패:', error);
     }
