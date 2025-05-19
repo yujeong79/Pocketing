@@ -70,8 +70,8 @@ const ChatList = ({ type, tradeChats, exchangeChats }: ChatListProps) => {
     if (type === 'trade') {
       // TradeChat의 lastMessageTime 기준 최신순 정렬
       return (
-        new Date((b as any).lastMessageTime).getTime() -
-        new Date((a as any).lastMessageTime).getTime()
+        new Date((b as TradeChat).lastMessageTime).getTime() -
+        new Date((a as TradeChat).lastMessageTime).getTime()
       );
     } else {
       // ExchangeChat은 updatedAt 사용
