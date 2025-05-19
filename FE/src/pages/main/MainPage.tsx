@@ -142,6 +142,36 @@ const MainPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
+  useEffect(() => {
+    if (!likedGroups?.result) return;
+
+    const userLikedGroups = (likedGroups.result as UserLikedGroup[]).filter(
+      (item): item is UserLikedGroup => 'groupId' in item
+    );
+
+    const stillExists = userLikedGroups.some((group) => group.groupId === selectedGroupId);
+
+    if (!stillExists) {
+      if (userLikedGroups.length > 0) {
+        const first = userLikedGroups[0];
+        setSelectedGroupId(first.groupId);
+        setSelectedGroupData({
+          groupId: first.groupId,
+          groupNameKo: first.groupNameKo,
+          groupNameEn: first.groupNameEn,
+          groupImageUrl: first.groupImageUrl || '',
+          members: null,
+          interest: true,
+        });
+        setSelectedMember(null);
+      } else {
+        setSelectedGroupId(null);
+        setSelectedGroupData(null);
+        setSelectedMember(null);
+      }
+    }
+  }, [likedGroups, selectedGroupId, setSelectedGroupId, setSelectedGroupData, setSelectedMember]);
+
   const handleAlbumSelect = (albumId: number | null) => {
     setSelectedAlbumId(albumId);
     setIsAlbumModalOpen(false);
