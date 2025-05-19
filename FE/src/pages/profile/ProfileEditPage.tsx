@@ -12,6 +12,7 @@ import { putMyInfo } from '@/api/user/myInfo';
 import { EditMyInfoRequest } from '@/types/myInfo';
 import { useProfile } from '@/hooks/user/useProfile';
 import { useGlobalStore } from '@/store/globalStore';
+import { checkNicknameDuplicate } from '@/api/signUp';
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
@@ -30,6 +31,41 @@ const ProfileEditPage = () => {
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [rawImage, setRawImage] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [isNicknameChecked, setIsNicknameChecked] = useState(true);
+  const [nickname, setNickname] = useState('');
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    setNickname(value);
+    setFormData((prev) => ({
+      ...prev,
+      nickname: value,
+    }));
+    // 닉네임이 변경될 때마다 중복 체크 상태 초기화
+    setIsNicknameChecked(false);
+    setIsDuplicate(false);
+  };
+
+  const handleDuplicateCheck = async () => {
+    if (formData.nickname === myProfile?.nickname) {
+      setIsNicknameChecked(true);
+      setIsDuplicate(false);
+      return;
+    }
+
+    const response = await checkNicknameDuplicate(formData.nickname);
+    setIsNicknameChecked(true);
+
+    if (!response.isSuccess) {
+      setIsDuplicate(true);
+      console.log('중복');
+    } else {
+      setIsDuplicate(false);
+      console.log('중복아님');
+    }
+  };
 
   // 버튼으로 이미지 선택
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,8 +159,24 @@ const ProfileEditPage = () => {
   );
 
   const handleSubmit = async () => {
+    // 닉네임이 변경되었고, 중복 확인이 되지 않았거나 중복인 경우
+    if (nickname !== myProfile?.nickname) {
+      if (!isNicknameChecked) {
+        alert('닉네임 중복 확인이 필요합니다.');
+        return;
+      }
+      if (isDuplicate) {
+        alert('중복된 닉네임은 사용할 수 없습니다.');
+        return;
+      }
+      if (nickname.length > 10) {
+        alert('닉네임은 최대 10자까지 입력할 수 있습니다.');
+        return;
+      }
+    }
+
     setIsUploading(true);
-    let finalImageUrlForProfileUpdate = selectedImage; // 기본적으로 현재 프로필 이미지 URL 사용
+    let finalImageUrlForProfileUpdate = selectedImage;
 
     if (imageFile) {
       try {
@@ -136,13 +188,14 @@ const ProfileEditPage = () => {
         }
 
         await handleS3Upload(presignedUrl, imageFile, imageFile.type);
-        finalImageUrlForProfileUpdate = presignedUrl.split('?')[0]; // S3 업로드 성공 시 영구 URL 사용
+        finalImageUrlForProfileUpdate = presignedUrl.split('?')[0];
       } catch {
         alert('이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.');
         setIsUploading(false);
         return;
       }
     }
+
     await handleUserProfileUpdate(
       finalImageUrlForProfileUpdate === null ? undefined : finalImageUrlForProfileUpdate
     );
@@ -181,8 +234,26 @@ const ProfileEditPage = () => {
                 id="nickname"
                 placeholder="닉네임을 입력하세요"
                 value={formData.nickname}
-                onChange={handleInputChange}
+                onChange={handleNicknameChange}
               />
+              <S.CheckContainer>
+                {formData.nickname === myProfile?.nickname ? (
+                  <S.Phrase type="error"></S.Phrase>
+                ) : formData.nickname.length > 10 ? (
+                  <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
+                ) : isNicknameChecked && !isDuplicate ? (
+                  <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
+                ) : isNicknameChecked && isDuplicate ? (
+                  <S.Phrase type="error">중복된 닉네임입니다.</S.Phrase>
+                ) : (
+                  <S.Phrase type="error"></S.Phrase>
+                )}
+                <S.DuplicateCheckButtonContainer>
+                  <S.DuplicateCheckButton onClick={handleDuplicateCheck}>
+                    중복확인
+                  </S.DuplicateCheckButton>
+                </S.DuplicateCheckButtonContainer>
+              </S.CheckContainer>
             </S.InputContainer>
             <S.InputContainer>
               <S.Label htmlFor="address">주소</S.Label>
