@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ImageCropModal from '@/components/common/ImageCropModal';
 
 import * as S from './ProfileImageStyle';
@@ -8,14 +8,11 @@ import BackButton from './components/BackButton';
 import Button from '@/components/common/Button';
 import { CameraIcon } from '@/assets/assets';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { postS3Image, putS3Image } from '@/api/s3/s3Image';
 
 const ProfileImagePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [currentProfileImage, setCurrentProfileImage] = useState<string | null>(null);
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [rawImage, setRawImage] = useState<string | null>(null);
 
@@ -37,33 +34,8 @@ const ProfileImagePage = () => {
     }
   };
 
-  // PresignedUrl 받기
-  const handleGetPresignedUrl = useCallback(async () => {
-    if (!imageFile) {
-      return null;
-    }
-    const response = await postS3Image({
-      fileName: imageFile.name,
-      contentType: imageFile.type,
-    });
-    const presignedUrl = response.result.presignedUrl;
-    return presignedUrl;
-  }, [imageFile]);
-
-  // S3에 직접 파일을 업로드
-  const handleS3Upload = async (presignedUrl: string, file: File, contentType: string) => {
-    await putS3Image({
-      presignedUrl: presignedUrl,
-      uploadFile: file,
-      header: {
-        'Content-Type': contentType,
-      },
-    });
-  };
-
   const handleCropComplete = (croppedImageUrl: string) => {
     setSelectedImage(croppedImageUrl);
-    setCurrentProfileImage(croppedImageUrl);
     setCropModalOpen(false);
   };
 
