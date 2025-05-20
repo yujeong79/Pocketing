@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   MainIcon,
@@ -63,6 +63,7 @@ export default function NavBar() {
 
     switch (path) {
       case 'main':
+      case 'detail': // detail 경로도 pocket으로 인식
         return 'pocket';
       case 'map':
         return 'exchange';
@@ -76,6 +77,10 @@ export default function NavBar() {
         return 'pocket';
     }
   }
+
+  useEffect(() => {
+    setActiveItem(getCurrentPathId(location.pathname));
+  }, [location.pathname]);
 
   return (
     <NavBarContainer>

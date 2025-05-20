@@ -14,6 +14,7 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  overflow: hidden;
 `;
 
 export const ModalContainer = styled.div`
