@@ -22,7 +22,7 @@
 <br>
 
 ## 1️⃣ 개발 환경 및 기술 스택
-- Front-End : React
+- Front-End : React, TypeScript, Styled-Components, Zustand, React Query
 - Back-End : SpringBoot, FastAPI
 - DB : Redis, PostgreSQL, ChromaDB
 - 버전 및 이슈관리 : GitLab, Jira
@@ -124,11 +124,13 @@
 <br>
 
 ### 🌟 이승희
--
+- Front-end : UI/UX 퍼블리싱 및 구현, React Query와 Axios를 활용한 데이터 페칭 및 캐싱, WebSocket과 STOMP를 활용한 실시간 채팅/AI챗봇 API 연동, 메인/판매/그룹 API 연동
+- Design: Figma를 이용한 와이어프레임 및 프로토타입 제작
 <br>
 
 ### 🌟 한병현
--
+- Front-End : React + Vite + TypeScript 환경 세팅, Zustand 전역 상태 관리 구축, 지도 기반 포토카드 교환 페이지 구현, 알림 페이지 구현, 프로필 페이지 구현
+- Design : Figma 와이어프레임, 프로토타입 제작
 <br>
 
 ### 🌟 한윤지
@@ -152,42 +154,50 @@
 ### 🌟 메인(판매글 조회)
 - 메인페이지에서 본인의 관심 그룹 및 관심 아이돌을 등록 및 삭제 할 수 있습니다.
 - 메인페이지에서 본인의 관심 그룹 및 관심 아이돌의 포토카드 판매글을 볼 수 있습니다.
-![Pocketing_발표용](/uploads/4432f8842777858f86b133e3ccec7278/Pocketing_발표용.jpg)
 
+<br>
+![Pocketing_발표용](/uploads/4432f8842777858f86b133e3ccec7278/Pocketing_발표용.jpg)
 <br>
 
 ### 🌟 교환
 - 사용자가 보유 및 희망하는 카드를 등록할 수 있습니다.
 - 등록한 보유 및 희망카드를 기반으로 주변의 사용자를 매칭합니다.
-![Pocketing_발표용](/uploads/9793755b1b2165a78deea0661c5ac287/Pocketing_발표용.jpg)
 
+<br>
+![Pocketing_발표용](/uploads/9793755b1b2165a78deea0661c5ac287/Pocketing_발표용.jpg)
 <br>
 
 ### 🌟 판매
-** 🔍 판매**
-![Pocketing_발표용](/uploads/a8f5b14f349d085aa522371c10a3b563/Pocketing_발표용.jpg)
+#### 🔍 판매
 
 <br>
+![Pocketing_발표용](/uploads/a8f5b14f349d085aa522371c10a3b563/Pocketing_발표용.jpg)
+<br>
 
-** 🔍 판매 등록**
+#### 🔍 판매 등록
 - YOLO 모델과 GEMINI를 사용하여 다수의 포토카드를 객체 인식하고 그룹 및 멤버를 분류하여 판매 과정을 단축합니다.
-![Pocketing_발표용](/uploads/179e4a7a292f797bc655ae7a6b15db4a/Pocketing_발표용.jpg)
 
+<br>
+![Pocketing_발표용](/uploads/179e4a7a292f797bc655ae7a6b15db4a/Pocketing_발표용.jpg)
 <br>
 
 ### 🌟 챗봇
-** 🔍 챗봇**
-![Pocketing_발표용](/uploads/459a0776dd6f66925a74b89133e4e279/Pocketing_발표용.jpg)
+#### 🔍 챗봇
 
 <br>
+![Pocketing_발표용](/uploads/459a0776dd6f66925a74b89133e4e279/Pocketing_발표용.jpg)
+<br>
 
-** 🔍 포토카드 조회**
+#### 🔍 포토카드 조회
 - 원하는 포토카드를 물어보면 챗봇이 유사한 포토카드와 해당 포토카드의 최저가 판매글을 보여줍니다.
-![Pocketing_발표용](/uploads/9044bf0a5d5142629bfdd659db6dedc2/Pocketing_발표용.jpg)
 
+<br>
+![Pocketing_발표용](/uploads/9044bf0a5d5142629bfdd659db6dedc2/Pocketing_발표용.jpg)
 <br>
 
 ### 🌟 마이페이지
 - 마이페이지에서 사용자 개인정보 및 관심 그룹 및 아이돌 조회, 판매글 조회가 가능합니다.
+
+<br>
 ![Pocketing_발표용](/uploads/459a0776dd6f66925a74b89133e4e279/Pocketing_발표용.jpg)
 
