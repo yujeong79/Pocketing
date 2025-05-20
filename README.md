@@ -14,6 +14,10 @@
 <br>
 
 ## 팀원 구성
+| 김유정 | 김주원 | 김태민 | 이승희 | 한병현 | 한윤지 |
+|--------|--------|--------|--------|--------|--------|
+| INFRA <br> Back-End | AI <br> Back-End | Back-End | Front-End | Front-End | Back-End <br> Front-End |
+
 
 <br>
 
