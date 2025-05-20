@@ -14,6 +14,7 @@ import { useDeletePost, useUpdatePostPrice } from '@/hooks/post/mutation/usePost
 import { useToastStore } from '@/store/toastStore';
 import { useState } from 'react';
 import { useGlobalStore } from '@/store/globalStore';
+import { LoadingChip } from '../../components/common/LoadingChip';
 
 const DetailPage = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -38,7 +39,11 @@ const DetailPage = () => {
   });
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div>
+        <LoadingChip />
+      </div>
+    );
   }
 
   if (isError) {

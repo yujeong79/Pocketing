@@ -5,7 +5,7 @@ import {
 import MemberChip from '@/pages/main/components/Chip/MemberChip';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { HeartWhiteIcon, HeartGrayIcon } from '@/assets/assets';
-import { LoadingChip } from './LoadingChip';
+import { LoadingChip } from '../../../../components/common/LoadingChip';
 
 interface MemberChipListProps {
   groupId: number;
