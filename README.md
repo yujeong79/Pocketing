@@ -111,7 +111,8 @@
 
 ## 3. 역할 분담
 ### 김유정
-- 
+- INFRA : SpringBoot 젠킨스 파이프라인 구축, React+Nginx 젠킨스 파이프라인 구축, FastAPI(Yolo+Gemini, Chatbot) 젠킨스 파이프라인 구축, EC2 및 DB 설정
+- Back-End : WebSocket + STOMP를 사용한 채팅 기능 구현, 카카오 및 트위터 OAuth 구현, 회원 관련 로직 구현, 판매글 조회 로직 구현
 <br>
 
 ### 김주원
