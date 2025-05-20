@@ -60,10 +60,8 @@ const ProfileEditPage = () => {
 
     if (!response.isSuccess) {
       setIsDuplicate(true);
-      console.log('중복');
     } else {
       setIsDuplicate(false);
-      console.log('중복아님');
     }
   };
 
@@ -111,7 +109,7 @@ const ProfileEditPage = () => {
       const presignedUrl = response.result.presignedUrl;
       return presignedUrl;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }, [imageFile]);
 
@@ -126,7 +124,7 @@ const ProfileEditPage = () => {
         },
       });
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -171,6 +169,10 @@ const ProfileEditPage = () => {
       }
       if (nickname.length > 10) {
         alert('닉네임은 최대 10자까지 입력할 수 있습니다.');
+        return;
+      }
+      if (nickname === '') {
+        alert('닉네임을 입력해주세요.');
         return;
       }
     }
@@ -241,6 +243,8 @@ const ProfileEditPage = () => {
                   <S.Phrase type="error"></S.Phrase>
                 ) : formData.nickname.length > 10 ? (
                   <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
+                ) : formData.nickname === '' ? (
+                  <S.Phrase type="error">닉네임을 입력해주세요.</S.Phrase>
                 ) : isNicknameChecked && !isDuplicate ? (
                   <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
                 ) : isNicknameChecked && isDuplicate ? (
@@ -289,7 +293,7 @@ const ProfileEditPage = () => {
         <Button
           text={isUploading ? '업로드 중...' : '수정하기'}
           onClick={handleSubmit}
-          disabled={isUploading}
+          disabled={isUploading || formData.nickname === ''}
         />
       </S.ContentsContainer>
       <ImageCropModal
