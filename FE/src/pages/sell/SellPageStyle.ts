@@ -8,6 +8,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-top: ${scale(60)}px;
 `;
 
 export const TopContainer = styled.div`

@@ -8,6 +8,7 @@ export const DetailPageContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: calc(100vh - ${scale(120)}px);
+  padding-top: ${scale(44)}px;
 `;
 
 export const ContentSection = styled.div`
@@ -62,14 +63,12 @@ export const SellerSection = styled.div`
 
 export const ChatButton = styled.div`
   margin-top: ${scale(8)}px;
-  margin-bottom: ${scale(24)}px;
 `;
 
 export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: ${scale(24)}px;
 `;
 
 export const PriceEditIcon = styled.img`
@@ -78,4 +77,17 @@ export const PriceEditIcon = styled.img`
   vertical-align: middle;
   margin-right: ${scale(2)}px;
   transform: translateY(-${scale(2)}px);
+`;
+
+export const FixedBottomButton = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: ${scale(70)}px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  background: transparent;
+  pointer-events: auto;
 `;
