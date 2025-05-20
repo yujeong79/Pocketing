@@ -18,6 +18,8 @@ import { postLocation } from '@/api/exchange/location';
 import { getExchangeUserList } from '@/api/exchange/exchangeUserList';
 import { Exchange } from '@/types/exchange';
 import { LocationRequest } from '@/types/location';
+import { useNotification } from '@/hooks/notification/useNotification';
+import { useGlobalStore } from '@/store/globalStore';
 
 const MapPage = () => {
   const [isRangeModalOpen, setIsRangeModalOpen] = useState(false);
@@ -32,6 +34,9 @@ const MapPage = () => {
   const [spinning, setSpinning] = useState(false);
   const [range, setRange] = useState(100);
   const [showEmptyToast, setShowEmptyToast] = useState(false);
+
+  const { fetchNotification } = useNotification();
+  const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
 
   const navigate = useNavigate();
   const circleRef = useRef<any>(null);
@@ -87,6 +92,7 @@ const MapPage = () => {
     handleGetCurrentLocation();
     handlePostLocation();
     handleGetUserList();
+    setIsNotificationLoading(false);
   };
 
   const handleCloseModal = () => {
@@ -133,6 +139,13 @@ const MapPage = () => {
   useEffect(() => {
     handleGetCurrentLocation();
   }, []);
+
+  useEffect(() => {
+    if (!isNotificationLoading) {
+      fetchNotification();
+      setIsNotificationLoading(true);
+    }
+  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
 
   useEffect(() => {
     if (window.naver && mapRef.current && currentLocation) {

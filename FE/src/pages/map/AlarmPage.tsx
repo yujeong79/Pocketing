@@ -1,29 +1,31 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './AlarmStyle';
 import Header from '@/components/common/Header';
 import SmallButton from './components/buttons/SmallButton';
-import { getNotification } from '@/api/notification/notification';
-import { NotificationContent } from '@/types/notification';
 import { acceptOrRejectPocketCall } from '@/api/exchange/pocketCall';
 import { useAuth } from '@/hooks/useAuth';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
+import { useGlobalStore } from '@/store/globalStore';
+import { useNotification } from '@/hooks/notification/useNotification';
 
 const AlarmPage = () => {
-  const [notification, setNotification] = useState<NotificationContent[] | null>(null);
+  // const [notification, setNotification] = useState<NotificationContent[] | null>(null);
   const { user } = useAuth();
+  const { notification, fetchNotification } = useNotification();
+  const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
   const navigate = useNavigate();
 
-  const handleGetNotification = async () => {
-    try {
-      const response = await getNotification();
-      setNotification(response.result.content);
-      console.log(notification);
-    } catch (error) {
-      throw error;
-    }
-  };
+  // const handleGetNotification = async () => {
+  //   try {
+  //     const response = await getNotification();
+  //     setNotification(response.result.content);
+  //     console.log(notification);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
   const handleAccept = useCallback(async (exchangeRequestId: number) => {
     try {
@@ -31,6 +33,7 @@ const AlarmPage = () => {
         exchangeRequestId: exchangeRequestId,
         accepted: true,
       });
+      setIsNotificationLoading(false);
       console.log(response);
     } catch (error) {
       throw error;
@@ -43,6 +46,7 @@ const AlarmPage = () => {
         exchangeRequestId: exchangeRequestId,
         accepted: false,
       });
+      setIsNotificationLoading(false);
       console.log(response);
     } catch (error) {
       throw error;
@@ -80,7 +84,14 @@ const AlarmPage = () => {
   };
 
   useEffect(() => {
-    handleGetNotification();
+    if (!isNotificationLoading) {
+      fetchNotification();
+      setIsNotificationLoading(true);
+    }
+  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
+
+  useEffect(() => {
+    fetchNotification();
   }, []);
 
   return (
