@@ -33,12 +33,10 @@ const ProfileEditPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isNicknameChecked, setIsNicknameChecked] = useState(true);
-  const [nickname, setNickname] = useState('');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    setNickname(value);
     setFormData((prev) => ({
       ...prev,
       nickname: value,
@@ -157,8 +155,8 @@ const ProfileEditPage = () => {
   );
 
   const handleSubmit = async () => {
-    // 닉네임이 변경되었고, 중복 확인이 되지 않았거나 중복인 경우
-    if (nickname !== myProfile?.nickname) {
+    // 닉네임이 변경되었을 때만 검증
+    if (formData.nickname !== myProfile?.nickname) {
       if (!isNicknameChecked) {
         alert('닉네임 중복 확인이 필요합니다.');
         return;
@@ -167,11 +165,11 @@ const ProfileEditPage = () => {
         alert('중복된 닉네임은 사용할 수 없습니다.');
         return;
       }
-      if (nickname.length > 10) {
+      if (formData.nickname.length > 10) {
         alert('닉네임은 최대 10자까지 입력할 수 있습니다.');
         return;
       }
-      if (nickname === '') {
+      if (formData.nickname === '') {
         alert('닉네임을 입력해주세요.');
         return;
       }
