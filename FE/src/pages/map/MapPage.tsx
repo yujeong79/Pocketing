@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { debounce } from 'lodash';
 
 import * as S from './MapStyle';
 import { colors } from '@/styles/theme';
@@ -63,36 +64,71 @@ const MapPage = () => {
     }
   }, [range]);
 
-  const handlePostLocation = useCallback(async () => {
-    try {
-      const PostLocationData: LocationRequest = {
-        latitude: currentLocation?.lat ?? 37.501286,
-        longitude: currentLocation?.lng ?? 127.0396029,
-        isAutoDetected: true,
-        locationName: null,
-      };
-      await postLocation(PostLocationData);
-    } catch (error) {
-      throw error;
-    }
-  }, [currentLocation]);
+  // 위치 추적 설정
+  useEffect(() => {
+    if (!navigator.geolocation) return;
 
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // 이전 위치와 비교하여 실제 변경이 있을 때만 업데이트
+        setCurrentLocation((prev) => {
+          if (prev?.lat === latitude && prev?.lng === longitude) {
+            return prev;
+          }
+          return { lat: latitude, lng: longitude };
+        });
+      },
+      (error) => {
+        // 기본 위치 설정
+        setCurrentLocation({ lat: 37.501286, lng: 127.0396029 });
+        throw error;
+      },
+      {
+        enableHighAccuracy: true, // 정확한 위치 정보 사용
+        maximumAge: 30000, // 30초 이내의 캐시된 위치 정보 허용
+        timeout: 5000, // 5초 타임아웃
+      }
+    );
+
+    // 컴포넌트 언마운트 시 위치 추적 중지
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  // 위치 데이터 서버 전송 (디바운스 적용)
+  const debouncedPostLocation = useCallback(
+    debounce(async (location: { lat: number; lng: number }) => {
+      try {
+        const PostLocationData: LocationRequest = {
+          latitude: location.lat,
+          longitude: location.lng,
+          isAutoDetected: true,
+          locationName: null,
+        };
+        await postLocation(PostLocationData);
+        await handleGetUserList(); // 위치 전송 후 사용자 목록 갱신
+      } catch (error) {
+        throw error;
+      }
+    }, 1000), // 1초 디바운스
+    []
+  );
+
+  // 위치 변경 시 디바운스된 함수 호출
   useEffect(() => {
     if (currentLocation) {
-      handlePostLocation();
-      handleGetUserList();
+      debouncedPostLocation(currentLocation);
     }
-  }, [currentLocation, handlePostLocation, handleGetUserList]);
+  }, [currentLocation, debouncedPostLocation]);
 
   const handleRefreshClick = () => {
     setSpinning(true);
     setTimeout(() => {
       setSpinning(false);
     }, 300);
-    handleGetCurrentLocation();
-    handlePostLocation();
-    handleGetUserList();
-    setIsNotificationLoading(false);
+    if (currentLocation) {
+      debouncedPostLocation(currentLocation);
+    }
   };
 
   const handleCloseModal = () => {
@@ -113,39 +149,22 @@ const MapPage = () => {
     }
   };
 
-  const handleReturnClick = () => {
-    if (naverMapRef.current && currentLocation) {
+  const handleSelectPlace = useCallback(
+    (lat: number, lng: number) => {
+      if (naverMapRef.current) {
+        const location = new window.naver.maps.LatLng(lat, lng);
+        naverMapRef.current.morph(location, getZoomLevel(range));
+      }
+    },
+    [range]
+  );
+
+  const handleReturnClick = useCallback(() => {
+    if (currentLocation) {
       const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
       naverMapRef.current.morph(location, getZoomLevel(range));
     }
-  };
-
-  const handleGetCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setCurrentLocation({ lat: latitude, lng: longitude });
-        },
-        (error) => {
-          // 기본 위치 설정 (멀티캠퍼스)
-          setCurrentLocation({ lat: 37.501286, lng: 127.0396029 });
-          throw error;
-        }
-      );
-    }
-  };
-
-  useEffect(() => {
-    handleGetCurrentLocation();
-  }, []);
-
-  useEffect(() => {
-    if (!isNotificationLoading) {
-      fetchNotification();
-      setIsNotificationLoading(true);
-    }
-  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
+  }, [currentLocation, range]);
 
   useEffect(() => {
     if (window.naver && mapRef.current && currentLocation) {
@@ -248,12 +267,19 @@ const MapPage = () => {
     }
   }, [currentLocation, range, currentUsers]);
 
+  useEffect(() => {
+    if (!isNotificationLoading) {
+      fetchNotification();
+      setIsNotificationLoading(true);
+    }
+  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
+
   return (
     <S.MapContainer>
       <S.MapWrapper ref={mapRef} />
       <S.PageItemContainer>
         <S.MapHeaderContainer>
-          <PlaceSearchInput />
+          <PlaceSearchInput onSelectPlace={handleSelectPlace} />
           <AlarmButton onClick={() => navigate('/alarm')} />
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
