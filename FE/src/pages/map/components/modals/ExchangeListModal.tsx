@@ -30,6 +30,7 @@ const ExchangeListModal = ({
   const [showSendToast, setShowSendToast] = useState(false);
   const { isMyCardLoading, setIsMyCardLoading } = useGlobalStore();
   const { myCard, fetchMyCard } = useMyCard();
+  const { setIsNotificationLoading } = useGlobalStore();
 
   useEffect(() => {
     if (!isMyCardLoading) {
@@ -44,6 +45,7 @@ const ExchangeListModal = ({
       setSpinning(false);
     }, 300);
     onRefresh();
+    setIsNotificationLoading(false);
   };
 
   const handlePostPocketCall = useCallback(
@@ -59,6 +61,7 @@ const ExchangeListModal = ({
           responderOwnedCardId: cardId,
         };
         await postPocketCall(pocketCallData);
+        setIsNotificationLoading(false);
         onRefresh();
 
         if (pocketCallCount < 5) {

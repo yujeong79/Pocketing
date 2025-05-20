@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { MySaleListResponse, MyCompleteListResponse } from '@/types/mySale';
 import { MyInfo } from '@/types/myInfo';
 import { GetRegisteredCardResponse } from '@/types/exchange';
+import { NotificationContent } from '@/types/notification';
 
 interface GlobalStore {
   mySales: MySaleListResponse[];
@@ -29,6 +30,11 @@ interface GlobalStore {
   isMyWishCardLoading: boolean;
   setIsMyWishCardLoading: (isMyWishCardLoading: boolean) => void;
 
+  notification: NotificationContent[];
+  setNotification: (notification: NotificationContent[]) => void;
+  isNotificationLoading: boolean;
+  setIsNotificationLoading: (isNotificationLoading: boolean) => void;
+
   error: Error | null;
   setError: (error: Error | null) => void;
 }
@@ -44,6 +50,8 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   isMyCardLoading: false,
   myWishCard: {} as GetRegisteredCardResponse,
   isMyWishCardLoading: false,
+  notification: [],
+  isNotificationLoading: false,
   error: null,
 
   setMySales: (mySales: MySaleListResponse[]) => set({ mySales }),
@@ -56,5 +64,7 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   setIsMyCardLoading: (isMyCardLoading: boolean) => set({ isMyCardLoading }),
   setMyWishCard: (myWishCard: GetRegisteredCardResponse) => set({ myWishCard }),
   setIsMyWishCardLoading: (isMyWishCardLoading: boolean) => set({ isMyWishCardLoading }),
+  setNotification: (notification: NotificationContent[]) => set({ notification }),
+  setIsNotificationLoading: (isNotificationLoading: boolean) => set({ isNotificationLoading }),
   setError: (error: Error | null) => set({ error }),
 }));
