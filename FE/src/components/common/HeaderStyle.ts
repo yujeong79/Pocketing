@@ -7,7 +7,7 @@ export const HeaderContainer = styled.header<{ $hasBorder: boolean }>`
   background-color: white;
   z-index: 100;
   padding: ${scale(18)}px ${scale(16)}px;
-  height: ${scale(58)}px;
+  height: ${scale(48)}px;
   display: flex;
   align-items: center;
   justify-content: space-between;
