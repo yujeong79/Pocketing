@@ -62,14 +62,13 @@ export const SellerSection = styled.div`
 
 export const ChatButton = styled.div`
   margin-top: ${scale(8)}px;
-  margin-bottom: ${scale(24)}px;
 `;
 
 export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: ${scale(24)}px;
+  margin-bottom: ${scale(12)}px;
 `;
 
 export const PriceEditIcon = styled.img`
