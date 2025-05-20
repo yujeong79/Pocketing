@@ -169,7 +169,7 @@ public class ExchangeCardServiceImpl implements ExchangeCardService{
 
 
         // 3. 내가 원하는 카드를 가진 사람 목록 조회
-        List<Object[]> rawCandidates = exchangeCardRepository.findNearbyExchangeCardsWithMatchType(
+        List<Object[]> rawCandidates = exchangeCardRepository.findNearbyExchangeCards(
                 userId,
                 myLocation,
                 wanted.getAlbum().getAlbumId(),
