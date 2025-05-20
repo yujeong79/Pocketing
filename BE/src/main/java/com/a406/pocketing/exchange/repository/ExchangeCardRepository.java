@@ -37,10 +37,18 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
         JOIN groups g ON ec.group_id = g.group_id
         JOIN members m ON ec.member_id = m.member_id
         LEFT JOIN exchange_request er
-            ON er.requester_id = :myUserId
-            AND er.responder_id = u.user_id
-            AND er.requester_owned_id = :myOwnedCardId
-            AND er.responder_owned_id = ec.exchange_card_id 
+            ON (
+                   -- 내가 요청자일 때
+                   (er.requester_id       = :myUserId
+               AND er.responder_id       = u.user_id
+               AND er.requester_owned_id = :myOwnedCardId
+               AND er.responder_owned_id = ec.exchange_card_id)
+                   -- 상대가 요청자일 때
+                OR (er.requester_id       = u.user_id
+               AND er.responder_id       = :myUserId
+               AND er.requester_owned_id = ec.exchange_card_id
+               AND er.responder_owned_id = :myOwnedCardId)
+                 )
         WHERE ec.status = 'ACTIVE'
             AND ec.is_owned = true
             AND ec.album_id = :myWantedAlbumId
