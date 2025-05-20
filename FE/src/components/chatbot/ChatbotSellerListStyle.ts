@@ -82,7 +82,7 @@ export const ModalSellerCard = styled.div`
   align-items: center;
   padding: ${scale(8)}px;
   margin-top: ${scale(8)}px;
-  width: auto;
+  width: 100%;
 `;
 
 export const ModalSellerImage = styled.img`

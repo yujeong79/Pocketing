@@ -14,6 +14,7 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  overflow: hidden;
 `;
 
 export const ModalContainer = styled.div`
@@ -26,6 +27,7 @@ export const ModalContainer = styled.div`
   border-radius: ${scale(20)}px ${scale(20)}px 0 0;
   padding: ${scale(20)}px;
   animation: slideUp 0.3s ease-out;
+  overflow: hidden;
 
   @keyframes slideUp {
     from {
@@ -79,6 +81,7 @@ export const ChatContainer = styled.div`
   margin-bottom: ${scale(8)}px;
   padding-right: ${scale(8)}px;
   padding-bottom: ${scale(20)}px;
+  overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: ${scale(4)}px;

@@ -2,11 +2,18 @@ import * as S from './SignInPageStyle';
 import { ThreeDLogo, TextLogo, KakaoLoginButton, XLoginButton } from '@/assets/assets';
 import { getKakaoLoginUrl } from '@/api/auth/kakaoLogin';
 import { getTwitterLoginUrl } from '@/api/auth/twitterLogin';
+import { requestFcmToken } from '@/fcm';
 
 const SignInPage = () => {
   // 공통 로그인 핸들러
   const handleSocialLogin = (getUrl: () => string) => async () => {
-    // 권한 처리 결과와 관계없이 로그인 페이지로 이동
+    try {
+      await requestFcmToken();
+      console.log("FCM 권한/토큰 준비 완료");
+    } catch (e) {
+      console.warn('FCM 초기화 오류');
+    }
+    // 로그인 페이지로 이동
     window.location.href = getUrl();
   };
 
