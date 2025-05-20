@@ -1,6 +1,6 @@
 import logging
 import json
-from datetime import datetime
+import hashlib
 from typing import List, Dict, Any, Optional, Tuple
 from app.services.vectorstore import VectorStore
 from app.services.embedding import EmbeddingService
@@ -8,6 +8,7 @@ from app.services.cache import RedisCache
 from app.services.llm import LLMService
 from app.models.schemas import PhotoCardResult, PostInfo
 from app.utils.tagging import normalize_tags, split_tag_string
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,55 @@ class RAGService:
         self.cache = RedisCache()
         self.llm_service = LLMService()
         logger.info("RAG 서비스 초기화 완료")
+
+    def expand_query_semantically(self, query: str) -> str:
+        try:
+            normalized_query = query.lower().strip()
+            cache_key = f"expanded_query:{hashlib.md5(normalized_query.encode()).hexdigest()}"
+
+            cached_result = self.cache.get(cache_key)
+            if cached_result:
+                logger.info(f"캐시에서 확장된 쿼리 검색됨: '{query}'")
+                return cached_result
+
+            system_prompt = """
+            당신은 K-POP 포토카드 검색 전문가입니다. 사용자 검색어를 분석하고 확장하여 더 정확한 검색 결과를 얻도록 도와주세요.
+
+            사용자의 질문을 분석하여 다음을 포함한 확장된 검색어를 생성해주세요:
+            1. 원래 검색어에 포함된 모든 중요 정보 유지
+            2. 사용자가 찾고자 하는 멤버, 그룹, 앨범, 특징 등을 명확히 식별
+            3. 관련 동의어 및 유사 개념 추가 (한국어, 영어 모두 고려)
+            4. K-POP 포토카드 도메인에 특화된 용어 추가
+
+            중요: 확장된 검색어는 원래 질문의 의도를 보존하면서, 관련성 높은 용어만 추가해야 합니다.
+            불필요하게 길지 않고 간결하게 핵심 용어만 포함하세요.
+
+            예시:
+            입력: "제니 검은색 의상 포토카드 어디서 살 수 있어?"
+            출력: "제니 블랙핑크 블핑 검은색 의상 black outfit 제니 포토카드 판매"
+
+            입력: "에스파 카리나 양갈래 헤어 포토카드 찾아줘"
+            출력: "에스파 aespa 카리나 karina 양갈래 양갈래머리 트윈테일 twintails 포토카드 photocard"
+            """
+
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"검색어: {query}"}
+            ]
+
+            orig_temperature = self.llm_service.temperature
+            self.llm_service.temperature = 0.2
+
+            expanded_query = self.llm_service.generate_response(messages)
+            self.llm_service.temperature = orig_temperature
+            self.cache.set(cache_key, expanded_query, expiry=86400)
+
+            logger.info(f"쿼리 확장: '{query}' → '{expanded_query}'")
+            return expanded_query
+
+        except Exception as e:
+            logger.error(f"쿼리 확장 중 오류 발생: {str(e)}")
+            return query
 
     def _analyze_query_with_openai(self, query: str) -> Dict[str, Any]:
         try:
@@ -100,10 +150,10 @@ class RAGService:
             logger.error(f"OpenAI 쿼리 분석 실패: {str(e)}")
             return {"member_name": None, "group_name": None, "album_name": None, "features": []}
 
+
     def _calculate_semantic_similarity_with_openai(self, query_features: List[str], raw_tags: List[str]) -> float:
         if not query_features or not raw_tags:
             return 0.0
-
         try:
             normalized_tags = raw_tags
 
@@ -269,13 +319,10 @@ class RAGService:
 
                 for result in search_results:
                     tag_str = result["metadata"].get("tag", "")
-                    # split_tag_string 함수를 사용해 태그 정규화 (이 함수 내부에서 이미 normalize_tag 호출)
                     raw_tags = split_tag_string(tag_str)
 
-                    # 디버깅 정보 추가
                     logger.debug(f"카드 ID: {result['metadata'].get('card_id')}, 원본 태그: {tag_str}, 분할 태그: {raw_tags}")
 
-                    # 태그가 없는 경우 건너뛰기
                     if not raw_tags:
                         logger.debug(f"카드 ID: {result['metadata'].get('card_id')}에 태그가 없어 낮은 유사도 부여")
                         result["semantic_similarity"] = 0.0

@@ -53,7 +53,10 @@ class ChatService:
                 metadata_list = []
                 post_results = []
             else:
-                metadata_list, post_results = self.rag_service.search_photocards(user_query, n_results=5)
+                expanded_query = self.rag_service.expand_query_semantically(user_query)
+                logger.info(f"의미적으로 확장된 쿼리: {expanded_query}")
+
+                metadata_list, post_results = self.rag_service.search_photocards(expanded_query, n_results=5)
                 logger.info(f"포토카드 검색 완료: {len(metadata_list)}개 결과, {len(post_results)}개 판매글 정보")
 
             if not metadata_list:
