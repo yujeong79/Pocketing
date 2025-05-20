@@ -57,10 +57,28 @@ class SyncDatabase:
                 return 0
             logger.info(f"총 {len(vectors)}개의 포토카드 벡터로 변환 완료")
 
-            logger.info("벡터 데이터베이스에 포토카드 벡터 저장 중...")
-            saved_count = self.loader.load_vectors_in_batches(vectors, batch_size=batch_size)
-            logger.info(f"최근 데이터 동기화 완료: 총 {saved_count}개의 포토카드 벡터 저장 완료")
-            return saved_count
+            logger.info("벡터 데이터베이스에 포토카드 벡터 저장 및 업데이트 중...")
+
+            saved_count = 0
+            updated_count = 0
+
+            for vector in vectors:
+                card_id_str = str(vector.card_id)
+                existing_vector = self.vectorstore.get_vector(card_id_str)
+
+                if existing_vector:
+                    result = self.loader.update_vector(vector)
+                    if result:
+                        updated_count += 1
+                        logger.debug(f"포토카드 ID {vector.card_id}의 벡터 업데이트 성공")
+                else:
+                    result = self.loader.load_vector(vector)
+                    if result:
+                        saved_count += 1
+                        logger.debug(f"포토카드 ID {vector.card_id}의 벡터 추가 성공")
+
+            logger.info(f"최근 데이터 동기화 완료: {saved_count}개 추가, {updated_count}개 업데이트됨")
+            return saved_count + updated_count
 
         except Exception as e:
             logger.error(f"최근 데이터 동기화 중 오류 발생: {str(e)}")

@@ -32,7 +32,6 @@ class RAGService:
                 except:
                     logger.warning(f"캐시된 쿼리 분석 결과 파싱 실패: {cached_result}")
 
-            # 현재 프롬프트 유지
             system_prompt = """
             당신은 K-POP 포토카드 검색 어시스턴트입니다. 사용자의 검색어를 분석하여 다음 정보를 JSON 형식으로 추출해주세요:
 
@@ -106,8 +105,7 @@ class RAGService:
             return 0.0
 
         try:
-            # tagging.py에서 이미 정규화된 태그라고 가정하고 중복 처리하지 않음
-            normalized_tags = raw_tags  # 이미 split_tag_string()에서 normalize_tag() 호출됨
+            normalized_tags = raw_tags
 
             features_key = ",".join(sorted(f.lower() for f in query_features))
             tags_key = ",".join(sorted(t.lower() for t in normalized_tags))
@@ -120,7 +118,6 @@ class RAGService:
                 except:
                     logger.warning(f"캐시된 유사도 값 파싱 실패: {cached_result}")
 
-            # 현재 프롬프트 유지
             system_prompt = """
             당신은 K-POP 포토카드 특징과 태그 간의 의미적 유사도를 판단하는 전문가입니다.
             사용자가 찾는 특징과 포토카드 태그 사이의 유사도를 0.0에서 1.0 사이 값으로 평가해주세요.
@@ -164,7 +161,7 @@ class RAGService:
             ]
 
             orig_temperature = self.llm_service.temperature
-            self.llm_service.temperature = 0.1  # 낮은 temperature로 일관성 있는 결과 유도
+            self.llm_service.temperature = 0.1
 
             response = self.llm_service.generate_response(
                 messages,
@@ -285,7 +282,6 @@ class RAGService:
                         scored_results.append((result, 0.0))
                         continue
 
-                    # AI 기반 유사도 계산 - 이미 정규화된 태그 전달
                     similarity_score = self._calculate_semantic_similarity_with_openai(features, raw_tags)
 
                     result["semantic_similarity"] = similarity_score
@@ -295,18 +291,14 @@ class RAGService:
 
                 scored_results.sort(key=lambda x: x[1], reverse=True)
 
-                # 유사도 임계값 - 0.5로 설정하여 관련성 높은 결과 허용
                 threshold = 0.5
                 filtered_results = [result for result, score in scored_results if score >= threshold]
 
-                # 모든 결과가 필터링되었다면 최소한의 결과 제공
                 if not filtered_results and scored_results:
-                    # 태그가 있는 결과 중에서 상위 결과 선택
                     tagged_results = [(result, score) for result, score in scored_results
                                       if split_tag_string(result["metadata"].get("tag", "")) and score > 0.0]
 
                     if tagged_results:
-                        # 점수와 상관없이 태그가 있는 결과 중 최대 3개 반환
                         top_n = min(3, len(tagged_results))
                         filtered_results = [result for result, _ in tagged_results[:top_n]]
                         logger.info(f"필터링 임계값을 만족하는 결과가 없어 태그가 있는 상위 {len(filtered_results)}개 결과 반환")
