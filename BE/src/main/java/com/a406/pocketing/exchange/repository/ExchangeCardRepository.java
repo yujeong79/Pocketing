@@ -27,6 +27,7 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
             a.title AS albumTitle,
             m.name AS memberName,
             ST_Distance(ul.location, :myLocation) AS distance,
+            er.requester_id AS requesterId,
             er.exchange_request_id AS exchangeRequestId,
             er.status AS requestStatus
         FROM exchange_card ec
