@@ -19,7 +19,7 @@ const GuidePage = () => {
 
   return (
     <S.GuideBackground>
-      <S.BackButton onClick={() => navigate(-1)}>
+      <S.BackButton onClick={() => navigate('/sell')}>
         <img src={BackIcon2} alt="뒤로가기" />
       </S.BackButton>
       <S.MainGuideText>
