@@ -4,7 +4,7 @@ import { PocketCallIcon } from '@/assets/assets';
 interface PocketCallButtonProps {
   onClick: () => void;
   disabled?: boolean;
-  $isRequested: 'PENDING' | null;
+  $isRequested: 'PENDING' | 'ACCEPTED' | 'REJECTED' | null;
 }
 
 const PocketCallButton = ({ onClick, disabled = false, $isRequested }: PocketCallButtonProps) => {
