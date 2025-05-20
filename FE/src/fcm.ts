@@ -67,7 +67,12 @@ export async function requestFcmToken(
     });
     if (token) {
       console.log('✅ FCM 토큰 발급:', token);
-      await axiosInstance.post('/notification/fcm-token', { fcmToken: token });
+      setToken(token);
+
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        await axiosInstance.post('/notification/fcm-token', { fcmToken: token });
+      }
       return token;
     }
   } catch (err) {
