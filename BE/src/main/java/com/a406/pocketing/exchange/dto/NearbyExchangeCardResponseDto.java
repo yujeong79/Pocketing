@@ -15,6 +15,7 @@ public class NearbyExchangeCardResponseDto {
     private CardDto card;
     private Long exchangeRequestId;
     private ExchangeRequestStatus requestStatus;
+    private Long requesterId;
 
     @Getter
     @Builder
@@ -43,8 +44,9 @@ public class NearbyExchangeCardResponseDto {
                         .album((String) row[7])
                         .member((String) row[8])
                         .build())
-                .exchangeRequestId(row[10] == null ? null : ((Number) row[10]).longValue())
-                .requestStatus(row[11] == null
+                .requesterId(row[10] == null ? null : ((Number) row[10]).longValue())
+                .exchangeRequestId(row[11] == null ? null : ((Number) row[10]).longValue())
+                .requestStatus(row[12] == null
                         ? null   // enum에 NONE 추가
                         : ExchangeRequestStatus.valueOf((String) row[11]))
                 .build();
