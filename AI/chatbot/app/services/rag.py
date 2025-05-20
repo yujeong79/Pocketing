@@ -71,45 +71,52 @@ class RAGService:
             logger.error(f"쿼리 확장 중 오류 발생: {str(e)}")
             return query
 
-    def _analyze_query_with_openai(self, query: str) -> Dict[str, Any]:
+    def _analyze_query_with_openai(self, query: str, force_reanalysis: bool = False) -> Dict[str, Any]:
         try:
-            cache_key = f"query_analysis:{query.lower()}"
+            normalized_query = query.lower().strip().replace('"', '').replace("'", "")
+            cache_key = f"query_analysis:{hashlib.md5(normalized_query.encode()).hexdigest()}"
 
-            cached_result = self.cache.get(cache_key)
-            if cached_result:
-                try:
-                    return json.loads(cached_result)
-                except:
-                    logger.warning(f"캐시된 쿼리 분석 결과 파싱 실패: {cached_result}")
+            if not force_reanalysis:
+                cached_result = self.cache.get(cache_key)
+                if cached_result:
+                    try:
+                        result = json.loads(cached_result)
+                        logger.info(f"캐시에서 쿼리 분석 결과 로드: {result}")
+                        return result
+                    except:
+                        logger.warning(f"캐시된 쿼리 분석 결과 파싱 실패: {cached_result}")
 
             system_prompt = """
             당신은 K-POP 포토카드 검색 어시스턴트입니다. 사용자의 검색어를 분석하여 다음 정보를 JSON 형식으로 추출해주세요:
 
-            1. member_name: 멤버 이름 (없으면 null)
-            2. group_name: 그룹 이름 (없으면 null)
-            3. album_name: 앨범 이름 (없으면 null)
-            4. features: 포토카드의 특징들 배열
+        1. member_name: 멤버 이름 (없으면 null)
+        2. group_name: 그룹 이름 (없으면 null)
+        3. album_name: 앨범 이름 (없으면 null)
+        4. features: 포토카드의 특징들 배열
 
-            중요한 지침:
-            - 특징은 개별 단어가 아닌 의미 있는 표현 단위로 추출하세요.
-            - 색상, 액세서리, 의상, 헤어스타일, 표정, 포즈 등의 특징을 포함하세요.
-            - 한국어 검색어도 올바르게 처리하세요.
-            - 명확하지 않은 경우 null 대신 빈 문자열("")이나 빈 배열([])을 반환하세요.
-            - 유사한 헤어스타일 관련 용어는 일관된 형태로 추출하세요 (예: "단발"과 "단발머리"는 "단발"로).
-            - 색상 관련 용어도 일관되게 처리하세요 (예: "블랙"과 "검정"은 "검정"으로).
+        중요한 지침:
+        - 특징은 개별 단어가 아닌 의미 있는 표현 단위로 추출하세요.
+        - 색상, 액세서리, 의상, 헤어스타일, 표정, 포즈 등의 특징을 포함하세요.
+        - 한국어 검색어도 올바르게 처리하세요.
+        - 명확하지 않은 경우 null 대신 빈 문자열("")이나 빈 배열([])을 반환하세요.
+        - 비슷한 용어는 원본 형태와 정규화된 형태를 모두 추출하세요 (예: "단발머리"가 쿼리에 있으면 ["단발머리", "단발"] 모두 특징으로 추출).
+        - 색상 용어도 원본 형태를 유지하고 유사어도 추가하세요 (예: "블랙"이 있으면 ["블랙", "검정"] 모두 추출).
+        - short hair, bob cut 같은 영어 표현도 특징으로 추출하세요.
+        - 쿼리에 영어와 한국어로 같은 의미의 단어가 있다면 둘 다 특징으로 추출하세요.
+        - 확장된 쿼리에 있는 모든 관련 용어들을 특징으로 추가하세요.
 
-            예시 분석:
-            - 검색어: "핑크 선글라스를 쓴 카리나"
-              결과: {"member_name": "카리나", "group_name": "", "album_name": "", "features": ["핑크 선글라스"]}
+        예시 분석:
+        - 검색어: "핑크 선글라스를 쓴 카리나"
+          결과: {"member_name": "카리나", "group_name": "", "album_name": "", "features": ["핑크 선글라스", "핑크", "선글라스", "분홍색"]}
 
-            - 검색어: "에스파 윈터 짧은 머리"
-              결과: {"member_name": "윈터", "group_name": "에스파", "album_name": "", "features": ["짧은 머리"]}
+        - 검색어: "에스파 윈터 짧은 머리"
+          결과: {"member_name": "윈터", "group_name": "에스파", "album_name": "", "features": ["짧은 머리", "숏컷", "short hair"]}
 
-            - 검색어: "단발머리 제니"
-              결과: {"member_name": "제니", "group_name": "", "album_name": "", "features": ["단발"]}
+        - 검색어: "단발머리 short hair 제니"
+          결과: {"member_name": "제니", "group_name": "", "album_name": "", "features": ["단발머리", "단발", "short hair"]}
 
-            - 검색어: "하늘색 의상 지수"
-              결과: {"member_name": "지수", "group_name": "", "album_name": "", "features": ["하늘색 의상"]}
+        - 검색어: "블랙핑크 제니 검은색 의상"
+          결과: {"member_name": "제니", "group_name": "블랙핑크", "album_name": "", "features": ["검은색 의상", "블랙", "검정", "black outfit"]}
             """
 
             messages = [
@@ -241,10 +248,9 @@ class RAGService:
             logger.error(f"의미 유사도 계산 실패: {str(e)}")
             return 0.0
 
-    def search_photocards(self, query: str, n_results: int = 20, filters: Optional[Dict[str, Any]] = None) -> Tuple[
-        List[Dict[str, Any]], List[PhotoCardResult]]:
+    def search_photocards(self, query: str, n_results: int = 20, filters: Optional[Dict[str, Any]] = None) -> Tuple[List[Dict[str, Any]], List[PhotoCardResult]]:
         try:
-            query_analysis = self._analyze_query_with_openai(query)
+            query_analysis = self._analyze_query_with_openai(query, force_reanalysis=True)
             member_name = query_analysis.get('member_name')
             group_name = query_analysis.get('group_name')
             album_name = query_analysis.get('album_name')
@@ -346,6 +352,7 @@ class RAGService:
                                       if split_tag_string(result["metadata"].get("tag", "")) and score > 0.0]
 
                     if tagged_results:
+
                         top_n = min(3, len(tagged_results))
                         filtered_results = [result for result, _ in tagged_results[:top_n]]
                         logger.info(f"필터링 임계값을 만족하는 결과가 없어 태그가 있는 상위 {len(filtered_results)}개 결과 반환")

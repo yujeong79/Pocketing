@@ -36,7 +36,7 @@ class VectorStore:
                 metadata={"description": "포토카드 벡터 저장소"}
             )
 
-    def add_vector(self, photocard: PhotoCardVector) -> bool:
+    def add_vector(self, photocard: PhotoCardVector) -> bool:  # 포토카드 한장 저장
         try:
             metadata = {
                 "card_id": str(photocard.card_id),
@@ -60,7 +60,7 @@ class VectorStore:
             logger.error(f"포토카드 벡터 추가 실패:{str(e)}")
             return False
 
-    def add_vectors(self, photocards: List[PhotoCardVector]) -> int:
+    def add_vectors(self, photocards: List[PhotoCardVector]) -> int:  # 포토카드 여러장 저장
         if not photocards:
             return 0
         try:
