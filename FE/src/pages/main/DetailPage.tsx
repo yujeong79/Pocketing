@@ -164,7 +164,7 @@ const DetailPage = () => {
             </SellerItem>
           </S.SellerSection>
         </S.ContentSection>
-        <S.ButtonWrapper>
+        <S.FixedBottomButton>
           {user.userId !== seller.sellerId && (
             <Button
               text="채팅하기"
@@ -173,7 +173,7 @@ const DetailPage = () => {
               onClick={handleChatButtonClick}
             />
           )}
-        </S.ButtonWrapper>
+        </S.FixedBottomButton>
       </S.DetailPageContainer>
       {isModalOpen && (
         <ConfirmModal

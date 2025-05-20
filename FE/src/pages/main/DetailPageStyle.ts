@@ -69,7 +69,6 @@ export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: ${scale(12)}px;
 `;
 
 export const PriceEditIcon = styled.img`
@@ -78,4 +77,17 @@ export const PriceEditIcon = styled.img`
   vertical-align: middle;
   margin-right: ${scale(2)}px;
   transform: translateY(-${scale(2)}px);
+`;
+
+export const FixedBottomButton = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: ${scale(70)}px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  background: transparent;
+  pointer-events: auto;
 `;
