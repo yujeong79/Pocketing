@@ -113,14 +113,17 @@
 ### 🌟 김유정
 - INFRA : SpringBoot 젠킨스 파이프라인 구축, React+Nginx 젠킨스 파이프라인 구축, FastAPI(Yolo+Gemini, Chatbot) 젠킨스 파이프라인 구축, EC2 및 DB 설정
 - Back-End : WebSocket + STOMP를 사용한 채팅 기능 구현, 카카오 및 트위터 OAuth 구현, 회원 관련 로직 구현, 판매글 조회 로직 구현
+- Data : 포토카드 초기 데이터 수집
 <br>
 
 ### 🌟 김주원
--
+- AI : 아키텍쳐 설계, 시스템 프롬프트 설계, rag 파이프라인 구현, etl 파이프라인 구현,  웹소켓을 통한 실시간 대화 처리 기능 구현, 인기 그룹과 일반 그룹에 대한 차별화된 TTL 전략 적용, 사용자 컨텍스트 유지 및 관리 시스템 개발, 검색 결과와 LLM 응답 통합 시스템 개발, 토카드 메타데이터 임베딩 및 벡터화 로직 구현, 포토카드 데이터 주기적 갱신을 위한 스케줄러 개발
+- Back-End : 최저가 판매글 캐싱 구현, 포토카드 조회 api 구현
 <br>
 
 ### 🌟 김태민
--
+- Back-End : 모놀리식 구조 기반 아키텍처 설계, 위치 기반 카드 매칭 서비스 구현, FCM 기반 알림 시스템 구현
+- Front-End : PWA 환경에서의 FCM 토큰 요청 및 수신 로직 구현, 서비스워커 등록 및 백그라운드 알림 처리, FCM 토큰 만료 및 재발급 관리 로직 구현
 <br>
 
 ### 🌟 이승희
@@ -134,7 +137,9 @@
 <br>
 
 ### 🌟 한윤지
--
+- AI : FastApi(Yolo+Gemini) 아키텍처 설계, Yolo 모델 인물 크롭 로직 구현, 크롭된 이미지 저장 로직 구현, 제미나이 API 연동 및 그룹, 멤버 추출
+- Back-End : 등록(Post) 비즈니스 로직 설계 및 개발, Album, Group, Member, Photocard, Matching 조회 로직 구현
+- Front-End : 등록페이지 fastapi와 springboot API 연동 구현, update 페이지, 제보하기 페이지 생성
 <br>
 
 ## 4️⃣ 개발 기간 및 작업 관리
