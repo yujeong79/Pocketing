@@ -27,6 +27,7 @@ export const AlarmPageContainer = styled.div`
   height: 100%;
   padding: ${scale(16)}px;
   gap: ${scale(32)}px;
+  padding-top: ${scale(60)}px;
 `;
 
 export const AlarmItemContainer = styled.div`

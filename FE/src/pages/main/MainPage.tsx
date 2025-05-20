@@ -204,9 +204,13 @@ const MainPage = () => {
     navigate('/myGroupEdit', { state: { from: '/main' } });
   };
 
+  const handleHeaderClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
-      <Header type="main" />
+      <Header type="main" onClick={handleHeaderClick} />
       <MainContainer>
         <GroupImageList
           selectedId={selectedGroupId}

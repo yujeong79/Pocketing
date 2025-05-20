@@ -10,6 +10,7 @@ export const PageContainer = styled.div`
   height: 100vh;
   width: 100%;
   background: ${colors.gray100};
+  padding-top: ${scale(40)}px;
 `;
 
 export const ContentsContainer = styled.div`

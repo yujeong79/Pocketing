@@ -5,6 +5,7 @@ import scale from '@/utils/scale';
 
 export const MainContainer = styled.div`
   width: 100%;
+  padding-top: ${scale(50)}px;
   padding-bottom: ${scale(72)}px;
 `;
 
