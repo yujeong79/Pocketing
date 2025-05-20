@@ -40,19 +40,19 @@ const MessageList: React.FC<MessageListProps> = ({
     <S.ChatContainer ref={chatContainerRef} onScroll={handleScroll}>
       {hasMore && <S.LoadMoreButton onClick={onLoadMore}>이전 메시지 더보기</S.LoadMoreButton>}
       {sortedMessages.map((message, index) => {
-        const prevMessage = sortedMessages[index - 1];
+        const nextMessage = sortedMessages[index + 1];
         let showTime = false;
 
-        if (!prevMessage) {
-          //첫 메시지는 항상 시간 표시
+        if (!nextMessage) {
+          // 마지막 메시지는 항상 시간 표시
           showTime = true;
         } else {
-          const isSameUser = prevMessage.senderId === message.senderId;
-          const prevTime = new Date(prevMessage.createdAt).getTime();
+          const isSameUser = nextMessage.senderId === message.senderId;
+          const nextTime = new Date(nextMessage.createdAt).getTime();
           const currTime = new Date(message.createdAt).getTime();
-          const diffMinutes = Math.abs(currTime - prevTime) / 1000 / 60;
+          const diffMinutes = Math.abs(nextTime - currTime) / 1000 / 60;
 
-          //같은 사람이더라도 1분 이상 차이나면 시간 표시
+          // 다음 메시지가 다른 사람이거나, 1분 이상 차이나면 시간 표시
           if (!isSameUser || diffMinutes >= 1) {
             showTime = true;
           }

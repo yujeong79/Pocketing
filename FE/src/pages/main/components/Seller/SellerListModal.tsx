@@ -12,11 +12,16 @@ interface SellerListModalProps {
 
 const SellerListModal = ({ isOpen, onClose, cardId }: SellerListModalProps) => {
   const { data: sellerList } = useSellerList(cardId);
+  const filteredSellerList = sellerList?.content.content.filter(
+    (seller: SellerListItemType) => seller.status !== 'COMPLETED'
+  );
+
+  if (!filteredSellerList || filteredSellerList.length === 0) return null;
 
   return (
     <SlideUpModal isOpen={isOpen} onClose={onClose} height="75vh" header="거래 상대 선택">
       <ModalContent>
-        {sellerList?.content.content.map((seller: SellerListItemType) => (
+        {filteredSellerList.map((seller: SellerListItemType) => (
           <SellerListItem
             key={seller.postId}
             postId={seller.postId}

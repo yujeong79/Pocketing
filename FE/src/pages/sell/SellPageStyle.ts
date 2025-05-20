@@ -56,7 +56,7 @@ export const BackgroundSection = styled.div`
   margin: ${scale(24)}px -${scale(16)}px 0;
   padding: ${scale(24)}px ${scale(16)}px;
   flex: 1;
-  min-height: calc(100vh - ${scale(280)}px);
+  min-height: calc(100vh - ${scale(260)}px);
   background-color: ${colors.gray100};
   border-radius: ${scale(10)}px ${scale(10)}px 0 0;
 `;

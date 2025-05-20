@@ -5,12 +5,8 @@ export const useProfile = () => {
   const { myProfile, setMyProfile } = useGlobalStore();
 
   const fetchProfile = async () => {
-    try {
-      const response = await getMyInfo();
-      setMyProfile(response.result);
-    } catch (error) {
-      throw error;
-    }
+    const response = await getMyInfo();
+    setMyProfile(response.result);
   };
 
   return { myProfile, fetchProfile };
