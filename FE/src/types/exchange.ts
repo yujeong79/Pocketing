@@ -12,7 +12,7 @@ export interface Exchange {
     imageUrl: string;
   };
   exchangeRequestId: number;
-  requestStatus: 'PENDING' | null;
+  requestStatus: 'PENDING' | 'ACCEPTED' | 'REJECTED' | null;
 }
 
 export interface ExchangeRequest {
