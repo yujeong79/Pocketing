@@ -1,5 +1,5 @@
 import { useGlobalStore } from '@/store/globalStore';
-import { getMySales } from '@/api/user/mySales';
+import { getMySales, getMyCompleteSales } from '@/api/user/mySales';
 
 export const useSales = () => {
   const { mySales, setMySales } = useGlobalStore();
@@ -10,4 +10,15 @@ export const useSales = () => {
   };
 
   return { mySales, fetchSales };
+};
+
+export const useCompleteSales = () => {
+  const { myCompleteSales, setMyCompleteSales } = useGlobalStore();
+
+  const fetchCompleteSales = async () => {
+    const response = await getMyCompleteSales();
+    setMyCompleteSales([...response.result]);
+  };
+
+  return { myCompleteSales, fetchCompleteSales };
 };

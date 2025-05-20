@@ -1,31 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as S from './MyCompleteListStyle';
 import Header from '@/components/common/Header';
 import Divider from './components/Divider';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { MyCompleteListResponse } from '@/types/mySale';
-import { getMyCompleteSales } from '@/api/user/mySales';
 import { formatDate } from '@/utils/formatDate';
+import { useGlobalStore } from '@/store/globalStore';
+import { useCompleteSales } from '@/hooks/sales/useSales';
 
 const MyCompleteListPage = () => {
-  const [myCompleteSales, setMyCompleteSales] = useState<MyCompleteListResponse[]>([]);
-  const filteredList = myCompleteSales
-    .filter((item) => !item.createdAt)
-    .sort((a, b) => b.postId - a.postId);
+  const { isCompleteSalesLoading, setIsCompleteSalesLoading } = useGlobalStore();
+  const { myCompleteSales, fetchCompleteSales } = useCompleteSales();
 
-  const handleGetMyCompleteSales = useCallback(async () => {
-    try {
-      const response = await getMyCompleteSales();
-      setMyCompleteSales(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const filteredList = myCompleteSales.sort((a, b) => b.postId - a.postId);
 
   useEffect(() => {
-    handleGetMyCompleteSales();
-  }, [handleGetMyCompleteSales]);
+    if (!isCompleteSalesLoading) {
+      fetchCompleteSales();
+      setIsCompleteSalesLoading(true);
+    }
+  }, [isCompleteSalesLoading, fetchCompleteSales, setIsCompleteSalesLoading]);
 
   return (
     <S.PageContainer>
@@ -77,7 +71,7 @@ const MyCompleteListPage = () => {
               <S.MyCompleteItemPriceContainer>
                 <S.MyCompletePriceTitle>판매가</S.MyCompletePriceTitle>
                 <S.MyCompleteItemPriceText>
-                  <S.MyCompleteItemPrice>{mySale.price}</S.MyCompleteItemPrice>
+                  <S.MyCompleteItemPrice>{mySale.price.toLocaleString()}</S.MyCompleteItemPrice>
                   <S.MyCompleteItemPriceWon>원</S.MyCompleteItemPriceWon>
                 </S.MyCompleteItemPriceText>
                 {index !== filteredList.length - 1 && <Divider />}

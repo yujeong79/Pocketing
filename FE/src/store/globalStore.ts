@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { MySaleListResponse } from '@/types/mySale';
+import { MySaleListResponse, MyCompleteListResponse } from '@/types/mySale';
 import { MyInfo } from '@/types/myInfo';
 import { GetRegisteredCardResponse } from '@/types/exchange';
 
@@ -8,6 +8,11 @@ interface GlobalStore {
   setMySales: (mySales: MySaleListResponse[]) => void;
   isSalesLoading: boolean;
   setIsSalesLoading: (isSalesLoading: boolean) => void;
+
+  myCompleteSales: MyCompleteListResponse[];
+  setMyCompleteSales: (myCompleteSales: MyCompleteListResponse[]) => void;
+  isCompleteSalesLoading: boolean;
+  setIsCompleteSalesLoading: (isCompleteSalesLoading: boolean) => void;
 
   myProfile: MyInfo;
   setMyProfile: (myProfile: MyInfo) => void;
@@ -31,6 +36,8 @@ interface GlobalStore {
 export const useGlobalStore = create<GlobalStore>((set) => ({
   mySales: [],
   isSalesLoading: false,
+  myCompleteSales: [],
+  isCompleteSalesLoading: false,
   myProfile: {} as MyInfo,
   isProfileLoading: false,
   myCard: {} as GetRegisteredCardResponse,
@@ -41,6 +48,8 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
 
   setMySales: (mySales: MySaleListResponse[]) => set({ mySales }),
   setIsSalesLoading: (isSalesLoading: boolean) => set({ isSalesLoading }),
+  setMyCompleteSales: (myCompleteSales: MyCompleteListResponse[]) => set({ myCompleteSales }),
+  setIsCompleteSalesLoading: (isCompleteSalesLoading: boolean) => set({ isCompleteSalesLoading }),
   setMyProfile: (myProfile: MyInfo) => set({ myProfile }),
   setIsProfileLoading: (isProfileLoading: boolean) => set({ isProfileLoading }),
   setMyCard: (myCard: GetRegisteredCardResponse) => set({ myCard }),
