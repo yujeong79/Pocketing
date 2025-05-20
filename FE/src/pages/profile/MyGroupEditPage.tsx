@@ -7,6 +7,7 @@ import { SearchIcon } from '@/assets/assets';
 import { useGroups } from '@/hooks/artist/query/useGroups';
 import { Group } from '@/types/group';
 import { useGroupSearch } from '@/hooks/search/useGroupSearch';
+import { useToastStore } from '@/store/toastStore';
 
 const MyGroupEditPage = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const MyGroupEditPage = () => {
     groups: groupsData?.result,
     searchTerm,
   });
+  const { showToast } = useToastStore();
 
   // 관심 그룹이 앞으로 오도록 정렬된 그룹 목록
   const sortedGroups = filteredGroups?.sort((a, b) => {
@@ -27,15 +29,31 @@ const MyGroupEditPage = () => {
     return 0;
   });
 
-  // 완료 버튼 핸들러 - 단순히 메인 페이지로 이동
+  // 관심 그룹(멤버)이 1개 이상 선택됐는지 여부
+  const hasInterestGroup = sortedGroups?.some((group) => group.interest);
+
+  // 완료 버튼 핸들러 - 관심 멤버 없으면 토스트, 있으면 이동
   const handleComplete = useCallback(() => {
+    if (!hasInterestGroup) {
+      showToast('warning', '관심 멤버를 1명 이상 선택해주세요!');
+      return;
+    }
     navigate(fromPath);
-  }, [navigate, fromPath]);
+  }, [navigate, fromPath, hasInterestGroup, showToast]);
 
   return (
     <S.PageContainer>
       <S.ItemContainer>
-        <BackButton fallbackPath="/profile" />
+        <BackButton
+          fallbackPath="/profile"
+          onClick={() => {
+            if (!hasInterestGroup) {
+              showToast('warning', '관심 멤버를 1명 이상 선택해주세요!');
+              return;
+            }
+            navigate(fromPath);
+          }}
+        />
         <S.Title>관심 그룹을 선택해주세요</S.Title>
         <S.SearchContainer>
           <S.SearchInput
