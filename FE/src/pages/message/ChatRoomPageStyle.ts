@@ -80,6 +80,19 @@ export const InputForm = styled.form`
   box-shadow: 0 -${scale(2)}px ${scale(6)}px rgba(0, 0, 0, 0.05);
 `;
 
+export const PlusButton = styled.img`
+  width: ${scale(20)}px;
+  height: ${scale(20)}px;
+  margin-right: ${scale(4)}px;
+  margin-left: -${scale(8)}px;
+`;
+
+export const PlusButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Input = styled.input`
   ${FontStyles.captionMedium}
   flex: 1;
@@ -112,9 +125,10 @@ export const SendButton = styled.img`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${scale(4)}px;
-  width: ${scale(24)}px;
-  height: ${scale(24)}px;
+  margin-left: ${scale(2)}px;
+  margin-right: ${scale(2)}px;
+  width: ${scale(20)}px;
+  height: ${scale(20)}px;
 `;
 
 export const LoadMoreButton = styled.button`
