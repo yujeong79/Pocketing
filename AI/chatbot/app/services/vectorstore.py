@@ -1,11 +1,12 @@
 import logging
-from typing import Optional,List,Dict,Any, Union
+from typing import Optional, List, Dict, Any, Union
 import chromadb
 from chromadb.config import Settings as ChromadbSettings
 from app.config.settings import settings
 from app.models.schemas import PhotoCardVector
 
 logger = logging.getLogger(__name__)
+
 
 class VectorStore:
     def __init__(self):
@@ -31,11 +32,11 @@ class VectorStore:
         except Exception as e:
             logger.info(f"컬렉션 '{collection_name}' 생성중..")
             return self.client.create_collection(
-                name = collection_name,
+                name=collection_name,
                 metadata={"description": "포토카드 벡터 저장소"}
             )
 
-    def add_vector(self, photocard: PhotoCardVector) -> bool: #포토카드 한장 저장
+    def add_vector(self, photocard: PhotoCardVector) -> bool:  # 포토카드 한장 저장
         try:
             metadata = {
                 "card_id": str(photocard.card_id),
@@ -59,7 +60,7 @@ class VectorStore:
             logger.error(f"포토카드 벡터 추가 실패:{str(e)}")
             return False
 
-    def add_vectors(self, photocards: List[PhotoCardVector]) -> int: # 포토카드 여러장 저장
+    def add_vectors(self, photocards: List[PhotoCardVector]) -> int:  # 포토카드 여러장 저장
         if not photocards:
             return 0
         try:
@@ -110,9 +111,14 @@ class VectorStore:
 
             where_filter = None
             if filters:
-                where_filter = {}
-                for key, value in filters.items():
-                    where_filter[key] = {"$eq": value}
+                if len(filters) > 1:
+                    where_clauses = []
+                    for key, value in filters.items():
+                        where_clauses.append({key: {"$eq": value}})
+                    where_filter = {"$or": where_clauses}
+                elif len(filters) == 1:
+                    key, value = next(iter(filters.items()))
+                    where_filter = {key: {"$eq": value}}
 
             results = self.collection.query(
                 query_embeddings=query_vectors,
@@ -149,7 +155,7 @@ class VectorStore:
             else:
                 return [[] for _ in range(len(query_vectors))]
 
-    def delete_vector(self,card_id: str) -> bool:
+    def delete_vector(self, card_id: str) -> bool:
         try:
             self.collection.delete(ids=[card_id])
             logger.info(f"card_id = {card_id}의 포토카드 벡터 삭제 완료")

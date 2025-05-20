@@ -1,6 +1,6 @@
 import logging
 import json
-from datetime import datetime
+import hashlib
 from typing import List, Dict, Any, Optional, Tuple
 from app.services.vectorstore import VectorStore
 from app.services.embedding import EmbeddingService
@@ -8,6 +8,7 @@ from app.services.cache import RedisCache
 from app.services.llm import LLMService
 from app.models.schemas import PhotoCardResult, PostInfo
 from app.utils.tagging import normalize_tags, split_tag_string
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -21,46 +22,101 @@ class RAGService:
         self.llm_service = LLMService()
         logger.info("RAG 서비스 초기화 완료")
 
-    def _analyze_query_with_openai(self, query: str) -> Dict[str, Any]:
+    def expand_query_semantically(self, query: str) -> str:
         try:
-            cache_key = f"query_analysis:{query.lower()}"
+            normalized_query = query.lower().strip()
+            cache_key = f"expanded_query:{hashlib.md5(normalized_query.encode()).hexdigest()}"
 
             cached_result = self.cache.get(cache_key)
             if cached_result:
-                try:
-                    return json.loads(cached_result)
-                except:
-                    logger.warning(f"캐시된 쿼리 분석 결과 파싱 실패: {cached_result}")
+                logger.info(f"캐시에서 확장된 쿼리 검색됨: '{query}'")
+                return cached_result
 
-            # 현재 프롬프트 유지
+            system_prompt = """
+            당신은 K-POP 포토카드 검색 전문가입니다. 사용자 검색어를 분석하고 확장하여 더 정확한 검색 결과를 얻도록 도와주세요.
+
+            사용자의 질문을 분석하여 다음을 포함한 확장된 검색어를 생성해주세요:
+            1. 원래 검색어에 포함된 모든 중요 정보 유지
+            2. 사용자가 찾고자 하는 멤버, 그룹, 앨범, 특징 등을 명확히 식별
+            3. 관련 동의어 및 유사 개념 추가 (한국어, 영어 모두 고려)
+            4. K-POP 포토카드 도메인에 특화된 용어 추가
+
+            중요: 확장된 검색어는 원래 질문의 의도를 보존하면서, 관련성 높은 용어만 추가해야 합니다.
+            불필요하게 길지 않고 간결하게 핵심 용어만 포함하세요.
+
+            예시:
+            입력: "제니 검은색 의상 포토카드 어디서 살 수 있어?"
+            출력: "제니 블랙핑크 블핑 검은색 의상 black outfit 제니 포토카드 판매"
+
+            입력: "에스파 카리나 양갈래 헤어 포토카드 찾아줘"
+            출력: "에스파 aespa 카리나 karina 양갈래 양갈래머리 트윈테일 twintails 포토카드 photocard"
+            """
+
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"검색어: {query}"}
+            ]
+
+            orig_temperature = self.llm_service.temperature
+            self.llm_service.temperature = 0.2
+
+            expanded_query = self.llm_service.generate_response(messages)
+            self.llm_service.temperature = orig_temperature
+            self.cache.set(cache_key, expanded_query, expiry=86400)
+
+            logger.info(f"쿼리 확장: '{query}' → '{expanded_query}'")
+            return expanded_query
+
+        except Exception as e:
+            logger.error(f"쿼리 확장 중 오류 발생: {str(e)}")
+            return query
+
+    def _analyze_query_with_openai(self, query: str, force_reanalysis: bool = False) -> Dict[str, Any]:
+        try:
+            normalized_query = query.lower().strip().replace('"', '').replace("'", "")
+            cache_key = f"query_analysis:{hashlib.md5(normalized_query.encode()).hexdigest()}"
+
+            if not force_reanalysis:
+                cached_result = self.cache.get(cache_key)
+                if cached_result:
+                    try:
+                        result = json.loads(cached_result)
+                        logger.info(f"캐시에서 쿼리 분석 결과 로드: {result}")
+                        return result
+                    except:
+                        logger.warning(f"캐시된 쿼리 분석 결과 파싱 실패: {cached_result}")
+
             system_prompt = """
             당신은 K-POP 포토카드 검색 어시스턴트입니다. 사용자의 검색어를 분석하여 다음 정보를 JSON 형식으로 추출해주세요:
 
-            1. member_name: 멤버 이름 (없으면 null)
-            2. group_name: 그룹 이름 (없으면 null)
-            3. album_name: 앨범 이름 (없으면 null)
-            4. features: 포토카드의 특징들 배열
+        1. member_name: 멤버 이름 (없으면 null)
+        2. group_name: 그룹 이름 (없으면 null)
+        3. album_name: 앨범 이름 (없으면 null)
+        4. features: 포토카드의 특징들 배열
 
-            중요한 지침:
-            - 특징은 개별 단어가 아닌 의미 있는 표현 단위로 추출하세요.
-            - 색상, 액세서리, 의상, 헤어스타일, 표정, 포즈 등의 특징을 포함하세요.
-            - 한국어 검색어도 올바르게 처리하세요.
-            - 명확하지 않은 경우 null 대신 빈 문자열("")이나 빈 배열([])을 반환하세요.
-            - 유사한 헤어스타일 관련 용어는 일관된 형태로 추출하세요 (예: "단발"과 "단발머리"는 "단발"로).
-            - 색상 관련 용어도 일관되게 처리하세요 (예: "블랙"과 "검정"은 "검정"으로).
+        중요한 지침:
+        - 특징은 개별 단어가 아닌 의미 있는 표현 단위로 추출하세요.
+        - 색상, 액세서리, 의상, 헤어스타일, 표정, 포즈 등의 특징을 포함하세요.
+        - 한국어 검색어도 올바르게 처리하세요.
+        - 명확하지 않은 경우 null 대신 빈 문자열("")이나 빈 배열([])을 반환하세요.
+        - 비슷한 용어는 원본 형태와 정규화된 형태를 모두 추출하세요 (예: "단발머리"가 쿼리에 있으면 ["단발머리", "단발"] 모두 특징으로 추출).
+        - 색상 용어도 원본 형태를 유지하고 유사어도 추가하세요 (예: "블랙"이 있으면 ["블랙", "검정"] 모두 추출).
+        - short hair, bob cut 같은 영어 표현도 특징으로 추출하세요.
+        - 쿼리에 영어와 한국어로 같은 의미의 단어가 있다면 둘 다 특징으로 추출하세요.
+        - 확장된 쿼리에 있는 모든 관련 용어들을 특징으로 추가하세요.
 
-            예시 분석:
-            - 검색어: "핑크 선글라스를 쓴 카리나"
-              결과: {"member_name": "카리나", "group_name": "", "album_name": "", "features": ["핑크 선글라스"]}
+        예시 분석:
+        - 검색어: "핑크 선글라스를 쓴 카리나"
+          결과: {"member_name": "카리나", "group_name": "", "album_name": "", "features": ["핑크 선글라스", "핑크", "선글라스", "분홍색"]}
 
-            - 검색어: "에스파 윈터 짧은 머리"
-              결과: {"member_name": "윈터", "group_name": "에스파", "album_name": "", "features": ["짧은 머리"]}
+        - 검색어: "에스파 윈터 짧은 머리"
+          결과: {"member_name": "윈터", "group_name": "에스파", "album_name": "", "features": ["짧은 머리", "숏컷", "short hair"]}
 
-            - 검색어: "단발머리 제니"
-              결과: {"member_name": "제니", "group_name": "", "album_name": "", "features": ["단발"]}
+        - 검색어: "단발머리 short hair 제니"
+          결과: {"member_name": "제니", "group_name": "", "album_name": "", "features": ["단발머리", "단발", "short hair"]}
 
-            - 검색어: "하늘색 의상 지수"
-              결과: {"member_name": "지수", "group_name": "", "album_name": "", "features": ["하늘색 의상"]}
+        - 검색어: "블랙핑크 제니 검은색 의상"
+          결과: {"member_name": "제니", "group_name": "블랙핑크", "album_name": "", "features": ["검은색 의상", "블랙", "검정", "black outfit"]}
             """
 
             messages = [
@@ -101,13 +157,12 @@ class RAGService:
             logger.error(f"OpenAI 쿼리 분석 실패: {str(e)}")
             return {"member_name": None, "group_name": None, "album_name": None, "features": []}
 
+
     def _calculate_semantic_similarity_with_openai(self, query_features: List[str], raw_tags: List[str]) -> float:
         if not query_features or not raw_tags:
             return 0.0
-
         try:
-            # tagging.py에서 이미 정규화된 태그라고 가정하고 중복 처리하지 않음
-            normalized_tags = raw_tags  # 이미 split_tag_string()에서 normalize_tag() 호출됨
+            normalized_tags = raw_tags
 
             features_key = ",".join(sorted(f.lower() for f in query_features))
             tags_key = ",".join(sorted(t.lower() for t in normalized_tags))
@@ -120,7 +175,6 @@ class RAGService:
                 except:
                     logger.warning(f"캐시된 유사도 값 파싱 실패: {cached_result}")
 
-            # 현재 프롬프트 유지
             system_prompt = """
             당신은 K-POP 포토카드 특징과 태그 간의 의미적 유사도를 판단하는 전문가입니다.
             사용자가 찾는 특징과 포토카드 태그 사이의 유사도를 0.0에서 1.0 사이 값으로 평가해주세요.
@@ -164,7 +218,7 @@ class RAGService:
             ]
 
             orig_temperature = self.llm_service.temperature
-            self.llm_service.temperature = 0.1  # 낮은 temperature로 일관성 있는 결과 유도
+            self.llm_service.temperature = 0.1
 
             response = self.llm_service.generate_response(
                 messages,
@@ -194,10 +248,9 @@ class RAGService:
             logger.error(f"의미 유사도 계산 실패: {str(e)}")
             return 0.0
 
-    def search_photocards(self, query: str, n_results: int = 20, filters: Optional[Dict[str, Any]] = None) -> Tuple[
-        List[Dict[str, Any]], List[PhotoCardResult]]:
+    def search_photocards(self, query: str, n_results: int = 20, filters: Optional[Dict[str, Any]] = None) -> Tuple[List[Dict[str, Any]], List[PhotoCardResult]]:
         try:
-            query_analysis = self._analyze_query_with_openai(query)
+            query_analysis = self._analyze_query_with_openai(query, force_reanalysis=True)
             member_name = query_analysis.get('member_name')
             group_name = query_analysis.get('group_name')
             album_name = query_analysis.get('album_name')
@@ -272,20 +325,16 @@ class RAGService:
 
                 for result in search_results:
                     tag_str = result["metadata"].get("tag", "")
-                    # split_tag_string 함수를 사용해 태그 정규화 (이 함수 내부에서 이미 normalize_tag 호출)
                     raw_tags = split_tag_string(tag_str)
 
-                    # 디버깅 정보 추가
                     logger.debug(f"카드 ID: {result['metadata'].get('card_id')}, 원본 태그: {tag_str}, 분할 태그: {raw_tags}")
 
-                    # 태그가 없는 경우 건너뛰기
                     if not raw_tags:
                         logger.debug(f"카드 ID: {result['metadata'].get('card_id')}에 태그가 없어 낮은 유사도 부여")
                         result["semantic_similarity"] = 0.0
                         scored_results.append((result, 0.0))
                         continue
 
-                    # AI 기반 유사도 계산 - 이미 정규화된 태그 전달
                     similarity_score = self._calculate_semantic_similarity_with_openai(features, raw_tags)
 
                     result["semantic_similarity"] = similarity_score
@@ -295,18 +344,15 @@ class RAGService:
 
                 scored_results.sort(key=lambda x: x[1], reverse=True)
 
-                # 유사도 임계값 - 0.5로 설정하여 관련성 높은 결과 허용
                 threshold = 0.5
                 filtered_results = [result for result, score in scored_results if score >= threshold]
 
-                # 모든 결과가 필터링되었다면 최소한의 결과 제공
                 if not filtered_results and scored_results:
-                    # 태그가 있는 결과 중에서 상위 결과 선택
                     tagged_results = [(result, score) for result, score in scored_results
                                       if split_tag_string(result["metadata"].get("tag", "")) and score > 0.0]
 
                     if tagged_results:
-                        # 점수와 상관없이 태그가 있는 결과 중 최대 3개 반환
+
                         top_n = min(3, len(tagged_results))
                         filtered_results = [result for result, _ in tagged_results[:top_n]]
                         logger.info(f"필터링 임계값을 만족하는 결과가 없어 태그가 있는 상위 {len(filtered_results)}개 결과 반환")
