@@ -45,10 +45,10 @@ public class NearbyExchangeCardResponseDto {
                         .member((String) row[8])
                         .build())
                 .requesterId(row[10] == null ? null : ((Number) row[10]).longValue())
-                .exchangeRequestId(row[11] == null ? null : ((Number) row[10]).longValue())
+                .exchangeRequestId(row[11] == null ? null : ((Number) row[11]).longValue())
                 .requestStatus(row[12] == null
                         ? null   // enum에 NONE 추가
-                        : ExchangeRequestStatus.valueOf((String) row[11]))
+                        : ExchangeRequestStatus.valueOf((String) row[12]))
                 .build();
     }
 }
