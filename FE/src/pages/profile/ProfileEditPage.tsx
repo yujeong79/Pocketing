@@ -99,31 +99,23 @@ const ProfileEditPage = () => {
     if (!imageFile) {
       return null;
     }
-    try {
-      const response = await postS3Image({
-        fileName: imageFile.name,
-        contentType: imageFile.type,
-      });
-      const presignedUrl = response.result.presignedUrl;
-      return presignedUrl;
-    } catch (error) {
-      throw error;
-    }
+    const response = await postS3Image({
+      fileName: imageFile.name,
+      contentType: imageFile.type,
+    });
+    const presignedUrl = response.result.presignedUrl;
+    return presignedUrl;
   }, [imageFile]);
 
   // S3에 직접 파일을 업로드
   const handleS3Upload = async (presignedUrl: string, file: File, contentType: string) => {
-    try {
-      await putS3Image({
-        presignedUrl: presignedUrl,
-        uploadFile: file,
-        header: {
-          'Content-Type': contentType,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    await putS3Image({
+      presignedUrl: presignedUrl,
+      uploadFile: file,
+      header: {
+        'Content-Type': contentType,
+      },
+    });
   };
 
   // 입력 필드 변경
