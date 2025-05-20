@@ -26,6 +26,7 @@ interface HeaderProps {
   onRegister?: () => void;
   rightElement?: React.ReactNode;
   roomId?: string | number;
+  onClick?: () => void;
 }
 
 export default function Header({
@@ -36,6 +37,7 @@ export default function Header({
   onRegister,
   rightElement,
   roomId,
+  onClick,
 }: HeaderProps) {
   const navigate = useNavigate();
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
@@ -170,7 +172,17 @@ export default function Header({
   };
 
   return (
-    <>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        zIndex: 100,
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+    >
       <S.HeaderContainer $hasBorder={hasBorder}>
         {renderLeftContent()}
         {renderRightContent()}
@@ -191,6 +203,6 @@ export default function Header({
         confirmText="나가기"
         cancelText="취소"
       />
-    </>
+    </div>
   );
 }

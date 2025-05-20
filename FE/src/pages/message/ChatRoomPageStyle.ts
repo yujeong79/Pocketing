@@ -6,9 +6,11 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 100vh;
   position: relative;
   padding: ${scale(16)}px;
+  padding-top: ${scale(60)}px;
+  padding-bottom: 0;
   overflow: hidden;
   ::-webkit-scrollbar {
     display: none;
@@ -21,8 +23,7 @@ export const ChatContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding-bottom: ${scale(40)}px;
-  margin-bottom: ${scale(4)}px;
+  padding-bottom: ${scale(64)}px;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {

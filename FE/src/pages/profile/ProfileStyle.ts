@@ -8,4 +8,5 @@ export const ContentContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-top: ${scale(50)}px;
 `;

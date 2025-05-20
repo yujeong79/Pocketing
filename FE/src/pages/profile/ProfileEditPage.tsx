@@ -99,31 +99,23 @@ const ProfileEditPage = () => {
     if (!imageFile) {
       return null;
     }
-    try {
-      const response = await postS3Image({
-        fileName: imageFile.name,
-        contentType: imageFile.type,
-      });
-      const presignedUrl = response.result.presignedUrl;
-      return presignedUrl;
-    } catch (error) {
-      throw error;
-    }
+    const response = await postS3Image({
+      fileName: imageFile.name,
+      contentType: imageFile.type,
+    });
+    const presignedUrl = response.result.presignedUrl;
+    return presignedUrl;
   }, [imageFile]);
 
   // S3에 직접 파일을 업로드
   const handleS3Upload = async (presignedUrl: string, file: File, contentType: string) => {
-    try {
-      await putS3Image({
-        presignedUrl: presignedUrl,
-        uploadFile: file,
-        header: {
-          'Content-Type': contentType,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    await putS3Image({
+      presignedUrl: presignedUrl,
+      uploadFile: file,
+      header: {
+        'Content-Type': contentType,
+      },
+    });
   };
 
   // 입력 필드 변경
@@ -205,110 +197,112 @@ const ProfileEditPage = () => {
   };
 
   return (
-    <S.PageContainer>
+    <>
       <Header type="profileEdit" hasBorder />
-      <S.ContentsContainer>
-        <S.InfoContainer>
-          <S.ImageContainer>
-            <S.ImageLabel htmlFor="avatar-input">
-              <S.ImageInput
-                id="avatar-input"
-                type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
-              />
-              <S.Image>
-                <S.UploadedImage
-                  src={selectedImage ?? myProfile?.profileImageUrl ?? DefaultProfileImage}
-                  alt="프로필 이미지"
+      <S.PageContainer>
+        <S.ContentsContainer>
+          <S.InfoContainer>
+            <S.ImageContainer>
+              <S.ImageLabel htmlFor="avatar-input">
+                <S.ImageInput
+                  id="avatar-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
                 />
-              </S.Image>
-              <S.CameraIcon src={CameraIcon} alt="camera" />
-            </S.ImageLabel>
-          </S.ImageContainer>
+                <S.Image>
+                  <S.UploadedImage
+                    src={selectedImage ?? myProfile?.profileImageUrl ?? DefaultProfileImage}
+                    alt="프로필 이미지"
+                  />
+                </S.Image>
+                <S.CameraIcon src={CameraIcon} alt="camera" />
+              </S.ImageLabel>
+            </S.ImageContainer>
 
-          <S.TextContainer>
-            <S.InputContainer>
-              <S.Label htmlFor="nickname">닉네임</S.Label>
-              <S.Input
-                id="nickname"
-                placeholder="닉네임을 입력하세요"
-                value={formData.nickname}
-                onChange={handleNicknameChange}
-              />
-              <S.CheckContainer>
-                {formData.nickname === myProfile?.nickname ? (
-                  <S.Phrase type="error"></S.Phrase>
-                ) : formData.nickname.length > 10 ? (
-                  <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
-                ) : formData.nickname === '' ? (
-                  <S.Phrase type="error">닉네임을 입력해주세요.</S.Phrase>
-                ) : isNicknameChecked && !isDuplicate ? (
-                  <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
-                ) : isNicknameChecked && isDuplicate ? (
-                  <S.Phrase type="error">중복된 닉네임입니다.</S.Phrase>
-                ) : (
-                  <S.Phrase type="error"></S.Phrase>
-                )}
-                <S.DuplicateCheckButtonContainer>
-                  <S.DuplicateCheckButton onClick={handleDuplicateCheck}>
-                    중복확인
-                  </S.DuplicateCheckButton>
-                </S.DuplicateCheckButtonContainer>
-              </S.CheckContainer>
-            </S.InputContainer>
-            <S.InputContainer>
-              <S.Label htmlFor="address">주소</S.Label>
-              <S.Input
-                id="address"
-                placeholder="주소를 입력하세요"
-                value={formData.address}
-                onChange={handleInputChange}
-              />
-            </S.InputContainer>
-            <S.BankContainer>
+            <S.TextContainer>
               <S.InputContainer>
-                <S.Label htmlFor="bank">은행</S.Label>
+                <S.Label htmlFor="nickname">닉네임</S.Label>
                 <S.Input
-                  id="bank"
-                  placeholder="은행명을 입력하세요"
-                  value={formData.bank}
+                  id="nickname"
+                  placeholder="닉네임을 입력하세요"
+                  value={formData.nickname}
+                  onChange={handleNicknameChange}
+                />
+                <S.CheckContainer>
+                  {formData.nickname === myProfile?.nickname ? (
+                    <S.Phrase type="error"></S.Phrase>
+                  ) : formData.nickname.length > 10 ? (
+                    <S.Phrase type="error">최대 10자까지 입력할 수 있습니다.</S.Phrase>
+                  ) : formData.nickname === '' ? (
+                    <S.Phrase type="error">닉네임을 입력해주세요.</S.Phrase>
+                  ) : isNicknameChecked && !isDuplicate ? (
+                    <S.Phrase type="success">사용 가능한 닉네임입니다.</S.Phrase>
+                  ) : isNicknameChecked && isDuplicate ? (
+                    <S.Phrase type="error">중복된 닉네임입니다.</S.Phrase>
+                  ) : (
+                    <S.Phrase type="error"></S.Phrase>
+                  )}
+                  <S.DuplicateCheckButtonContainer>
+                    <S.DuplicateCheckButton onClick={handleDuplicateCheck}>
+                      중복확인
+                    </S.DuplicateCheckButton>
+                  </S.DuplicateCheckButtonContainer>
+                </S.CheckContainer>
+              </S.InputContainer>
+              <S.InputContainer>
+                <S.Label htmlFor="address">주소</S.Label>
+                <S.Input
+                  id="address"
+                  placeholder="주소를 입력하세요"
+                  value={formData.address}
                   onChange={handleInputChange}
                 />
               </S.InputContainer>
-              <S.InputContainer>
-                <S.Label htmlFor="account">계좌</S.Label>
-                <S.Input
-                  id="account"
-                  placeholder="계좌를 입력하세요"
-                  value={formData.account}
-                  onChange={handleInputChange}
-                />
-              </S.InputContainer>
-            </S.BankContainer>
-          </S.TextContainer>
-        </S.InfoContainer>
-        <Button
-          text={isUploading ? '업로드 중...' : '수정하기'}
-          onClick={handleSubmit}
-          disabled={isUploading || formData.nickname === ''}
+              <S.BankContainer>
+                <S.InputContainer>
+                  <S.Label htmlFor="bank">은행</S.Label>
+                  <S.Input
+                    id="bank"
+                    placeholder="은행명을 입력하세요"
+                    value={formData.bank}
+                    onChange={handleInputChange}
+                  />
+                </S.InputContainer>
+                <S.InputContainer>
+                  <S.Label htmlFor="account">계좌</S.Label>
+                  <S.Input
+                    id="account"
+                    placeholder="계좌를 입력하세요"
+                    value={formData.account}
+                    onChange={handleInputChange}
+                  />
+                </S.InputContainer>
+              </S.BankContainer>
+            </S.TextContainer>
+          </S.InfoContainer>
+          <Button
+            text={isUploading ? '업로드 중...' : '수정하기'}
+            onClick={handleSubmit}
+            disabled={isUploading || formData.nickname === ''}
+          />
+        </S.ContentsContainer>
+        <ImageCropModal
+          open={cropModalOpen}
+          image={rawImage}
+          onClose={() => setCropModalOpen(false)}
+          onCropComplete={handleCropComplete}
         />
-      </S.ContentsContainer>
-      <ImageCropModal
-        open={cropModalOpen}
-        image={rawImage}
-        onClose={() => setCropModalOpen(false)}
-        onCropComplete={handleCropComplete}
-      />
-      <ConfirmModal
-        isOpen={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        onConfirm={() => setConfirmOpen(false)}
-        title="이미지 크기 오류"
-        text={`이미지의 최소 크기는 400x400px입니다.\n더 큰 이미지를 선택해주세요.`}
-        confirmText="확인"
-      />
-    </S.PageContainer>
+        <ConfirmModal
+          isOpen={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={() => setConfirmOpen(false)}
+          title="이미지 크기 오류"
+          text={`이미지의 최소 크기는 400x400px입니다.\n더 큰 이미지를 선택해주세요.`}
+          confirmText="확인"
+        />
+      </S.PageContainer>
+    </>
   );
 };
 
