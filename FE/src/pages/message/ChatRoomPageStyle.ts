@@ -10,6 +10,9 @@ export const Container = styled.div`
   position: relative;
   padding: ${scale(16)}px;
   overflow: hidden;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const ChatContainer = styled.div`
