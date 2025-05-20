@@ -5,6 +5,7 @@ import {
 import MemberChip from '@/pages/main/components/Chip/MemberChip';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { HeartWhiteIcon, HeartGrayIcon } from '@/assets/assets';
+import { LoadingChip } from './LoadingChip';
 
 interface MemberChipListProps {
   groupId: number;
@@ -16,7 +17,7 @@ const MemberChipList = ({ groupId, selectedMember, onSelectMember }: MemberChipL
   const { data: membersResponse, isLoading } = useMembers(groupId);
 
   if (!groupId) return null;
-  if (isLoading) return <div>멤버 목록을 불러오는 중...</div>;
+  if (isLoading) return <LoadingChip />;
   if (!membersResponse?.result) return null;
 
   const members = membersResponse.result;
