@@ -11,7 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { UserLikedGroup } from '@/types/user';
 import { useMainPageStore } from '@/store/mainPageStore';
-import { useSales } from '@/hooks/sales/useSales';
+import { useSales, useCompleteSales } from '@/hooks/sales/useSales';
 import { useProfile } from '@/hooks/user/useProfile';
 import { useMyCard } from '@/hooks/exchange/useExchange';
 import { useGlobalStore } from '@/store/globalStore';
@@ -32,6 +32,7 @@ const MainPage = () => {
   } = useMainPageStore();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
   const { fetchSales } = useSales();
+  const { fetchCompleteSales } = useCompleteSales();
   const { fetchProfile } = useProfile();
   const { fetchMyCard } = useMyCard();
   const { fetchOthersCard } = useOthersCard();
@@ -40,6 +41,8 @@ const MainPage = () => {
     setIsProfileLoading,
     isSalesLoading,
     setIsSalesLoading,
+    isCompleteSalesLoading,
+    setIsCompleteSalesLoading,
     isMyCardLoading,
     setIsMyCardLoading,
     isMyWishCardLoading,
@@ -64,6 +67,11 @@ const MainPage = () => {
       setIsSalesLoading(true);
     }
 
+    if (!isCompleteSalesLoading) {
+      fetchCompleteSales();
+      setIsCompleteSalesLoading(true);
+    }
+
     if (!isMyCardLoading) {
       fetchMyCard();
       setIsMyCardLoading(true);
@@ -76,14 +84,17 @@ const MainPage = () => {
   }, [
     isProfileLoading,
     isSalesLoading,
+    isCompleteSalesLoading,
     isMyCardLoading,
     isMyWishCardLoading,
     fetchSales,
+    fetchCompleteSales,
     fetchProfile,
     fetchMyCard,
     fetchOthersCard,
     setIsProfileLoading,
     setIsSalesLoading,
+    setIsCompleteSalesLoading,
     setIsMyCardLoading,
     setIsMyWishCardLoading,
   ]);

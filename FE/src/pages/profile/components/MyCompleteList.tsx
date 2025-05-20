@@ -1,33 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './MyCompleteListStyle';
 import Divider from './Divider';
 import { MySaleCompleteIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMyCompleteSales } from '@/api/user/mySales';
-import { MyCompleteListResponse } from '@/types/mySale';
 import { formatDate } from '@/utils/formatDate';
+import { useGlobalStore } from '@/store/globalStore';
+import { useCompleteSales } from '@/hooks/sales/useSales';
 
 const MyCompleteList = () => {
-  const [myCompleteSales, setMyCompleteSales] = useState<MyCompleteListResponse[]>([]);
-  const navigate = useNavigate();
-  const filteredList = myCompleteSales
-    .filter((item) => !item.createdAt)
-    .sort((a, b) => b.postId - a.postId)
-    .slice(0, 2);
+  const { myCompleteSales, fetchCompleteSales } = useCompleteSales();
+  const { isCompleteSalesLoading, setIsCompleteSalesLoading } = useGlobalStore();
 
-  const handleGetMyCompleteSales = useCallback(async () => {
-    try {
-      const response = await getMyCompleteSales();
-      setMyCompleteSales(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const navigate = useNavigate();
+  const filteredList = myCompleteSales.sort((a, b) => b.postId - a.postId).slice(0, 2);
 
   useEffect(() => {
-    handleGetMyCompleteSales();
-  }, [handleGetMyCompleteSales]);
+    if (!isCompleteSalesLoading) {
+      fetchCompleteSales();
+      setIsCompleteSalesLoading(true);
+    }
+  }, [isCompleteSalesLoading, fetchCompleteSales, setIsCompleteSalesLoading]);
 
   return (
     <S.MyCompleteListContainer>
@@ -83,7 +76,7 @@ const MyCompleteList = () => {
             <S.MyCompleteItemPriceContainer>
               <S.MyCompletePriceTitle>판매가</S.MyCompletePriceTitle>
               <S.MyCompleteItemPriceText>
-                <S.MyCompleteItemPrice>{mySale.price}</S.MyCompleteItemPrice>
+                <S.MyCompleteItemPrice>{mySale.price.toLocaleString()}</S.MyCompleteItemPrice>
                 <S.MyCompleteItemPriceWon>원</S.MyCompleteItemPriceWon>
               </S.MyCompleteItemPriceText>
               {index !== filteredList.length - 1 && <Divider />}
