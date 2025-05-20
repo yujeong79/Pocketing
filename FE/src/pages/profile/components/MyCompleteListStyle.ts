@@ -3,11 +3,6 @@ import { colors } from '@/styles/theme';
 import scale from '@/utils/scale';
 import { FontStyles } from '@/constants/fonts';
 
-export const RightArrowButton = styled.img`
-  width: ${scale(6)}px;
-  height: ${scale(12)}px;
-`;
-
 export const MyCompleteListContainer = styled.div`
   display: flex;
   flex-direction: column;

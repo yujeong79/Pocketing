@@ -4,15 +4,16 @@ import * as S from './DetailPageStyle';
 import InfoChip from './components/Chip/InfoChip';
 import SellerItem from './components/Seller/SellerItem';
 import Button from '@/components/common/Button';
+import ConfirmModal from '@/components/common/ConfirmModal';
+import InputModal from '@/components/common/InputModal';
 import { usePostDetail } from '@/hooks/post/query/usePost';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
 import { useAuth } from '@/hooks/useAuth';
 import { DeleteIcon, CashEditIcon } from '@/assets/assets';
-import ConfirmModal from '@/components/common/ConfirmModal';
 import { useDeletePost, useUpdatePostPrice } from '@/hooks/post/mutation/usePost';
 import { useToastStore } from '@/store/toastStore';
 import { useState } from 'react';
-import InputModal from '@/components/common/InputModal';
+import { useGlobalStore } from '@/store/globalStore';
 
 const DetailPage = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -25,6 +26,7 @@ const DetailPage = () => {
   const updatePriceMutation = useUpdatePostPrice();
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [priceInput, setPriceInput] = useState(postDetail?.price.toString() || '');
+  const { setIsSalesLoading } = useGlobalStore();
 
   console.log('DetailPage 렌더링:', {
     postId,
@@ -83,10 +85,11 @@ const DetailPage = () => {
     try {
       await deletePostMutation.mutateAsync(Number(postId));
       showToast('success', '판매글이 삭제되었습니다.');
+      setIsSalesLoading(false);
       navigate('/main');
     } catch (e) {
-      console.error('삭제 실패:', e);
       showToast('warning', '삭제에 실패했습니다.');
+      throw e;
     }
   };
 

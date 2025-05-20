@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import * as S from './MyCompleteListStyle';
 import Divider from './Divider';
-import { MySaleCompleteIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
+import { MySaleCompleteIcon, DefaultProfileImage } from '@/assets/assets';
 import { formatDate } from '@/utils/formatDate';
 import { useGlobalStore } from '@/store/globalStore';
 import { useCompleteSales } from '@/hooks/sales/useSales';
@@ -70,7 +70,6 @@ const MyCompleteList = () => {
                     </S.CardSecondLine>
                   </S.CardInfoContainer>
                 </S.InfoContainer>
-                <S.RightArrowButton src={RightArrowIcon} alt="판매 상세 페이지 이동" />
               </S.InfoAndButtonContainer>
             </S.MyCompleteItemInfoContainer>
             <S.MyCompleteItemPriceContainer>

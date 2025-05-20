@@ -31,11 +31,6 @@ export const NonItemText = styled.div`
   color: ${colors.gray500};
 `;
 
-export const RightArrowButton = styled.img`
-  width: ${scale(6)}px;
-  height: ${scale(12)}px;
-`;
-
 export const MyCompleteTitleContainer = styled.div`
   display: flex;
   align-items: center;
