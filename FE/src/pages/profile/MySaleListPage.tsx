@@ -15,7 +15,7 @@ const MySaleListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const filteredList = mySales.filter((item) => item.createdAt).sort((a, b) => b.postId - a.postId);
+  const filteredList = mySales.sort((a, b) => b.postId - a.postId);
 
   const fromRegister = location.state?.fromRegister;
 
@@ -103,7 +103,7 @@ const MySaleListPage = () => {
               <S.MySaleItemPriceContainer>
                 <S.MySalePriceTitle>판매가</S.MySalePriceTitle>
                 <S.MySaleItemPriceText>
-                  <S.MySaleItemPrice>{mySales.price}</S.MySaleItemPrice>
+                  <S.MySaleItemPrice>{mySales.price.toLocaleString()}</S.MySaleItemPrice>
                   <S.MySaleItemPriceWon>원</S.MySaleItemPriceWon>
                 </S.MySaleItemPriceText>
                 {index !== filteredList.length - 1 && <Divider />}
