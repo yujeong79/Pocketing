@@ -42,8 +42,12 @@ const MapPage = () => {
   const handleGetUserList = useCallback(async () => {
     try {
       const response = await getExchangeUserList(range);
-      setCurrentUsers(response.result.length);
-      setUserList(response.result);
+      const filteredList = response.result.filter(
+        (user) => user.requestStatus === 'PENDING' || user.requestStatus === null
+      );
+
+      setCurrentUsers(filteredList.length);
+      setUserList(filteredList);
 
       if (!response.isSuccess) {
         setShowEmptyToast(true);
@@ -80,6 +84,7 @@ const MapPage = () => {
     setTimeout(() => {
       setSpinning(false);
     }, 300);
+    handleGetCurrentLocation();
     handlePostLocation();
     handleGetUserList();
   };
@@ -109,7 +114,7 @@ const MapPage = () => {
     }
   };
 
-  useEffect(() => {
+  const handleGetCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -123,6 +128,10 @@ const MapPage = () => {
         }
       );
     }
+  };
+
+  useEffect(() => {
+    handleGetCurrentLocation();
   }, []);
 
   useEffect(() => {

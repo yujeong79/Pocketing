@@ -11,7 +11,9 @@ export const PocketCallButtonContainer = styled.div`
   cursor: pointer;
 `;
 
-export const PocketCallContent = styled.div<{ $isRequested: 'PENDING' | null }>`
+export const PocketCallContent = styled.div<{
+  $isRequested: 'PENDING' | 'ACCEPTED' | 'REJECTED' | null;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
