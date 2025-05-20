@@ -34,8 +34,8 @@ export const InformationText = styled.p`
 `;
 
 export const PhotoCardImage = styled.img`
-  width: ${scale(150)}px;
-  height: ${scale(230)}px;
+  width: ${scale(137)}px;
+  height: ${scale(210)}px;
   object-fit: cover;
   border-radius: ${scale(4)}px;
 `;
