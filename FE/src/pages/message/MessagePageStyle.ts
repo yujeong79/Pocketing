@@ -1,10 +1,10 @@
-import scale from "@/utils/scale";
-import styled from "styled-components";
+import scale from '@/utils/scale';
+import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 94vh;
   padding-top: ${scale(50)}px;
 `;
 

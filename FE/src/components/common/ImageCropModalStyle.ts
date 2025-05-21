@@ -36,12 +36,12 @@ export const CropArea = styled.div`
 
 export const ButtonRow = styled.div`
   display: flex;
-  gap: ${scale(16)}px;
+  gap: ${scale(24)}px;
   margin-top: ${scale(12)}px;
 `;
 
 export const Button = styled.button`
-  padding: ${scale(8)}px ${scale(32)}px;
+  padding: ${scale(8)}px ${scale(28)}px;
   border-radius: ${scale(6)}px;
   border: none;
   background: ${colors.gray200};
