@@ -27,6 +27,7 @@ const MapPage = () => {
   const [isMyCardModalOpen, setIsMyCardModalOpen] = useState(false);
   const [isOtherCardModalOpen, setIsOtherCardModalOpen] = useState(false);
   const [isExchangeListModalOpen, setIsExchangeListModalOpen] = useState(false);
+  const [isMapMoved, setIsMapMoved] = useState(false);
 
   const [currentUsers, setCurrentUsers] = useState(0);
   const [userList, setUserList] = useState<Exchange[]>([]);
@@ -45,6 +46,22 @@ const MapPage = () => {
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
+
+  // 두 좌표 사이의 거리를 계산하는 함수 (Haversine 공식)
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371e3; // 지구의 반경 (미터)
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // 미터 단위로 반환
+  };
 
   const handleGetUserList = useCallback(async () => {
     try {
@@ -100,6 +117,9 @@ const MapPage = () => {
   const debouncedPostLocation = useCallback(
     debounce(async (location: { lat: number; lng: number }) => {
       try {
+        // 지도가 이동된 상태면 위치 전송하지 않음
+        if (isMapMoved) return;
+
         const PostLocationData: LocationRequest = {
           latitude: location.lat,
           longitude: location.lng,
@@ -107,12 +127,12 @@ const MapPage = () => {
           locationName: null,
         };
         await postLocation(PostLocationData);
-        await handleGetUserList(); // 위치 전송 후 사용자 목록 갱신
+        await handleGetUserList();
       } catch (error) {
         throw error;
       }
-    }, 1000), // 1초 디바운스
-    []
+    }, 1000),
+    [isMapMoved, handleGetUserList]
   );
 
   // 위치 변경 시 디바운스된 함수 호출
@@ -161,6 +181,7 @@ const MapPage = () => {
   );
 
   const handleReturnClick = useCallback(() => {
+    setIsMapMoved(false);
     if (currentLocation) {
       const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
       naverMapRef.current.morph(location, getZoomLevel(range));
@@ -202,6 +223,21 @@ const MapPage = () => {
 
         naverMapRef.current = map;
 
+        // 지도 이동 이벤트 리스너 추가
+        window.naver.maps.Event.addListener(map, 'center_changed', () => {
+          if (!currentLocation) return;
+
+          const center = map.getCenter();
+          const distance = calculateDistance(
+            currentLocation.lat,
+            currentLocation.lng,
+            center.y,
+            center.x
+          );
+
+          setIsMapMoved(distance > 10);
+        });
+
         // 마커 최초 생성 (한 번만 실행)
         markerRef.current = new window.naver.maps.Marker({
           map,
@@ -242,9 +278,11 @@ const MapPage = () => {
           setIsExchangeListModalOpen(true);
         });
       } else {
-        // 지도가 이미 존재하면 위치만 업데이트
-        naverMapRef.current.setCenter(location);
-        naverMapRef.current.setZoom(getZoomLevel(range));
+        // 지도가 이미 존재하면 위치만 업데이트 (지도가 이동되지 않은 상태일 때만)
+        if (!isMapMoved) {
+          naverMapRef.current.setCenter(location);
+          naverMapRef.current.setZoom(getZoomLevel(range));
+        }
 
         // 마커 위치 업데이트 (애니메이션 없이)
         if (markerRef.current) {
@@ -295,7 +333,7 @@ const MapPage = () => {
         zIndex: 50,
       });
     }
-  }, [currentLocation, range, currentUsers]);
+  }, [currentLocation, range, currentUsers, isMapMoved]);
 
   useEffect(() => {
     if (!isNotificationLoading) {
