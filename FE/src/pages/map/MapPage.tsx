@@ -64,21 +64,17 @@ const MapPage = () => {
   };
 
   const handleGetUserList = useCallback(async () => {
-    try {
-      const response = await getExchangeUserList(range);
-      const filteredList = response.result.filter(
-        (user) => user.requestStatus === 'PENDING' || user.requestStatus === null
-      );
+    const response = await getExchangeUserList(range);
+    const filteredList = response.result.filter(
+      (user) => user.requestStatus === 'PENDING' || user.requestStatus === null
+    );
 
-      setCurrentUsers(filteredList.length);
-      setUserList(filteredList);
+    setCurrentUsers(filteredList.length);
+    setUserList(filteredList);
 
-      if (!response.isSuccess) {
-        setShowEmptyToast(true);
-        return null;
-      }
-    } catch (error) {
-      throw error;
+    if (!response.isSuccess) {
+      setShowEmptyToast(true);
+      return null;
     }
   }, [range]);
 
@@ -116,21 +112,17 @@ const MapPage = () => {
   // 위치 데이터 서버 전송 (디바운스 적용)
   const debouncedPostLocation = useCallback(
     debounce(async (location: { lat: number; lng: number }) => {
-      try {
-        // 지도가 이동된 상태면 위치 전송하지 않음
-        if (isMapMoved) return;
+      // 지도가 이동된 상태면 위치 전송하지 않음
+      if (isMapMoved) return;
 
-        const PostLocationData: LocationRequest = {
-          latitude: location.lat,
-          longitude: location.lng,
-          isAutoDetected: true,
-          locationName: null,
-        };
-        await postLocation(PostLocationData);
-        await handleGetUserList();
-      } catch (error) {
-        throw error;
-      }
+      const PostLocationData: LocationRequest = {
+        latitude: location.lat,
+        longitude: location.lng,
+        isAutoDetected: true,
+        locationName: null,
+      };
+      await postLocation(PostLocationData);
+      await handleGetUserList();
     }, 1000),
     [isMapMoved, handleGetUserList]
   );

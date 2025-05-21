@@ -8,49 +8,34 @@ import { acceptOrRejectPocketCall } from '@/api/exchange/pocketCall';
 import { useAuth } from '@/hooks/useAuth';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
 import { useGlobalStore } from '@/store/globalStore';
-import { useNotification } from '@/hooks/notification/useNotification';
+import { useNotification, useNotificationRead } from '@/hooks/notification/useNotification';
 
 const AlarmPage = () => {
   // const [notification, setNotification] = useState<NotificationContent[] | null>(null);
   const { user } = useAuth();
   const { notification, fetchNotification } = useNotification();
+  const { readNotification } = useNotificationRead();
   const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
   const navigate = useNavigate();
 
-  // const handleGetNotification = async () => {
-  //   try {
-  //     const response = await getNotification();
-  //     setNotification(response.result.content);
-  //     console.log(notification);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // };
-
   const handleAccept = useCallback(async (exchangeRequestId: number) => {
-    try {
-      const response = await acceptOrRejectPocketCall({
-        exchangeRequestId: exchangeRequestId,
-        accepted: true,
-      });
-      setIsNotificationLoading(false);
-      console.log(response);
-    } catch (error) {
-      throw error;
-    }
+    const response = await acceptOrRejectPocketCall({
+      exchangeRequestId: exchangeRequestId,
+      accepted: true,
+    });
+    setIsNotificationLoading(false);
+    console.log(response);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReject = useCallback(async (exchangeRequestId: number) => {
-    try {
-      const response = await acceptOrRejectPocketCall({
-        exchangeRequestId: exchangeRequestId,
-        accepted: false,
-      });
-      setIsNotificationLoading(false);
-      console.log(response);
-    } catch (error) {
-      throw error;
-    }
+    const response = await acceptOrRejectPocketCall({
+      exchangeRequestId: exchangeRequestId,
+      accepted: false,
+    });
+    setIsNotificationLoading(false);
+    console.log(response);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChatButtonClick = async (user1Id: number, user2Id: number, exchangeId: number) => {
@@ -84,15 +69,28 @@ const AlarmPage = () => {
   };
 
   useEffect(() => {
-    if (!isNotificationLoading) {
-      fetchNotification();
-      setIsNotificationLoading(true);
-    }
-  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
+    const fetchData = async () => {
+      if (!isNotificationLoading) {
+        try {
+          console.log('1. 첫 알림 조회');
+          await fetchNotification();
 
-  useEffect(() => {
-    fetchNotification();
-  }, []);
+          console.log('2. 읽음 처리');
+          await readNotification();
+
+          console.log('3. 알림 다시 조회');
+          await fetchNotification();
+
+          setIsNotificationLoading(true);
+        } catch (error) {
+          console.error('알림 처리 중 에러:', error);
+        }
+      }
+    };
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNotificationLoading]);
 
   return (
     <>
