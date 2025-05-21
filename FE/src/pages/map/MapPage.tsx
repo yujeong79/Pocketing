@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 
@@ -37,7 +37,7 @@ const MapPage = () => {
   const [range, setRange] = useState(100);
   const [showEmptyToast, setShowEmptyToast] = useState(false);
 
-  const { fetchNotification } = useNotification();
+  const { notification, fetchNotification } = useNotification();
   const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
 
   const navigate = useNavigate();
@@ -46,6 +46,11 @@ const MapPage = () => {
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
+
+  const hasUnreadNotification = useMemo(
+    () => notification?.some((n) => !n.read) ?? false,
+    [notification]
+  );
 
   // 두 좌표 사이의 거리를 계산하는 함수 (Haversine 공식)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -64,21 +69,17 @@ const MapPage = () => {
   };
 
   const handleGetUserList = useCallback(async () => {
-    try {
-      const response = await getExchangeUserList(range);
-      const filteredList = response.result.filter(
-        (user) => user.requestStatus === 'PENDING' || user.requestStatus === null
-      );
+    const response = await getExchangeUserList(range);
+    const filteredList = response.result.filter(
+      (user) => user.requestStatus === 'PENDING' || user.requestStatus === null
+    );
 
-      setCurrentUsers(filteredList.length);
-      setUserList(filteredList);
+    setCurrentUsers(filteredList.length);
+    setUserList(filteredList);
 
-      if (!response.isSuccess) {
-        setShowEmptyToast(true);
-        return null;
-      }
-    } catch (error) {
-      throw error;
+    if (!response.isSuccess) {
+      setShowEmptyToast(true);
+      return null;
     }
   }, [range]);
 
@@ -116,21 +117,17 @@ const MapPage = () => {
   // 위치 데이터 서버 전송 (디바운스 적용)
   const debouncedPostLocation = useCallback(
     debounce(async (location: { lat: number; lng: number }) => {
-      try {
-        // 지도가 이동된 상태면 위치 전송하지 않음
-        if (isMapMoved) return;
+      // 지도가 이동된 상태면 위치 전송하지 않음
+      if (isMapMoved) return;
 
-        const PostLocationData: LocationRequest = {
-          latitude: location.lat,
-          longitude: location.lng,
-          isAutoDetected: true,
-          locationName: null,
-        };
-        await postLocation(PostLocationData);
-        await handleGetUserList();
-      } catch (error) {
-        throw error;
-      }
+      const PostLocationData: LocationRequest = {
+        latitude: location.lat,
+        longitude: location.lng,
+        isAutoDetected: true,
+        locationName: null,
+      };
+      await postLocation(PostLocationData);
+      await handleGetUserList();
     }, 1000),
     [isMapMoved, handleGetUserList]
   );
@@ -150,6 +147,8 @@ const MapPage = () => {
     if (currentLocation) {
       debouncedPostLocation(currentLocation);
     }
+    // 알림도 새로고침
+    fetchNotification();
   };
 
   const handleCloseModal = () => {
@@ -347,7 +346,7 @@ const MapPage = () => {
       <S.PageItemContainer>
         <S.MapHeaderContainer>
           <PlaceSearchInput onSelectPlace={handleSelectPlace} />
-          <AlarmButton onClick={() => navigate('/alarm')} />
+          <AlarmButton onClick={() => navigate('/alarm')} hasUnread={hasUnreadNotification} />
         </S.MapHeaderContainer>
         <S.ExchangeCardContainer>
           <MyCard onClick={() => setIsMyCardModalOpen(true)} />

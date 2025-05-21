@@ -1,14 +1,14 @@
-import * as S from './AlarmButtonStyle';
-import { AlarmTrueIcon } from '@/assets/assets';
+import * as S from '@/pages/map/components/buttons/AlarmButtonStyle';
+import { AlarmTrueIcon, AlarmFalseIcon } from '@/assets/assets';
 
 interface AlarmButtonProps {
   onClick?: () => void;
+  hasUnread?: boolean;
 }
-
-const AlarmButton = ({ onClick }: AlarmButtonProps) => {
+const AlarmButton = ({ onClick, hasUnread = false }: AlarmButtonProps) => {
   return (
-    <S.AlarmButtonContainer onClick={onClick}>
-      <S.AlarmImage src={AlarmTrueIcon} />
+    <S.AlarmButtonContainer onClick={onClick} $hasUnread={hasUnread}>
+      <S.AlarmImage src={hasUnread ? AlarmTrueIcon : AlarmFalseIcon} />
     </S.AlarmButtonContainer>
   );
 };
