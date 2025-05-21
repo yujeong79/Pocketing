@@ -17,8 +17,11 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             (:post IS NULL AND c.exchangeRequest = :exchangeRequest)
             OR (:exchangeRequest IS NULL AND c.post = :post)
         )
-        AND c.user1 = :user1
-        AND c.user2 = :user2
+        AND (
+            (c.user1 = :user1 AND c.user2 = :user2)
+                OR
+            (c.user1 = :user2 AND c.user2 = :user1)
+        )
     """)
     Optional<ChatRoom> findChatRoomByExactMatch(ExchangeRequest exchangeRequest, Post post, User user1, User user2);
     Optional<ChatRoom> findByRoomId(Long roomId);
