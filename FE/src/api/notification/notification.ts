@@ -17,3 +17,8 @@ export const getNotification = async ({
   );
   return response.data;
 };
+
+export const postNotificationRead = async (notificationId: number) => {
+  const response = await axiosInstance.post(`/notification/read/${notificationId}`);
+  return response.data;
+};
