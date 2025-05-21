@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { debounce } from 'lodash';
 
@@ -37,7 +37,7 @@ const MapPage = () => {
   const [range, setRange] = useState(100);
   const [showEmptyToast, setShowEmptyToast] = useState(false);
 
-  const { fetchNotification } = useNotification();
+  const { notification, fetchNotification } = useNotification();
   const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
 
   const navigate = useNavigate();
@@ -78,6 +78,10 @@ const MapPage = () => {
     }
   }, [range]);
 
+  const hasUnreadNotification = useMemo(() => {
+    return notification?.some((n) => !n.read) ?? false;
+  }, [notification]);
+  
   // 위치 추적 설정
   useEffect(() => {
     if (!navigator.geolocation) return;
