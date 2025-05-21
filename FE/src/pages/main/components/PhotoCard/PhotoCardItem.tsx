@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import SellerListModal from '@/pages/main/components/Seller/SellerListModal';
 import * as S from './PhotoCardStyle';
+import { useSellerList } from '@/hooks/post/query/useList';
+import { SellerListItem as SellerListItemType } from '@/types/seller';
 
 interface PhotoCardItemProps {
   cardId: number;
@@ -11,6 +13,12 @@ interface PhotoCardItemProps {
 
 const PhotoCardItem = ({ cardId, imageUrl, albumTitle, avgPrice }: PhotoCardItemProps) => {
   const [isSellerListOpen, setIsSellerListOpen] = useState(false);
+  const { data: sellerList } = useSellerList(cardId);
+  const filteredSellerList = sellerList?.content.content.filter(
+    (seller: SellerListItemType) => seller.status !== 'COMPLETED'
+  );
+
+  if (!filteredSellerList || filteredSellerList.length === 0) return null;
 
   return (
     <>

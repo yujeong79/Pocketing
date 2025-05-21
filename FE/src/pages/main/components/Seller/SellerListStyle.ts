@@ -20,12 +20,13 @@ export const PhotoCard = styled.img`
   border-radius: ${scale(4)}px;
 `;
 
-export const InfoContainer = styled.div`
+export const InfoContainer = styled.div<{ infoWidth?: number }>`
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-left: ${scale(24)}px;
+  width: ${({ infoWidth }) => (infoWidth ? `${infoWidth}px` : 'auto')};
 `;
 
 export const NicknameWrapper = styled.div`

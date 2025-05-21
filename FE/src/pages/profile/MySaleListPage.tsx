@@ -1,36 +1,23 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as S from './MySaleListStyle';
 import Header from '@/components/common/Header';
 import Divider from './components/Divider';
 import { DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMySales } from '@/api/user/mySales';
-import { MySaleListResponse } from '@/types/mySale';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { formatDate } from '@/utils/formatDate';
+import { useSales } from '@/hooks/sales/useSales';
+import { useGlobalStore } from '@/store/globalStore';
 
 const MySaleListPage = () => {
+  const { mySales, fetchSales } = useSales();
+  const { isSalesLoading, setIsSalesLoading } = useGlobalStore();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
-  const filteredList = mySales.filter((item) => item.createdAt);
+  const filteredList = mySales.sort((a, b) => b.postId - a.postId);
 
   const fromRegister = location.state?.fromRegister;
-
-  const handleGetMySales = useCallback(async () => {
-    try {
-      const response = await getMySales();
-      setMySales(response.result);
-      console.log(response);
-      console.log(mySales);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    handleGetMySales();
-  }, [handleGetMySales]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -44,6 +31,13 @@ const MySaleListPage = () => {
       window.removeEventListener('popstate', handlePopState);
     };
   }, [fromRegister, navigate]);
+
+  useEffect(() => {
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+  }, [isSalesLoading, fetchSales, setIsSalesLoading]);
 
   return (
     <S.PageContainer>
@@ -66,8 +60,11 @@ const MySaleListPage = () => {
           </S.NonItemContainer>
         ) : (
           filteredList.map((mySales, index) => (
-            <S.MySaleItemContainer key={index}>
-              <S.MySaleItemDate>{mySales.createdAt}</S.MySaleItemDate>
+            <S.MySaleItemContainer
+              key={index}
+              onClick={() => navigate(`/detail/${mySales.postId}`)}
+            >
+              <S.MySaleItemDate>{formatDate(mySales.createdAt)}</S.MySaleItemDate>
               <S.MySaleItemInfoContainer>
                 <S.InfoAndButtonContainer>
                   <S.InfoContainer>
@@ -106,7 +103,7 @@ const MySaleListPage = () => {
               <S.MySaleItemPriceContainer>
                 <S.MySalePriceTitle>판매가</S.MySalePriceTitle>
                 <S.MySaleItemPriceText>
-                  <S.MySaleItemPrice>{mySales.price}</S.MySaleItemPrice>
+                  <S.MySaleItemPrice>{mySales.price.toLocaleString()}</S.MySaleItemPrice>
                   <S.MySaleItemPriceWon>원</S.MySaleItemPriceWon>
                 </S.MySaleItemPriceText>
                 {index !== filteredList.length - 1 && <Divider />}

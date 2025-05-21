@@ -14,6 +14,7 @@ export const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  overflow: hidden;
 `;
 
 export const ModalContainer = styled.div`
@@ -26,6 +27,7 @@ export const ModalContainer = styled.div`
   border-radius: ${scale(20)}px ${scale(20)}px 0 0;
   padding: ${scale(20)}px;
   animation: slideUp 0.3s ease-out;
+  overflow: hidden;
 
   @keyframes slideUp {
     from {
@@ -79,6 +81,7 @@ export const ChatContainer = styled.div`
   margin-bottom: ${scale(8)}px;
   padding-right: ${scale(8)}px;
   padding-bottom: ${scale(20)}px;
+  overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: ${scale(4)}px;
@@ -97,9 +100,10 @@ export const MessageWrapper = styled.div<{ isUser: boolean }>`
   gap: ${scale(4)}px;
 `;
 
-export const BotIcon = styled.img`
+export const BotIcon = styled.img<{ offsetLeft?: boolean }>`
   width: ${scale(32)}px;
   height: ${scale(32)}px;
+  ${({ offsetLeft }) => offsetLeft && `margin-left: ${scale(8)}px;`}
 `;
 
 export const Message = styled.div<{ isUser: boolean }>`
@@ -109,19 +113,28 @@ export const Message = styled.div<{ isUser: boolean }>`
   border-radius: ${scale(5)}px;
   max-width: 70%;
   text-align: ${({ isUser }) => (isUser ? 'right' : 'left')};
+  white-space: pre-line;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 `;
 
 export const InputForm = styled.form`
   position: absolute;
-  bottom: ${scale(20)}px;
-  left: ${scale(20)}px;
-  right: ${scale(20)}px;
+  left: 50%;
+  margin-bottom: -${scale(40)}px;
+  transform: translateX(-50%);
+  width: 105%;
   display: flex;
+  align-items: center;
+  position: relative;
 `;
 
 export const Input = styled.input`
+  ${FontStyles.captionMedium};
   width: 100%;
+  height: ${scale(40)}px;
   padding: ${scale(8)}px;
+  padding-right: ${scale(40)}px;
   border: 1px solid ${colors.primary50};
   border-radius: ${scale(5)}px;
   background-color: ${colors.primary50};
@@ -135,4 +148,55 @@ export const Input = styled.input`
     outline: none;
     border-color: ${colors.primary100};
   }
+`;
+
+export const SendButtonContainer = styled.button`
+  position: absolute;
+  top: 50%;
+  right: ${scale(8)}px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+`;
+
+export const SendButton = styled.img`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+`;
+
+export const ModalSellerListItemWrapper = styled.div`
+  margin-top: -${scale(12)}px;
+  margin-bottom: -${scale(12)}px;
+`;
+
+export const ChatbotPhotoCard = styled.img`
+  width: ${scale(70)}px;
+  border-radius: ${scale(8)}px;
+  margin: ${scale(2)}px 0;
+  margin-left: ${scale(4)}px;
+  margin-bottom: -${scale(6)}px;
+`;
+
+export const PhotoCardImage = styled.div`
+  display: flex;
+  gap: ${scale(8)}px;
+  overflow-x: auto;
+  max-width: 100%;
+`;
+
+export const BotIconSpacer = styled.div`
+  width: ${scale(24)}px;
+  height: ${scale(24)}px;
+  flex-shrink: 0;
+`;
+
+export const TextCardRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${scale(12)}px;
+  width: 100%;
 `;

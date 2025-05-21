@@ -1,5 +1,3 @@
-// ✅ 리팩토링된 PhotocardSettingModal.tsx (포토카드 버전도 API로 받아서 사진 표시 - cardId number → string 변환 포함)
-
 import React, { useEffect, useState } from 'react';
 import SlideUpModal from '@/components/common/SlideUpModal';
 import Button from '@/components/common/Button';
@@ -8,6 +6,8 @@ import { fetchGroupsAll } from '@/api/artist/group';
 import { fetchMembersAll } from '@/api/artist/member';
 import { fetchAlbums } from '@/api/artist/album';
 import { fetchPhotocards } from '@/api/artist/photocard';
+import { useNavigate } from 'react-router-dom';
+import { CallIcon } from '@/assets/assets'
 
 interface GroupItem {
   groupId: number;
@@ -75,6 +75,9 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
   const [memberList, setMemberList] = useState<MemberItem[]>([]);
   const [albumList, setAlbumList] = useState<AlbumItem[]>([]);
   const [photocardList, setPhotocardList] = useState<PhotocardItem[]>([]);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     if (isOpen) {
@@ -175,6 +178,9 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
     <>
       <S.VersionTitle>어떤 버전인가요?</S.VersionTitle>
       <S.VersionGrid>
+        {photocardList.length === 0 && (
+          <S.NoPhotocardText>아직 등록된<br></br> 포토카드가 없습니다.</S.NoPhotocardText>
+        )}
         {photocardList.map((card, index) => (
           <S.VersionItem key={card.cardId} onClick={() => {
             setSelectedData({ ...selectedData, versionId: card.cardId, version: card.cardId });
@@ -186,30 +192,59 @@ const PhotocardSettingModal: React.FC<PhotocardSettingModalProps> = ({
             />
           </S.VersionItem>
         ))}
+        <S.ReportButton onClick={() => navigate('/report-missing')}>
+          <div className="icon-text-wrapper">
+            <img src={CallIcon} alt="제보 아이템" />
+            <span>
+              포토카드 <br /> 제보하기
+            </span>
+          </div>
+        </S.ReportButton>
+
       </S.VersionGrid>
     </>
   );
 
   const renderList = () => {
-    if (currentSection === 'group') return filteredGroups.map((g) => (
-      <S.Item key={g.groupId} selected={selectedData.groupId === g.groupId} onClick={() => handleGroupSelect(g)}>
-        {g.groupDisplayName}
-      </S.Item>
-    ));
-    if (currentSection === 'member') return filteredMembers.map((m) => (
-      <S.Item key={m.memberId} selected={selectedData.memberId === m.memberId} onClick={() => handleMemberSelect(m)}>
-        {m.name}
-      </S.Item>
-    ));
-    if (currentSection === 'album') return filteredAlbums.map((a) => (
-      <S.Item key={a.albumId} selected={selectedData.albumId === a.albumId} onClick={() => handleAlbumSelect(a)}>
-        {a.title}
-      </S.Item>
-    ));
+    if (currentSection === 'group') {
+      return filteredGroups.map((g) => (
+        <S.Item key={g.groupId} selected={selectedData.groupId === g.groupId} onClick={() => handleGroupSelect(g)}>
+          {g.groupDisplayName}
+        </S.Item>
+      ));
+    }
+
+    if (currentSection === 'member') {
+      return filteredMembers.map((m) => (
+        <S.Item key={m.memberId} selected={selectedData.memberId === m.memberId} onClick={() => handleMemberSelect(m)}>
+          {m.name}
+        </S.Item>
+      ));
+    }
+
+    if (currentSection === 'album') {
+      return (
+        <>
+          {filteredAlbums.map((a) => (
+            <S.Item key={a.albumId} selected={selectedData.albumId === a.albumId} onClick={() => handleAlbumSelect(a)}>
+              {a.title}
+            </S.Item>
+          ))}
+          <S.ReportButton onClick={() => navigate('/report-missing')}>
+            <div className="icon-text-wrapper">
+              <img src={CallIcon} alt="제보 아이템" />
+              <span>
+                앨범 <br /> 제보하기
+              </span>
+            </div>
+          </S.ReportButton>
+        </>
+      );
+    }
+
     return renderVersionGrid();
   };
 
-const versionSelect = "선택 완료";
 
   return (
     <SlideUpModal isOpen={isOpen} onClose={onClose} header="포카 설정">
@@ -229,7 +264,7 @@ const versionSelect = "선택 완료";
           </S.SettingLabel>
           <S.SettingLabel onClick={() => setCurrentSection('version')}>
             <S.LabelText>버전</S.LabelText>
-            <S.SelectedValue>{versionSelect || '선택'}</S.SelectedValue>
+            <S.SelectedValue>{selectedData.versionId ? '선택 완료' : '선택'}</S.SelectedValue>
           </S.SettingLabel>
         </S.LeftSection>
 

@@ -1,34 +1,29 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import * as S from './OthersCardStyle';
 
 import { FullHeartIcon } from '@/assets/assets';
-import { getOthersCard } from '@/api/exchange/exchangeCard';
-import { GetRegisteredCardResponse } from '@/types/exchange';
+import { useGlobalStore } from '@/store/globalStore';
+import { useOthersCard } from '@/hooks/exchange/useExchange';
 
 interface OthersCardProps {
   onClick: () => void;
 }
 
 const OthersCard = ({ onClick }: OthersCardProps) => {
-  const [othersCard, setOthersCard] = useState<GetRegisteredCardResponse | null>(null);
-
-  const handleGetOthersCard = useCallback(async () => {
-    try {
-      const response = await getOthersCard();
-      setOthersCard(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const { myWishCard, fetchOthersCard } = useOthersCard();
+  const { isMyWishCardLoading, setIsMyWishCardLoading } = useGlobalStore();
 
   useEffect(() => {
-    handleGetOthersCard();
-  }, [handleGetOthersCard]);
+    if (!isMyWishCardLoading) {
+      fetchOthersCard();
+      setIsMyWishCardLoading(true);
+    }
+  }, [isMyWishCardLoading, fetchOthersCard, setIsMyWishCardLoading]);
 
   return (
     <>
-      {!othersCard ? (
+      {!myWishCard ? (
         <S.OthersCardContainerNon onClick={onClick}>
           <S.TextContainer>
             <S.Title>원하는 포카</S.Title>
@@ -44,9 +39,9 @@ const OthersCard = ({ onClick }: OthersCardProps) => {
                 <S.HeartIcon src={FullHeartIcon} />
               </S.CardImage>
               <S.CardInfo>
-                <S.CardText>{othersCard?.group}</S.CardText>
-                <S.CardText>{othersCard?.member}</S.CardText>
-                <S.CardText>{othersCard?.album}</S.CardText>
+                <S.CardText>{myWishCard?.group}</S.CardText>
+                <S.CardText>{myWishCard?.member}</S.CardText>
+                <S.CardText>{myWishCard?.album}</S.CardText>
               </S.CardInfo>
             </S.Content>
           </S.CardContainer>

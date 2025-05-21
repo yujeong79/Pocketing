@@ -110,3 +110,22 @@ export const DeleteButton = styled.button`
     height: ${scale(20)}px;
   }
 `;
+
+export const DeleteAllButton = styled.button`
+  position: absolute;
+  top: ${scale(24)}px;
+  right: ${scale(16)}px;
+  padding: ${scale(8)}px ${scale(8)}px;
+  background-color: ${colors.white};
+  border: 1px solid ${colors.gray300};
+  border-radius: ${scale(20)}px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  ${FontStyles.captionSmall};
+  font-weight: 600;
+  color: ${colors.primary};
+
+  &:hover {
+    background-color: ${colors.gray100};
+  }
+`;

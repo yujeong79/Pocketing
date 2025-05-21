@@ -4,6 +4,20 @@ import scale from '@/utils/scale';
 import { colors } from '@/styles/theme';
 import { FontStyles } from '@/constants/fonts';
 
+export const NonAlarmContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+
+export const NonAlarmText = styled.div`
+  ${FontStyles.bodySmall};
+  color: ${colors.gray500};
+  padding-top: ${scale(32)}px;
+`;
+
 export const AlarmPageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -13,6 +27,7 @@ export const AlarmPageContainer = styled.div`
   height: 100%;
   padding: ${scale(16)}px;
   gap: ${scale(32)}px;
+  padding-top: ${scale(60)}px;
 `;
 
 export const AlarmItemContainer = styled.div`

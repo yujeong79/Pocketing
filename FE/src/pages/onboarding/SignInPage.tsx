@@ -4,29 +4,17 @@ import { getKakaoLoginUrl } from '@/api/auth/kakaoLogin';
 import { getTwitterLoginUrl } from '@/api/auth/twitterLogin';
 import { requestFcmToken } from '@/fcm';
 
-// iOS 디바이스인지 확인
-function isIos(): boolean {
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-}
-
-// 홈 화면에서 실행중인 pwa인지 확인
-function isInStandaloneMode(): boolean {
-  return 'standalone' in window.navigator && window.navigator['standalone'] === true;
-}
-
 const SignInPage = () => {
-  const handleKakaoLoginClick = async () => {
-    if (isIos() && isInStandaloneMode()) {
+  // 공통 로그인 핸들러
+  const handleSocialLogin = (getUrl: () => string) => async () => {
+    try {
       await requestFcmToken();
+      console.log("FCM 권한/토큰 준비 완료");
+    } catch (e) {
+      console.warn('FCM 초기화 오류');
     }
-    window.location.href = getKakaoLoginUrl();
-  };
-
-  const handleTwitterLoginClick = async () => {
-    if (isIos() && isInStandaloneMode()) {
-      await requestFcmToken();
-    }
-    window.location.href = getTwitterLoginUrl();
+    // 로그인 페이지로 이동
+    window.location.href = getUrl();
   };
 
   return (
@@ -37,11 +25,15 @@ const SignInPage = () => {
       </S.LogoContainer>
       <S.LoginButtonContainer>
         <S.KakaoLoginButton
-          onClick={handleKakaoLoginClick}
+          onClick={handleSocialLogin(getKakaoLoginUrl)}
           src={KakaoLoginButton}
           alt="카카오 로그인 버튼"
         />
-        <S.XLoginButton onClick={handleTwitterLoginClick} src={XLoginButton} alt="X 로그인 버튼" />
+        <S.XLoginButton
+          onClick={handleSocialLogin(getTwitterLoginUrl)}
+          src={XLoginButton}
+          alt="X 로그인 버튼"
+        />
       </S.LoginButtonContainer>
     </S.SignInPageContainer>
   );

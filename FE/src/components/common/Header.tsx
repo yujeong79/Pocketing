@@ -18,13 +18,15 @@ interface HeaderProps {
     | 'profileDetail'
     | 'profileEdit'
     | 'mySaleList'
-    | 'alarm';
+    | 'alarm'
+    | 'report';
   onBack?: () => void;
   title?: string;
   hasBorder?: boolean;
   onRegister?: () => void;
   rightElement?: React.ReactNode;
   roomId?: string | number;
+  onClick?: () => void;
 }
 
 export default function Header({
@@ -35,6 +37,7 @@ export default function Header({
   onRegister,
   rightElement,
   roomId,
+  onClick,
 }: HeaderProps) {
   const navigate = useNavigate();
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
@@ -70,7 +73,7 @@ export default function Header({
       case 'detail':
         return (
           <S.LeftSection>
-            <S.BackButton onClick={() => navigate('/main')}>
+            <S.BackButton onClick={() => navigate(-1)}>
               <img src={BackIcon} alt="뒤로가기" />
             </S.BackButton>
           </S.LeftSection>
@@ -114,6 +117,14 @@ export default function Header({
         return (
           <S.LeftSection>
             <img src={LogoText} alt="포켓팅 로고" />
+          </S.LeftSection>
+        );
+      case 'report':
+        return (
+          <S.LeftSection>
+            <S.BackButton onClick={() => navigate(-1)}>
+              <img src={BackIcon} alt="뒤로가기" />
+            </S.BackButton>
           </S.LeftSection>
         );
       default:
@@ -161,7 +172,17 @@ export default function Header({
   };
 
   return (
-    <>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        zIndex: 100,
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+    >
       <S.HeaderContainer $hasBorder={hasBorder}>
         {renderLeftContent()}
         {renderRightContent()}
@@ -182,6 +203,6 @@ export default function Header({
         confirmText="나가기"
         cancelText="취소"
       />
-    </>
+    </div>
   );
 }

@@ -6,10 +6,15 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 100vh;
   position: relative;
   padding: ${scale(16)}px;
+  padding-top: ${scale(60)}px;
+  padding-bottom: 0;
   overflow: hidden;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const ChatContainer = styled.div`
@@ -18,8 +23,7 @@ export const ChatContainer = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding-bottom: ${scale(40)}px;
-  margin-bottom: ${scale(4)}px;
+  padding-bottom: ${scale(64)}px;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
@@ -73,16 +77,31 @@ export const InputForm = styled.form`
   bottom: 0;
   left: 0;
   right: 0;
+  max-width: 100vw;
+  width: 100vw;
   padding: ${scale(8)}px ${scale(16)}px;
-
   background-color: ${colors.white};
   z-index: 10;
   box-shadow: 0 -${scale(2)}px ${scale(6)}px rgba(0, 0, 0, 0.05);
 `;
 
+export const PlusButton = styled.img`
+  width: ${scale(20)}px;
+  height: ${scale(20)}px;
+  margin-right: ${scale(4)}px;
+  margin-left: -${scale(8)}px;
+`;
+
+export const PlusButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const Input = styled.input`
   ${FontStyles.captionMedium}
   flex: 1;
+  min-width: 0;
   padding: ${scale(8)}px ${scale(12)}px;
   border: 1px solid ${colors.primary50};
   border-radius: ${scale(20)}px;
@@ -112,9 +131,10 @@ export const SendButton = styled.img`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${scale(4)}px;
-  width: ${scale(24)}px;
-  height: ${scale(24)}px;
+  margin-left: ${scale(2)}px;
+  margin-right: ${scale(2)}px;
+  width: ${scale(20)}px;
+  height: ${scale(20)}px;
 `;
 
 export const LoadMoreButton = styled.button`

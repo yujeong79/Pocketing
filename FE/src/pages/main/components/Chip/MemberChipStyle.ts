@@ -12,8 +12,8 @@ export const StyledMemberChip = styled.button<StyledMemberChipProps>`
   border-radius: ${scale(4)}px;
   background-color: ${({ $isSelected }) => ($isSelected ? colors.primary : colors.primary100)};
   color: ${({ $isSelected }) => ($isSelected ? 'white' : colors.gray800)};
-  border: none;
   cursor: pointer;
+  border: none;
   font-family: 'Pretendard';
   font-weight: 500;
   font-size: ${scale(12)}px;
@@ -50,4 +50,8 @@ export const StyledHeartIcon = styled.img`
   height: ${scale(12)}px;
   margin-right: ${scale(2)}px;
   vertical-align: middle;
+`;
+
+export const StyledMemberChipLoading = styled.div`
+  height: ${scale(32)}px;
 `;

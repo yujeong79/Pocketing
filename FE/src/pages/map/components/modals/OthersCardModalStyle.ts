@@ -54,7 +54,8 @@ export const SearchContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: ${scale(124)}px;
-  height: ${scale(26)}px;
+  min-height: ${scale(28)}px;
+  max-height: ${scale(28)}px;
   border-radius: ${scale(10)}px;
   border: ${scale(1)}px solid ${colors.primary};
 `;

@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import ChatTabs from '@/pages/message/components/Chat/ChatTabs';
 import ChatList from '@/pages/message/components/Chat/ChatList';
 import Header from '@/components/common/Header';
 import { getExchangeChatRooms, getPostChatRooms } from '@/api/chat';
 import { ChatRoom } from '@/types/chat';
 import { useEffect, useState } from 'react';
+import * as S from '@/pages/message/MessagePageStyle';
 
 interface TradeChat {
   roomId: number;
@@ -119,24 +119,20 @@ const MessagePage = ({ type }: MessagePageProps) => {
   const filteredChats = sortedChats.filter((room) => !leavedRooms.includes(room.roomId));
 
   return (
-    <>
+    <S.Container>
       <Header type="profile" hasBorder={false} />
-      <Container>
+      <S.TabsWrapper>
         <ChatTabs activeTab={type} onTabChange={handleTabChange} />
+      </S.TabsWrapper>
+      <S.ChatListWrapper>
         <ChatList
           type={type}
           tradeChats={type === 'trade' ? (filteredChats as TradeChat[]) : []}
           exchangeChats={type === 'exchange' ? (filteredChats as ExchangeChat[]) : []}
         />
-      </Container>
-    </>
+      </S.ChatListWrapper>
+    </S.Container>
   );
 };
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
 
 export default MessagePage;

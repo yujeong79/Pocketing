@@ -15,16 +15,18 @@ const useScrollToBottom = <T extends HTMLElement | null>(
     if (!containerRef.current) return;
 
     // 즉시 스크롤 (애니메이션 없이)
-    (containerRef.current as HTMLElement).scrollTop = (
-      containerRef.current as HTMLElement
-    ).scrollHeight;
+    (containerRef.current as HTMLElement).scrollTo({
+      top: (containerRef.current as HTMLElement).scrollHeight,
+      behavior: 'smooth',
+    });
 
     // 약간의 지연 후 한번 더 시도 (DOM 업데이트 확실히 반영)
     setTimeout(() => {
       if (containerRef.current) {
-        (containerRef.current as HTMLElement).scrollTop = (
-          containerRef.current as HTMLElement
-        ).scrollHeight;
+        (containerRef.current as HTMLElement).scrollTo({
+          top: (containerRef.current as HTMLElement).scrollHeight,
+          behavior: 'smooth',
+        });
       }
     }, 100);
   };

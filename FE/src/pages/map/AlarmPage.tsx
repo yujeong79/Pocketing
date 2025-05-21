@@ -1,29 +1,31 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as S from './AlarmStyle';
 import Header from '@/components/common/Header';
 import SmallButton from './components/buttons/SmallButton';
-import { getNotification } from '@/api/notification/notification';
-import { NotificationContent } from '@/types/notification';
 import { acceptOrRejectPocketCall } from '@/api/exchange/pocketCall';
 import { useAuth } from '@/hooks/useAuth';
 import { createOrGetChatRoom, enterChatRoom } from '@/api/chat';
+import { useGlobalStore } from '@/store/globalStore';
+import { useNotification } from '@/hooks/notification/useNotification';
 
 const AlarmPage = () => {
-  const [notification, setNotification] = useState<NotificationContent[] | null>(null);
+  // const [notification, setNotification] = useState<NotificationContent[] | null>(null);
   const { user } = useAuth();
+  const { notification, fetchNotification } = useNotification();
+  const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
   const navigate = useNavigate();
 
-  const handleGetNotification = async () => {
-    try {
-      const response = await getNotification();
-      setNotification(response.result.content);
-      console.log(notification);
-    } catch (error) {
-      throw error;
-    }
-  };
+  // const handleGetNotification = async () => {
+  //   try {
+  //     const response = await getNotification();
+  //     setNotification(response.result.content);
+  //     console.log(notification);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // };
 
   const handleAccept = useCallback(async (exchangeRequestId: number) => {
     try {
@@ -31,6 +33,7 @@ const AlarmPage = () => {
         exchangeRequestId: exchangeRequestId,
         accepted: true,
       });
+      setIsNotificationLoading(false);
       console.log(response);
     } catch (error) {
       throw error;
@@ -43,6 +46,7 @@ const AlarmPage = () => {
         exchangeRequestId: exchangeRequestId,
         accepted: false,
       });
+      setIsNotificationLoading(false);
       console.log(response);
     } catch (error) {
       throw error;
@@ -80,70 +84,83 @@ const AlarmPage = () => {
   };
 
   useEffect(() => {
-    handleGetNotification();
+    if (!isNotificationLoading) {
+      fetchNotification();
+      setIsNotificationLoading(true);
+    }
+  }, [isNotificationLoading, fetchNotification, setIsNotificationLoading]);
+
+  useEffect(() => {
+    fetchNotification();
   }, []);
 
   return (
     <>
       <Header type="alarm" title="교환 알림" />
-      <S.AlarmPageContainer>
-        {notification?.map((notification, notificationIndex) => (
-          <S.AlarmItemContainer key={notificationIndex}>
-            {notification.notificationType === 'REJECTED' ? <S.RejectedCover /> : null}
-            <S.AlarmProfileImage src={notification.user.profileImageUrl} alt="프로필" />
-            <S.AlarmRightSection>
-              <S.AlarmHeader>
-                <S.AlarmName>{notification.user.nickname}</S.AlarmName>
-                {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
-                  <S.AlarmTitle>님이 포켓콜을 보냈어요</S.AlarmTitle>
-                ) : (
-                  <S.AlarmTitle>님이 포켓콜을 수락했어요</S.AlarmTitle>
-                )}
-              </S.AlarmHeader>
-              <S.AlarmButtonContainer>
-                {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
-                  <SmallButton
-                    type="accept"
-                    text="채팅방으로 이동"
-                    onClick={() =>
-                      handleChatButtonClick(
-                        user?.userId ?? 0,
-                        notification.user.userId,
-                        notification.exchangeRequest.exchangeRequestId
-                      )
-                    }
-                  />
-                ) : notification.notificationType === 'ACCEPTED_PASSIVE' ? (
-                  <SmallButton
-                    type="accept"
-                    text="채팅방으로 이동"
-                    onClick={() =>
-                      handleChatButtonClick(
-                        user?.userId ?? 0,
-                        notification.user.userId,
-                        notification.exchangeRequest.exchangeRequestId
-                      )
-                    }
-                  />
-                ) : (
-                  <>
+      {notification?.length === 0 ? (
+        <S.NonAlarmContainer>
+          <S.NonAlarmText>알림이 없습니다.</S.NonAlarmText>
+        </S.NonAlarmContainer>
+      ) : (
+        <S.AlarmPageContainer>
+          {notification?.map((notification, notificationIndex) => (
+            <S.AlarmItemContainer key={notificationIndex}>
+              {notification.notificationType === 'REJECTED' ? <S.RejectedCover /> : null}
+              <S.AlarmProfileImage src={notification.user.profileImageUrl} alt="프로필" />
+              <S.AlarmRightSection>
+                <S.AlarmHeader>
+                  <S.AlarmName>{notification.user.nickname}</S.AlarmName>
+                  {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
+                    <S.AlarmTitle>님이 포켓콜을 보냈어요</S.AlarmTitle>
+                  ) : (
+                    <S.AlarmTitle>님이 포켓콜을 수락했어요</S.AlarmTitle>
+                  )}
+                </S.AlarmHeader>
+                <S.AlarmButtonContainer>
+                  {notification.notificationType === 'ACCEPTED_ACTIVE' ? (
                     <SmallButton
                       type="accept"
-                      text="수락"
-                      onClick={() => handleAccept(notification.exchangeRequest.exchangeRequestId)}
+                      text="채팅방으로 이동"
+                      onClick={() =>
+                        handleChatButtonClick(
+                          user?.userId ?? 0,
+                          notification.user.userId,
+                          notification.exchangeRequest.exchangeRequestId
+                        )
+                      }
                     />
+                  ) : notification.notificationType === 'ACCEPTED_PASSIVE' ? (
                     <SmallButton
-                      type="reject"
-                      text="거절"
-                      onClick={() => handleReject(notification.exchangeRequest.exchangeRequestId)}
+                      type="accept"
+                      text="채팅방으로 이동"
+                      onClick={() =>
+                        handleChatButtonClick(
+                          user?.userId ?? 0,
+                          notification.user.userId,
+                          notification.exchangeRequest.exchangeRequestId
+                        )
+                      }
                     />
-                  </>
-                )}
-              </S.AlarmButtonContainer>
-            </S.AlarmRightSection>
-          </S.AlarmItemContainer>
-        ))}
-      </S.AlarmPageContainer>
+                  ) : (
+                    <>
+                      <SmallButton
+                        type="accept"
+                        text="수락"
+                        onClick={() => handleAccept(notification.exchangeRequest.exchangeRequestId)}
+                      />
+                      <SmallButton
+                        type="reject"
+                        text="거절"
+                        onClick={() => handleReject(notification.exchangeRequest.exchangeRequestId)}
+                      />
+                    </>
+                  )}
+                </S.AlarmButtonContainer>
+              </S.AlarmRightSection>
+            </S.AlarmItemContainer>
+          ))}
+        </S.AlarmPageContainer>
+      )}
     </>
   );
 };

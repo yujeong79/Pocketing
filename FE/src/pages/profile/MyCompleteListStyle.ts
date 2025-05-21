@@ -8,6 +8,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding-top: ${scale(40)}px;
 `;
 
 export const ContentContainer = styled.div`
@@ -29,11 +30,6 @@ export const NonItemContainer = styled.div`
 export const NonItemText = styled.div`
   ${FontStyles.bodySmall};
   color: ${colors.gray500};
-`;
-
-export const RightArrowButton = styled.img`
-  width: ${scale(6)}px;
-  height: ${scale(12)}px;
 `;
 
 export const MyCompleteTitleContainer = styled.div`

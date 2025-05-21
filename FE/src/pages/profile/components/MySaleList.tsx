@@ -1,29 +1,25 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
 
 import * as S from './MySaleListStyle';
 import Divider from './Divider';
 import { MySaleIcon, DefaultProfileImage, RightArrowIcon } from '@/assets/assets';
-import { getMySales } from '@/api/user/mySales';
-import { MySaleListResponse } from '@/types/mySale';
+import { formatDate } from '@/utils/formatDate';
+import { useSales } from '@/hooks/sales/useSales';
+import { useGlobalStore } from '@/store/globalStore';
+import { useEffect } from 'react';
 
 const MySaleList = () => {
-  const [mySales, setMySales] = useState<MySaleListResponse[]>([]);
   const navigate = useNavigate();
-  const filteredList = mySales.filter((item) => item.createdAt).slice(0, 2);
-
-  const handleGetMySales = useCallback(async () => {
-    try {
-      const response = await getMySales();
-      setMySales(response.result);
-    } catch (error) {
-      throw error;
-    }
-  }, []);
+  const { mySales, fetchSales } = useSales();
+  const { isSalesLoading, setIsSalesLoading } = useGlobalStore();
+  const filteredList = mySales.sort((a, b) => b.postId - a.postId).slice(0, 2);
 
   useEffect(() => {
-    handleGetMySales();
-  }, [handleGetMySales]);
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+  }, [isSalesLoading, fetchSales, setIsSalesLoading]);
 
   return (
     <S.MySaleListContainer>
@@ -40,8 +36,8 @@ const MySaleList = () => {
         </S.NonItemContainer>
       ) : (
         filteredList.map((mySales, index) => (
-          <S.MySaleItemContainer key={index}>
-            <S.MySaleItemDate>{mySales.createdAt}</S.MySaleItemDate>
+          <S.MySaleItemContainer key={index} onClick={() => navigate(`/detail/${mySales.postId}`)}>
+            <S.MySaleItemDate>{formatDate(mySales.createdAt)}</S.MySaleItemDate>
             <S.MySaleItemInfoContainer>
               <S.InfoAndButtonContainer>
                 <S.InfoContainer>
@@ -80,7 +76,7 @@ const MySaleList = () => {
             <S.MySaleItemPriceContainer>
               <S.MySalePriceTitle>판매가</S.MySalePriceTitle>
               <S.MySaleItemPriceText>
-                <S.MySaleItemPrice>{mySales.price}</S.MySaleItemPrice>
+                <S.MySaleItemPrice>{mySales.price.toLocaleString()}</S.MySaleItemPrice>
                 <S.MySaleItemPriceWon>원</S.MySaleItemPriceWon>
               </S.MySaleItemPriceText>
               {index !== filteredList.length - 1 && <Divider />}

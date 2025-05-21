@@ -8,6 +8,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-top: ${scale(40)}px;
 `;
 
 export const ContentsContainer = styled.div`

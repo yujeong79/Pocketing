@@ -19,6 +19,7 @@ import { MyCardData } from '@/types/exchange';
 import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { ExchangeRequest } from '@/types/exchange';
 import { postS3Image, putS3Image } from '@/api/s3/s3Image';
+import { useGlobalStore } from '@/store/globalStore';
 
 interface MyCardModalProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
 
-  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(false);
+  const [isGroupSelectOpen, setIsGroupSelectOpen] = useState(true);
   const [isMemberSelectOpen, setIsMemberSelectOpen] = useState(false);
   const [isAlbumSelectOpen, setIsAlbumSelectOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,6 +52,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const { filteredGroups } = useGroupSearch({ groups: groupsData?.result, searchTerm });
   const { filteredMembers } = useMemberSearch({ members: membersData?.result, searchTerm });
   const { filteredAlbums } = useAlbumSearch({ albums: albumsData?.result, searchTerm });
+  const { setIsMyCardLoading } = useGlobalStore();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,6 +90,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
 
   const handleModalClose = () => {
     setModalStep(1);
+    setIsGroupSelectOpen(true);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(false);
+    setSearchTerm('');
     onClose();
   };
 
@@ -119,6 +125,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
       exchangeImageUrl: finalImageUrl,
     };
     await createExchangeCard(ExchangeCardData);
+    setIsMyCardLoading(false);
     handleModalClose();
     onRefresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,6 +154,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleGroupClick = (group: Group) => {
     setSelectedGroup(group.groupDisplayName ?? '');
     setSelectedGroupId(group.groupId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(true);
+    setIsAlbumSelectOpen(false);
   };
 
   const handleMemberSelect = () => {
@@ -159,6 +170,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleMemberClick = (member: Member) => {
     setSelectedMember(member.name);
     setSelectedMemberId(member.memberId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(true);
   };
 
   const handleAlbumSelect = () => {
@@ -170,6 +185,10 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const handleAlbumClick = (album: Album) => {
     setSelectedAlbum(album.title);
     setSelectedAlbumId(album.albumId);
+    setSearchTerm('');
+    setIsGroupSelectOpen(false);
+    setIsMemberSelectOpen(false);
+    setIsAlbumSelectOpen(false);
   };
 
   const handleSaveCardInfo = () => {

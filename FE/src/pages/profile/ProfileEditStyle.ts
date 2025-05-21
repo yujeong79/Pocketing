@@ -10,6 +10,7 @@ export const PageContainer = styled.div`
   height: 100vh;
   width: 100%;
   background: ${colors.gray100};
+  padding-top: ${scale(40)}px;
 `;
 
 export const ContentsContainer = styled.div`
@@ -86,6 +87,37 @@ export const TextContainer = styled.div`
   width: 90%;
   max-width: ${scale(300)}px;
   margin: 0 auto;
+`;
+
+export const CheckContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const Phrase = styled.div<{ type: 'error' | 'success' }>`
+  ${FontStyles.captionSmall};
+  color: ${({ type }) => (type === 'error' ? colors.danger : colors.success)};
+  text-align: left;
+  height: ${scale(12)}px;
+  padding-top: ${scale(4)}px;
+  padding-left: ${scale(4)}px;
+`;
+
+export const DuplicateCheckButtonContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  padding-top: ${scale(4)}px;
+`;
+
+export const DuplicateCheckButton = styled.button`
+  width: ${scale(70)}px;
+  height: ${scale(28)}px;
+  border-radius: ${scale(5)}px;
+  background-color: ${colors.white};
+  border: ${scale(1)}px solid ${colors.primary};
+  ${FontStyles.bodySmall};
+  color: ${colors.primary};
+  cursor: pointer;
 `;
 
 export const InputContainer = styled.div`

@@ -2,10 +2,35 @@ import Header from '@/components/common/Header';
 import { PhotocardIcon, PencilIcon, SpeakerIcon, WalletIcon, SiteIcon } from '@/assets/assets';
 import * as S from './SellPageStyle';
 import { useNavigate } from 'react-router-dom';
+import { useProfile } from '@/hooks/user/useProfile';
+import { useGlobalStore } from '@/store/globalStore';
+import { useEffect } from 'react';
+import { useSales } from '@/hooks/sales/useSales';
 
 const SellPage = () => {
-  const nickname = '닉네임'; // 실제로는 사용자 정보에서 가져올 예정
-  const count = 3; // 실제로는 API에서 가져올 예정
+  const { myProfile, fetchProfile } = useProfile();
+  const { mySales, fetchSales } = useSales();
+  const { setIsProfileLoading, isProfileLoading, isSalesLoading, setIsSalesLoading } =
+    useGlobalStore();
+
+  useEffect(() => {
+    if (!isProfileLoading) {
+      fetchProfile();
+      setIsProfileLoading(true);
+    }
+
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+  }, [
+    isProfileLoading,
+    isSalesLoading,
+    fetchProfile,
+    fetchSales,
+    setIsProfileLoading,
+    setIsSalesLoading,
+  ]);
 
   const handleGuideClick = () => {
     console.log('이용방법 버튼 클릭');
@@ -20,15 +45,17 @@ const SellPage = () => {
     <>
       <Header type="main" />
       <S.Container>
-        <S.TextContainer>
-          <S.TextWrapper>
-            <S.NicknameText>{nickname}</S.NicknameText>
-            <S.DefaultText> 님은{'\n'}</S.DefaultText>
-            <S.CountText>{count}</S.CountText>
-            <S.DefaultText>개의 포토카드를{'\n'}판매하고 있어요</S.DefaultText>
-          </S.TextWrapper>
+        <S.TopContainer>
+          <S.TextContainer>
+            <S.TextWrapper>
+              <S.NicknameText>{myProfile?.nickname}</S.NicknameText>
+              <S.DefaultText> 님은{'\n'}</S.DefaultText>
+              <S.CountText>{mySales?.length}</S.CountText>
+              <S.DefaultText>개의 포토카드를{'\n'}판매하고 있어요</S.DefaultText>
+            </S.TextWrapper>
+          </S.TextContainer>
           <S.PhotocardIconWrapper src={PhotocardIcon} alt="포토카드 아이콘" />
-        </S.TextContainer>
+        </S.TopContainer>
 
         <S.BackgroundSection>
           <S.ButtonContainer>

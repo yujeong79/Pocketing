@@ -11,6 +11,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useMembers } from '@/hooks/artist/query/useMembers';
 import { UserLikedGroup } from '@/types/user';
 import { useMainPageStore } from '@/store/mainPageStore';
+import { useSales, useCompleteSales } from '@/hooks/sales/useSales';
+import { useProfile } from '@/hooks/user/useProfile';
+import { useMyCard } from '@/hooks/exchange/useExchange';
+import { useGlobalStore } from '@/store/globalStore';
+import { useOthersCard } from '@/hooks/exchange/useExchange';
+import { useNotification } from '@/hooks/notification/useNotification';
 
 const MainPage = () => {
   const {
@@ -26,12 +32,84 @@ const MainPage = () => {
     setSelectedGroupData,
   } = useMainPageStore();
   const [isAlbumModalOpen, setIsAlbumModalOpen] = useState(false);
+  const { fetchSales } = useSales();
+  const { fetchCompleteSales } = useCompleteSales();
+  const { fetchProfile } = useProfile();
+  const { fetchMyCard } = useMyCard();
+  const { fetchOthersCard } = useOthersCard();
+  const { fetchNotification } = useNotification();
+  const {
+    isProfileLoading,
+    setIsProfileLoading,
+    isSalesLoading,
+    setIsSalesLoading,
+    isCompleteSalesLoading,
+    setIsCompleteSalesLoading,
+    isMyCardLoading,
+    setIsMyCardLoading,
+    isMyWishCardLoading,
+    setIsMyWishCardLoading,
+    isNotificationLoading,
+    setIsNotificationLoading,
+  } = useGlobalStore();
 
   // 관심 그룹 불러오기
   const { data: likedGroups } = useLikedGroups();
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // 초기 데이터 로딩
+  useEffect(() => {
+    if (!isProfileLoading) {
+      fetchProfile();
+      setIsProfileLoading(true);
+    }
+
+    if (!isSalesLoading) {
+      fetchSales();
+      setIsSalesLoading(true);
+    }
+
+    if (!isCompleteSalesLoading) {
+      fetchCompleteSales();
+      setIsCompleteSalesLoading(true);
+    }
+
+    if (!isMyCardLoading) {
+      fetchMyCard();
+      setIsMyCardLoading(true);
+    }
+
+    if (!isMyWishCardLoading) {
+      fetchOthersCard();
+      setIsMyWishCardLoading(true);
+    }
+
+    if (!isNotificationLoading) {
+      fetchNotification();
+      setIsNotificationLoading(true);
+    }
+  }, [
+    isProfileLoading,
+    isSalesLoading,
+    isCompleteSalesLoading,
+    isMyCardLoading,
+    isMyWishCardLoading,
+    isNotificationLoading,
+    fetchSales,
+    fetchCompleteSales,
+    fetchProfile,
+    fetchMyCard,
+    fetchOthersCard,
+    fetchNotification,
+    setIsProfileLoading,
+    setIsSalesLoading,
+    setIsCompleteSalesLoading,
+    setIsMyCardLoading,
+    setIsMyWishCardLoading,
+    setIsNotificationLoading,
+  ]);
 
   // 로그인 직후, 관심 그룹이 있으면 첫 번재 그룹 선택
   useEffect(() => {
@@ -87,6 +165,36 @@ const MainPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
 
+  useEffect(() => {
+    if (!likedGroups?.result) return;
+
+    const userLikedGroups = (likedGroups.result as UserLikedGroup[]).filter(
+      (item): item is UserLikedGroup => 'groupId' in item
+    );
+
+    const stillExists = userLikedGroups.some((group) => group.groupId === selectedGroupId);
+
+    if (!stillExists) {
+      if (userLikedGroups.length > 0) {
+        const first = userLikedGroups[0];
+        setSelectedGroupId(first.groupId);
+        setSelectedGroupData({
+          groupId: first.groupId,
+          groupNameKo: first.groupNameKo,
+          groupNameEn: first.groupNameEn,
+          groupImageUrl: first.groupImageUrl || '',
+          members: null,
+          interest: true,
+        });
+        setSelectedMember(null);
+      } else {
+        setSelectedGroupId(null);
+        setSelectedGroupData(null);
+        setSelectedMember(null);
+      }
+    }
+  }, [likedGroups, selectedGroupId, setSelectedGroupId, setSelectedGroupData, setSelectedMember]);
+
   const handleAlbumSelect = (albumId: number | null) => {
     setSelectedAlbumId(albumId);
     setIsAlbumModalOpen(false);
@@ -96,9 +204,13 @@ const MainPage = () => {
     navigate('/myGroupEdit', { state: { from: '/main' } });
   };
 
+  const handleHeaderClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
-      <Header type="main" />
+      <Header type="main" onClick={handleHeaderClick} />
       <MainContainer>
         <GroupImageList
           selectedId={selectedGroupId}

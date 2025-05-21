@@ -4,6 +4,7 @@ import StateModal from './StateModal';
 import { LinkedPost } from '@/types/chat';
 import { useUpdatePostStatus } from '@/hooks/post/mutation/useStatus';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalStore } from '@/store/globalStore';
 
 type Status = 'AVAILABLE' | 'COMPLETED';
 
@@ -17,6 +18,7 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
   const [status, setStatus] = useState<Status>(linkedPost.status as Status);
   const [isStateModalOpen, setIsStateModalOpen] = useState(false);
   const { mutate: updatePostStatus } = useUpdatePostStatus();
+  const { setIsSalesLoading } = useGlobalStore();
   const navigate = useNavigate();
   const isAvailable = status === 'AVAILABLE';
 
@@ -31,9 +33,10 @@ const TradeItem = ({ linkedPost, roomId, isMyPost }: TradeItemProps) => {
     setIsStateModalOpen(true);
   };
 
-  const handleStateSelect = (newStatus: Status) => {
+  const handleStateSelect = async (newStatus: Status) => {
     setStatus(newStatus);
-    updatePostStatus({ roomId, status: newStatus });
+    await updatePostStatus({ roomId, status: newStatus });
+    setIsSalesLoading(false);
   };
 
   return (
