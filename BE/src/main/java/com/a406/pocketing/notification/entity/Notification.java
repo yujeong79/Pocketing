@@ -48,4 +48,5 @@ public class Notification {
     public void updateStatus(NotificationType notificationType) {
         this.notificationType = notificationType;
     }
+
 }

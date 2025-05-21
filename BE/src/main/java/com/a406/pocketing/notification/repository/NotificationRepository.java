@@ -7,6 +7,7 @@ import com.a406.pocketing.notification.enums.NotificationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -56,4 +57,13 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             @Param("userId") Long userId,
             Pageable pageable
     );
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+        UPDATE Notification  n
+            SET n.isRead = true
+        WHERE n.responder.userId = :userId
+            AND n.isRead = false
+    """)
+    int markAllAsRead(@Param("userId") Long userId);
 }

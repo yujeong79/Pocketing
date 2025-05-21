@@ -4,6 +4,7 @@ import com.a406.pocketing.exchange.entity.ExchangeRequest;
 import com.a406.pocketing.notification.dto.FcmTokenRequestDto;
 import com.a406.pocketing.notification.dto.NotificationResponseDto;
 import com.a406.pocketing.notification.entity.FcmToken;
+import com.a406.pocketing.notification.entity.Notification;
 import com.a406.pocketing.notification.enums.NotificationType;
 import com.a406.pocketing.notification.repository.FcmTokenRepository;
 import com.a406.pocketing.notification.repository.NotificationRepository;
@@ -13,7 +14,6 @@ import com.a406.pocketing.user.repository.UserRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,12 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.NOTIFICATION_TOKEN_NOT_FOUND;
-import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.USER_NOT_FOUND;
+import static com.a406.pocketing.common.apiPayload.code.status.ErrorStatus.*;
 
 
 @Slf4j
@@ -185,5 +182,11 @@ public class NotificationServiceImpl implements NotificationService {
                 }
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void isReadNotification(Long userId) {
+        notificationRepository.markAllAsRead(userId);
     }
 }

@@ -51,10 +51,8 @@ public class ExchangeServiceImpl implements ExchangeService{
                 .orElseThrow(() -> new GeneralException(EXCHANGE_OWNED_CARD_NOT_FOUND));
 
         // 중복 요청 확인 로직
-        Boolean check = exchangeRequestRepository.existsByRequesterAndResponderAndRequesterOwnedCardAndResponderOwnedCardAndStatus(
-                requester, responder, requesterCard, responderCard, ExchangeRequestStatus.PENDING
-        );
-        if (check) {
+        if (exchangeRequestRepository.existsDuplicate(
+                requester, responder, requesterCard, responderCard, ExchangeRequestStatus.PENDING)) {
             throw new GeneralException(EXCHANGE_DUPLICATE_REQUEST);
         }
 
@@ -97,9 +95,23 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // 상태 업데이트
         exchangeRequest.updateStatus(requestDto.getAccepted() ? ExchangeRequestStatus.ACCEPTED : ExchangeRequestStatus.REJECTED);
-
         User requester = exchangeRequest.getRequester();
         User responder = exchangeRequest.getResponder();
+
+        if (requestDto.getAccepted()) {
+            ExchangeCard requesterOwned = exchangeRequest.getRequesterOwnedCard();
+            ExchangeCard responderOwned = exchangeRequest.getResponderOwnedCard();
+            requesterOwned.updateStatus("EXCHANGED");
+            responderOwned.updateStatus("EXCHANGED");
+
+            ExchangeCard requesterWanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(requester.getUserId(), false)
+                    .orElseThrow(() -> new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND));
+            ExchangeCard responderWanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(responder.getUserId(), false)
+                    .orElseThrow(() -> new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND));
+            requesterWanted.updateStatus("EXCHANGED");
+            responderWanted.updateStatus("EXCHANGED");
+        }
+
 
         // 기존 RECEIVED 알림 가져오기
         Notification receivedNotification  = notificationRepository

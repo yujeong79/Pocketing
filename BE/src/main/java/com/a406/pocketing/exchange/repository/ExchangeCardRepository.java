@@ -27,6 +27,7 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
             a.title AS albumTitle,
             m.name AS memberName,
             ST_Distance(ul.location, :myLocation) AS distance,
+            er.requester_id AS requesterId,
             er.exchange_request_id AS exchangeRequestId,
             er.status AS requestStatus
         FROM exchange_card ec
@@ -36,11 +37,18 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
         JOIN groups g ON ec.group_id = g.group_id
         JOIN members m ON ec.member_id = m.member_id
         LEFT JOIN exchange_request er
-            ON er.requester_id = :myUserId
-            AND er.responder_id = u.user_id
-            AND er.requester_owned_id = :myOwnedCardId
-            AND er.responder_owned_id = ec.exchange_card_id 
-            AND er.status = 'PENDING'
+            ON (
+                   -- 내가 요청자일 때
+                   (er.requester_id       = :myUserId
+               AND er.responder_id       = u.user_id
+               AND er.requester_owned_id = :myOwnedCardId
+               AND er.responder_owned_id = ec.exchange_card_id)
+                   -- 상대가 요청자일 때
+                OR (er.requester_id       = u.user_id
+               AND er.responder_id       = :myUserId
+               AND er.requester_owned_id = ec.exchange_card_id
+               AND er.responder_owned_id = :myOwnedCardId)
+                 )
         WHERE ec.status = 'ACTIVE'
             AND ec.is_owned = true
             AND ec.album_id = :myWantedAlbumId
@@ -55,26 +63,10 @@ public interface ExchangeCardRepository extends JpaRepository<ExchangeCard, Long
                     AND sub.album_id = :myOwnedAlbumId
                     AND sub.member_id = :myOwnedMemberId
             )
-            AND NOT EXISTS (
-                SELECT 1 FROM exchange_request er2
-                WHERE
-                    (
-                        (er2.requester_id = :myUserId 
-                        AND er2.responder_id = u.user_id
-                        AND er2.requester_owned_id = :myOwnedCardId
-                        AND er2.responder_owned_id = ec.exchange_card_id)
-                    OR
-                        (er2.responder_id = :myUserId 
-                        AND er2.requester_id = u.user_id
-                        AND er2.responder_owned_id = :myOwnedCardId
-                        AND er2.requester_owned_id = ec.exchange_card_id)
-                    ) 
-                    AND er2.status IN ('ACCEPTED','REJECTED')
-            )    
         ORDER BY distance ASC
         LIMIT 100
     """, nativeQuery = true)
-    List<Object[]> findNearbyExchangeCardsWithMatchType(
+    List<Object[]> findNearbyExchangeCards(
             @Param("myUserId") Long myUserId,
             @Param("myLocation") Point myLocation,
             @Param("myWantedAlbumId") Long myWantedAlbumId,
