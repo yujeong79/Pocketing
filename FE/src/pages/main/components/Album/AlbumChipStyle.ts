@@ -27,9 +27,10 @@ export const ChipText = styled.span<{ $isSelected: boolean }>`
 export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
+  margin-top: ${scale(1)}px;
 
   img {
-    width: ${scale(12)}px;
-    height: ${scale(12)}px;
+    width: ${scale(13)}px;
+    height: ${scale(13)}px;
   }
 `;

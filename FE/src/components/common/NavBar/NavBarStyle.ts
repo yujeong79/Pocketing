@@ -4,7 +4,7 @@ import scale from '@/utils/scale';
 
 export const NavBarContainer = styled.nav`
   width: 100%;
-  height: ${scale(56)}px;
+  height: ${scale(62)}px;
   padding: 0 ${scale(24)}px;
   display: flex;
   justify-content: space-between;
