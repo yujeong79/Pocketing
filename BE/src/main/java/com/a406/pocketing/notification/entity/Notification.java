@@ -48,4 +48,8 @@ public class Notification {
     public void updateStatus(NotificationType notificationType) {
         this.notificationType = notificationType;
     }
+
+    public void updateIsRead(Boolean isRead) {
+        this.isRead = isRead;
+    }
 }
