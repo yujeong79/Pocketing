@@ -67,5 +67,9 @@ public class ExchangeCard {
         this.exchangeImageUrl = exchangeImageUrl;
     }
 
+    public void updateStatus(String status) {
+        this.status = status;
+    }
+
 }
 
