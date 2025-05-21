@@ -59,11 +59,10 @@ public class NotificationController {
      */
     @PostMapping("/read")
     public ApiResponse<?> isReadNotification(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam Long notificationId
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long userId = userDetails.getUserId();
-        notificationService.isReadNotification(userId, notificationId);
+        notificationService.isReadNotification(userId);
         return ApiResponse.of(SuccessStatus.EXCHANGE_NOTIFICATION_READ_SUCCESS, null);
     }
 }
