@@ -1,16 +1,21 @@
 import { useGlobalStore } from '@/store/globalStore';
 import { getNotification, postNotificationRead } from '@/api/notification/notification';
 
-export const useNotification = () => {
-  const { notification, setNotification } = useGlobalStore();
+export function useNotification() {
+  const setNotification = useGlobalStore((state) => state.setNotification);
 
   const fetchNotification = async () => {
     const response = await getNotification();
-    setNotification(response.result.content);
+    if (response.isSuccess) {
+      setNotification(response.result.content); // 전역 상태에 저장
+    }
   };
 
+  // ...필요시 notification 상태도 반환
+  const notification = useGlobalStore((state) => state.notification);
+
   return { notification, fetchNotification };
-};
+}
 
 export const useNotificationRead = () => {
   const { notification, setNotification } = useGlobalStore();

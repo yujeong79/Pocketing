@@ -47,6 +47,11 @@ const MapPage = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
 
+  const hasUnreadNotification = useMemo(
+    () => notification?.some((n) => !n.read) ?? false,
+    [notification]
+  );
+
   // 두 좌표 사이의 거리를 계산하는 함수 (Haversine 공식)
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371e3; // 지구의 반경 (미터)
@@ -77,10 +82,6 @@ const MapPage = () => {
       return null;
     }
   }, [range]);
-
-  const hasUnreadNotification = useMemo(() => {
-    return notification?.some((n) => !n.read) ?? false;
-  }, [notification]);
 
   // 위치 추적 설정
   useEffect(() => {
@@ -146,6 +147,8 @@ const MapPage = () => {
     if (currentLocation) {
       debouncedPostLocation(currentLocation);
     }
+    // 알림도 새로고침
+    fetchNotification();
   };
 
   const handleCloseModal = () => {

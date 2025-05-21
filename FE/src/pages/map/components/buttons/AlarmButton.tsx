@@ -5,7 +5,6 @@ interface AlarmButtonProps {
   onClick?: () => void;
   hasUnread?: boolean;
 }
-
 const AlarmButton = ({ onClick, hasUnread = false }: AlarmButtonProps) => {
   return (
     <S.AlarmButtonContainer onClick={onClick} $hasUnread={hasUnread}>
