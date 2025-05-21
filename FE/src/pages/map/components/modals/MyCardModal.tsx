@@ -20,6 +20,7 @@ import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { ExchangeRequest } from '@/types/exchange';
 import { postS3Image, putS3Image } from '@/api/s3/s3Image';
 import { useGlobalStore } from '@/store/globalStore';
+import Toast from '../common/Toast';
 
 interface MyCardModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
   const [isMemberSelectOpen, setIsMemberSelectOpen] = useState(false);
   const [isAlbumSelectOpen, setIsAlbumSelectOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [showSameCardToast, setShowSameCardToast] = useState(false);
   const { data: groupsData } = useGroupsAll();
   const { data: membersData } = useMembersAll(selectedGroupId ?? 0);
   const { data: albumsData } = useAlbums(selectedGroupId ?? 0);
@@ -124,10 +125,15 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
       description: null,
       exchangeImageUrl: finalImageUrl,
     };
-    await createExchangeCard(ExchangeCardData);
-    setIsMyCardLoading(false);
-    handleModalClose();
-    onRefresh();
+    try {
+      await createExchangeCard(ExchangeCardData);
+      setIsMyCardLoading(false);
+      handleModalClose();
+      onRefresh();
+    } catch (error) {
+      setShowSameCardToast(true);
+      throw error;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGroupId, selectedAlbumId, selectedMemberId, selectedImage, onRefresh]);
 
@@ -319,6 +325,13 @@ const MyCardModal = ({ isOpen, onClose, onRefresh }: MyCardModalProps) => {
           </S.MyCardResultContainer>
           <Button text="등록하기" onClick={handlePostExchangeCard} />
         </>
+      )}
+      {showSameCardToast && (
+        <Toast
+          type="warning"
+          message="이미 등록된 포카에요!"
+          onClose={() => setShowSameCardToast(false)}
+        />
       )}
     </SlideUpModal>
   );

@@ -28,6 +28,7 @@ const ExchangeListModal = ({
   const [pocketCallCount, setPocketCallCount] = useState(0);
   const [showMaxToast, setShowMaxToast] = useState(false);
   const [showSendToast, setShowSendToast] = useState(false);
+  const [showSameCallToast, setShowSameCallToast] = useState(false);
   const { isMyCardLoading, setIsMyCardLoading } = useGlobalStore();
   const { myCard, fetchMyCard } = useMyCard();
   const { setIsNotificationLoading } = useGlobalStore();
@@ -74,6 +75,7 @@ const ExchangeListModal = ({
           setShowMaxToast(true);
         }
       } catch (error) {
+        setShowSameCallToast(true);
         throw error;
       }
     },
@@ -134,6 +136,13 @@ const ExchangeListModal = ({
           type="success"
           message="포켓콜을 보냈어요! 포케터의 수락을 기다리세요!"
           onClose={() => setShowSendToast(false)}
+        />
+      )}
+      {showSameCallToast && (
+        <Toast
+          type="warning"
+          message="상대방이 먼저 포켓콜을 보냈어요!"
+          onClose={() => setShowSameCallToast(false)}
         />
       )}
     </SlideUpModal>
