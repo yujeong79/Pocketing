@@ -235,7 +235,7 @@ const MapPage = () => {
             center.x
           );
 
-          setIsMapMoved(distance > 10);
+          setIsMapMoved(distance > 50);
         });
 
         // 마커 최초 생성 (한 번만 실행)
