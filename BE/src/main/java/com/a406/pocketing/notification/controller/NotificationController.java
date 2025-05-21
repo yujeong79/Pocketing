@@ -53,4 +53,17 @@ public class NotificationController {
         notificationService.registerFcmToken(userId, requestDto);
         return ApiResponse.of(SuccessStatus.NOTIFICATION_TOKEN_REGISTER_SUCCESS, null);
     }
+
+    /**
+     * 알림 읽음 처리
+     */
+    @PostMapping("/read")
+    public ApiResponse<?> isReadNotification(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam Long notificationId
+    ) {
+        Long userId = userDetails.getUserId();
+        notificationService.isReadNotification(userId, notificationId);
+        return ApiResponse.of(SuccessStatus.EXCHANGE_NOTIFICATION_READ_SUCCESS, null);
+    }
 }
