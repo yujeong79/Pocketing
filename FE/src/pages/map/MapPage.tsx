@@ -40,10 +40,11 @@ const MapPage = () => {
   const { isNotificationLoading, setIsNotificationLoading } = useGlobalStore();
 
   const navigate = useNavigate();
+  const markerRef = useRef<any>(null);
+  const countMarkerRef = useRef<any>(null);
   const circleRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const naverMapRef = useRef<any>(null);
-  const countMarkerRef = useRef<any>(null);
 
   const handleGetUserList = useCallback(async () => {
     try {
@@ -170,54 +171,118 @@ const MapPage = () => {
     if (window.naver && mapRef.current && currentLocation) {
       const location = new window.naver.maps.LatLng(currentLocation.lat, currentLocation.lng);
 
-      // 지도 생성
-      const map = new window.naver.maps.Map(mapRef.current, {
-        center: location,
-        zoom: getZoomLevel(range),
-        zoomControl: false,
-        zoomControlOptions: {
-          position: window.naver.maps.Position.TOP_RIGHT,
-        },
-        mapTypeControl: false,
-        mapTypeControlOptions: {
-          position: window.naver.maps.Position.TOP_RIGHT,
-        },
-        scaleControl: false,
-        streetViewControl: false,
-        mapDataControl: false,
-        draggable: true,
-        pinchZoom: true,
-        scrollWheel: true,
-        keyboardShortcuts: true,
-        disableDoubleTapZoom: false,
-        disableDoubleClickZoom: false,
-        disableTwoFingerTapZoom: false,
-        tileTransition: true,
-        tileQuality: 'high',
-        mapTypeId: window.naver.maps.MapTypeId.NORMAL,
-      });
+      // 지도가 없을 때만 새로 생성
+      if (!naverMapRef.current) {
+        // 지도 생성
+        const map = new window.naver.maps.Map(mapRef.current, {
+          center: location,
+          zoom: getZoomLevel(range),
+          zoomControl: false,
+          zoomControlOptions: {
+            position: window.naver.maps.Position.TOP_RIGHT,
+          },
+          mapTypeControl: false,
+          mapTypeControlOptions: {
+            position: window.naver.maps.Position.TOP_RIGHT,
+          },
+          scaleControl: false,
+          streetViewControl: false,
+          mapDataControl: false,
+          draggable: true,
+          pinchZoom: true,
+          scrollWheel: true,
+          keyboardShortcuts: true,
+          disableDoubleTapZoom: false,
+          disableDoubleClickZoom: false,
+          disableTwoFingerTapZoom: false,
+          tileTransition: true,
+          tileQuality: 'high',
+          mapTypeId: window.naver.maps.MapTypeId.NORMAL,
+        });
 
-      naverMapRef.current = map;
+        naverMapRef.current = map;
 
-      // 마커 생성
-      const marker = new window.naver.maps.Marker({
-        map,
-        position: location,
-        icon: S.createMarkerIcon(),
-        animation: window.naver.maps.Animation.DROP,
-        zIndex: 100,
-      });
+        // 마커 최초 생성 (한 번만 실행)
+        markerRef.current = new window.naver.maps.Marker({
+          map,
+          position: location,
+          icon: S.createMarkerIcon(),
+          animation: window.naver.maps.Animation.DROP, // 최초 생성 시에만 애니메이션 적용
+          zIndex: 100,
+        });
 
-      marker.setMap(map);
+        // 카운트 마커 최초 생성
+        countMarkerRef.current = new window.naver.maps.Marker({
+          map,
+          position: location,
+          icon: {
+            content: `
+              <div style="
+                background-color: ${colors.primary};
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                transform: translate(-50%, 20px);
+                white-space: nowrap;
+              ">
+                ${currentUsers}명
+              </div>
+            `,
+            size: new window.naver.maps.Size(0, 0),
+            anchor: new window.naver.maps.Point(0, 0),
+          },
+          zIndex: 99,
+        });
 
-      // 기존 원형 영역이 있다면 제거
+        // 카운트 마커 클릭 이벤트
+        window.naver.maps.Event.addListener(countMarkerRef.current, 'click', () => {
+          setIsExchangeListModalOpen(true);
+        });
+      } else {
+        // 지도가 이미 존재하면 위치만 업데이트
+        naverMapRef.current.setCenter(location);
+        naverMapRef.current.setZoom(getZoomLevel(range));
+
+        // 마커 위치 업데이트 (애니메이션 없이)
+        if (markerRef.current) {
+          markerRef.current.setPosition(location);
+        }
+
+        // 카운트 마커 위치와 내용 업데이트
+        if (countMarkerRef.current) {
+          countMarkerRef.current.setPosition(location);
+          countMarkerRef.current.setIcon({
+            content: `
+              <div style="
+                background-color: ${colors.primary};
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                transform: translate(-50%, 20px);
+                white-space: nowrap;
+              ">
+                ${currentUsers}명
+              </div>
+            `,
+            size: new window.naver.maps.Size(0, 0),
+            anchor: new window.naver.maps.Point(0, 0),
+          });
+        }
+      }
+
+      // 원형 영역은 매번 새로 생성 (반경이 변경될 수 있으므로)
       if (circleRef.current) {
         circleRef.current.setMap(null);
       }
 
-      // 새로운 원형 영역 생성
       circleRef.current = new window.naver.maps.Circle({
-        map,
+        map: naverMapRef.current,
         center: location,
         radius: range,
         fillColor: colors.primary,
@@ -228,41 +293,6 @@ const MapPage = () => {
         strokeStyle: 'solid',
         clickable: false,
         zIndex: 50,
-      });
-
-      // 기존 카운트 마커가 있다면 제거
-      if (countMarkerRef.current) {
-        countMarkerRef.current.setMap(null);
-      }
-
-      // 새로운 카운트 마커 생성
-      countMarkerRef.current = new window.naver.maps.Marker({
-        map,
-        position: location,
-        icon: {
-          content: `
-            <div style="
-              background-color: ${colors.primary};
-              color: white;
-              padding: 4px 8px;
-              border-radius: 12px;
-              font-size: 12px;
-              font-weight: bold;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-              transform: translate(-50%, 20px);
-              white-space: nowrap;
-            ">
-              ${currentUsers}명
-            </div>
-          `,
-          size: new window.naver.maps.Size(0, 0),
-          anchor: new window.naver.maps.Point(0, 0),
-        },
-        zIndex: 99,
-      });
-
-      window.naver.maps.Event.addListener(countMarkerRef.current, 'click', () => {
-        setIsExchangeListModalOpen(true);
       });
     }
   }, [currentLocation, range, currentUsers]);
