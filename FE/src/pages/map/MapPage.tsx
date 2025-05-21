@@ -280,8 +280,7 @@ const MapPage = () => {
       } else {
         // 지도가 이미 존재하면 위치만 업데이트 (지도가 이동되지 않은 상태일 때만)
         if (!isMapMoved) {
-          naverMapRef.current.setCenter(location);
-          naverMapRef.current.setZoom(getZoomLevel(range));
+          naverMapRef.current.morph(location, getZoomLevel(range));
         }
 
         // 마커 위치 업데이트 (애니메이션 없이)
