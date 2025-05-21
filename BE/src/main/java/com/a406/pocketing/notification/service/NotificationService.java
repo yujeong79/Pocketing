@@ -20,5 +20,5 @@ public interface NotificationService {
 
     void sendChatMessageNotification(Long receiverId, String senderNickname, String messageContent, Long roomId);
 
-    void isReadNotification(Long userId, Long notificationId);
+    void isReadNotification(Long userId);
 }

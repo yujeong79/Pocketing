@@ -186,16 +186,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public void isReadNotification(Long userId, Long notificationId) {
-        Notification notification = notificationRepository.findById(notificationId)
-                .orElseThrow(() -> new GeneralException(NOTIFICATION_NOT_FOUND));
-
-        if (!notification.getResponder().getUserId().equals(userId)) {
-            throw new GeneralException(NOTIFICATION_NOT_FOUND);
-        }
-
-        if(Boolean.FALSE.equals(notification.getIsRead())) {
-            notification.updateIsRead(true);
-        }
+    public void isReadNotification(Long userId) {
+        notificationRepository.markAllAsRead(userId);
     }
 }
