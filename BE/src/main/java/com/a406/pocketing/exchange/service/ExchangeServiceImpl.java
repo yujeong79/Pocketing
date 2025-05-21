@@ -95,9 +95,20 @@ public class ExchangeServiceImpl implements ExchangeService{
 
         // 상태 업데이트
         exchangeRequest.updateStatus(requestDto.getAccepted() ? ExchangeRequestStatus.ACCEPTED : ExchangeRequestStatus.REJECTED);
-
         User requester = exchangeRequest.getRequester();
         User responder = exchangeRequest.getResponder();
+
+        ExchangeCard requesterOwned = exchangeRequest.getRequesterOwnedCard();
+        ExchangeCard responderOwned = exchangeRequest.getResponderOwnedCard();
+        requesterOwned.updateStatus("EXCHANGED");
+        responderOwned.updateStatus("EXCHANGED");
+
+        ExchangeCard requesterWanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(requester.getUserId(), false)
+                .orElseThrow(() -> new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND));
+        ExchangeCard responderWanted = exchangeCardRepository.findActiveCardByUserIdAndIsOwned(responder.getUserId(), false)
+                .orElseThrow(() -> new GeneralException(EXCHANGE_WANTED_CARD_NOT_FOUND));
+        requesterWanted.updateStatus("EXCHANGED");
+        responderWanted.updateStatus("EXCHANGED");
 
         // 기존 RECEIVED 알림 가져오기
         Notification receivedNotification  = notificationRepository
