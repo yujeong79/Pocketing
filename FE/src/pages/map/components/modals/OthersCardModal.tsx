@@ -18,6 +18,7 @@ import { createExchangeCard } from '@/api/exchange/exchangeCard';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { OthersCardData } from '@/types/exchange';
 import { useGlobalStore } from '@/store/globalStore';
+import Toast from '../common/Toast';
 
 interface OthersCardModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
   const [isMemberSelectOpen, setIsMemberSelectOpen] = useState(false);
   const [isAlbumSelectOpen, setIsAlbumSelectOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showSameCardToast, setShowSameCardToast] = useState(false);
 
   const { data: groupsData } = useGroupsAll();
   const { data: membersData } = useMembersAll(selectedGroupId ?? 0);
@@ -115,6 +117,7 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
       handleModalClose();
       onRefresh();
     } catch (error) {
+      setShowSameCardToast(true);
       throw error;
     }
   }, [selectedGroupId, selectedAlbumId, selectedMemberId, onRefresh]);
@@ -200,6 +203,13 @@ const OthersCardModal = ({ isOpen, onClose, onRefresh }: OthersCardModalProps) =
         onClick={handlePostExchangeCard}
         disabled={!selectedGroup || !selectedMember || !selectedAlbum}
       />
+      {showSameCardToast && (
+        <Toast
+          type="warning"
+          message="이미 등록된 포카에요!"
+          onClose={() => setShowSameCardToast(false)}
+        />
+      )}
     </SlideUpModal>
   );
 };
