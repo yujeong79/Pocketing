@@ -46,8 +46,48 @@ class ChatService:
             message_number = context.add_message("user", user_query)
             logger.debug(f"사용자 메시지 추가됨: 메시지 ID {message_number}")
 
-            metadata_list, post_results = self.rag_service.search_photocards(user_query, n_results=5)
-            logger.info(f"포토카드 검색 완료: {len(metadata_list)}개 결과, {len(post_results)}개 판매글 정보")
+            is_photocard_related = self.llm_service.is_photocard_related_query(user_query)
+
+            if not is_photocard_related:
+                logger.info("일상적인 대화 감지됨, 포토카드 검색 건너뜀")
+                metadata_list = []
+                post_results = []
+            else:
+                expanded_query = self.rag_service.expand_query_semantically(user_query)
+                logger.info(f"의미적으로 확장된 쿼리: {expanded_query}")
+
+                metadata_list, post_results = self.rag_service.search_photocards(expanded_query, n_results=5)
+                logger.info(f"포토카드 검색 완료: {len(metadata_list)}개 결과, {len(post_results)}개 판매글 정보")
+
+            if not metadata_list:
+                logger.info("검색 결과 없음 - 사용자에게 명확히 알림")
+                llm_response = "죄송합니다, 검색어와 일치하는 포토카드를 찾을 수 없습니다. 다른 검색어로 시도해보세요."
+                context.add_message("assistant", llm_response)
+                self.cache.save_chat_context(user_id, context.to_json(), expiry=3600)
+
+                response_meta = ChatResponseMeta(
+                    user_id=user_id,
+                    total_results=0,
+                    in_response_to=context.current_message_id,
+                    new_chat_message_id=context.current_message_id + 1
+                )
+
+                response_result = ChatResponseResult(
+                    text=llm_response,
+                    photocards=[],
+                    meta=response_meta
+                )
+
+                response = ChatResponse(
+                    status="SUCCESS",
+                    code=1000,
+                    message="검색 결과 없음",
+                    result=response_result
+                )
+
+                logger.info(f"사용자 {user_id}의 메시지 처리 완료 - 검색 결과 없음")
+                return response.dict()
+
             rag_result = self.rag_service.rag_photocard_for_llm(metadata_list, post_results)
 
             messages = context.get_formatted_messages(include_roles=["user", "assistant"])
@@ -132,7 +172,7 @@ class ChatService:
                 f"- 멤버: {card_info['member_name']}\n"
                 f"- 앨범: {card_info['album_name']}\n"
                 f"- 태그: {', '.join(card_info['tag'])}\n"
-                f"- 유사도: {similarity:.2f}\n"  # 유사도 정보 추가
+                f"- 유사도: {similarity:.2f}\n"
             )
 
             if post_info and post_info.cheapest_post.post_id:
