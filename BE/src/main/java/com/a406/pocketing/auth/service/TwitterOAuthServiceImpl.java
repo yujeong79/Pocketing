@@ -45,6 +45,7 @@ public class TwitterOAuthServiceImpl implements TwitterOAuthService{
                 TwitterTokenResponse.class
         );
 
+        log.info("Twitter Access token: {}", response.getBody().getAccessToken());
         return response.getBody().getAccessToken();
     }
 

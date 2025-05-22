@@ -1,32 +1,44 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(false)
+    }
+
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Copy Config') {
-            steps{
-                sh 'cp /home/ubuntu/secret/backend/application.yml BE/src/main/resources/'
+            steps {
+                sh '''
+                mkdir -p BE/src/main/resources/
+                cp /backend/secret/application.yml BE/src/main/resources/
+                cp /backend/secret/application-prod.yml BE/src/main/resources/
+                cp /backend/secret/firebase-service-account.json BE/src/main/resources/
+                '''
             }
         }
+
         stage('Build') {
             steps {
-                dir('backend') {
-                    sh './gradlew clean build'
+                dir('BE') {
+                    sh '''
+                    chmod +x gradlew
+                    ./gradlew clean build -x test
+                    ls build/libs
+                    '''
                 }
             }
         }
+
         stage('Docker Build & Deploy') {
             steps {
-                dir('backend') {
+                dir('BE') {
                     sh '''
+                    docker stop backend-app || true
+                    docker rm backend-app || true
                     docker build -t backend-app .
-                    docker save backend-app | ssh ubuntu@k12a406.p.ssafy.io "docker load"
-                    ssh ubuntu@k12a406.p.ssafy.io "docker stop backend-app || true && docker rm backend-app || true"
-                    ssh ubuntu@k12a406.p.ssafy.io "docker run -d --name backend-app -p 8081:8080 backend-app"
+                    docker run -d --name backend-app \
+                    --network docker_app_network \
+                    -p 8081:8080 backend-app
                     '''
                 }
             }
