@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 # YOLO 모델 로드(서버 시작 시 1번만)
 model = YOLO("yolov8n.pt")
-model.to("cuda")  # 이게 있어야 GPU로 작동!
+# model.to("cuda")  # 이게 있어야 GPU로 작동!
 
 
 def detect_and_crop_person(image_path):
