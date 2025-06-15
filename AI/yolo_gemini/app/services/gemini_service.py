@@ -8,13 +8,16 @@ from PIL import Image
 from app.common.custom_exception import CustomException
 from app.common.error_code import VisionError
 
-GEMINI_API_URL = "https://gms.p.ssafy.io/gmsapi/generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 MAX_FILE_SIZE = 800000  # 약 800KB 제한
 QUALITY = 80  # 적절한 품질 유지 (0-100)
 
 
+
 async def analyze_image_async(image_url: str):
+    print(f"[DEBUG] GEMINI_API_KEY: {GEMINI_API_KEY}")
+
     print(f"\n[🔗] 이미지 다운로드 시작: {image_url}")
 
     if not GEMINI_API_KEY:
@@ -85,7 +88,7 @@ async def analyze_image_async(image_url: str):
                 {
                     "parts": [
                         {
-                            "text": "이 인물은 어떤 K-pop 아이돌 그룹의 누구인지 정확하게 알려줘. '그룹명의 멤버명입니다' 형식으로 말해주고, 웬만하면 한국어 활동명(한국어)으로 말해줘 근데 BTS의 RM 같은 경우는 예외로. 예: BTS의 RM입니다. or 뉴진스의 민지입니다. 모르면 '모르겠습니다' 만 말해."
+                            "text": "이 인물은 어떤 K-pop 아이돌 그룹의 누구인지 정확하게 알려줘. '그룹명의 멤버명입니다' 형식으로 말해주고, 웬만하면 한국어 활동명(한국어)으로 말해줘 근데 BTS의 RM 같은 경우는 예외로. 예: BTS의 RM입니다. or 뉴진스의 민지입니다. 모르면 '모르겠습니다' 만 말해. 한 명만 인식되었다고 생각하고, OO의 XX입니다. 한 줄만 응답해."
                         },
                         {
                             "inline_data": {
