@@ -51,7 +51,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
+        registration
+                .interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
@@ -73,6 +74,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
                 return message;
             }
-        });
+        })
+        .taskExecutor()
+        .corePoolSize(8)
+        .maxPoolSize(32)
+        .queueCapacity(500)
+        .keepAliveSeconds(60);
     }
 }
