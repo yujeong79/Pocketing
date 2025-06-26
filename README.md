@@ -1,6 +1,5 @@
 # 📌 포토카드 거래 플랫폼 포켓팅(Pocketing)
-
-- 배포 URL : https://k12a406.p.ssafy.io
+- 배포 URL :
 
 <br>
 
