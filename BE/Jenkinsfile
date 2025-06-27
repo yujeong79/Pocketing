@@ -17,6 +17,7 @@ pipeline {
             steps {
                 dir('BE') {
                     sh '''
+                    docker compose version
                     docker compose -file /pocketing/docker-compose.pocketing.yml stop backend
                     docker compose -file /pocketing/docker-compose.pocketing.yml rm -f backend
                     docker compose -file /pocketing/docker-compose.pocketing.yml up -d --build backend
