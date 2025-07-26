@@ -38,6 +38,8 @@ public class ChatSubscriber implements MessageListener {
             // 1. DB 저장
             ChatMessageResponseDto chatMessageResponseDto = chatService.saveMessage(chatMessageRequestDto, chatMessageRequestDto.getSenderId());
 
+            log.debug(chatMessageResponseDto.getReceiverId().toString());
+
             // 2. WebSocket 전송
             messagingTemplate.convertAndSendToUser(
                     chatMessageResponseDto.getReceiverId().toString(),
