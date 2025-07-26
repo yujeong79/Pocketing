@@ -11,6 +11,7 @@ import lombok.Setter;
 public class ChatMessageRequestDto {
     private Long roomId;
     private String messageContent;
+    private Long senderId;
 
     public static ChatMessage toEntity(ChatRoom chatRoom, User sender, ChatMessageRequestDto chatMessageRequestDto) {
         return ChatMessage.builder()

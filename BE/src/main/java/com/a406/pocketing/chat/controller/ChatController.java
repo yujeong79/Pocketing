@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,6 +40,7 @@ public class ChatController {
     private final ChatService chatService;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 채팅방 생성 혹은 조회
@@ -63,26 +65,30 @@ public class ChatController {
         }
 
         CustomUserDetails user = (CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
-        ChatMessageResponseDto chatMessageResponseDto = chatService.saveMessage(chatMessageRequestDto, user.getUserId()); // 메시지 DB 저장
+        chatMessageRequestDto.setSenderId(user.getUserId());
 
-        // 수신자에게 메시지 전송
-        messagingTemplate.convertAndSendToUser(
-                chatMessageResponseDto.getReceiverId().toString(),
-                "/queue/messages",
-                chatMessageResponseDto
-        );
+        redisTemplate.convertAndSend("chat-channel", chatMessageRequestDto);
 
-        // FCM 알림 전송
-        User sender = userRepository.findByUserId(chatMessageResponseDto.getSenderId())
-                        .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
-        String senderNickname = sender.getNickname();
-
-        notificationService.sendChatMessageNotification(
-                chatMessageResponseDto.getReceiverId(),
-                senderNickname,
-                chatMessageResponseDto.getMessageContent(),
-                chatMessageRequestDto.getRoomId()
-        );
+//        ChatMessageResponseDto chatMessageResponseDto = chatService.saveMessage(chatMessageRequestDto, user.getUserId()); // 메시지 DB 저장
+//
+//        // 수신자에게 메시지 전송
+//        messagingTemplate.convertAndSendToUser(
+//                chatMessageResponseDto.getReceiverId().toString(),
+//                "/queue/messages",
+//                chatMessageResponseDto
+//        );
+//
+//        // FCM 알림 전송
+//        User sender = userRepository.findByUserId(chatMessageResponseDto.getSenderId())
+//                        .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+//        String senderNickname = sender.getNickname();
+//
+//        notificationService.sendChatMessageNotification(
+//                chatMessageResponseDto.getReceiverId(),
+//                senderNickname,
+//                chatMessageResponseDto.getMessageContent(),
+//                chatMessageRequestDto.getRoomId()
+//        );
     }
 
     /**
