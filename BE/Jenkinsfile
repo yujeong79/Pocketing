@@ -16,7 +16,7 @@ pipeline {
         stage('Copy Config From Container') {
             steps {
                 sh '''
-                docker cp backend:/resources BE/src/main/resources
+                docker cp backend:/resources /src/main/resources
                 '''
             }
         }
