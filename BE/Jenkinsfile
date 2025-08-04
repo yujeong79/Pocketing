@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh '''
                 docker cp backend:/resources/application.yml BE/src/main/resources/application.yml
-                docker cp backend:/resources/application-prod.yml BE/src/main/resources/application.yml
+                docker cp backend:/resources/application-prod.yml BE/src/main/resources/application-prod.yml
                 docker cp backend:/resources/firebase-service-account.json BE/src/main/resources/firebase-service-account.json
                 '''
             }
