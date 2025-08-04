@@ -30,7 +30,8 @@ pipeline {
                     docker compose version
                     docker compose -f /pocketing/docker-compose.pocketing.yml stop backend
                     docker compose -f /pocketing/docker-compose.pocketing.yml rm -f backend
-                    docker compose -f /pocketing/docker-compose.pocketing.yml up -d --build backend
+                    docker compose -f /pocketing/docker-compose.pocketing.yml build --no-cache backend
+                    docker compose -f /pocketing/docker-compose.pocketing.yml up -d backend
                     '''
                 }
             }
