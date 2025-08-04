@@ -9,7 +9,7 @@ pipeline {
         stage('Copy Config') {
             steps {
                 sh '''
-                cp /frontend/secret/.env FE/.env
+                cp /.env FE/.env
                 '''
             }
         }
@@ -18,12 +18,10 @@ pipeline {
             steps {
                 dir('FE') {
                     sh '''
-                    docker stop frontend-app || true
-                    docker rm frontend-app || true
-                    docker build -t frontend-app .
-                    docker run -d --name frontend-app -p 80:80 -p 443:443 \
-                    -v /etc/letsencrypt:/etc/letsencrypt \
-                    frontend-app
+                    docker compose version
+                    docker compose -f /pocketing/docker-compose.pocketing.yml stop frontend
+                    docker compose -f /pocketing/docker-compose.pocketing.yml rm -f frontend
+                    docker compose -f /pocketing/docker-compose.pocketing.yml up -d --build frontend
                     '''
                 }
             }
