@@ -9,7 +9,7 @@ pipeline {
         stage('Copy Config') {
             steps {
                 sh '''
-                cp /.env FE/.env
+                cp /pocketing/fe/.env FE/.env
                 '''
             }
         }
