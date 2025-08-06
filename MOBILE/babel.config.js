@@ -11,6 +11,23 @@ module.exports = function(api) {
           preprocess: false,
         },
       ],
+      [
+        'module-resolver',
+        {
+          root: ['./src'],
+          alias: {
+            '@components': './src/components',
+            '@utils': './src/utils',
+            '@screens': './src/screens',
+            '@constants': './src/constants',
+            '@hooks': './src/hooks',
+            '@navigation': './src/navigation',
+            '@types': './src/types',
+            '@store': './src/store',
+            '@api': './src/api'
+          }
+        }
+      ]
     ],
   };
 }; 
