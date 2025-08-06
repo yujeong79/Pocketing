@@ -1,8 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+        SWITCH_SCRIPT = '/pocketing/fe/nginx/switch_nginx.sh'
+        UPSTREAM_CONF = '/pocketing/fe/nginx/upstream.conf'
+    }
+
     stages {
-        stage('Build') {
+        stage('Build Backend') {
             steps {
                 dir('BE') {
                     sh '''
@@ -13,27 +18,80 @@ pipeline {
             }
         }
 
-        stage('Copy Config From Container') {
+        stage('Determine Target Container') {
             steps {
-                sh '''
-                docker cp backend:/resources/application.yml BE/src/main/resources/application.yml
-                docker cp backend:/resources/application-prod.yml BE/src/main/resources/application-prod.yml
-                docker cp backend:/resources/firebase-service-account.json BE/src/main/resources/firebase-service-account.json
-                '''
+                script {
+                    def currentBackend = sh(
+                        script: "grep -v '#' ${UPSTREAM_CONF} | grep -o 'backend_.*:8080' | cut -d':' -f1",
+                        returnStdout: true
+                    ).trim()
+
+                    env.CURRENT_BACKEND = currentBackend
+                    env.NEXT_BACKEND = (currentBackend == "backend_blue") ? "backend_green" : "backend_blue"
+
+                    echo "🟢 현재 활성화된 백엔드: ${env.CURRENT_BACKEND}"
+                    echo "🟠 새로 배포할 백엔드: ${env.NEXT_BACKEND}"
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy New Backend') {
             steps {
                 dir('BE') {
-                    sh '''
-                    docker compose version
-                    docker compose -f /pocketing/docker-compose.pocketing.yml stop backend
-                    docker compose -f /pocketing/docker-compose.pocketing.yml rm -f backend
-                    docker compose -f /pocketing/docker-compose.pocketing.yml build --no-cache backend
-                    docker compose -f /pocketing/docker-compose.pocketing.yml up -d backend
-                    '''
+                    sh """
+                    docker compose -f ${DOCKER_COMPOSE_FILE} stop ${NEXT_BACKEND} || true
+                    docker compose -f ${DOCKER_COMPOSE_FILE} rm -f ${NEXT_BACKEND} || true
+                    docker compose -f ${DOCKER_COMPOSE_FILE} build --no-cache ${NEXT_BACKEND}
+                    docker compose -f ${DOCKER_COMPOSE_FILE} up -d ${NEXT_BACKEND}
+                    """
                 }
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                script {
+                    def status = sh(
+                        script: "curl -sf http://${NEXT_BACKEND}:8080/actuator/health | grep UP",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        error("🚨 ${NEXT_BACKEND} health check 실패")
+                    } else {
+                        echo "✅ ${NEXT_BACKEND} health check 성공"
+                    }
+                }
+            }
+        }
+
+        stage('Switch Nginx Upstream') {
+            steps {
+                sh """
+                echo "🔧 switch_nginx.sh 실행 준비"
+                chmod +x ${SWITCH_SCRIPT}
+                bash ${SWITCH_SCRIPT}
+                """
+            }
+        }
+
+        stage('Reload Nginx') {
+            steps {
+                sh """
+                echo "🔁 frontend 컨테이너에서 Nginx 설정 재적용"
+                docker exec frontend nginx -t
+                docker exec frontend nginx -s reload
+                echo "✅ Nginx 설정 반영 완료"
+                """
+            }
+        }
+
+        stage('Shutdown Old Backend') {
+            steps {
+                sh """
+                docker compose -f ${DOCKER_COMPOSE_FILE} stop ${CURRENT_BACKEND} || true
+                docker compose -f ${DOCKER_COMPOSE_FILE} rm -f ${CURRENT_BACKEND} || true
+                echo "🧹 이전 백엔드(${CURRENT_BACKEND}) 종료 완료"
+                """
             }
         }
     }
