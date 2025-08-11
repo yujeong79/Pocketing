@@ -28,23 +28,14 @@ pipeline {
                   # CRLF 제거 + 라인 끝 주석 제거
                   sed -e "s/\\r$//" -e "s/#.*$//" "$UPSTREAM_CONF" > "$CLEANED"
 
-                  # 매칭되는 server 라인 확인(디버그용)
-                  echo "🔎 server lines:"
-                  grep -E "^[[:space:]]*server[[:space:]]+backend_(blue|green):8080" "$CLEANED" || true
-
-                  # backend_* 이름만 추출
-                  awk '
-                    /^[[:space:]]*server[[:space:]]+backend_(blue|green):8080/ {
-                      if ($0 ~ /backend_blue:8080/)  {print "backend_blue";  exit}
-                      if ($0 ~ /backend_green:8080/) {print "backend_green"; exit}
-                    }
-                  ' "$CLEANED"
+                  # backend_*만 추출
+                  grep -Eo "backend_(blue|green)" "$CLEANED" | head -n 1
                 ''',
                 returnStdout: true
               ).trim()
 
               if (!currentBackend) {
-                error "🚨 upstream.conf에서 활성 백엔드를 찾지 못했습니다. server 라인/포맷을 확인하세요."
+                error "🚨 upstream.conf에서 활성 백엔드를 찾지 못했습니다."
               }
 
               env.CURRENT_BACKEND = currentBackend
