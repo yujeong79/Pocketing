@@ -18,42 +18,42 @@ pipeline {
             }
         }
 
-        // 🔍 이 단계 추가
-        stage('Verify UpstreamConf') {
-          steps {
-            sh '''
-              set -eux
-              echo "🔎 Checking $UPSTREAM_CONF"
-
-              # 디렉터리/권한/실경로
-              ls -l "$(dirname "$UPSTREAM_CONF")"
-              [ -f "$UPSTREAM_CONF" ] || { echo "❌ upstream.conf not found"; exit 1; }
-              echo "📄 realpath: $(readlink -f "$UPSTREAM_CONF" || echo "(no readlink)")"
-              echo "👤 whoami: $(whoami)"
-              echo "🔐 perms:"; ls -l "$UPSTREAM_CONF"
-
-              # 내용 프리뷰(CRLF 제거)
-              echo "🔎 first 80 lines (CRLF stripped):"
-              sed -e 's/\r$//' -n '1,80p' "$UPSTREAM_CONF"
-            '''
-          }
-        }
-
         stage('Determine Target Container') {
-            steps {
-                script {
-                    def currentBackend = sh(
-                        script: "grep -v '#' ${UPSTREAM_CONF} | grep -o 'backend_.*:8080' | cut -d':' -f1",
-                        returnStdout: true
-                    ).trim()
+          steps {
+            script {
+              def currentBackend = sh(
+                script: '''
+                  set -e
+                  CLEANED=$(mktemp)
+                  # CRLF 제거 + 라인 끝 주석 제거
+                  sed -e "s/\\r$//" -e "s/#.*$//" "$UPSTREAM_CONF" > "$CLEANED"
 
-                    env.CURRENT_BACKEND = currentBackend
-                    env.NEXT_BACKEND = (currentBackend == "backend_blue") ? "backend_green" : "backend_blue"
+                  # 매칭되는 server 라인 확인(디버그용)
+                  echo "🔎 server lines:"
+                  grep -E "^[[:space:]]*server[[:space:]]+backend_(blue|green):8080" "$CLEANED" || true
 
-                    echo "🟢 현재 활성화된 백엔드: ${env.CURRENT_BACKEND}"
-                    echo "🟠 새로 배포할 백엔드: ${env.NEXT_BACKEND}"
-                }
+                  # backend_* 이름만 추출
+                  awk '
+                    /^[[:space:]]*server[[:space:]]+backend_(blue|green):8080/ {
+                      if ($0 ~ /backend_blue:8080/)  {print "backend_blue";  exit}
+                      if ($0 ~ /backend_green:8080/) {print "backend_green"; exit}
+                    }
+                  ' "$CLEANED"
+                ''',
+                returnStdout: true
+              ).trim()
+
+              if (!currentBackend) {
+                error "🚨 upstream.conf에서 활성 백엔드를 찾지 못했습니다. server 라인/포맷을 확인하세요."
+              }
+
+              env.CURRENT_BACKEND = currentBackend
+              env.NEXT_BACKEND = (currentBackend == "backend_blue") ? "backend_green" : "backend_blue"
+
+              echo "🟢 현재 활성화된 백엔드: ${env.CURRENT_BACKEND}"
+              echo "🟠 새로 배포할 백엔드: ${env.NEXT_BACKEND}"
             }
+          }
         }
 
         stage('Deploy New Backend') {
