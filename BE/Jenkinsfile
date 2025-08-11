@@ -20,19 +20,23 @@ pipeline {
 
         // 🔍 이 단계 추가
         stage('Verify UpstreamConf') {
-            steps {
-                sh """
-                  set -eux
-                  echo "🔎 Checking ${UPSTREAM_CONF}"
-                  ls -l $(dirname ${UPSTREAM_CONF})
-                  [ -f ${UPSTREAM_CONF} ] || { echo '❌ upstream.conf not found'; exit 1; }
-                  echo "📄 realpath: $(readlink -f ${UPSTREAM_CONF} || echo '(no readlink)')"
-                  echo "👤 whoami: $(whoami)"
-                  echo "🔐 perms:"; ls -l ${UPSTREAM_CONF}
-                  echo "🔎 first 80 lines:"
-                  sed -e 's/\\r$//' -n '1,80p' ${UPSTREAM_CONF}
-                """
-            }
+          steps {
+            sh '''
+              set -eux
+              echo "🔎 Checking $UPSTREAM_CONF"
+
+              # 디렉터리/권한/실경로
+              ls -l "$(dirname "$UPSTREAM_CONF")"
+              [ -f "$UPSTREAM_CONF" ] || { echo "❌ upstream.conf not found"; exit 1; }
+              echo "📄 realpath: $(readlink -f "$UPSTREAM_CONF" || echo "(no readlink)")"
+              echo "👤 whoami: $(whoami)"
+              echo "🔐 perms:"; ls -l "$UPSTREAM_CONF"
+
+              # 내용 프리뷰(CRLF 제거)
+              echo "🔎 first 80 lines (CRLF stripped):"
+              sed -e 's/\r$//' -n '1,80p' "$UPSTREAM_CONF"
+            '''
+          }
         }
 
         stage('Determine Target Container') {
