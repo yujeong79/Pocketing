@@ -10,7 +10,6 @@ const SplashScreen = () => {
 
   useEffect(() => {
     if (fontsLoaded) {
-      // 폰트 로딩이 완료되면 1초 후 SignInScreen으로 이동
       const timer = setTimeout(() => {
         navigation.navigate('SignIn' as never);
       }, 1000);
@@ -20,9 +19,9 @@ const SplashScreen = () => {
   }, [fontsLoaded, navigation]);
 
   return (
-    <S.Container>
+    <>
         <S.Logo source={LOGO_3D_X3} />
-    </S.Container>
+    </>
   ); 
 }
 
