@@ -17,6 +17,10 @@ const X_LOGIN_BUTTON: ImageRequireSource = require('../../assets/icons/X_login.p
 const X_LOGIN_BUTTON_X2: ImageRequireSource = require('../../assets/icons/X_login_x2.png');
 const X_LOGIN_BUTTON_X3: ImageRequireSource = require('../../assets/icons/X_login_x3.png');
 
+const BACK_BUTTON: ImageRequireSource = require('../../assets/icons/Left_vector.png');
+const BACK_BUTTON_X2: ImageRequireSource = require('../../assets/icons/Left_vector_x2.png');
+const BACK_BUTTON_X3: ImageRequireSource = require('../../assets/icons/Left_vector_x3.png');
+
 export {
     LOGO_3D,
     LOGO_3D_X2,
@@ -31,4 +35,7 @@ export {
     X_LOGIN_BUTTON,
     X_LOGIN_BUTTON_X2,
     X_LOGIN_BUTTON_X3,
+    BACK_BUTTON,
+    BACK_BUTTON_X2,
+    BACK_BUTTON_X3,
 };
