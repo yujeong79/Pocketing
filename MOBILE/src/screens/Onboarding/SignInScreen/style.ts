@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { View, Image } from 'react-native';
+import { View, Image, TouchableOpacity } from 'react-native';
 import scale from "@utils/scale";
 
 export const Container = styled(View)`
@@ -33,11 +33,16 @@ export const LoginButtonContainer = styled(View)`
   justify-content: center;
   gap: ${scale(8)}px;
 `;
-export const KakaoLoginButton = styled(Image)`
+export const KakaoLoginButton = styled(TouchableOpacity)`
   width: ${scale(266)}px;
   height: ${scale(40)}px;
 `;
-export const XLoginButton = styled(Image)`
+export const XLoginButton = styled(TouchableOpacity)`
   width: ${scale(266)}px;
   height: ${scale(40)}px;
+`;
+
+export const ButtonImage = styled(Image)`
+  width: 100%;
+  height: 100%;
 `;
