@@ -28,7 +28,7 @@ const OnboardingStackNavigator = () => {
       <Stack.Screen
         name="Nickname"
         component={NicknameScreen}
-        options={{title: ''}}
+        options={{headerShown: true}}
       />
     </Stack.Navigator>
   );
