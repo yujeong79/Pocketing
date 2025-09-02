@@ -29,7 +29,7 @@ pipeline {
                   sed -e "s/\\r$//" -e "s/#.*$//" "$UPSTREAM_CONF" > "$CLEANED"
 
                   # backend_*만 추출
-                  grep -Eo "backend_(blue|green)" "$CLEANED" | head -n 1
+                  grep -Eo "backend-(blue|green)" "$CLEANED" | head -n 1
                 ''',
                 returnStdout: true
               ).trim()
