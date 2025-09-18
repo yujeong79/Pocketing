@@ -8,16 +8,18 @@ pipeline {
 
     stages {
         stage('Copy Config Into Workspace') {
-          dir('BE') {
-            sh '''
-              set -e
-              mkdir -p src/main/resources
-              # Jenkins 컨테이너에 마운트한 실제 경로에서 복사 (예시 경로)
-              cp /pocketing/config/backend/application.yml src/main/resources/application.yml
-              cp /pocketing/config/backend/application-prod.yml src/main/resources/application-prod.yml
-              cp /pocketing/config/backend/firebase-service-account.json src/main/resources/firebase-service-account.json
-            '''
-          }
+            steps {
+                dir('BE') {
+                    sh '''
+                      set -e
+                      mkdir -p src/main/resources
+                      # Jenkins 컨테이너에 마운트한 실제 경로에서 복사 (예시 경로)
+                      cp /pocketing/config/backend/application.yml src/main/resources/application.yml
+                      cp /pocketing/config/backend/application-prod.yml src/main/resources/application-prod.yml
+                      cp /pocketing/config/backend/firebase-service-account.json src/main/resources/firebase-service-account.json
+                    '''
+                  }
+            }
         }
 
         stage('Build Backend') {
