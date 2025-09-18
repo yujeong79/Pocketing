@@ -9,14 +9,12 @@ pipeline {
     stages {
         stage('Copy Config Into Workspace') {
             steps {
-                dir('BE') {
-                    sh '''
-                      mkdir -p src/main/resources
-                      docker cp backend: /resources/application.yml src/main/resources/application.yml
-                      docker cp backend: /resources/application-prod.yml src/main/resources/application-prod.yml
-                      docker cp backend: /resources/firebase-service-account.json src/main/resources/firebase-service-account.json
-                    '''
-                  }
+                sh '''
+                  mkdir -p BE/src/main/resources
+                  cp /pocketing/be/application.yml BE/src/main/resources/application.yml
+                  cp /pocketing/be//application-prod.yml BE/src/main/resources/application-prod.yml
+                  cp /pocketing/be/firebase-service-account.json BE/src/main/resources/firebase-service-account.json
+                '''
             }
         }
 
