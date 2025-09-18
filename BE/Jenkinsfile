@@ -12,9 +12,9 @@ pipeline {
                 dir('BE') {
                     sh '''
                       mkdir -p src/main/resources
-                      cp backend: /resources/application.yml src/main/resources/application.yml
-                      cp backend: /resources/application-prod.yml src/main/resources/application-prod.yml
-                      cp backend: /resources/firebase-service-account.json src/main/resources/firebase-service-account.json
+                      docker cp backend: /resources/application.yml src/main/resources/application.yml
+                      docker cp backend: /resources/application-prod.yml src/main/resources/application-prod.yml
+                      docker cp backend: /resources/firebase-service-account.json src/main/resources/firebase-service-account.json
                     '''
                   }
             }
